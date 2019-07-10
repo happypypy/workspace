@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+<title>客户咨询</title>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+
+<script type="text/javascript" src="{$roottpl}/js/jquery.min.js"></script>
+<script type="text/javascript" src="{$roottpl}/js/swiper.min.js"></script>
+<script type="text/javascript" src="{$roottpl}/js/common.js"></script>
+<link rel="stylesheet" type="text/css" href="{$roottpl}/style/css/swiper.min.css">
+<link rel="stylesheet" type="text/css" href="{$roottpl}/style/css/common.css">
+<link rel="stylesheet" type="text/css" href="{$roottpl}/style/css/pc.css">
+</head>
+<body style="height: 100%;overflow: hidden;">
+
+<div class="service-content">
+	<div class="service-content-head">
+		<div class="tit">在线客服</div>
+		<div class="close-service iconfont" onclick="javascript:history.go(-1);" id="closeService">&#xe68f;</div>
+	</div>
+	<div class="service-list">
+		<div class="swiper-content">
+			<div class="swiper-wrapper">
+				<div class="swiper-slide">
+					<ul>
+						<?php  $re = $cms->GetWaiter($idsite);
+						foreach($re as $k=>$val){ ?>
+						<li>
+							<div class="user"><img src="{$val.userimg}" /></div>
+							<div class="info">
+								<div class="info1">
+									<div class="ch">{$val.username}</div>
+									<div class="en"></div>
+									<div class="online iconfont">&#xe641;</div>
+								</div>
+								<div class="info2">
+									<div class="phone iconfont">&#xe64b;</div>
+									<a href="tel:{$val.telephone}" class="num">{$val.telephone}</a>
+								</div>
+							</div>			
+								<img src="{$val.rqcode}" class="code" />
+						</li>
+						<?php } ?>
+					</ul>
+				</div>
+			</div>
+			<div class="swiper-scrollbar"></div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+$(window).load(function(){
+	var swiper1 = new Swiper('.service-list .swiper-content', {
+		direction: 'vertical',
+		slidesPerView: 'auto',
+		freeMode: true,
+		scrollbar: {
+			el: '.swiper-scrollbar',
+		},
+		mousewheel: true,
+	});
+    visitdata();
+})
+function visitdata() {
+    var data= {"idsite":{$idsite},"flag":{$flag},"id":{$id}};
+    $.ajax({
+        url:"/addwaitervisit",
+        data:data,
+        type:"post",
+        dataType:"json",
+        success:function(msg) {}
+    })
+}
+
+</script>
+</body>
+</html>

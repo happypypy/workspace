@@ -1,0 +1,216 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>用户日志</title>
+    <link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
+    <link href="__PUBLIC__/static/css/page.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="__PUBLIC__/static/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/lhgdialog.js?skin=aero"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/CostomLinkOpenSw.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/tabscommon.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/del-checked.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/layer/layer.js"></script>
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/static/js/daterangepicker/daterangepicker-bs3.css" />
+    <script type="text/javascript" src="/static/js/daterangepicker/moment.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/daterangepicker/daterangepicker.js"></script>
+    <script type="text/javascript">
+
+    </script>
+</head>
+<body>
+
+<div class="oa_wrapper">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr class="oa_wrapper-display">
+            <td class="oa_wrapper-top-arr-left">&nbsp;</td>
+            <td class="oa_wrapper-top-arr-middle"></td>
+            <td class="oa_wrapper-top-arr-right">&nbsp;</td>
+        </tr>
+        <tr>
+            <td class="oa_wrapper-middle-arr-left oa_wrapper-display"></td>
+            <td class="oa_wrapper-middle-arr-middle">
+                <div class="oa_location clearfix"><span class="oa_ico-left"></span>location<span class="oa_ico-right"></span></div>
+                <div class="oa_main clearfix">
+                    <div class="oa_content-area clearfix">
+                        <div class="oa_content-main">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td valign="top">
+                                        <div class="oa_title clearfix">
+                                            <span class="oa_ico-right"></span>
+                                            <span class="oa_ico-left"></span>
+                                            {:lang('search')}
+                                        </div>
+                                        <div class="oa_search-area clearfix">
+                                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                <tr>
+                                                    <td>
+                                                        <div class="oa_search-type clearfix">
+                                                            <form action="{:url('useroperatelog/index')}" method="post" id="form1">
+                                                                <table width="100%" border="0" cellspacing="1" cellpadding="0">
+                                                                    <tr>
+                                                                        <td width="100" class="oa_cell-left">模块名称：</td>
+                                                                        <td class="oa_cell-right">
+                                                                            <select name="module_name" style="width: 200px">
+                                                                                <option value="">请选择</option>
+                                                                                {volist name="$module_list" id="vo" key="k"}
+                                                                                <option value="catalogid,{$vo.idcatalog}" {if condition="$search.module_name == 'catalogid,'.$vo.idcatalog "}selected{/if}>┣{$vo.chrname}</option>
+                                                                                    {volist name="$vo.second" id="vo2" key="k1"}
+                                                                                        {if condition="count($vo.second) != $k1"}
+                                                                                            <option value="moduleid,{$vo2.idmodule}" {if condition="$search.module_name == 'moduleid,'.$vo2.idmodule "}selected{/if}>┃&nbsp;┣{$vo2.chrname}</option>
+                                                                                        {else}
+                                                                                            <option value="moduleid,{$vo2.idmodule}" {if condition="$search.module_name == 'moduleid,'.$vo2.idmodule "}selected{/if}>┃&nbsp;┗{$vo2.chrname}</option>
+                                                                                        {/if}
+                                                                                        {if condition="$vo2.chrcode == 'activity' || $vo2.chrcode == 'node'"}
+                                                                                            {volist name="$vo2.three" id="vo3" key="k2"}
+                                                                                                {if condition="count($vo2.three) != $k2"}
+                                                                                                    <option value="nodeid,{$vo3.nodeid}" {if condition="$search.module_name == 'nodeid,'.$vo3.nodeid "}selected{/if}>┃&nbsp;&nbsp;&nbsp;&nbsp;┣{$vo3.nodename}</option>
+                                                                                                {else}
+                                                                                                    <option value="nodeid,{$vo3.nodeid}" {if condition="$search.module_name == 'nodeid,'.$vo3.nodeid "}selected{/if}>┃&nbsp;&nbsp;&nbsp;&nbsp;┗{$vo3.nodename}</option>
+                                                                                                {/if}
+                                                                                            {/volist}
+                                                                                        {/if}
+                                                                                    {/volist}
+                                                                                {/volist}
+                                                                            </select>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td width="100" class="oa_cell-left">操作类型：</td>
+                                                                        <td class="oa_cell-right">
+                                                                            <select name="operate_type" style="width: 200px">
+                                                                                <option value="">请选择</option>
+                                                                                {volist name="conifg_operate_type" id="value"}
+                                                                                <option value="{$key}" {if condition="$search.operate_type == $key"}selected{/if}>{$value}</option>
+                                                                                {/volist}
+                                                                            </select>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="oa_cell-left">操作日期：</td>
+                                                                        <td class="oa_cell-right">
+                                                                            <input id="operate_time" name="operate_time" type="text" value="{$search.operate_time ?? ''}" class="oa_search-input" />
+                                                                            <script language='JavaScript'>seltime("operate_time","YYYY-MM-DD");</script>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="oa_cell-left">关键词：</td>
+                                                                        <td class="oa_cell-right"><input id="keyword" name="keyword" type="text" value="{$search.keyword ?? ''}" class="oa_search-input" /></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td height="30"></td>
+                                                                        <td class="oa_cell-right"><input  name="" type="submit" value="{:lang('search')}" class="oa_search-btn" /></td>
+                                                                    </tr>
+                                                                </table>
+                                                            </form>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <div class="oa_title clearfix">
+                                            <span class="oa_title-btn">
+                                                <ul>
+                                                </ul>
+                                            </span>
+                                            <span class="oa_ico-left"></span>
+                                            用户日志
+                                        </div>
+                                        <div class="oa_text-list">
+                                            <table width="100%" border="0" cellspacing="0" cellpadding="0" style="table-layout:fixed">
+                                                <tr class="oa_text-list-title">
+                                                    <th width="60"><span class="oa_arr-text-list-title"></span>栏目名称</th>
+                                                    <th width="60"><span class="oa_arr-text-list-title"></span>模块名称</th>
+                                                    <th width="60"><span class="oa_arr-text-list-title"></span>操作名称</th>
+                                                    <th><span class="oa_arr-text-list-title"></span>说明</th>
+                                                    <th width="55"><span class="oa_arr-text-list-title"></span>操作类型</th>
+                                                    <th width="55"><span class="oa_arr-text-list-title"></span>操作用户</th>
+                                                    <th width="85"><span class="oa_arr-text-list-title"></span>用户IP</th>
+                                                    <th width="120"><span class="oa_arr-text-list-title"></span>操作时间</th>
+                                                </tr>
+                                                {volist name="datalist" id="vo"}
+                                                <tr>
+                                                    <td>{$vo['column_name']}</td>
+                                                    <td>{$vo['module_name']}</td>
+                                                    <td>{$vo['operate_name']}</td>
+                                                    <td>{$vo['explain']}</td>
+                                                    <td>{$conifg_operate_type[$vo['operate_type']]}</td>
+                                                    <td>{$vo['chrname']}</td>
+                                                    <td>{$vo['ip']}</td>
+                                                    <td>{$vo['operate_time']|date="Y-m-d H:i:s",###}</td>
+                                                </tr>
+                                                {/volist}
+                                            </table>
+                                            <div class="oa_bottom clearfix">
+                                                <div class="clearfix">
+                                                    <div class="oa_page-controls">
+                                                        <ul>
+                                                            <li></li>
+                                                            <li>{$page->show()}</li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <div class="oa_bottom-bottom"><em></em></div>
+                                            </div>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </td>
+            <td class="oa_wrapper-middle-arr-right oa_wrapper-display"></td>
+        </tr>
+        <tr class="oa_wrapper-display">
+            <td class="oa_wrapper-bottom-arr-left">&nbsp;</td>
+            <td class="oa_wrapper-bottom-arr-middle"></td>
+            <td class="oa_wrapper-bottom-arr-right">&nbsp;</td>
+        </tr>
+    </table>
+</div>
+<script type="text/javascript">
+    function delete_reply(id){
+
+        layer.confirm("确定删除？", {
+            btn: ['确定','取消'] //按钮
+        }, function(){
+            var url = "/admin/weixinreplay/delete_reply/wx_replay_id/"+id;
+            $.ajax({
+                url:url,
+                type:"get",
+                success:function(obj){
+                    console.log(obj+obj.msg);
+                    if (obj.msg=="操作成功"){
+                        layer.alert('操作成功', {icon: 1}, function(index){
+                            location.reload();
+                            layer.close(index);
+
+                        });
+                    }else{
+
+                        layer.alert('操作失败', {icon: 2}, function(index){
+                            layer.close(index);
+                        });
+                    }
+                },
+                error:function(msg){
+                    layer.alert('操作失败', {icon: 2}, function(index){
+                        layer.close(index);
+                        location.reload();
+                    });
+                }
+            })
+        });
+    }
+
+    function empty() {
+        window.location.reload();
+    }
+
+</script>
+</body>
+</html>

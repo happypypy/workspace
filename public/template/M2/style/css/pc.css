@@ -1,0 +1,37 @@
+@media screen and (min-width: 640px) {
+	body{
+		background: #eee;
+	}
+	.site-section{
+		font-size:16px;
+		padding-top: 100px;
+		width: 640px;
+		background: #fff;
+	}
+	.menu{
+		width: 500px;
+	}
+	body.open-menu header,
+	body.open-menu .site-section{
+		-webkit-transform: translateX(-500px);
+		-ms-transform: translateX(-500px);
+		-o-transform: translateX(-500px);
+		transform: translateX(-500px);
+	}
+	.common-list li:after{
+	    -webkit-transform: scaleY(1);
+	    transform: scaleY(1)
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+

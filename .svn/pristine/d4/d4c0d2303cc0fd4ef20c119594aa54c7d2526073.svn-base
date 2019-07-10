@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>模版管理</title>
+    <link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
+    <link href="__PUBLIC__/static/css/page.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="__PUBLIC__/static/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/layer/layer.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/ContorlValidator.js"></script>
+
+</head>
+<body>
+<div class="oa_pop">
+    <div class="oa_pop-main">
+        <div style="height: 6px"></div>
+        <div class="oa_title clearfix">
+            <span class="oa_ico-right"></span>
+            <span class="oa_title-btn"></span>
+            <span class="oa_ico-left"></span>
+            {if condition="$datainfo"}
+            编辑二维码
+            {else/}
+            新增二维码
+            {/if}
+        </div>
+        <div class="oa_edition">
+            <form action="" method="post">
+                <table width="100%" border="0" cellspacing="1" cellpadding="0" class="oa_edition" style="border-bottom: #e0e0e0 solid 1px">
+                   <tr>
+                        <td width="300" class="oa_cell-left"><span style="color:#ff0000">*</span>二维码名称：</td>
+                        <td class="oa_cell-right">
+                            <input name="qrcode_name" id="qrcode_name" type="text" value="{$datainfo.qrcode_name ?? ''}" class="oa_input-200"   chname="二维码名称"  />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="300" class="oa_cell-left"><span style="color:#ff0000">*</span>二维码描述：</td>
+                        <td class="oa_cell-right">
+                            <textarea id="qrcode_desc" name="qrcode_desc" is_null="1" cols="50" rows="3"   class="form-control input oa_input-200"  style="width:210px;height:80px;">{$datainfo.qrcode_desc ?? ''}</textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="padding:10px;"><input type="submit" value="确定" onclick="javascript: return checkdata();" ></td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </div>
+</div>
+<script language="JavaScript">
+    function checkdata() {
+        if($("#qrcode_name").val()=="")
+        {
+            alert("请输入二维码名称");
+            return false;
+        }
+        if($("#qrcode_desc").val()=="")
+        {
+            alert("请输入二维码描述");
+            return false;
+        }
+        return true;
+    }
+</script>
+</body>
+</html>

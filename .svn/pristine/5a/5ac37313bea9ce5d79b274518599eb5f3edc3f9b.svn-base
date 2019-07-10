@@ -1,0 +1,487 @@
+$(function(){
+$("#JS_cat_nav .bread-nav .bitem").hover(function(){
+	if($(this).children(".bread-drop").is(":visible"))
+	{$(this).removeClass("current").children(".bread-drop").hide();}
+	else{$(this).addClass("current").children(".bread-drop").show();}		
+	});
+});
+
+// JavaScript Document
+$(document).ready(function(){
+shop_Carousel(); Look_see_content(); Series_Products(); openFun(); CPmenu_list(); Hot_list(); cpJJ_img_list(); GWC();
+});
+
+function shop_Carousel(){	
+	var list = $("#shop_Carousel");
+	var li = $("#shop_Carousel ul li");
+	var len = li.length;
+	if (len > 0) {
+	if (len >= 1){
+	    list.jCarouselLite({  
+		btnPrev: "#shop_prev",   //上一张按钮  
+    	btnNext: "#shop_next",   //下一张按钮  
+		visible:1,     // 显示图片数量 
+		auto:5000,    //是否自动滚动，填写毫秒，null为不自动
+		speed: 1000,   //滚动时长
+		circular: true, //是否重复播放，首尾相接
+		start:0,        //从第几个开始滚动，默认第一个
+		speed: 1000,    //滚动完成时长 单位毫秒  
+		scroll: 1  ,     // 每次滚动图片数量 
+		vertical: false, //滚动方向true为垂直，false为水平 
+		beforeStar:null, //滚动前调用函数
+		afterEnd:null //滚动后调用函数
+	});	
+	
+	}else{
+		list.jCarouselLite({  
+		visible:len,     // 显示图片数量 
+		auto:null,    //是否自动滚动，填写毫秒，null为不自动
+		speed: 1000,   //滚动时长
+		circular: false, //是否重复播放，首尾相接
+		start:0,        //从第几个开始滚动，默认第一个
+		speed: 1000,    //滚动完成时长 单位毫秒  
+		scroll: 1  ,     // 每次滚动图片数量 
+		vertical: false, //滚动方向true为垂直，false为水平 
+		beforeStar:null, //滚动前调用函数
+		afterEnd:null //滚动后调用函数
+	});	
+		};	
+		};	
+};
+
+
+function Look_see_content(){	
+	var list = $("#Look_see_content");
+	var li = $("#Look_see_content ul li");
+	var len = li.length;
+	if (len > 0) {
+	if (len >= 1){
+	    list.jCarouselLite({  
+		btnPrev: "#Look_see_prev",   //上一张按钮  
+    	btnNext: "#Look_see_next",   //下一张按钮  
+		visible:3,     // 显示图片数量 
+		auto:null,    //是否自动滚动，填写毫秒，null为不自动
+		speed: 1000,   //滚动时长
+		circular: false, //是否重复播放，首尾相接
+		start:0,        //从第几个开始滚动，默认第一个
+		speed: 1000,    //滚动完成时长 单位毫秒  
+		scroll: 1  ,     // 每次滚动图片数量 
+		vertical: true, //滚动方向true为垂直，false为水平 
+		beforeStar:null, //滚动前调用函数
+		afterEnd:null //滚动后调用函数
+	});	
+	
+	}else{
+		list.jCarouselLite({  
+		visible:len,     // 显示图片数量 
+		auto:null,    //是否自动滚动，填写毫秒，null为不自动
+		speed: 1000,   //滚动时长
+		circular: false, //是否重复播放，首尾相接
+		start:0,        //从第几个开始滚动，默认第一个
+		speed: 1000,    //滚动完成时长 单位毫秒  
+		scroll: 1  ,     // 每次滚动图片数量 
+		vertical: false, //滚动方向true为垂直，false为水平 
+		beforeStar:null, //滚动前调用函数
+		afterEnd:null //滚动后调用函数
+	});	
+		};	
+		};	
+};
+
+
+function Series_Products(){	
+	var list = $("#Series_Products");
+	var li = $("#Series_Products .Person_also_UL li");
+	var len = li.length;
+	if (len > 0) {
+	if (len >= 1){
+	    list.jCarouselLite({  
+		btnPrev: "#Series_prev",   //上一张按钮  
+    	btnNext: "#Series_next",   //下一张按钮  
+		visible:3,     // 显示图片数量 
+		auto:null,    //是否自动滚动，填写毫秒，null为不自动
+		speed: 1000,   //滚动时长
+		circular: false, //是否重复播放，首尾相接
+		start:0,        //从第几个开始滚动，默认第一个
+		speed: 1000,    //滚动完成时长 单位毫秒  
+		scroll: 1  ,     // 每次滚动图片数量 
+		vertical: true, //滚动方向true为垂直，false为水平 
+		beforeStar:null, //滚动前调用函数
+		afterEnd:null //滚动后调用函数
+	});	
+	
+	}else{
+		list.jCarouselLite({  
+		visible:len,     // 显示图片数量 
+		auto:null,    //是否自动滚动，填写毫秒，null为不自动
+		speed: 1000,   //滚动时长
+		circular: false, //是否重复播放，首尾相接
+		start:0,        //从第几个开始滚动，默认第一个
+		speed: 1000,    //滚动完成时长 单位毫秒  
+		scroll: 1  ,     // 每次滚动图片数量 
+		vertical: false, //滚动方向true为垂直，false为水平 
+		beforeStar:null, //滚动前调用函数
+		afterEnd:null //滚动后调用函数
+	});	
+		};	
+		};	
+};
+
+function CPmenu_list(){
+	var li = $("#CPmenu_list .CPmenu_li");
+	li.hover(function(){
+		$(this).addClass("Mon");
+		$(this).find(".CPmenu_sub_main").show();
+		},function(){
+		$(this).removeClass("Mon");
+		$(this).find(".CPmenu_sub_main").hide();
+			});
+	};	
+
+
+function openFun(){
+	banner($("#cp_pic ul li"),$("#cp_ben ul li"),"on",1000);
+	banner($("#pic ul li"),$("#ben span"),"on",1000);
+	banner($("#cpList_pic ul li"),$("#cpList_ben ul li"),"on",1000);
+	tad($("#cp_tad_title ul li"),$("#cp_tad_content .cp_tad_list"),"on");
+	};
+		
+
+function banner(PicImg,PicPage,PicOn,picTime){
+var DEMO;
+var currentIndex=0;
+var currentID=0;
+var pictureID=0;
+var len = PicImg.length;
+
+
+if(len > 1){
+	
+antoScroll();
+PicPage.hover(function(){
+	StopScrolll();
+    currentID=$(this).attr("id");
+	pictureID= currentID.substring(currentID.length-1);
+	PicImg.eq(pictureID).fadeIn(picTime);
+	PicImg.not(PicImg[pictureID]).fadeOut(picTime);
+	PicPage.eq(pictureID).addClass(PicOn);
+	PicPage.not(PicPage[pictureID]).removeClass(PicOn);
+},function(){
+	currentID=$(this).attr("id");
+	pictureID= currentID.substring(currentID.length-1);
+	currentIndex = pictureID;
+	antoScroll();
+});
+
+}else{
+	PicImg.eq(0).fadeIn(picTime);
+	PicPage.eq(0).addClass(PicOn);
+	StopScrolll();
+	};
+
+function antoScroll(){
+	PicPage.eq(currentIndex).addClass(PicOn);
+	PicPage.eq(currentIndex-1).removeClass(PicOn);
+	PicImg.eq(currentIndex).fadeIn(picTime);
+	PicImg.eq(currentIndex-1).fadeOut(picTime);
+	currentIndex++; currentIndex= currentIndex>=len?0:currentIndex;
+	DEMO= setTimeout(antoScroll,5000);
+}
+function StopScrolll(){
+	clearTimeout(DEMO);
+}
+};	
+	
+
+function Hot_list(){
+	var li = $("#Hot_cp_list ul li");
+	li.hover(function(){
+		$(this).find(".Hot_cp_liMain").show();
+		$(this).find(".Hot_num").addClass("Hot_num_on");
+		$(this).find(".Hot_cp_liTitle").addClass("Hot_t_on");
+		$(this).siblings().find(".Hot_cp_liMain").hide();
+		$(this).siblings().find(".Hot_num").removeClass("Hot_num_on");
+		$(this).siblings().find(".Hot_cp_liTitle").removeClass("Hot_t_on");
+		});
+	};
+	
+
+function cpJJ_img_list(){
+	var con = $("#JF_jsLimg");
+	var li = $("#cpJJ_L_list ul li");
+	var list = $("#cpJJ_L_list");
+	var len = li.length;
+	var w = li.width(); 
+	$("#cpJJ_L_list ul").css("width",len*(w+15));
+
+
+	if (len > 0) {
+	if (len > 4){
+	    list.jCarouselLite({  
+		btnPrev: "#cpJJ_prev",   //上一张按钮  
+    	btnNext: "#cpJJ_next",   //下一张按钮  
+		visible:4,     // 显示图片数量 
+		auto:null,    //是否自动滚动，填写毫秒，null为不自动
+		speed: 500,   //滚动时长
+		circular: false, //是否重复播放，首尾相接
+		start:0,        //从第几个开始滚动，默认第一个
+		speed: 500,    //滚动完成时长 单位毫秒  
+		scroll: 1  ,     // 每次滚动图片数量 
+		vertical: false, //滚动方向true为垂直，false为水平 
+		beforeStar:null, //滚动前调用函数
+		afterEnd:null //滚动后调用函数
+	});	
+	}else{
+		list.jCarouselLite({  
+		btnPrev: "#cpJJ_prev",   //上一张按钮  
+    	btnNext: "#cpJJ_next",   //下一张按钮 
+		visible:len,     // 显示图片数量 
+		auto:3000,    //是否自动滚动，填写毫秒，null为不自动
+		speed: 500,   //滚动时长
+		circular: false, //是否重复播放，首尾相接
+		start:0,        //从第几个开始滚动，默认第一个
+		speed: 500,    //滚动完成时长 单位毫秒  
+		scroll: 1  ,     // 每次滚动图片数量 
+		vertical: false, //滚动方向true为垂直，false为水平 
+		beforeStar:null, //滚动前调用函数
+		afterEnd:null //滚动后调用函数
+	});	
+		};	
+		};	
+
+
+	li.hover(function(){
+		$(this).addClass("on");
+		$(this).siblings().removeClass("on");
+		var imgSRC = $(this).find("img").attr("src");
+		var imgSRC = $(this).find("img").attr("date-img");
+		$("#cpJJ_L_img").find("img").attr({"src":imgSRC,"jqimg":imgSRC});
+		});
+	}	
+
+	
+	
+function tad(li,con,on){
+		li.each(function(j){
+			$(this).click(function(){
+			$(this).addClass(on).siblings().removeClass(on);	
+			con.eq(j).show().siblings().hide();;					
+				});
+			});
+	};	
+	
+
+function GWC(){
+	var dz_li = $("#gwcJS_DzList ul li");
+		dz_li.click(function(){
+		$(this).addClass("on").siblings().removeClass("on");	
+		$(this).find(".gwcJS_DzLi_BJbutton").show();
+		$(this).siblings().find(".gwcJS_DzLi_BJbutton").hide();
+		});
+	
+	var fs_li = $("#gwcJS_ZFlist dl");
+		fs_li.each(function(i){
+			var rad = $(this).find("input[name^='ZFFS']");
+			rad.click(function(){
+				if(this.checked){
+				$(this).parent().parent().addClass("cur");
+				fs_li.eq(i).find("dd").show();
+				fs_li.eq(i).siblings().find("dd").hide();
+				};
+			});		
+	});
+	
+	//var zx_li = $("#gwcJS_ZFli_ZX ul li");
+		//zx_li.click(function(){
+			//$(this).addClass("on").siblings().removeClass("on");
+			//});	
+			
+	var gwcWZF_li = $("#gwcWZF_pop_con ul li");
+		gwcWZF_li.click(function(){
+			$(this).addClass("on").siblings().removeClass("on");
+			});			
+		
+	};	
+	
+
+
+$(function(){
+	var TJ_tagList=$(".J_tagList ul li:gt(7):not(:last)");
+	TJ_tagList.hide();
+$(".J_tagList .rate-tag-toggle").click(function(){
+	if(TJ_tagList.is(":visible")){
+		TJ_tagList.hide();
+		$(".J_tagList .rate-tag-toggle").removeClass("cur")
+		}
+	else{
+		TJ_tagList.show();
+		$(".J_tagList .rate-tag-toggle").addClass("cur");
+		}
+		
+});
+});
+
+
+
+$(function(){
+$(".gwcJc_FPtitle").click(
+		function(){
+			if($(this).siblings(".gwcJS_FPtable").is(":visible")){
+				$(this).siblings(".gwcJS_FPtable").hide();
+			}
+			else{$(this).siblings(".gwcJS_FPtable").show();}
+		});
+});
+
+
+$(function(){
+	var Brand_list_totla=$(".Brand .JS_brand_overflow li:gt(8)");
+	Brand_list_totla.hide();
+$(".Brand .more_brand").click(function(){
+	if(Brand_list_totla.is(":visible")){
+		Brand_list_totla.hide();
+		$(".Brand .more_brand a").text("更多");
+		$(".Brand .more_brand a").removeClass("cur");
+		}
+	else{
+		Brand_list_totla.show();
+		$(".Brand .more_brand a").text("收起");
+		$(".Brand .more_brand a").addClass("cur");
+		}
+		
+});
+});
+
+
+$(function(){
+	var material_list_totla=$(".material .Material_panel a:gt(15)");
+	material_list_totla.hide();
+$(".material .more_brand").click(function(){
+	if(material_list_totla.is(":visible")){
+		material_list_totla.hide();
+		$(".material .more_brand a").text("更多");
+		$(".material .more_brand a").removeClass("cur");
+		}
+	else{
+		material_list_totla.show();
+		$(".material .more_brand a").text("收起");
+		$(".material .more_brand a").addClass("cur");
+		}
+		
+});
+});
+
+
+$(function(){
+	var Dl_list_totla=$(".category_filter dl:gt(2)");
+	Dl_list_totla.hide();
+$(".category_filter .Look_More").click(function(){
+	if(Dl_list_totla.is(":visible")){
+		Dl_list_totla.hide();
+		$(".category_filter .Look_More a").text("风格，材质，价格等");
+		$(".category_filter .Look_More").children("a").removeClass("cur");
+		}
+	else{
+		Dl_list_totla.show();
+		$(".category_filter .Look_More a").text("收起");
+		$(".category_filter .Look_More").children("a").addClass("cur");
+		}
+		
+});
+});
+
+
+$(function(){
+	$(".service ul li").mouseenter(function(){
+		$(this).children(".Sub_service_A").siblings(".Sub_service").show();
+	}).mouseleave(function(){
+		$(this).children(".Sub_service_A").siblings(".Sub_service").hide();
+	});
+});
+
+
+$(function(){
+$(".CP_table dl.service .Payment_instructions span").click(
+		function(){
+			if($(this).siblings(".Payment_inner").is(":visible")){
+				$(".Payment_instructions").removeClass("current").children("span").removeClass("cur").siblings(".Payment_inner").hide();
+			}
+			else{$(".Payment_instructions").addClass("current").children("span").addClass("cur").siblings(".Payment_inner").show();}
+		});
+});
+
+
+$(function(){	
+	$('.suit_match_tab .R_title ul li').click(function(){
+		$(this).addClass('on').siblings().removeClass('on');
+		$('.tab_inner_Bd>div:eq('+$(this).index()+')').show().siblings().hide();	
+	})
+});
+
+$(function(){	
+	$('#CP_tab_inner .tab_inner_Hd ul li').click(function(){
+		$(this).children("a").addClass('cur').parent().siblings().children("a").removeClass('cur');
+		$('#Tabs_inners_main>div:eq('+$(this).index()+')').show().siblings().hide();	
+	})
+});
+
+$(function(){	
+	$('#CP_tab_inner2 .tab_inner_Hd ul li').click(function(){
+		$(this).children("a").addClass('cur').parent().siblings().children("a").removeClass('cur');
+		$('#Tabs_inners_main2>div:eq('+$(this).index()+')').show().siblings().hide();	
+	})
+});
+
+$(".tab_inner_Hd ul li:last-child").css("background","#000");
+
+//$(function(){
+	//$(".CP_table .diff dd a").click(function(){
+		//$(this).addClass("opt_cur").siblings().removeClass("opt_cur");
+	//});
+//});
+
+$(function(){
+	$('.footer_copyright_fl p a:last').addClass("last");
+	$(".diff .Xcontent26 a").click(function(){
+		var diffPrice=$(".diff .Xcontent26 a").eq($(this).index()).children("span").html();
+		var MaketPrice=$(".diff .Xcontent26 a").eq($(this).index()).children("b").html();
+		$(".cp_Price p .money_num").html(diffPrice);
+		$(".cp_Price p .Maket_num").html(MaketPrice);
+	});
+});
+
+
+
+
+$(function(){
+	var BrandNum1=$(".Brand_Title_section ul li.no1 dd p a:gt(7)");
+	var BrandNum2=$(".Brand_Title_section ul li.no2 dd p a:gt(12)");
+	var BrandNum3=$(".Brand_Title_section ul li.no3 dd p a:gt(3)");
+	BrandNum1.hide();
+	BrandNum2.hide();
+	BrandNum3.hide();
+$(".Brand_Title_section ul li.no1 .More_infos").click(function(){
+	if(BrandNum1.is(":visible")){
+		BrandNum1.hide();
+		}
+	else{
+		BrandNum1.show();
+		}
+});
+$(".Brand_Title_section ul li.no2 .More_infos").click(function(){
+	if(BrandNum2.is(":visible")){
+		BrandNum2.hide();
+		}
+	else{
+		BrandNum2.show();
+		}
+});
+$(".Brand_Title_section ul li.no3 .More_infos").click(function(){
+	if(BrandNum3.is(":visible")){
+		BrandNum3.hide();
+		}
+	else{
+		BrandNum3.show();
+		}
+});
+});

@@ -1,0 +1,188 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/static/css/page.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="__PUBLIC__/static/js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/js/lhgdialog.js?skin=aero"></script>
+<script type="text/javascript" src="__PUBLIC__/static/js/CostomLinkOpenSw.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/js/tabscommon.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/js/del-checked.js"></script>
+  <script type="text/javascript" src="__PUBLIC__/static/js/layer/layer.js"></script>
+<script type="text/javascript">
+$(function(){
+  $(document).ready(function() {
+      $('.oa_text-list tr').addClass('odd');
+      $('.oa_text-list tr:even').addClass('even');
+  });
+  $('.oa_text-list tr').hover(
+      function(){
+          $(this).addClass('oa_mouseover-bg');
+      },
+      function(){
+          $(this).removeClass('oa_mouseover-bg');
+      }
+  );
+});
+
+function empty() {
+  window.location.reload();
+}
+
+
+//删除选中
+function del_checked() {
+
+  var b = $(".checked_one");
+  var s = '';
+  for(var i=0;i<b.length;i++){
+      if(b[i].checked){
+          s+= b[i].value+',';
+      }
+  }
+  s = s.substr(0, s.length - 1);
+  $.ajax({
+      url:"{:url('account/delchecked')}",
+      data:"id="+s,
+      type:"post",
+      dataType:"json",
+      success:function(msg){
+          $(".checked_one").removeAttr("checked");
+          if (msg==1){
+              layer.alert('{:lang('del success')}', {icon: 1}, function(index){
+                  location.reload();
+                  layer.close(index);
+              });
+          }else{
+              layer.alert('{:lang('del fail')}', {icon: 2}, function(index){
+                  layer.close(index);
+                  location.reload();
+              });
+          }
+
+      }
+  })
+}
+</script>
+</head>
+<body>
+
+<div class="oa_wrapper">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr class="oa_wrapper-display">
+      <td class="oa_wrapper-top-arr-left">&nbsp;</td>
+      <td class="oa_wrapper-top-arr-middle"></td>
+      <td class="oa_wrapper-top-arr-right">&nbsp;</td>
+    </tr>
+    <tr>
+      <td class="oa_wrapper-middle-arr-left oa_wrapper-display"></td>
+      <td class="oa_wrapper-middle-arr-middle">
+        <div class="oa_location clearfix"><span class="oa_ico-left"></span>location<span class="oa_ico-right"></span></div>
+        <div class="oa_main clearfix">
+          <div class="oa_subnav clearfix">
+            <div class="oa_subnav-tab clearfix">
+              <ul>
+                <li><em><a href="{:url('advert/index','idsite='.$idsite)}">广告列表</a></em></li>
+                <li class="oa_on"><em><a href="{:url('advert/advposition','idsite='.$idsite)}">广告位置</a></em></li>
+              </ul>
+            </div>
+          </div>
+          <div class="oa_content-area clearfix">
+            <div class="oa_content-main">
+              <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                  <td valign="top">
+
+                    <div class="oa_title clearfix">
+                      <span class="oa_ico-right"></span>
+                      <span class="oa_title-btn">
+                        <ul>
+                          <li class="oa_selected">
+                            <a href="javascript:CustomOpen('{:url('advert/advpositiondeal','&action=add&idsite='.$idsite)}', 'advert','添加广告位', 400,300)">添加广告位</a>
+                          </li>
+                        </ul>
+                      </span>
+                      <span class="oa_ico-left"></span>
+                      广告位列表
+                    </div>
+                    <div class="oa_text-list" id="ajaxpage">
+                      <table id="table" width="100%" border="0" cellspacing="0" cellpadding="0" style="table-layout:fixed">
+                        <tr class="oa_text-list-title">
+                          <th width="20" style="text-align:center;"><input id="checked"  onclick="DoCheck();" name="" type="checkbox" value="" /></th>
+                          <th width="80"><span class="oa_arr-text-list-title"></span>广告位ID</th>
+                          <th><span class="oa_arr-text-list-title"></span>广告位名称</th>
+                          <th width="80"><span class="oa_arr-text-list-title"></span>广告位宽度</th>
+                          <th width="80"><span class="oa_arr-text-list-title"></span>广告位高度</th>
+                          <th width="80"><span class="oa_arr-text-list-title"></span>是否启用</th>
+                          <th><span class="oa_arr-text-list-title"></span>广告位描述</th>
+                          <th width="140"><span class="oa_arr-text-list-title"></span>{:lang('operation')}</th>
+                        </tr>
+                            {if condition="$ad_position eq null"}<tr><td colspan="8">{:lang('data empty')}</td></tr>{else /}
+                            {volist name="ad_position" id="vo"}
+                          <tr class="tr">
+                              <td align="center"><input class="checked_one" type="checkbox" value="{$vo['position_id']}" /></td>
+                              <td><span>{$vo.position_id}</span></td>
+                              <td>{$vo.position_name}</td>
+                              <td>{$vo.ad_width}</td>
+                              <td>{$vo.ad_height}</td>
+                              <td>{$vo.is_open==1?"是":"否"}</td>
+                              <td>{$vo.position_desc}</td>
+                              <td width="210">
+                                <a href="javascript:CustomOpen('{:url('advert/advpositiondeal','id='.$vo['position_id'].'&action=edit&idsite='.$idsite)}', 'advert','广告编辑', 400, 400)">编辑</a>
+                                <a href="javascript:CustomOpen('{:url('advert/codeinvoking','id='.$vo['position_id'],'')}', 'advert','代码调用', 500, 200)">代码调用</a>
+                                <a onclick="javascript:if (confirm('确定删除吗？')) { return true;}else{return false;};" href='{:url('advert/advpositiondel','id='.$vo['position_id'],'')}'>删除</a>
+                              </td>
+                          </tr>
+                        {/volist}
+                          {/if}
+                      </table>
+                      <div class="oa_bottom clearfix">
+                        <div class="clearfix">
+                            <div class="oa_op-btn clearfix">
+                                <input value="{:lang('delete')}" onclick="javascript:if (confirm('确定删除吗？')) { del_checked();}else{return false;};" type="button" class="oa_input-submit" />
+                            </div>
+                            <div class="oa_page-controls">
+                              <ul>
+                                <li></li>
+                                <li>{$page->show()}</li>
+                              </ul>
+                            </div>
+                        </div>
+                        <div class="oa_bottom-bottom"><em></em></div>
+                      </div>
+                        <style type="text/css">
+                          a{
+                            cursor: pointer;
+                          }
+                            .pagination{
+                                display: inline;
+                                font-size: 14px;
+                                letter-spacing: 4px;
+                                font-family: "宋体", Gadget, sans-serif;
+                            }
+                        </style>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <div class="oa_content-main-bottom"></div>
+            </div>
+          </div>
+        </div>
+      </td>
+      <td class="oa_wrapper-middle-arr-right oa_wrapper-display"></td>
+    </tr>
+    <tr class="oa_wrapper-display">
+      <td class="oa_wrapper-bottom-arr-left">&nbsp;</td>
+      <td class="oa_wrapper-bottom-arr-middle"></td>
+      <td class="oa_wrapper-bottom-arr-right">&nbsp;</td>
+    </tr>
+  </table>
+</div>
+</body>
+
+<!--加载语言JS-->
+
+</html>

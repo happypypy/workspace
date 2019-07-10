@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport"
+        content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>拼团列表</title>
+    <script type="text/javascript" src="{$roottpl}/js/jquery.min.js"></script>
+    <script type="text/javascript" src="{$roottpl}/js/common.js"></script>
+    <link rel="stylesheet" type="text/css" href="{$roottpl}/style/css/common.css">
+    <script type="text/javascript" src="{$roottpl}/js/swiper.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{$roottpl}/style/css/swiper.min.css">
+
+</head>
+
+<body>
+{include file="M1/lib/header" /}
+    <div class="menu-cover"></div>
+    <div class="site-section clearfix bg">
+        <!--<div class="pintuan-img">-->
+        <!--</div>-->
+        <div class="banner">
+            <div class="swiper-container swiper1">
+                <div class="swiper-wrapper">
+                    <?php
+						$result1=$cms->getAD($idsite,51328,3);
+                    if($result1){
+                    foreach($result1 as $k=>$v){ ?>
+                    <div class="swiper-slide"><a href="{$v['ad_link']==''?'javascript:;':$v['ad_link']}"><img src="{$v['ad_code']}"></a></div>
+                    <?php }} else { ?>
+                    <div class="swiper-slide"><a href="javascript:;"><img class="swiper-slideImg" src="{$roottpl}/images/bar_03.jpg"></a></div>
+                    <?php } ?>
+                </div>
+                <div class="swiper-pagination"></div>
+            </div>
+        </div>
+
+        <div class="pintuan-search">
+            <input class="pintuan-search-in" placeholder="请输入关键字搜索"></input>
+        </div>
+
+
+        <div class="news-list activity news-list1">
+            <ul id="datalist">
+                <?php foreach($groupBuys as $groupBuy): ?>
+                    <li>
+                        <a href="/{$sitecode}/detail/{$groupBuy['activity_id']}">
+                            <div class="pic"><img src="{$roottpl}/images/bar_03.jpg"></div>
+                            <div class="txt">
+                                <div class="title title1">{$groupBuy['chrtitle']}</div>
+                                <div class="site site1"><i class="iconfont location">&#xe601;</i>适合年龄：<span>{$groupBuy['minage']} ~ {$groupBuy['maxage']}</span></div>
+                                <div class="time time1"><i class="iconfont clock">&#xe602;</i><span>活动时间：{:date('Y-m-d', $groupBuy['start_at'])} ~ {:date('Y-m-d', $groupBuy['end_at'])}</span></div>
+                            </div>
+                        </a>
+                        <a href="/{$sitecode}/detail/{$groupBuy['activity_id']}">
+                            <div class="txt spell-txt">
+                                <div class="spell-txtl">单购价:<del>{$groupBuy['member_price']}</del>元</div>
+                                <span class="spell-txtm">拼团价:<span>{$groupBuy['group_buy_price']}</span>元</span>
+                                <!-- <a href="/{$sitecode}/detail/{$groupBuy['activity_id']}"> -->
+                                    <input class="button_1 spell-txtr" type="button" value="我要拼团" onclick="">
+                                <!-- </a> -->
+                            </div>
+                        </a>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+    </div>
+<script>
+    $(function(){
+        //padding-top:
+        var swiper1 = new Swiper('.banner .swiper-container.swiper1', {
+            pagination: {
+                el: '.banner .swiper-pagination',
+            },
+            autoplay: {
+                delay:2000,
+            },
+            loop: true,
+            watchOverflow: true,
+        });
+    })
+</script>
+</body>
+
+</html>

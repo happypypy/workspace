@@ -1,0 +1,92 @@
+@charset "utf-8";
+/* CSS Document */
+/*Create 2012-08-09 Updata:2012-08-16 by:Chang*/
+body{ margin:10px 0 0 0;}
+/*List task*/
+.list-task{ min-width:280px;background:url(../images/oa_bg-list-task-content.gif) right 0 repeat-y; margin:10px 0 0 0; }
+.list-task .list-task-title{color:#47340b;font-size:14px; font-weight:bold;font-family:"宋体",Arial, Helvetica, sans-serif; text-indent:45px;line-height:32px; background:url(../images/oa_bg-list-task-title.gif) right 0 no-repeat;}
+.list-task .list-task-title span.ico-listbox{width:51px; height:40px;margin:0 0 0 -45px!important; *margin:-7px 0 0 -90px!important; margin:-6px 0 0 -90px;display:block; position:absolute;}
+.list-task .list-task-icon{height:136px; border-left:#d5cbb4 solid 1px;background:url(../images/oa_bg-list-task-icon.gif) 0 0 repeat-x; margin:0 7px 0 0;}
+.list-task .list-task-icon span.list-task-ico-tips{ width:111px; height:24px; line-height:24px; background:url(../images/oa_bg-list-task-icon-tips.gif) 0 0 no-repeat; margin:60px 10px 0 0; display:block; float:right;}
+.list-task .list-task-icon span.list-task-ico-tips a{color:#f00; font-weight:bold; padding:0 3px 0 10px;}
+.list-task .list-task-icon ol{ list-style:none; padding:20px 0 0 0; margin:0; table-layout:fixed;}
+.list-task .list-task-icon ol li{width:45%; height:90px; padding:0; margin:0; display:block; float:left;}
+.list-task .list-task-icon ol li.list-task-ico-01{ background:url(../images/oa_ico-listtask-tips-01.gif) center 0 no-repeat;}
+.list-task .list-task-icon ol li.list-task-ico-02{ background:url(../images/oa_ico-listtask-tips-02.gif) center 0 no-repeat;}
+.list-task ul{ border-left:#d5cbb4 solid 1px;list-style:none; padding:0; margin:0;}
+.list-task ul li{color:#907131;text-indent:39px;line-height:28px; background:url(../images/oa_bg-listtask-tips.gif) right 0 no-repeat; margin:0 7px 0 0;}
+.list-task ul li a{color:#f00; font-weight:bold; font-size:14px; padding:0 3px;}
+.list-task ul li span.listtask-ico{width:16px; height:16px;margin:4px 0 0 -25px!important;*margin:-4px 0 0 -65px!important; margin:-3px 0 0 -65px; display:block; position:absolute;}
+.list-task .list-task-bottom{ font-size:8px; height:8px; background:url(../images/oa_bg-listtask-bottom.gif) 0 top no-repeat; margin:-1px 0 0 0; display:block;}
+.list-task .list-task-bottom em{ width:10px; font-size:8px;height:8px; background:url(../images/oa_bg-listtask-bottom.gif) right top no-repeat; display:block; float:right;}
+/*Schedule*/
+.Schedule{background:url(../images/oa_bg-list-task-content.gif) right 0 repeat-y; margin:10px 0 0 0; }
+.Schedule .Schedule-top{ font-size:7px; height:7px; border-left:#d5cbb4 solid 1px; background:url(../images/oa_bg-Schedule-top.gif) right top no-repeat; display:block;}
+.Schedule .Schedule-bottom{ font-size:8px; height:8px; background:url(../images/oa_bg-listtask-bottom.gif) 0 top no-repeat; display:block;}
+.Schedule .Schedule-bottom em{ width:10px; font-size:8px;height:8px; background:url(../images/oa_bg-listtask-bottom.gif) right top no-repeat; display:block; float:right;}
+.Schedule	.Schedule-wrapper{ height:275px;border-left:#d5cbb4 solid 1px;border-bottom:#d5cbb4 solid 1px; margin:0 7px 0 0; overflow:hidden;}
+/*Calendar*/
+.Schedule div.calendar{ min-width:280px;border-top:#d5cbb4 solid 1px; border-left:#d5cbb4 solid 1px;margin:0  8px;}
+.Schedule div.calendar .Current-time{color:#47340b; text-align:center; letter-spacing:3px; font-family:"宋体",Arial, Helvetica, sans-serif; font-size:16px; font-weight:600;height:39px;line-height:39px;border-right:#d5cbb4 solid 1px; background:url(../images/oa_bg-calendar-Current.gif) 0 0 repeat-x; overflow:hidden;}
+.Schedule div.calendar .Current-time span.arr-left{padding:5px 0 0 10px;display:block; float:left; cursor:pointer;}
+.Schedule div.calendar .Current-time span.arr-right{padding:5px 10px 0 0;display:block; float:right; cursor:pointer;}
+.Schedule div.calendar table.calendar td{color:#555; font-size:15px!important;font-size:12px;text-align:center;font-family: Verdana, Geneva, sans-serif;border-right:#e6e0d3 solid 1px; border-bottom:#e6e0d3 solid 1px;}
+.Schedule div.calendar table.calendar tr.title-week td{font-family:"宋体",Arial, Helvetica, sans-serif; font-weight:bold;line-height:26px; background:url(../images/oa_bg-calendar-title.gif) 0 0 repeat-x;}
+.Schedule div.calendar table.calendar td.Weekend{color:#907131;}
+.Schedule div.calendar table.calendar td.Expired{color:#bcbcbc;}
+.Schedule div.calendar table.calendar td.thisdate{color:#fff;background:url(../images/oa_bg-calendar-thisdata.gif) 0 0 repeat-x;}
+.Schedule div.calendar table.calendar td.Remarks{ background:#f5f3ec;}
+.Schedule div.calendar table.calendar span.remark-1{ font-size:10px; text-align:right;width:100%; height:10px;display:block; }
+.Schedule div.calendar table.calendar span.remark-2{ font-size:10px; text-align:right;width:100%; height:10px;display:block; }
+.Schedule .Personal{ min-width:140px;border:#d5cbb4 solid 1px;margin:0 8px 0 0;}
+.Schedule .Personal .tabs{height:28px;background:url(../images/oa_bg-Personal-tabs.gif) 0 0 repeat-x;}
+.Schedule .Personal .tabs ul{ list-style:none;  padding:0; margin:0;}
+.Schedule .Personal .tabs ul li{ text-align:center;width:40%;line-height:28px; white-space:nowrap; display:block; float:left;}
+.Schedule .Personal .tabs ul li.cur{ font-weight:bold; border-left:#d6ccb5 solid 1px; background:url(../images/oa_bg-Personal-tabs-cur.gif) right 0 no-repeat #fff; margin:0 0 0 -1px;}
+.Schedule .Personal .tabContent{ height:232px; overflow:hidden;}
+.Schedule .Personal .tabContent .pane{ display:none;}
+.Schedule .Personal .tabContent .pane ul{ list-style:none; padding:10px 0; margin:0;}
+.Schedule .Personal .tabContent .pane ul li{color:#787878;line-height:18px; background:url(../images/oa_arr-03.gif) 5px 13px no-repeat;border-bottom:#e5e5e5 solid 1px; padding:6px 0 6px 15px; margin:0 10px;}
+.Schedule .Personal .tabContent .pane ul li em{color:#a5884c; font-style:normal; padding:0 0 0 5px;}
+/*List box*/
+.list-box{background:url(../images/oa_bg-listbox-content.gif) right 0 repeat-y; margin:10px 10px 0 0;}
+.list-box .list-box-title{border-left:#c0c0c0 solid 1px;  font-size:14px; font-weight:bold;font-family:"宋体",Arial, Helvetica, sans-serif; height:32px;line-height:32px; background:url(../images/oa_bg-listbox-title.gif) right 0 no-repeat; overflow:hidden;}
+.list-box .list-box-title span.ico-listbox{ height:30px;display:block; float:left;text-align: center;padding-left: 5px;}
+/*.list-box .list-box-title span.ico-listbox img{margin:8px 0 0 0;}*/
+.list-box .list-box-title span.oa_btn-op{ width:70px; height:30px;padding:0 8px 0 0; display:block; float:right; }
+.list-box .list-box-title span.oa_btn-op a{display:none; }
+.boxExpandEdit{ border:#dedede solid 1px; background:#f9f9f9;display:none; margin:0 5px 0 0;}
+.list-box dl{ border-left:#c0c0c0 solid 1px; list-style:none; padding:0 0 15px 0; margin:0;table-layout:fixed;}
+.list-box dl dd{color:#787878;line-height:32px; background:url(../images/oa_arr-03.gif) 5px 14px no-repeat;border-bottom:#e5e5e5 solid 1px; padding:0 15px; margin:0 20px 0 16px;display:block;white-space:nowrap;text-overflow:ellipsis;-o-text-overflow:ellipsis; overflow:hidden;}
+.list-box dl dd a{color:#787878;}
+.list-box dl dd em{color:#9c9c9c;font-style:normal;display:block; float:right;}
+.list-box .list-box-bottom{ font-size:8px; height:8px; background:url(../images/oa_bg-listbox-bottom.gif) 0 bottom no-repeat; display:block;}
+.list-box .list-box-bottom em{ width:10px; font-size:8px;height:8px; background:url(../images/oa_bg-listbox-bottom-right.gif) right top no-repeat;display:block; float:right;}
+/*list-box-fixed*/
+.list-box-fixed{width:100%;background:url(../images/oa_bg-listbox-content.gif) right 0 repeat-y;margin:10px 0 0 0;}
+.list-box-fixed .list-box-fixed-title{font-size:12px;text-indent:5px; height:29px;line-height:29px; background:url(../images/oa_bg-listbox-fixed-title.gif) right 0 no-repeat; overflow:hidden;}
+.list-box-fixed .list-box-fixed-title span.ico-listboxfixed{width:31px; height:29px; background:url(../images/oa_ico-listboxfixed.gif) 0 0 no-repeat; display:block; float:left;}
+.list-box-fixed .list-box-fixed-title span.oa_btn-op{padding:8px 15px 0 0!important;*padding:2px 15px 0 0!important;padding:8px 15px 0 0;display:block; float:right;}
+.list-box-fixed .list-box-fixed-bottom{ font-size:8px; height:8px; background:url(../images/oa_bg-listbox-bottom.gif) 0 bottom no-repeat; display:block;}
+.list-box-fixed .list-box-fixed-bottom em{ width:10px; font-size:8px;height:8px; background:url(../images/oa_bg-listbox-bottom-right.gif) right top no-repeat;display:block; float:right;}
+.list-box-fixed ul.oa_on{ display:block;}
+.list-box-fixed ul{ border-left:#c0c0c0 solid 1px; list-style:none; padding:8px 0 15px 0; margin:0;}
+.list-box-fixed ul li{color:#787878;line-height:26px; padding:0 0 0 20px; margin:0 20px 0 16px;display:block;}
+.list-box-fixed ul li a{color:#787878;}
+.list-box-fixed ul li input{height:20px; width:15px; padding:0;margin:4px 0 0 -20px!important; *margin:-4px 0 0 -20px!important;margin:-4px 0 0 -20px; position:absolute;}
+.list-box-fixed ol{ border-left:#c0c0c0 solid 1px; list-style:none; padding:12px 0 10px 9px; margin:0;}
+.list-box-fixed ol li{width:89px; height:27px; line-height:27px; text-indent:24px; background:url(../images/oa_bg-list-box-fixed-btn.gif) 0 0 no-repeat; margin:0 5px 6px 0; display:block; float:left; cursor:pointer;}
+.list-box-fixed ol li span.fixed-ico{width:16px; height:16px;margin:4px 0 0 -19px!important;*margin:-2px 0 0 -43px!important; margin:-2px 0 0 -43px; display:block; position:absolute;}
+.list-box-fixed dl{ border-left:#c0c0c0 solid 1px; list-style:none; padding:12px 0 10px 9px; margin:0;}
+.list-box-fixed dl dt{line-height:20px; font-weight:bold;}
+.list-box-fixed dl dd{height:27px; line-height:27px; margin:0 5px 6px 0; display:block; float:left; cursor:pointer;}
+.list-box-fixed dl dd button{margin:0 10px 0 0;}
+.list-box-fixed dl dd span.fixed-ico{width:16px; height:16px;margin:4px 0 0 -19px!important;*margin:-2px 0 0 -43px!important; margin:-2px 0 0 -43px; display:block; position:absolute;}
+/*鎷栧姩*/
+/*鎷栧姩*/
+ul.oa_Drag{list-style:none; padding:0; margin:0;}
+ul.oa_Drag li{width:50%;display:block; float:left;}
+
+.oa_input-submit{font-size:12px;height:24px!important;*height:24px!important; height:24px; background:rgb(235, 235, 235); line-height:22px!important; *line-height:20px!important;  border:#888 solid 1px; padding:0 12px 4px 12px!important;*padding:0!important;padding:0 12px; margin:0; cursor:pointer;}
+
+

@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/static/css/page.css" rel="stylesheet" type="text/css" />
+
+</head>
+<body>
+<div class="oa_pop">
+    <div style="height: 6px"></div>
+  <div class="oa_pop-main">
+  	<div class="oa_title clearfix">
+      <span class="oa_ico-right"></span>
+      <span class="oa_title-btn"></span>
+      <span class="oa_ico-left"></span>
+        菜单操作
+    </div>
+  	<div class="oa_edition">
+        <form action="{:url('configs/configpost')}" method="post">
+            <table width="100%" border="0" cellspacing="1" cellpadding="0" class="oa_edition">
+                <tr>
+                    <td width="100" class="oa_cell-left"><span style="color: red;">*</span>&nbsp;栏目名称：</td>
+                    <td class="oa_cell-right">
+                        <input type="text" name="chrname" value="{$configinfo['chrname']}" class="oa_input-200" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="oa_cell-left"><span style="color: red;">*</span>&nbsp;栏目代号：</td>
+                    <td class="oa_cell-right">
+                        <input type="text" name="chrcode" value="{$configinfo['chrcode']}" class="oa_input-200" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="oa_cell-left">排序：</td>
+                    <td class="oa_cell-right">
+                        <input name="intsn" type="text" value="{$configinfo['intsn']}" class="oa_input-200" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="oa_cell-left">是否显示：</td>
+                    <td class="oa_cell-right">
+                        <input type="radio" name="isshow" value="1" {$configinfo['isshow']==1?"checked":""} />显示 &nbsp;&nbsp;&nbsp;
+                        <input type="radio" name="isshow" value="2" {$configinfo['isshow']==2?"checked":""} />不显示
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding:10px;"><input type="submit" name="" value="确定"/></td>
+                    <td><input type="hidden" name="action" value="{$configinfo['action']}"/></td>
+                    <td>{if condition="$configinfo['action'] eq 'edit'"}<input type="hidden" name="menucode" value="{$request['menucode']}"/>{/if}</td>
+                </tr>
+            </table>
+        </form>
+    </div>
+  </div>
+</div>
+</body>
+<script>
+
+</script>
+</html>

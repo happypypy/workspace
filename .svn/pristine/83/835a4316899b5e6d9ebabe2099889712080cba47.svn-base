@@ -1,0 +1,29 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: admin
+ * Date: 2017/8/3
+ * Time: 10:59
+ */
+
+namespace app\home\model;
+use think\Model;
+
+class Member extends Model {
+    
+
+    public function followOfficialAccount($siteCode)
+    {
+        $config=$this->getWeiXinConfig(strtolower($sitecode));
+        $api = new \think\wx\Api( array(
+            'appId' => trim($config['appid']),
+            'appSecret'    => trim($config['appsecret']),
+        ));
+
+        $imgurl= $api->get_qrcode_url();
+        $template_url="template/weixin.html";
+        $this->assign('msg',"本活动要求关注后才能报名<br>请扫下面二维码关注");
+        $this->assign('imgurl',$imgurl);
+        return $this->fetch($template_url);
+    }
+}

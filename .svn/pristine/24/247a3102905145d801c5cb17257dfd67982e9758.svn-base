@@ -1,0 +1,74 @@
+$(function() {
+  //侧边栏效果
+  $('#open-menu').on('click', function(event) {
+    event.stopPropagation();
+    $('body')
+      .addClass('open-menu')
+      .find('.menu-btn2')
+      .css('display', 'none')
+      .end()
+      .find('.menu-btn3,.menu-cover')
+      .css('display', 'block');
+  });
+  $('.menu-cover').on('click', function(event) {
+    if ($('body').hasClass('open-menu')) {
+      event.stopPropagation();
+      $('body')
+        .removeClass('open-menu')
+        .find('.menu-btn2')
+        .css('display', 'block')
+        .end()
+        .find('.menu-btn3,.menu-cover')
+        .css('display', 'none');
+    }
+  });
+
+
+  
+});
+
+// list页面下拉菜单
+$(function() {
+  var val = $('.classify').val();
+  $('.classify').on('change', function() {
+    var flag = $(this).val();
+    if (flag !== val) {
+      $(this)
+        .parents('.select')
+        .addClass('on');
+    } else {
+      $(this)
+        .parents('.select')
+        .removeClass('on');
+    }
+  });
+});
+
+// detail页面
+ $(function() {
+   $('.comment-box>ul>li').click(function() {
+     //给li添加下横线
+     $(this)
+       .addClass('active')
+       .siblings('li')
+       .removeClass('active');
+     var index = $(this).index();
+     //显示对应的div
+     $('.content .tab')
+       .eq(index)
+       .addClass('selected')
+       .siblings('div')
+       .removeClass('selected');
+   });
+
+   $('.comment-itemrtr>span').click(function() {
+     $(this).toggleClass('on');
+   });
+
+   $('#show-comment').on('click', function() {
+     $('.comment-form,.cover').show();
+   });
+   $('#close-comment').on('click', function() {
+     $('.comment-form,.cover').hide();
+   });
+ });

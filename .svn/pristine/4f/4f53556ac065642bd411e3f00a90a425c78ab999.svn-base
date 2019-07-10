@@ -1,0 +1,250 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>角色管理</title>
+  <link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
+  <link href="__PUBLIC__/static/css/page.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="__PUBLIC__/static/js/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="__PUBLIC__/static/js/lhgdialog.js?skin=aero"></script>
+  <script type="text/javascript" src="__PUBLIC__/static/js/CostomLinkOpenSw.js"></script>
+  <script type="text/javascript" src="__PUBLIC__/static/js/tabscommon.js"></script>
+  <script type="text/javascript" src="__PUBLIC__/static/js/del-checked.js"></script>
+  <script type="text/javascript" src="__PUBLIC__/static/js/layer/layer.js"></script>
+  <script type="text/javascript">
+      $(function(){
+          $(document).ready(function() {
+              $('.oa_text-list tr').addClass('odd');
+              $('.oa_text-list tr:even').addClass('even');
+          });
+          $('.oa_text-list tr').hover(
+              function(){
+                  $(this).addClass('oa_mouseover-bg');
+              },
+              function(){
+                  $(this).removeClass('oa_mouseover-bg');
+              }
+          );
+      });
+      function empty() {
+          window.location.reload();
+      }
+
+      //删除选中
+      function del_checked() {
+          var b = $(".checked_one");
+          var s = '';
+          for(var i=0;i<b.length;i++){
+              if(b[i].checked){
+                  s+= b[i].value+',';
+              }
+          }
+          s = s.substr(0, s.length - 1);
+          $.ajax({
+              url:"{:url('role/delchecked')}",
+              data:"id="+s,
+              type:"post",
+              dataType:"json",
+              success:function(msg){
+                  if (msg==1){
+                      layer.alert('{:lang('del success')}', {icon: 1}, function(index){
+                          location.reload();
+                          $(".checked_one").attr("checked",false);
+                          layer.close(index);
+                      });
+                  }else{
+                      layer.alert('{:lang('del fail')}', {icon: 2}, function(index){
+                          layer.close(index);
+                          location.reload();
+                      });
+                  }
+              }
+          })
+      }
+  </script>
+</head>
+<body>
+<div class="oa_wrapper">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr class="oa_wrapper-display">
+      <td class="oa_wrapper-top-arr-left">&nbsp;</td>
+      <td class="oa_wrapper-top-arr-middle"></td>
+      <td class="oa_wrapper-top-arr-right">&nbsp;</td>
+    </tr>
+    <tr>
+      <td class="oa_wrapper-middle-arr-left oa_wrapper-display"></td>
+      <td class="oa_wrapper-middle-arr-middle">
+        <div class="oa_location clearfix"><span class="oa_ico-left"></span>location<span class="oa_ico-right"></span></div>
+        <div class="oa_main clearfix">
+          <div class="oa_subnav clearfix">
+            <div class="oa_subnav-tab clearfix">
+              <ul>
+                <li style="display: none"><a href="{:url('Admin/work/index')}"><em>分类管理</em></a></li>
+                {foreach name="book_list" id="vo"}
+                <li {if condition="$vo['code'] eq $request['bookcode']"}class="oa_on"{/if}><em><a href="{:url('Admin/work/content','bookcode='.$vo['code'])}">{$vo['name']}</a></em></li>
+                {/foreach}
+              </ul>
+            </div>
+          </div>
+          <div class="oa_content-area clearfix">
+            <div class="oa_content-main">
+              <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                  <td valign="top">
+                    <div class="oa_title clearfix">
+                      <span class="oa_title-btn">
+                        <ul>
+                          <li class="oa_selected">
+                            <?php if($cms->CheckPurview('bookcontent','add')){ ?>
+                              <a href="javascript:CustomOpen('{:url('Admin/work/contentdeal','action=add&id=0&bookcode='.$request['bookcode'])}','work','字典管理',450,300)">添加</a>
+                            <?php } ?>
+                          </li>
+                        </ul>
+                      </span>
+                      <span class="oa_ico-left"></span>列表
+                    </div>
+                    <div class="oa_text-list">
+                      <table id="table" width="100%" border="0" cellspacing="0" cellpadding="0" style="table-layout:fixed">
+                        <tr class="oa_text-list-title">
+                          <th ><span class="oa_arr-text-list-title"></span>名称</th>
+                          <th width="100" style="display: none;"><span class="oa_arr-text-list-title"></span>代号</th>
+                          <th width="40"><span class="oa_arr-text-list-title"></span>排序</th>
+                          <th width="60"><span class="oa_arr-text-list-title"></span>操作</th>
+                        </tr>
+                        {volist name="content_list" id="vo"}
+                        <tr>
+                          <td style="padding-left:1em">
+                            {$vo['name']}
+                          </td>
+                          <td style="display: none;">{$vo['code']}</td>
+                          <td>{$vo['order']}</td>
+                          <td>
+                            <?php if($cms->CheckPurview('bookcontent','edit')){ ?>
+                            <a href="javascript:CustomOpen('{:url('Admin/work/contentdeal','action=edit&bookcode='.$request['bookcode'].'&id='.$vo['id'])}','work','字典管理',450,300)">修改</a>
+                            <?php } ?>
+                            <?php if($cms->CheckPurview('bookcontent','del')){ ?>
+                            <a href="javascript:;" onclick="javascript:del_checked('{:url('admin/work/contentdel','bookcode='.$request['bookcode'].'&id='.$vo['id'])}', '{$vo['name']}')" >删除</a>
+                            <?php } ?>
+                          </td>
+                        </tr>
+                        {if condition="array_key_exists('children',$vo)"}
+                        {volist name="vo.children" id="v"}
+                        <tr id="{$v['code']}" class="{$v['level']}_{$v['parentcode']} {$v['parentpath']}{$v['code']}" {if condition="$v['level'] neq 0"}style="display:none;"{/if}>
+                          <td><span>{$v['id']}</span></td>
+                          <td style="padding-left:<?php echo ($v['level'] * 3); ?>em">
+                            {if condition="$v.child neq 0"}
+                            <span class="{$v['level']}_{$v['code']}_show {$v['parentpath']}_show _show" onclick="show_hidden('{$v['parentpath']}',{$v['level']},'{$v['code']}','show');">+</span>
+                            <span class="{$v['level']}_{$v['code']}_hide {$v['parentpath']}_hide _hide" onclick="show_hidden('{$v['parentpath']}',{$v['level']},'{$v['code']}','hide');" style="display: none">-</span>
+                            {/if}
+                            {$v['name']}
+                          </td>
+                          <td>{$v['code']}</td>
+                          <td>{$v['order']}</td>
+                          <td>
+                            <?php if($cms->CheckPurview('bookcontent','add')){ ?>
+                            {if condition="$v['nextlevel'] eq 1"}
+                            <a href="javascript:CustomOpen('{:url('Admin/work/contentdeal','action=add&bookcode='.$request['bookcode'].'&parentcode='.$v['code'])}','work','字典管理',400,300)">添加</a>
+                            {/if}
+                            <?php } ?>
+
+                            <?php if($cms->CheckPurview('bookcontent','edit')){ ?>
+                            <a href="javascript:CustomOpen('{:url('Admin/work/contentdeal','action=edit&bookcode='.$request['bookcode'].'&code='.$v['code'])}','work','字典管理',400,300)">修改</a>
+                            <?php } ?>
+
+                            <?php if($cms->CheckPurview('bookcontent','del')){ ?>
+                            <a href="javascript:;" onclick="javascript:del_checked('{:url('admin/work/contentdel','code='.$v['code'])}', '{$v['name']}')" >删除</a>
+                            <?php } ?>
+                          </td>
+
+                        </tr>
+                        {if condition="array_key_exists('children',$v)"}
+                        {volist name="v.children" id="v1"}
+                        <tr id="{$v1['code']}" class="{$v1['level']}_{$v1['parentcode']} {$v1['parentpath']}{$v1['code']}" {if condition="$v1['level'] neq 0"}style="display:none;"{/if}>
+                          <td><span>{$v1['id']}</span></td>
+                          <td style="padding-left:<?php echo ($v1['level'] * 3); ?>em">
+                            {if condition="$v1.child neq 0"}
+                            <span class="{$v1['level']}_{$v1['code']}_show {$v1['parentpath']}_show _show" onclick="show_hidden('{$v1['parentpath']}',{$v1['level']},'{$v1['code']}','show');">+</span>
+                            <span class="{$v1['level']}_{$v1['code']}_hide {$v1['parentpath']}_hide _hide" onclick="show_hidden('{$v1['parentpath']}',{$v1['level']},'{$v1['code']}','hide');" style="display: none">-</span>
+                            {/if}
+                            {$v1['name']}
+                          </td>
+                          <td>{$v1['code']}</td>
+                          <td>{$v1['order']}</td>
+                          <td>
+                            <?php if($cms->CheckPurview('bookcontent','add')){ ?>
+                            {if condition="$v1['nextlevel'] eq 1"}
+                            <a href="javascript:CustomOpen('{:url('Admin/work/contentdeal','action=add&bookcode='.$request['bookcode'].'&parentcode='.$v1['code'])}','work','字典管理',400,300)">添加</a>
+                            {/if}
+                            <?php } ?>
+                            <?php if($cms->CheckPurview('bookcontent','edit')){ ?>
+                            <a href="javascript:CustomOpen('{:url('Admin/work/contentdeal','action=edit&bookcode='.$request['bookcode'].'&code='.$v1['code'])}','work','字典管理',400,300)">修改</a>
+                            <?php } ?>
+                            <?php if($cms->CheckPurview('bookcontent','del')){ ?>
+                            <a href="javascript:;" onclick="javascript:del_checked('{:url('admin/work/contentdel','code='.$v1['code'])}', '{$v1['name']}')" >删除</a>
+                            <?php } ?>
+                          </td>
+                        </tr>
+                        {/volist}
+                        {/if}
+                        {/volist}
+                        {/if}
+                        {/volist}
+                      </table>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <div class="oa_content-main-bottom"></div>
+            </div>
+          </div>
+        </div>
+      </td>
+      <td class="oa_wrapper-middle-arr-right oa_wrapper-display"></td>
+    </tr>
+    <tr class="oa_wrapper-display">
+      <td class="oa_wrapper-bottom-arr-left">&nbsp;</td>
+      <td class="oa_wrapper-bottom-arr-middle"></td>
+      <td class="oa_wrapper-bottom-arr-right">&nbsp;</td>
+    </tr>
+  </table>
+</div>
+<script type="text/javascript">
+    function show_hidden(path,level,id,type){
+        var val = level+1;
+        if(type == 'show'){  //展开
+            $("."+val+"_"+id).show();
+            $("."+level+"_"+id+"_show").hide();
+            $("."+level+"_"+id+"_hide").show();
+        }else{ //收缩
+            var aaa=$("#table tr");
+            for(var i=0;i<aaa.length;i++){
+                if(aaa.eq(i).attr("class").indexOf(path+id)!==-1){
+                    if(!aaa.eq(i).hasClass(path+id)){
+                        aaa.eq(i).hide();
+                        aaa.eq(i).find("._show").show();
+                        aaa.eq(i).find("._hide").hide();
+                    }
+                }
+            }
+            $("."+level+"_"+id+"_show").show();
+            $("."+level+"_"+id+"_hide").hide();
+        }
+
+    }
+    function del_checked(url,remark) {
+
+        var msg='您确定要删除选定的记录吗？';
+            msg='您确定要删除“'+remark+'”吗？';
+
+        layer.confirm(msg, {
+            btn: ['确定','取消'] //按钮
+        }, function(){
+            window.location=url;
+        }, function(){
+
+        });
+    }
+
+</script>
+</body>
+</html>

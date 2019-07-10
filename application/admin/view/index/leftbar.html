@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<link href="__PUBLIC__/static/css/leftbar.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="__PUBLIC__/static/js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript">function AddMainTab(url,code,title){window.parent.mainFrame.TabAdd(url,title,code);}</script>
+<script type="text/javascript">	
+	$(function(){
+				$(".leftbar dl.nav dd").hide();
+				$(".leftbar dl.nav dt").click(function(){
+					$(".leftbar dl.nav dd").not($(this).next()).hide();
+					$(".leftbar dl.nav dt").not($(this).next()).removeClass("nav-title");
+					$(this).next().slideToggle(1000);
+					$(this).toggleClass("nav-title");
+					});
+				});
+</script>
+</head>
+<body>
+<div class="leftbar" id="leftbar">
+	<dl class="nav">
+    {volist name="catalist" id="vo"}
+  	<dt><span class="nav-ico"><img src="{$vo.chrimgpath}" width="22" height="22" /></span>{$vo.chrname|HtmlEncode}</dt>
+    <dd>
+      <ul class="clearfix">
+      {volist name="modulist" id="v"}
+      {if condition="$vo['chrcode'] eq $v['codecatalog'] && $v['idsite'] eq 0"}
+        <li id="addTabBtn"><a href="javascript:;" onclick="AddMainTab('{:url($v['action'])}','{$v['chrcode']}','{$v['chrname']}'); return false;">{$v['chrname']|HtmlEncode}</a></li>
+      {/if}
+      {/volist}
+      </ul>
+    </dd>
+    {/volist}
+  </dl>
+</div>
+</body>
+</html>

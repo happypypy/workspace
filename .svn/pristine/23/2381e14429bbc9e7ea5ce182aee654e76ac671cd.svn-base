@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+<title>现金券分享福利</title>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+
+	<script type="text/javascript" src="{$roottpl}/js/jquery.min.js"></script>
+	<script type="text/javascript" src="{$roottpl}/js/swiper.min.js"></script>
+	<script type="text/javascript" src="{$roottpl}/js/common.js"></script>
+	<link rel="stylesheet" type="text/css" href="{$roottpl}/style/css/common.css">
+</head>
+<body>
+{include file="M1/lib/header" /}
+	<div class="site-section clearfix">
+		<div class="share-detail">
+			<div class="box1"></div>
+
+			<div class="tokenbox">
+				<div class="tokenbox-t">
+					<div class="tokenbox-tl">{$site_info["site_name"]}</div>
+					<div  class="tokenbox-tr"><a href="/{$sitecode}/cashedlist/1">查看我的现金券&gt;&gt;</a></div>
+				</div>
+				{if condition = "$receive_cashed_one"}
+				<div class="tokenbox-d">
+					<div class="tit">现金券</div>
+					<div class="txt">
+						<div class="coin"></div>
+						<div class="num">{$receive_cashed_one['cashed_amount']}</div>	
+					</div>
+					<div class="state">您已领取</div>
+				</div>
+				{/if}
+			</div>
+			{if condition = "$receive_cashed_one"}
+			<div class="tokenuse">
+				<div class="tokenuse-t">
+					<div class="tokenuse-tl"><span>{$receive_cashed_one['cashed_validity_time']}</span> 后过期</div>
+					<div class="tokenuse-tr"><a href="/{$sitecode}/cashedactivity/{$receive_cashed_one['cashed_type']}/{$receive_cashed_one['receive_activity_id']}">立即使用&gt;</a></div>
+				</div>
+			</div>
+			{/if}
+			<!--如果是订单分享-->
+			{if condition = "$order_info"}
+			<div class="tokenbuy">
+				<div class="tit">看看"<span>{$share_info['nickname']}</span>"买了什么</div>
+				<div class="txt">
+					<div class="name">{$receive_cashed_one['receive_activity_name']}</div>
+					<div class="info"><a href="/{$sitecode}/detail/{$receive_cashed_one['receive_activity_id']}">点击了解&gt;</a></div>
+				</div>
+			</div>
+			{/if}
+			<div class="box2">
+				<div class="tit">看看大家的手气</div>
+				<ul>
+					{if condition="$receive_cashed_list"}
+					<?php foreach($receive_cashed_list as $val){ ?>
+					<li>
+						<div class="img"><img src="{$val['receive_header_image']}"></div>
+						<div class="word">
+							<div class="name">{$val['receive_nick_name']}{if condition="$val['share_member_id'] == $val['receive_member_id']"}<span>(分享人)</span>{/if}</div>
+							<div class="time">{$val['create_time']}</div>
+						</div>
+						<div class="num"><span>{$val['cashed_amount']}</span> 元</div>
+					</li>
+					<?php } ?>
+					{/if}
+				</ul>
+			</div>
+			<div class="box3">
+				<div class="tit">现金券使用规则</div>
+				<ol>
+					<li>现金券适用于{$site_info["site_name"]}平台所有支持用券的产品</li>
+					<li>一张现金券只能使用一次，不兑现，不找零；</li>
+					<li>如取消的订单中使用了现金券，退回金额为实际支付金额，现金券退回到活动券。</li>
+					<li>每张现金券都设有有效期，请在有效期内使用，逾期失效。</li>
+					<li>{$site_info["site_name"]}可在法律法规允许范围内对本次活动进行解释</li>
+				</ol>
+			</div>
+		</div>
+	</div>
+</body>
+<script type="text/javascript" src="/static/js/layer/layer.js"></script>
+<script>
+    $(document).ready(function() {
+		//如果未关注的用户领取给他提示
+		{if condition="$user_info['intstate'] != 1"}
+        layer.confirm('<div style="text-align: center"><img style="width: 150px;height: 150px" src="{$qrcodeurl}" /><br>没有关注公众号，请先关注后才能领取</div>',{btn:['关闭']});return;
+		{/if}
+    //下面是给出一些提示
+	{if condition="$tip_arr"}
+		var code = {$tip_arr["code"]};
+		var message = '{$tip_arr["message"]}';
+		if(code == 9){
+            layer.msg(message);
+		}else if(code != 1 && code != 9){
+            layer.alert(message);
+		}
+	{/if}
+    })
+</script>
+
+</html>

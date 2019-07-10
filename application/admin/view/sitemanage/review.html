@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>短信审核</title>
+    <link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
+    <link href="__PUBLIC__/static/css/page.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="__PUBLIC__/static/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/layer/layer.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/ContorlValidator.js"></script>
+
+</head>
+<body>
+<div class="oa_pop">
+    <div class="oa_pop-main">
+        <div class="oa_title clearfix">
+            <span class="oa_ico-right"></span>
+            <span class="oa_title-btn"></span>
+            <span class="oa_ico-left"></span>
+            短信审核        </div>
+        <div class="oa_edition">
+            <form action="" method="post">
+                <table width="100%" border="0" cellspacing="1" cellpadding="0" class="oa_edition">
+                    <tr>
+                        <td width="150" class="oa_cell-left">营业执照：</td>
+                        <td class="oa_cell-right">
+                            <a href="{$sm_info.sms_business_license}" target="_blank">
+                            <img width="60" src="{$sm_info.sms_business_license}" />
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="150" class="oa_cell-left">短信签名：</td>
+                        <td class="oa_cell-right">
+                            <label>{$sm_info.sms_sign}</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="150" class="oa_cell-left">联系人姓名：</td>
+                        <td class="oa_cell-right">
+                            <label>{$sm_info.sms_contact_name}</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="150" class="oa_cell-left">承诺函：</td>
+                        <td class="oa_cell-right">
+                            <a href="{$sm_info.sms_agreement_path}" target="_blank" style="text-decoration: underline">
+                                点击下载
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="150" class="oa_cell-left">联系人电话：</td>
+                        <td class="oa_cell-right">
+                            <label>{$sm_info.sms_contact_telephone}</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="150" class="oa_cell-left">联系人职位：</td>
+                        <td class="oa_cell-right">
+                            <label>{$sm_info.sms_contact_position}</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="150" class="oa_cell-left">备注：</td>
+                        <td class="oa_cell-right">
+                            <label>{$sm_info.sms_mark}</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="150" class="oa_cell-left">审批意见:</td>
+                        <td class="oa_cell-right">
+                            <input type="text" name="sms_apply_comment" value="">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="150" class="oa_cell-left">审核：</td>
+                        <td class="oa_cell-right">
+                            <select name="sms_status">
+                                <option value="1">待审核</option>
+                                <option value="2">审核通过</option>
+                                <option value="3">审核不通过</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="padding:15px; text-align: center">
+                            <input type="submit" value="确定">
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

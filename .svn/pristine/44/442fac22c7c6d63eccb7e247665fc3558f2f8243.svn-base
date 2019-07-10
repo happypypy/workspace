@@ -1,0 +1,133 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: admin
+ * Date: 2017/6/21
+ * Time: 15:03
+ */
+
+namespace app\common\model;
+use think\Model;
+use think\Page;
+use think\Db;
+use think\Session;
+use think\exception\StaleObjectException;
+use think\Exception;
+use think\Log;
+use think\db\MyQuery;
+
+/**
+ * 本类中所有方法，除返回正常参数外，出错时应抛出异常，在controller层回滚事务
+ * 不在本类中做事务操作，防止事务嵌套导致的奇怪结果
+ * 因为父类的乐观锁机制，在本类的实例中使用fetchSql(true)，乐观锁开启时，会产生查询操作
+ */
+class Stock extends MyQuery{
+
+    public function getQuery($packageId)
+    {
+        $package = $this->name('package')->find($packageId);
+        if($package['package_sum'] == 0)
+        {
+            $obj = new Activity;
+            return $obj->name($obj->tableName)->where(['idactivity' => $package['activity_id']]);
+        }else
+        {
+            $obj = new Package;
+            return $obj->name($obj->tableName)->where(['package_id' => $packageId]);
+        }
+    }
+
+    /**
+     * 增加或减少库存 TODO 生成库存增减记录
+     * @author Hlt
+     * @DateTime 2019-05-07T14:47:22+0800
+     * @param    MyQuery                  $query        MyQuery实例，要求填写了主键条件和表名
+     * @param    integer                  $num          增加数量
+     * @param    boolean                  $add          true->加库存  false->减库存
+     * @param    integer                  $tryTimes     当前尝试次数，即遇到锁冲突后尝试更新的次数
+     * @throws DbException 数据库异常，可能是数据过期
+     */
+    public function changeStock(MyQuery $query, int $num, bool $add = false, int $tryTimes = 1)
+    {
+        if($num <= 0)
+        {
+            throw new Exception('增减数量不能小于等于零');
+        }
+
+        //获取库存字段名
+        $stock = $query->stockName();
+
+        //如果是套餐共享活动库存，查询活动库存
+        if($query->name == 'activity')
+        {
+            //复制query
+            $tmpQuery = new Activity;
+            $tmpQuery->options['where'] = $query->options['where'];
+            //查询总库存
+            $activity = $tmpQuery->name('activity')
+                ->field('intsignnum')
+                ->find();
+            //如果库存无限，直接返回
+            if($activity['intsignnum'] == 0)
+            {
+                return;
+            }
+        }
+        //判断增加还是减少库存
+        if($add === true)
+        {
+            $data[$stock] = $this->raw($stock . ' + ' . (int)$num);
+        }else
+        {
+            $data[$stock] = $this->raw($stock . ' - ' . (int)$num);
+            $where[$stock] = ['egt', $num];
+        }
+
+        try
+        {
+            $result = $query->where($where)->update($data);
+        }catch (StaleObjectException $e)
+        {
+            //乐观锁原因导致的更新失败，重复请求lock_try_times次以防止更新失败
+            if($tryTimes < config('lock_try_times'))
+            {
+                Log::info('乐观锁尝试第' . $tryTimes++ . '次失败，将要请求第' . $tryTimes . '次');
+                $this->changeStock($packageId, $num, $add, $tryTimes);
+            }else
+            {
+                Log::warning('乐观锁尝试' . config('lock_try_times') . '次后失败 数据：' . print_r($e->getData(), true));
+                throw $e;
+            }
+        }catch (Exception $e)
+        {
+            Log::error('套餐处异常，INFO：' . print_r($e->getMessage(), true));
+            throw $e;
+        }
+    }
+
+
+    /**
+     * 获取套餐库存
+     * @author Hlt
+     * @DateTime 2019-05-10T10:23:16+0800
+     * @param    array                   $package       套餐数据
+     * @return   integer                                套餐库存
+     */
+    public static function getStock($package)
+    {
+        if($package['package_sum'] > 0)
+        {
+            return $package['package_sum'] - $package['sold'];
+        }
+
+        $activity = db('activity')
+            ->field(
+                [
+                    'sold',
+                    'intsignnum'
+                ]
+            )
+            ->find($package['activity_id']);
+        return $activity['intsignnum'] == 0 ? INF : ($activity['intsignnum'] - $activity['sold']);
+    }
+}

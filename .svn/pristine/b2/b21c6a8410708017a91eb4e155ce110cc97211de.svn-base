@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>模版字段</title>
+    <link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
+    <link href="__PUBLIC__/static/css/page.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="__PUBLIC__/static/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/layer/layer.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/ContorlValidator.js"></script>
+</head>
+<body>
+<style type="text/css">
+    div .oa_edition input{ margin-right:1px;}
+</style>
+<div class="oa_pop">
+    <div class="oa_pop-main">
+        <div style="height: 6px"></div>
+        <div class="oa_title clearfix">
+            <span class="oa_ico-right"></span>
+            <span class="oa_title-btn"></span>
+            <span class="oa_ico-left"></span>
+            模版字段        </div>
+        <div class="oa_edition">
+            <form action="" method="post">
+                <table width="100%" border="0" cellspacing="1" cellpadding="0" class="oa_edition" style="border-bottom: #e0e0e0 solid 1px">
+                   <tr>
+                        <td width="150" class="oa_cell-left">项目名称：</td>
+                        <td class="oa_cell-right">
+                            <input name="title" id="title" type="text" value="{$datainfo['title']}" class="oa_input-200"    chname="项目名称"  />
+                        </td>
+                    </tr>
+                   <tr>
+                        <td width="150" class="oa_cell-left">备注：</td>
+                        <td class="oa_cell-right">
+                            <textarea id="remarkchrnotice" name="remark" is_null="1" cols="50" rows="3"  class="input oa_input-200"  style="width:500px;height:80px;">{$datainfo['remark']}</textarea>
+                        </td>
+                    </tr>
+                   <tr>
+                        <td width="150" class="oa_cell-left">项目类别：</td>
+                        <td class="oa_cell-right">
+                            <input type="radio" value="1" name="chrtype" <?php if($datainfo['chrtype']==1) echo "checked" ?> />文本框
+                            <input type="radio" value="2" name="chrtype" <?php if($datainfo['chrtype']==2) echo "checked" ?> />数字框
+                            <input type="radio" value="3" name="chrtype" <?php if($datainfo['chrtype']==3) echo "checked" ?> />电话框
+                            <input type="radio" value="4" name="chrtype" <?php if($datainfo['chrtype']==4) echo "checked" ?> />邮箱框
+                            <input type="radio" value="5" name="chrtype" <?php if($datainfo['chrtype']==5) echo "checked" ?> />下拉框
+                            <input type="radio" value="6" name="chrtype" <?php if($datainfo['chrtype']==6) echo "checked" ?> />多行文本框
+                            <input type="radio" value="7" name="chrtype" <?php if($datainfo['chrtype']==7) echo "checked" ?> />图片上传
+                            <input type="radio" value="8" name="chrtype" <?php if($datainfo['chrtype']==8) echo "checked" ?> />身份证
+                            <br/><br/>
+                            <input type="radio" value="11" name="chrtype" <?php if($datainfo['chrtype']==11) echo "checked" ?> />关联邮箱框
+                            <input type="radio" value="12" name="chrtype" <?php if($datainfo['chrtype']==12) echo "checked" ?> />关联邮寄地址框
+                            <input type="radio" value="13" name="chrtype" <?php if($datainfo['chrtype']==13) echo "checked" ?> />关联身份证框
+                        </td>
+                    </tr>
+                    <tr id="sel" <?php if($datainfo['chrtype']!=5) echo 'style="display:none;"' ?> >
+                        <td width="150" class="oa_cell-left">下拉值：</td>
+                        <td class="oa_cell-right">
+                            <textarea id="remarkchrnotice" name="chrvalue" is_null="1" class="input oa_input-200"  style="width:500px;height:40px;">{$datainfo['chrvalue']}</textarea>
+                            <br><span style="padding-left: 3px; color:#999; ">用道号分隔，格式如：男,女</span>
+                        </td>
+                    </tr>
+
+                   <tr>
+                        <td width="150" class="oa_cell-left">序号：</td>
+                        <td class="oa_cell-right">
+                            <input name="sn" id="sn" type="text" value="{$datainfo['sn']}" class="oa_input-200"  chname=""  />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="150" class="oa_cell-left">必填：</td>
+                        <td class="oa_cell-right">
+                            <input type="radio" value="1" name="is_must" <?php if($datainfo['is_must']==1) echo "checked" ?> />是
+                            <input type="radio" value="0" name="is_must" <?php if($datainfo['is_must']==0) echo "checked" ?> />否
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="padding:10px;"><input type="submit" value="确定"></td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </div>
+</div>
+<script language="JavaScript">
+    $(function(){
+        $(":radio").click(function(){
+            if( $(this).val()==5)
+            {
+                $("#sel").show();
+            }
+            else
+            {
+                $("#sel").hide();
+            }
+        });
+    });
+</script>
+</body>
+</html>

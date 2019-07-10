@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>扫码关注</title>
+</head>
+<style>
+.qrcode{
+    text-align: center;
+    color: red;
+    width: 200px;
+    margin: 0 auto;
+}
+.qrcode_tip{
+    text-align: center;
+    line-height: 200%;
+}
+</style>
+<body>
+    <div class="qrcode">
+        {if condition="$site_qrocde_url"}
+            <img src="{$site_qrocde_url}" width="200" height="200" />
+        {else}
+            <div style="line-height: 200px;">二维码生成失败</div>
+        {/if}
+    </div>
+    <div class="qrcode_tip">扫一扫关注公众号</div>
+</body>
+</html>

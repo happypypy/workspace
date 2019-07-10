@@ -1,0 +1,270 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/static/css/page.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="__PUBLIC__/static/js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/js/lhgdialog.js?skin=aero"></script>
+<script type="text/javascript" src="__PUBLIC__/static/js/CostomLinkOpenSw.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/js/tabscommon.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/js/cntotc.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/js/del-checked.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/js/layer/layer.js"></script>
+
+<script type="text/javascript">
+$(function(){
+	$(document).ready(function() {
+		$('.oa_text-list tr').addClass('odd');
+		$('.oa_text-list tr:even').addClass('even');
+	});
+    $('.oa_text-list tr').hover(
+        function(){
+            $(this).addClass('oa_mouseover-bg');
+        },
+        function(){
+            $(this).removeClass('oa_mouseover-bg');
+        }
+    );
+	});
+</script>
+<script language="javascript">
+    //具体参数配置在  editor_config.js 中
+    var options = {
+        zIndex: 999,
+        initialFrameWidth: 600, //初化宽度
+        initialFrameHeight: 300, //初化高度
+        focus: false, //初始化时，是否让编辑器获得焦点true或false
+        maximumWords: 99999, removeFormatAttributes: 'class,style,lang,width,height,align,hspace,valign',//允许的最大字符数 'fullscreen',
+        pasteplain:false, //是否默认为纯文本粘贴。false为不使用纯文本粘贴，true为使用纯文本粘贴
+        autoHeightEnabled: false
+        /*   autotypeset: {
+          mergeEmptyline: true,        //合并空行
+          removeClass: true,           //去掉冗余的class
+          removeEmptyline: false,      //去掉空行
+          textAlign: "left",           //段落的排版方式，可以是 left,right,center,justify 去掉这个属性表示不执行排版
+          imageBlockLine: 'center',    //图片的浮动方式，独占一行剧中,左右浮动，默认: center,left,right,none 去掉这个属性表示不执行排版
+          pasteFilter: false,          //根据规则过滤没事粘贴进来的内容
+          clearFontSize: false,        //去掉所有的内嵌字号，使用编辑器默认的字号
+          clearFontFamily: false,      //去掉所有的内嵌字体，使用编辑器默认的字体
+          removeEmptyNode: false,      //去掉空节点
+          //可以去掉的标签
+          removeTagNames: {"font": 1},
+          indent: false,               // 行首缩进
+          indentValue: '0em'           //行首缩进的大小
+          }*/
+    };
+</script>
+<script type="text/javascript" src="__PUBLIC__/static/plugins/Ueditor/ueditor.config.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/plugins/Ueditor/ueditor.all.js"></script>
+
+</head>
+<body>
+<div class="oa_wrapper">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+  	<tr class="oa_wrapper-display">
+    	<td class="oa_wrapper-top-arr-left">&nbsp;</td>
+      <td class="oa_wrapper-top-arr-middle"></td>
+      <td class="oa_wrapper-top-arr-right">&nbsp;</td>
+    </tr>
+    <tr>
+      <td class="oa_wrapper-middle-arr-left oa_wrapper-display"></td>
+      <td class="oa_wrapper-middle-arr-middle">
+      	<div class="oa_location clearfix"><span class="oa_ico-left"></span>location<span class="oa_ico-right"></span></div>
+        <div class="oa_main clearfix">
+          <div class="oa_subnav clearfix">
+              <div class="oa_subnav-tab clearfix">
+                  <ul>
+                      {if condition="$cms->CheckPurview('integralmanage','view')"}
+                      <li onclick="javascript:window.location='{:url('integral/index')}'" ><em>积分管理</em></li>
+                      {/if}
+                      {if condition="$cms->CheckPurview('goodsmanage','view')"}
+                      <li onclick="javascript:window.location='{:url('integral/integral_goods')}'" ><em>商品管理</em></li>
+                      {/if}
+                      {if condition="$cms->CheckPurview('goodsmanage','exchangerecord')"}
+                      <li onclick="javascript:window.location='{:url('integral/exchange_record')}'" ><em>兑换订单</em></li>
+                      {/if}
+                      {if condition="$cms->CheckPurview('integralannualreport','view')"}
+                      <li onclick="javascript:window.location='{:url('integral/integral_report',['action'=>'year'])}'" ><em>积分年度报表</em></li>
+                      {/if}
+                      {if condition="$cms->CheckPurview('integralmonthlyreport','view')"}
+                      <li onclick="javascript:window.location='{:url('integral/integral_report',['action'=>'month'])}'" ><em>积分月度报表</em></li>
+                      {/if}
+                      <li class="oa_on"><em>积分规则设置</em></li>
+                  </ul>
+              </div>
+          </div>
+          <div class="oa_content-area clearfix">
+            <div class="oa_content-main">
+              <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                  <td valign="top">
+                    <div class="oa_pop">
+                      <div class="oa_title clearfix">
+                        <span class="oa_ico-right"></span>
+                        <span class="oa_title-btn"></span>
+                        <span class="oa_ico-left"></span>
+                        <span>积分规则配置</span>
+                        {foreach name="lang" item="vo" key="k"}
+                        <a class="lang" lang="{$k}"> {$vo}</a>
+                        {/foreach}
+                      </div>
+                      <div class="oa_pop-main">
+                        <div class="oa_edition">
+                          <style>.h40{height: 30px; line-height: 30px;}.w40{width: 40px; margin: 0 5px !important;}</style>
+                          <form action="{:url('integral/integral_rule_save')}" enctype="multipart/form-data" method="post" onsubmit="return formValidate();">
+                            <table width="100%" border="0" cellspacing="1" cellpadding="0" class="oa_edition">
+                              <tr class="div_configs {$k}" style="display: none">
+                                <td width="240" class="oa_cell-left">
+                                  签到功能开关
+                                </td>
+                                <td class="oa_cell-right">
+                                  <input type="checkbox" name="is_sign" id="is_sign" value="1" class="chooseBtn" {$integral_rule.is_sign ? 'checked' : ''} />
+                                  <label for="is_sign" class="choose-label"></label>
+
+                                </td>
+                              </tr>
+                              <tr style="{$integral_rule.is_sign ? '' : 'display:none'}" id="signin_set">
+                                  <td width="240" class="oa_cell-left">
+                                    签到设置
+                                  </td>
+                                  <td class="oa_cell-right">
+                                      <div class="h40">连续签到一天<input type="text" id="first_day" name="signin_integral[]" class="w40" value="{$integral_rule['signin_integral'][0] ? $integral_rule['signin_integral'][0] : '5'}" />分</div>
+                                      <div class="h40">连续签到二天<input type="text" id="second_day" name="signin_integral[]" class="w40" value="{$integral_rule['signin_integral'][1] ? $integral_rule['signin_integral'][1] : '10'}" />分</div>
+                                      <div class="h40">连续签到三天<input type="text" id="third_day" name="signin_integral[]" class="w40" value="{$integral_rule['signin_integral'][2] ? $integral_rule['signin_integral'][2] : '15'}" />分</div>
+                                  </td>
+                              </tr>
+                              <tr class="div_configs {$k}" style="display: none">
+                                  <td width="240" class="oa_cell-left">
+                                    签到规则说明
+                                  </td>
+                                  <td class="oa_cell-right">
+                                      <div ><textarea  style="width:800px;height:400px;" class="span12 ckeditor" id="sign_rule" is_null="1" name="sign_rule">{$integral_rule.sign_rule ? $integral_rule.sign_rule : '<p>连续签一天5分</p>
+                                        <p>连续签到二天10分</p>
+                                        <p>连接签到三天以上15分</p>
+                                        <p>如果签到中断，则重新从第一天开始计算！</p>'}</textarea></div>
+                                      <script>var editorcontent;$(function(){editorcontent = new UE.ui.Editor(options);editorcontent.render("sign_rule");});</script>
+                                  </td>
+                              </tr>
+                              <tr class="div_configs {$k}" style="display: none">
+                                <td width="240" class="oa_cell-left">
+                                  报名积分功能开关
+                                </td>
+                                <td class="oa_cell-right">
+                                    <input type="checkbox" name="is_signup" id="is_signup" value="1" class="chooseBtn" {$integral_rule.is_signup ? 'checked' : ''} />
+                                    <label for="is_signup" class="choose-label"></label>
+                                </td>
+                              </tr>
+                              <tr style="{$integral_rule.is_signup ? '' : 'display:none'}" id="signup_set">
+                                <td width="240" class="oa_cell-left">
+                                  报名积分
+                                </td>
+                                <td class="oa_cell-right">
+                                    <div class="h40">消费1元赠送<input type="text" id="signup_integral" name="signup_integral" class="w40" value="{$integral_rule.signup_integral ? $integral_rule.signup_integral : '1'}" />分</div>
+                                </td>
+                              </tr>
+                            </table>
+                            <div class="oa_bottom clearfix">
+                              <div class="clearfix">
+                                <div class="oa_op-btn clearfix">
+                                  <input type="hidden" name="idsite" value="{$idsite}"/>
+                                  <input value="保存" type="submit" class="oa_input-submit" />
+                                </div>
+                              </div>
+                              <div class="oa_bottom-bottom"><em></em></div>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <div class="oa_content-main-bottom"></div>
+            </div>
+          </div>
+        </div>
+      </td>
+      <td class="oa_wrapper-middle-arr-right oa_wrapper-display"></td>
+    </tr>
+    <tr class="oa_wrapper-display">
+      <td class="oa_wrapper-bottom-arr-left">&nbsp;</td>
+      <td class="oa_wrapper-bottom-arr-middle"></td>
+      <td class="oa_wrapper-bottom-arr-right">&nbsp;</td>
+    </tr>
+  </table>
+</div>
+</body>
+<script type="text/javascript">
+    $(".lang").eq(0).css("color","#f00");
+    var type = $(".lang").eq(0).attr("lang");
+    $("table .div_configs").hide();
+    $("."+type).show();
+    $(".lang").click(function () {
+        $(this).css("color","#f00");//给点击的a标签加红色
+        $(this).siblings().css("color","#000");//被点击之外的a标签颜色为黑色
+        var lang = $(this).attr("lang");
+        $(".div_configs").hide();
+        $("."+lang).show();
+    });
+
+    // 显示签到设置
+    $("#is_sign").on('click',function(){
+      var is_sign = $("#is_sign").is(':checked') ? 1 : 0;
+      if(is_sign){
+        $("#signin_set").show();
+      }else{
+        $("#signin_set").hide();
+      }
+    });
+
+    // 显示报名设置
+    $('#is_signup').on('click',function(){
+      var is_signup = $("#is_signup").is(':checked') ? 1 : 0;
+      if(is_signup){
+        $('#signup_set').show();
+      }else{
+        $('#signup_set').hide();
+      }
+    });
+
+    function formValidate(){
+        var first_day = $('#first_day').val();
+        var second_day = $('#second_day').val();
+        var third_day = $('#third_day').val();
+        var signup_integral = $('#signup_integral').val();
+
+        if(first_day.indexOf(".") != -1){
+          layer.msg('连续签到一天积分不能是小数');
+          return false;
+        }
+
+        if(second_day.indexOf(".") != -1){
+          layer.msg('连续签到二天积分不能是小数');
+          return false;
+        }
+
+        if(third_day.indexOf(".") != -1){
+          layer.msg('连续签到三天积分不能是小数');
+          return false;
+        }
+
+        if(parseInt(first_day) > parseInt(second_day)){
+          layer.msg('连续签到一天积分不能大于连续签到二天积分');
+          return false;
+        }
+        
+        if(parseInt(second_day) > parseInt(third_day)){
+          layer.msg('连续签到二天积分不能大于连续签到三天');
+          return false;
+        }
+        
+        if(signup_integral.indexOf(".") != -1){
+          layer.msg('报名积分不能是小数');
+          return false;
+        }
+        return true;
+    }
+</script>
+</html>

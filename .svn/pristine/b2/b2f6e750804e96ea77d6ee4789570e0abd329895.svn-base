@@ -1,0 +1,392 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: admin
+ * Date: 2017/7/24
+ * Time: 10:54
+ */
+
+namespace app\admin\module;
+use think\Model;
+use think\Page;
+use think\Exception;
+use think\Db;
+
+class Integral extends Model{
+
+    // 会员积分记录
+    public function member_integral_record($data){
+        $map = [
+            'siteid' => session('idsite')
+        ];
+        $vflag = $data['vflag'];
+
+        if($data['nickname']){
+            $map['nickname'] = ['like','%'.$data['nickname'].'%'];
+        }
+
+        if($data['chrname']){
+            $map['chrname'] = ['like','%'.$data['chrname'].'%'];
+        }
+
+        if($vflag){
+            $starttime =  "";
+            $endtime = "";
+            if($vflag == 1)
+            {
+                $starttime = strtotime(date('Y-m-d',time()));
+                $endtime = strtotime("1 day",$starttime);
+            }
+            else if($vflag == 2)
+            {
+                $endtime = strtotime(date('Y-m-d',time()));
+                $starttime = strtotime("-7 day",$endtime);
+            }
+            else if($vflag == 3)
+            {
+                $endtime = strtotime(date('Y-m-d',time()));
+                $starttime = strtotime("-30 day",$endtime);
+            }
+            else if($vflag == 4 && $data['starttime'] && $data['endtime'])
+            {
+                $starttime = strtotime($data['starttime']);
+                $endtime = strtotime("1 day",strtotime($data['endtime']));
+            }
+            $map['create_time'] = [['gt',$starttime],['lt',$endtime]];
+        }
+
+        if($data['category']){
+            $map['category_id'] = $data['category'];
+        }
+
+        $field = 'id,userimg,nickname,chrname,category_id,integral,is_freeze,integral_rmark,create_time';
+
+        $total_record = db('member_integral_record')->where($map)->count();
+
+        $production_integral = db('member_integral_record')
+            ->field($field)
+            ->whereIn('category_id',[1,2,3,6,7])
+            ->sum('integral');
+
+        $consumption_integral = db('member_integral_record')
+            ->field('integral')
+            ->whereIn('category_id',[4,5])
+            ->sum('integral');
+
+        $total_integral = $production_integral - $consumption_integral;
+
+        $member_integral_record = db('member_integral_record')
+            ->field($field)
+            ->where($map)
+            ->order('create_time desc')
+            ->page($data['p'],PAGE_SIZE)
+            ->select();
+
+        $page = new Page($total_record,PAGE_SIZE);
+
+        return ['data' => $member_integral_record,'total_integral'=>$total_integral, 'page' => $page];
+    }
+
+    // 积分报表
+    public function integral_report($data){
+        $action = isset($data['action']) ? $data['action'] : '';
+
+        $result = [
+            'siteid' => session('idsite')
+        ];
+        if($action){
+            // 年报查询
+            if($action == 'year'){
+                if(\DateTime::createFromFormat('Y',$data['begintime']) && \DateTime::createFromFormat('Y',$data['endtime'])){
+                    $map = [];
+                    for($newYear = $data['begintime']; $newYear<=$data['endtime']; $newYear++){
+                        $starttime =  strtotime($newYear.'-1-1');
+                        $endtime = strtotime($newYear.'-12-31');
+                        $map = ['create_time' => [['gt',$starttime],['lt',$endtime]]];
+    
+                        $produce_integral = db('member_integral_record')
+                            ->where(['category_id' => ['in','1,2,3,6,7']])
+                            ->where($map)
+                            ->sum('integral');
+    
+                        $consumption_integral = db('member_integral_record')
+                            ->where(['category_id' => ['in','4,5']])
+                            ->where($map)
+                            ->sum('integral');
+    
+                        $result[] = ['year'=>$newYear, 'produce_integral'=>$produce_integral, 'consumption_integral'=>$consumption_integral];
+                    }
+                }
+            }
+            // 月报查询
+            else{
+                if(\DateTime::createFromFormat('Y-m',$data['begintime']) && \DateTime::createFromFormat('Y-m',$data['endtime'])){
+                    $map = [
+                        'siteid' => session('idsite')
+                    ];
+                    $start = false; // 开始标识
+                    $starttime =  strtotime($data['begintime']);
+                    $endtime = strtotime($data['endtime']);
+
+                    while($starttime < $endtime){
+                        $newMonth = !$start ? date('Y-m', strtotime('+0 Month', $starttime)) : date('Y-m', strtotime('+1 Month', $starttime));
+                        $starttime = strtotime($newMonth);
+
+                        $firstday = date('Y-m-01', strtotime($newMonth));   // 月份第一天
+                        $lastday = date('Y-m-d', strtotime("$firstday +1 month -1 day"));  //月份最后一天
+
+                        $map = ['create_time' => [['gt',strtotime($firstday)],['lt',strtotime($lastday)]]];
+                        $produce_integral = db('member_integral_record')
+                            ->where(['category_id' => ['in','1,2,3,6,7']])
+                            ->where($map)
+                            ->sum('integral');
+
+                        $consumption_integral = db('member_integral_record')
+                            ->where(['category_id' => ['in','4,5']])
+                            ->where($map)
+                            ->sum('integral');
+
+                        $result[] = ['year'=>$newMonth, 'produce_integral'=>$produce_integral, 'consumption_integral'=>$consumption_integral];
+                        $start = true;
+                    }
+                }
+            }
+        }
+        
+        return $result;
+    }
+
+    // 获取积分分类
+    public function get_integral_category(){
+        return db('member_integral_category')->select();
+    }
+
+    // 积分规则设置
+    public function integral_rule($idsite){
+        return db('integral_rule_config')->where('idsite',$idsite)->find();
+    }
+
+    // 积分规则保存
+    public function integral_rule_save($data){
+        $idsite = intval($data['idsite']);
+        $data['is_sign'] = isset($data['is_sign']) ? intval($data['is_sign']) : 0;
+        $data['is_signup'] = isset($data['is_signup']) ? intval($data['is_signup']) : 0;
+        $data['sign_rule'] = isset($data['sign_rule']) ? $data['sign_rule'] : '';
+
+        $integral_rule_config = db('integral_rule_config')->where('idsite',$idsite)->find();
+        if($integral_rule_config){
+            $bool = db('integral_rule_config')->where('idsite',$idsite)
+            ->update([
+                    'idsite' => $idsite,
+                    'is_sign' => $data['is_sign'],
+                    'signin_integral' => json_encode($data['signin_integral']),
+                    'is_signup' => $data['is_signup'],
+                    'sign_rule' => $data['sign_rule'],
+                    'signup_integral' => $data['signup_integral'],
+            ]);
+        }else{
+            $bool = db('integral_rule_config')->insert([
+                    'idsite' => $idsite,
+                    'is_sign' => $data['is_sign'],
+                    'signin_integral' => json_encode($data['signin_integral']),
+                    'is_signup' => $data['is_signup'],
+                    'sign_rule' => $data['sign_rule'],
+                    'signup_integral' => $data['signup_integral'],
+            ]);
+        }
+        return $bool;
+    }
+    
+    // 商品管理
+    public function goods_manage($data){
+        $map = [
+            'siteid' => session('idsite')
+        ];
+
+        $goods_name = $data['goods_name'];
+        $age = $data['age'];
+
+        if($goods_name){
+            $map['goods_name'] = ['like','%'.$goods_name.'%'];
+        }
+
+        if($age){
+            $orWhere = [
+                'siteid' => session('idsite'), 
+                'suitable_age_start'=>0, 
+                'suitable_age_end'=>0
+            ];
+            $condition = $age.' between suitable_age_start and suitable_age_end';
+            $total_num = db('integral_mall_goods')
+                ->where($map)
+                ->where($condition)
+                ->count();
+            
+            $integral_mall_goods = db('integral_mall_goods')
+                ->where($map)
+                ->where($condition)
+                ->whereOr(function($query) use ($orWhere){
+                    $query->where($orWhere);
+                })
+                ->page($data['p'],PAGE_SIZE)
+                ->order("create_time desc")
+                ->select();
+        }else{
+            $total_num = db('integral_mall_goods')
+                ->where($map)
+                ->count();
+
+            $integral_mall_goods = db('integral_mall_goods')
+                ->where($map)
+                ->page($data['p'],PAGE_SIZE)
+                ->order("create_time desc")
+                ->select();
+        }
+
+        $page = new Page($total_num,PAGE_SIZE);
+        return ['data' => $integral_mall_goods, 'page' => $page];
+    }
+
+    // 新增、修改商品
+    public function goods_post_data($data){
+        $data['goods_name'] = htmlentities($data['goods_name']);        // 商品名称
+        $data['goods_content'] = htmlentities($data['goods_content']);  // 商品内容
+        if($data['action'] == 'add'){
+            unset($data['action']);
+            $data['create_time'] = time();
+            return db('integral_mall_goods')->insert($data);
+        }else{
+            $id = $data['id'];
+            unset($data['id']);
+            unset($data['action']);
+            $data['update_time'] = time();
+            return db('integral_mall_goods')->where('id',$id)->update($data);
+        }
+    }
+
+    // 商品详情
+    public function goods_deal($id){
+        return db('integral_mall_goods')->where('id',$id)->find();
+    }
+
+    // 商品删除
+    public function goods_del($param){
+        $ids = explode(',',$param['id']);
+        $bool = false;
+        if(count($ids) > 0){
+            $bool = db('integral_mall_goods')->where('id','in',$ids)->delete();
+        }
+        return $bool;
+    }
+
+    // 查看兑换记录
+    public function exchange_record($param){
+        $map = [];
+
+        $goods_id = $param['id'];
+        if($goods_id){
+            $map['goods_id'] = $goods_id;
+        }
+
+        $nickname = $param['nickname'];
+        if($nickname){
+            $map['nickname'] = ['like','%'.$nickname.'%'];
+        }
+
+        $order_status = $param['order_status'];
+        if($order_status != -1){
+            $map['order_status'] = $order_status;
+        }
+
+        $field = "id, order_no, goods_id, userimg, nickname, goods_name, exchange_number, integral, order_status, create_time";
+
+        $total_num = db('integral_mall_exchange_record')
+            ->field($field)
+            ->where($map)
+            ->order('create_time desc')
+            ->count();
+
+        $integral_mall_exchange_record = db('integral_mall_exchange_record')
+            ->field($field)
+            ->where($map)
+            ->page($param['p'],PAGE_SIZE)
+            ->order('create_time desc')
+            ->select();
+
+        $page = new Page($total_num,PAGE_SIZE);
+        return ['data' => $integral_mall_exchange_record, 'page' => $page];
+    }
+
+    // 订单详情
+    public function exchange_record_detail($param){
+        $field = "id, order_no, 
+            goods_name, exchange_number, 
+            integral, order_status, 
+            consignee_name, consignee_phone,
+            consignee_address, courier_company,
+            courier_number, order_remark,
+            create_time";
+        
+        $integral_mall_exchange_record = db('integral_mall_exchange_record')->field($field)->where('id',$param['id'])->find();
+        return $integral_mall_exchange_record;
+    }
+
+    // 取消订单
+    public function cancel_order($id){
+        $exchange_record = db('integral_mall_exchange_record')->where('id',$id)->find();
+        if($exchange_record['order_status'] != 1){
+            Db::startTrans();
+            try{
+                // 修改订单状态
+                db('integral_mall_exchange_record')->where('id',$id)->setField('order_status',2);
+                // 释放库存
+                db('integral_mall_goods')->where('id', $exchange_record['goods_id'])->setInc('goods_number', $exchange_record['exchange_number']);
+                // 增加会员积分
+                db('member')->where('idmember',$exchange_record['member_id'])->setInc('integral',$exchange_record['integral']);
+                // 查询会员信息
+                $member = db('member')->where('idmember',$exchange_record['member_id'])->find();
+                // 记录积分
+                db('member_integral_record')->insert([
+                    'member_id' => $exchange_record['member_id'],
+                    'userimg' => $member['userimg'],
+                    'chrname' => $member['chrname'],
+                    'nickname' => $member['nickname'],
+                    'category_id' => 7,
+                    'order_id' => 0,
+                    'integral' => $exchange_record['integral'],
+                    'integral_rmark' => '',
+                    'is_freeze' => 0,
+                    'create_time' => time()
+                ]);
+                $bool = true;
+                // 发送模版消息
+                template_integral_exchange($exchange_record['goods_id'], $exchange_record['id'], 2);
+                Db::commit();
+            }catch(Exception $e){
+                $bool = false;
+                Db::rollback();
+            }
+        }
+        return $bool;
+    }
+
+    // 确定发货
+    public function confirm_delivery($param){
+        return db('integral_mall_exchange_record')
+            ->where('id',$param['id'])
+            ->update([
+                'courier_company' => $param['courier_company'],
+                'courier_number' => $param['courier_number'],
+                'order_status' => 1
+            ]);
+    }
+
+    // 获取快递列表
+    public function get_logistics_list(){
+        $source_code = file_get_contents('http://www.chawuliu.cn/wangdian/');  
+        $pattern='/<a href=\"\/[a-z]+\.htm\" target=\"_blank\">(.*?)  <\/a>/is';
+        $logistics_list = preg_match_all($pattern,$source_code,$resultArray);
+        unset($resultArray[1][0]);
+        return $resultArray[1];
+    }
+}

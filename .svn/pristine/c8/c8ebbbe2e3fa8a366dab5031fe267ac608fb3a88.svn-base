@@ -1,0 +1,388 @@
+
+
+$(document).ready(function() {
+    var submit = $("input[type='submit']");
+    submit.each(function() {
+        $(this).bind("click", CheckClForm);
+    });
+});
+//提交表单验证
+function CheckClForm() {
+    try {
+        var i = 0;
+        var j = 0;
+        var errormsg = "";
+        var arr = $("div[id^='lbl_']");
+        arr.each(function() {
+            var id = $(this).attr("id").replace("lbl_", "");
+
+            $("#" + id).trigger('blur');
+
+            var chname = $("#" + id).attr("chname");
+            if ($(this).html() == "") {
+                i++;
+            } else {
+                if (j == 0) {
+                    $("#" + id).focus();
+                }
+                //errormsg += "[" + chname + "：" + $(this).html() + "]\r\n";
+                errormsg += "[" + chname + "：" + $(this).html() + "]<br>";
+                j++;
+            }
+        });
+        if (i == arr.length) {
+            return true;
+        }
+        layer.alert(errormsg);
+        return false;
+    } catch (e) {
+        layer.alert(e);return false;;
+    }
+}
+
+/* 
+用途：检查输入字符串是否为空或者全部都是空格 
+输入：str 
+返回： 
+如果全是空返回true,否则返回false 
+*/
+function isNull(str) {
+    if (str == null || str.trim() == "") {
+        return true;
+    }
+    return false;
+}
+function FunRegExp(str,regu) {
+    if (regu == "") {
+        return true;
+    }
+    var re = new RegExp(regu);
+    return re.test(str);
+}
+//CheckBoxType验证
+function CheckBoxType(cid, EnableNull) {
+    try {
+    $("#lbl_" + cid).html("");
+    if (EnableNull == "0") {
+        var ckbox = $("input[name='" + cid + "']:checked");
+        if (ckbox.length <= 0) {
+            $("#lbl_" + cid).html("必填项不能为空！");
+            return false;
+        }
+    }
+    return true;
+} catch (e) { layer.alert(e); return false; }
+}
+//SingleTextType验证
+function SingleTextType(obj, EnableNull, ValidationFunction, ErrorMessage, ValidationExpression) {
+    try {
+
+       var str = $(obj).val();
+      
+    var cid = $(obj).attr("id");
+    $("#lbl_" + cid).html("");
+    if (ErrorMessage == "") {
+        ErrorMessage = "数据格式不正确！";
+    }
+    if (EnableNull == "0") {
+        if (isNull(str)) {
+            $("#lbl_" + cid).html("必填项不能为空！");
+            //obj.focus();
+            return false;
+        }
+    }
+    if (ValidationFunction != "") {
+        var flag = eval(ValidationFunction);
+        if (!flag) {
+            $("#lbl_" + cid).html(ErrorMessage);
+            return false;
+        }
+    }
+    if (ValidationExpression != "") {
+        if (!FunRegExp(str, ValidationExpression)) {
+            $("#lbl_" + cid).html(ErrorMessage);
+            return false;
+        }
+    }
+    return true;
+     } catch (e) {layer.alert(e);return false; }
+}
+function isInteger(str) {
+    var regu = /^[-]{0,1}[0-9]{1,}$/;
+    return regu.test(str);
+}
+/* 
+用途：检查输入字符串是否是带小数的数字格式,可以是负数 
+输入： 
+s：字符串 
+返回： 
+如果通过验证返回true,否则返回false 
+
+*/
+function isDecimal(str) {
+    if (isInteger(str)) { return true; }
+    if (isMoney(str)) { return true; }
+    var re = /^[-]{0,1}(\d+)[\.]+(\d+)$/;
+    if (re.test(str)) {
+        if (RegExp.$1 == 0 && RegExp.$2 == 0) return false;
+        return true;
+    } else {
+        return false;
+    }
+}
+function isMoney(str) {
+
+   var exp = /^([1-9][\d]{0,7}|0)(\.[\d]{1,2})?$/;
+   if (exp.test(str)) 
+   {
+       return true;
+   } else {
+       return false;
+   }
+}
+//DateTimeType验证
+function DateTimeType(obj, EnableNull) {
+    try { 
+    var str = $(obj).val();
+    var cid = $(obj).attr("id");
+    $("#lbl_" + cid).html("");
+    if (EnableNull == "0") {
+        if (isNull(str)) {
+            $("#lbl_" + cid).html("必填项不能为空！");
+            //obj.focus();
+            return false;
+        }
+    }
+
+    return true;
+     } catch (e) { layer.alert(e);return false; }
+}
+//NumberType验证
+function NumberType(obj, EnableNull) {
+    try { 
+    var str = $(obj).val();
+    var cid = $(obj).attr("id");
+    $("#lbl_" + cid).html("");
+    if (EnableNull == "0") {
+        if (isNull(str)) {
+            $("#lbl_" + cid).html("必填项不能为空！");
+            //obj.focus();
+            return false;
+        }
+    }
+    if (!isDecimal(str)) {
+        $("#lbl_" + cid).html("数据格式不正确！");
+        //obj.focus();
+        return false;
+    }
+    return true;
+     } catch (e) { layer.alert(e);return false; }
+}
+//MultipleHtmlType验证
+function MultipleHtmlType(obj, EnableNull) {
+    try { 
+    var str = $(obj).val();
+    var cid = $(obj).attr("id");
+    $("#lbl_" + cid).html("");
+    if (EnableNull == "0") {
+        if (isNull(str)) {
+            $("#lbl_" + cid).html("必填项不能为空！");
+            //obj.focus();
+            return false;
+        }
+    }
+    return true;
+     } catch (e) { layer.alert(e);return false; }
+}
+//DropDownListType验证
+function DropDownListType(obj, EnableNull) {
+    try {
+    var str = $(obj).val();
+    var cid = $(obj).attr("id");
+    $("#lbl_" + cid).html("");
+    if (EnableNull == "0") {
+        if (isNull(str)) {
+            $("#lbl_" + cid).html("必填项不能为空！");
+            //obj.focus();
+            return false;
+        }
+    }
+    return true;
+     } catch (e) { layer.alert(e);return false; }
+}
+//MultipleTextType验证
+function MultipleTextType(obj, EnableNull) {
+    try { 
+    var str = $(obj).val();
+    var cid = $(obj).attr("id");
+    $("#lbl_" + cid).html("");
+    if (EnableNull == "0") {
+        if (isNull(str)) {
+            $("#lbl_" + cid).html("必填项不能为空！");
+            //obj.focus();
+            return false;
+        }
+    }
+    return true;
+     } catch (e) { layer.alert(e);return false; }
+}
+//RadioButtonType验证
+function RadioButtonType(obj, EnableNull) {
+    try { 
+    var cid = $(obj).attr("id");
+    $("#lbl_" + cid).html("");
+
+    if (EnableNull == "0") {
+        var chk = $('input[name=' + cid + ']:checked');
+        if (chk.length <= 0) {
+            $("#lbl_" + cid).html("必填项不能为空！");
+            //obj.focus();
+            return false;
+        }
+    }
+    return true;
+     } catch (e) { layer.alert(e);return false; }
+}
+//CheckBoxType验证
+function CheckBoxType(obj, EnableNull) {
+    try { 
+    var cid = $(obj).attr("id");
+    $("#lbl_" + cid).html("");
+    if (EnableNull == "0") {
+        var chk = $('input[name=' + cid + ']:checked');
+        if (chk.length <= 0) {
+            $("#lbl_" + cid).html("必填项不能为空！");
+            //obj.focus();
+            return false;
+        }
+    }
+    return true;
+     } catch (e) { layer.alert(e);return false; }
+}
+//FileType验证
+function FileType(obj, EnableNull) {
+    try { 
+    var str = $(obj).val();
+    var cid = $(obj).attr("id");
+    $("#lbl_" + cid).html("");
+    if (EnableNull == "0") {
+        if (isNull(str)) {
+            $("#lbl_" + cid).html("必填项不能为空！");
+            //obj.focus();
+            return false;
+        }
+    }
+    return true;
+     } catch (e) { layer.alert(e);return false; }
+}
+//ListBoxType验证
+function ListBoxType(obj, EnableNull) {
+    try {
+    var str = $(obj).val();
+    var cid = $(obj).attr("id");
+    $("#lbl_" + cid).html("");
+    if (EnableNull == "0") {
+        if (str == null || str.length <= 0) {
+            $("#lbl_" + cid).html("必填项不能为空！");
+            //obj.focus();
+            return false;
+        }
+    }
+    return true;
+} catch (e) { layer.alert(e);return false; }
+}
+//MultiOpenPageType验证
+function MultiOpenPageType(obj, cid, EnableNull) {
+    try {
+    var str = $(obj).val();
+    $("#lbl_" + cid).html("");
+    if (EnableNull == "0") {
+        if (isNull(str)) {
+            $("#lbl_" + cid).html("必填项不能为空！");
+            //obj.focus();
+            return false;
+        }
+    }
+    return true;
+} catch (e) { layer.alert(e);return false; }
+}
+//SingleOpenPageType验证
+function SingleOpenPageType(obj, cid, EnableNull) {
+    try { 
+    var str = $(obj).val();
+    $("#lbl_" + cid).html("");
+    if (EnableNull == "0") {
+        if (isNull(str)) {
+            $("#lbl_" + cid).html("必填项不能为空！");
+            //obj.focus();
+            return false;
+        }
+    }
+    return true;
+} catch (e) { layer.alert(e);return false; }
+}
+//PictureType验证
+function PictureType(obj, EnableNull) {
+    try {
+    var str = $(obj).val();
+    var cid = $(obj).attr("id");
+    $("#lbl_" + cid).html("");
+    if (EnableNull == "0") {
+        if (isNull(str)) {
+            $("#lbl_" + cid).html("必填项不能为空！");
+            //obj.focus();
+            return false;
+        }
+    }
+    return true;
+} catch (e) { layer.alert(e);return false; }
+}
+//TemplateType验证
+function TemplateType(obj, EnableNull) {
+    try {
+    var str = $(obj).val();
+    var cid = $(obj).attr("id");
+    $("#lbl_" + cid).html("");
+    if (EnableNull == "0") {
+        if (isNull(str)) {
+            $("#lbl_" + cid).html("必填项不能为空！");
+            //obj.focus();
+            return false;
+        }
+    }
+    return true;
+} catch (e) { layer.alert(e);return false; }
+}
+
+//RelatedNodeType验证
+function RelatedNodeType(obj, EnableNull) {
+    try { 
+    var str = $(obj).val();
+    var cid = $(obj).attr("id");
+    $("#lbl_" + cid).html("");
+    if (EnableNull == "0") {
+        if (isNull(str)) {
+            $("#lbl_" + cid).html("必填项不能为空！");
+            //obj.focus();
+            return false;
+        }
+    }
+    return true;
+} catch (e) { layer.alert(e);return false; }
+}
+//RelatedNodesType验证
+function RelatedNodesType(obj, EnableNull) {
+    try { 
+    var str = $(obj).val();
+    var cid = $(obj).attr("id");
+    $("#lbl_" + cid).html("");
+    if (EnableNull == "0") {
+        if (str == null || str.length <= 0) {
+            $("#lbl_" + cid).html("必填项不能为空！");
+            //obj.focus();
+            return false;
+        }
+    }
+    return true;
+} catch (e) { layer.alert(e);return false; }
+}

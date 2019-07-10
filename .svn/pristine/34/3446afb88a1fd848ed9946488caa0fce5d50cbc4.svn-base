@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="viewport"
+    content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <title>Document</title>
+  <script type="text/javascript" src="../js/jquery.min.js"></script>
+  <script type="text/javascript" src="../js/common.js"></script>
+  <link rel="stylesheet" type="text/css" href="../style/css/common.css">
+</head>
+
+<body>
+  <header>
+    <a href="/tongxiang" class="logo"><img
+        src="/public/uploads/7/admin/2019/05-17/6213ccb439082963a6b7232864cda5af.png"></a>
+    <div class="btns">
+      <a class="btn1" href="/tongxiang/mine"></a>
+      <a class="btn2" href="javascript:;" id="open-menu"></a>
+      <a class="btn3" href="javascript:;" id="close-menu"></a>
+    </div>
+  </header>
+  <div class="menu" id="menu">
+    <ul>
+      <li><a href="/tongxiang/content/1209">童享云</a></li>
+      <li><a href="http://www.txy123.com/newindex">蜗牛童行</a></li>
+      <li><a href="https://www.hdxx123.com/newindex">立即试用</a></li>
+      <li><a href="/tongxiang/activity/1092">购童享云</a></li>
+      <li><a href="/tongxiang/content/1212">认识我们</a></li>
+      <li><a href="/tongxiang/node/1071">功能介绍</a></li>
+      <li><a href="/tongxiang/node/1072">最新资讯</a></li>
+      <li><a href="/tongxiang/content/1207">立即咨询</a></li>
+    </ul>
+  </div>
+  <div class="menu-cover"></div>
+  <div class="site-section clearfix bg">
+    <div class="pintuan-img">
+      <div class="pintuan-img-l">
+        <img src="images/user.jpg" alt="">
+      </div>
+      <div class="pintuan-img-r">
+        <p>我是<span>XXX</span></p>
+        <p>我发起了拼团，赶快来参与吧</p>
+        <p>我参加了拼团，赶快来参与吧</p>
+      </div>
+    </div>
+    <div class="ass-share-info">
+      <div class="ass-timebox">距离结束拼团还有：<span>22天6小时30分3秒</span><!-- <span>拼团已结束</span> --></div>
+      <div class="ass-share-item">
+        <a href="">
+          <div class="pic"><img src="images/user.jpg" alt=""></div>
+          <div class="txt">
+            <div class="tit">深圳·跃动蹦床公园又搞事啦→ 4张票仅售【49.9元】！5大创意体验区，让你从此爱上蹦床！蹦起来，健康好运走起来！</div>
+            <div class="time">拼团套餐：南山跃动蹦床公园 儿童网会员价49.9元(原价392元)</div>
+            <div class="source">单购价：55元 &nbsp;&nbsp;拼团价：59.9元</div>
+          </div>
+        </a>
+      </div>
+
+      <div class="present-box">
+        <div>需拼团人数：<span>2人</span>&nbsp;&nbsp;<span>还差1人</span></div>
+        <div>已产图案用户：
+          <img class="user" src="images/user.jpg" alt="">XXX,
+          <img class="user" src="images/user.jpg" alt="">XXX,
+        </div>
+      </div>
+      <div class="share-btn-box"><button class="share-btn">分享</button><!-- <button class="share-btn">我要参团</button><button class="share-btn">再开新团</button> --></div>
+      <div class="ass-rule">
+        <p>拼团规则说明：</p>
+        <p>1.点击活（或产品）进入详情介绍页面，通过“我要开团”入口进入订单支付页面，付款成功后，按页面提示分享给微信好友参团。</p>
+        <p>2.好友通过拼团发起者的拼团详情页面，点击“我要参团”进入订单支付页面，付款成功后，按页面提示分享给微信好友。如果详情页面显示已经满员，可点击“我要开团”发起新的拼团。</p>
+        <p>3.参团人数在有效期内达到拼团人数（成团人数要求请看对应活动拼团说明），即拼团成功。拼团时间到期后，若未达到拼团人数，即拼团失败，拼团订单于24小时内全额原路退款。</p>
+        <p>4.发起拼团或参与拼团，或许有次数限制，限制规则由具体活动而定，请参考拼团说明信息。</p>
+        <p>5.当前活动专用优惠券不能用于拼团支付。</p>
+        <p>最终解析权归蜗牛童行所有。</p>
+      </div>
+    </div>
+    
+
+  </div>
+</body>
+
+</html>

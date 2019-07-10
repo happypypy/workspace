@@ -1,0 +1,13 @@
+<ul>
+	<?php if($cms->CheckPurview('sendmanage')){ ?>
+	    <li id="index" onclick="javascript:window.location='{:url('smsmanage/index','')}'"><em>短信管理</em></li>
+    <?php } ?>
+
+    <?php if($cms->CheckPurview('template', 'manage')){ ?>
+	    <li id="templatelist" onclick="javascript:window.location='{:url('smsmanage/templatelist','')}'"><em>短信模版管理</em></li>
+    <?php } ?>
+</ul>
+
+<script type="text/javascript">
+    $("#" + "<?= $action_name ?>").addClass("oa_on");
+</script>

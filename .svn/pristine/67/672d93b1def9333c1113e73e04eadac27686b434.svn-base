@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title>会员中心</title>
+	<meta name="keywords" content="" />
+	<meta name="description" content="" />
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta content="telephone=no" name="format-detection">
+	<!-- <link rel="shortcut icon" href="images/favicon.ico" />
+	<link rel="apple-touch-icon-precomposed" href="images/favicon.png" /> -->
+	<link rel="stylesheet" type="text/css" href="{$roottpl}/style/css/swiper.min.css">
+	<link rel="stylesheet" type="text/css" href="{$roottpl}/style/css/common.css">
+	<link rel="stylesheet" type="text/css" href="{$roottpl}/style/css/pc.css">
+
+	<script type="text/javascript" src="{$roottpl}/js/jquery.min.js"></script>
+	<script type="text/javascript" src="{$roottpl}/js/swiper.min.js"></script>
+	<script type="text/javascript" src="{$roottpl}/js/common.js"></script>
+</head>
+<body id="wrapper">
+
+
+<!--site section start-->
+<div class="site-section clearfix" id="container">
+	<div class="news-list">
+		<ul>
+			<li >
+				<a href="javascript:void(0);"><span style="color:#ff811c;">您还没有收藏任何资讯或活动，赶快去收藏吧~您还没有收藏任何资讯或活动，赶快去收藏吧~您还没有收藏任何资讯或活动，赶快去收藏吧~</a>
+				<br><a href="javascript:void(0);"><span style="color: #9d9d9d">收藏时间:</span>2018-12-12 12:12:12</a>
+			</li>
+			<li >
+				<a href="javascript:void(0);"><span style="color:#ff811c;">您还没有收藏任何资讯或活动，赶快去收藏吧~您还没有收藏任何资讯或活动，赶快去收藏吧~您还没有收藏任何资讯或活动，赶快去收藏吧~</a>
+				<br><a href="javascript:void(0);"><span style="color: #9d9d9d">收藏时间:</span>2018-12-12 12:12:12</a>
+			</li>
+			<li >
+				<a href="javascript:void(0);"><span style="color:#ff811c;">您还没有收藏任何资讯或活动，赶快去收藏吧~您还没有收藏任何资讯或活动，赶快去收藏吧~您还没有收藏任何资讯或活动，赶快去收藏吧~</a>
+				<br><a href="javascript:void(0);"><span style="color: #9d9d9d">收藏时间:</span>2018-12-12 12:12:12</a>
+			</li>
+
+		</ul>
+	</div>
+	<div class="toTop-btn" title="回到顶部" onclick="toTop()"></div>
+</div>
+<!--site section end-->
+{include file="M1/lib/footer" /}
+</body>
+</html>
+
+
+

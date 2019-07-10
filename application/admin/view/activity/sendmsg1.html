@@ -1,0 +1,151 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>信息发送</title>
+    <link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
+    <link href="__PUBLIC__/static/css/page.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="__PUBLIC__/static/css/bootstrap.min.css">
+    <script type="text/javascript" src="__PUBLIC__/static/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/del-checked.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/layer/layer.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/CostomLinkOpenSw.js"></script>
+
+</head>
+<body>
+<div class="oa_pop">
+    <div class="oa_pop-main">
+        <div style="height: 6px"></div>
+        <div class="oa_title clearfix">
+            <span class="oa_ico-right"></span>
+            <span class="oa_title-btn"></span>
+            <span class="oa_ico-left"></span>
+            信息发送        </div>
+        <div class="oa_edition">
+            <form action="" method="post" id="frm">
+                <table id="tabcontent" width="100%" border="0" cellspacing="1" cellpadding="0" class="oa_edition" style="border-bottom: #e0e0e0 solid 1px">
+                    <tr>
+                        <td width="150"class="oa_cell-left">标题：</td>
+                        <td class="oa_cell-right">
+                            <input name="chrtitle"  id="chrtitle" type="text" value="{$chrname}" class="form-control "  style="width:400px;" />
+                            <select name="chrtitlecolor" id="chrtitlecolor">
+                                <option style="color:#000000" value="#000000">黑色</option>
+                                <option style="color:#ff0000" value="#ff0000">红色</option>
+                                <option style="color:#cccccc" value="#cccccc">灰色</option>
+                                <option style="color:#FE3CF57" value="#E3CF57">黄色</option>
+                                <option style="color:#0000FF" value="#0000ff">蓝色</option>
+                                <option style="color:#8A2BE2" value="#8a2be2">紫罗兰</option>
+                            </select>
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td width="150" class="oa_cell-left">分配客户：</td>
+                        <td class="oa_cell-right">
+                            <input   name="nickname" id="nickname" type="text" value="{$nickname}" readonly="readonly"  class="form-control "   style="width:400px;"/>
+                            <select name="activitynamecolor" id="activitynamecolor">
+                                <option style="color:#000000" value="#000000">黑色</option>
+                                <option style="color:#ff0000" value="#ff0000">红色</option>
+                                <option style="color:#cccccc" value="#cccccc">灰色</option>
+                                <option style="color:#E3CF57" value="#E3CF57">黄色</option>
+                                <option style="color:#0000FF" value="#0000FF">蓝色</option>
+                                <option style="color:#8A2BE2" value="#8a2be2">紫罗兰</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="150" class="oa_cell-left">分配时间：</td>
+                        <td class="oa_cell-right">
+                            <input name="nowtime" id="nowtime" type="text" value="{$nowtime}" readonly="readonly" class="form-control "  style="width:400px;"/>
+                            <select name="activitytimecolor" id="activitytimecolor">
+                                <option style="color:#000000" value="#000000">黑色</option>
+                                <option style="color:#ff0000" value="#ff0000">红色</option>
+                                <option style="color:#cccccc" value="#cccccc">灰色</option>
+                                <option style="color:#E3CF57" value="#E3CF57">黄色</option>
+                                <option style="color:#0000FF" value="#0000FF">蓝色</option>
+                                <option style="color:#8A2BE2" value="#8a2be2">紫罗兰</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="150" class="oa_cell-left">备注：</td>
+                        <td class="oa_cell-right">
+                            <textarea  style="width:400px;height:100px;" class="span12 ckeditor" id="remark"  name="remark"></textarea>
+                            <select name="remarkcolor" id="remarkcolor">
+                                <option style="color:#000000" value="#000000">黑色</option>
+                                <option style="color:#ff0000" value="#ff0000">红色</option>
+                                <option style="color:#cccccc" value="#cccccc">灰色</option>
+                                <option style="color:#E3CF57" value="#E3CF57">黄色</option>
+                                <option style="color:#0000ff" value="#0000ff">蓝色</option>
+                                <option style="color:#8A2BE2" value="#8a2be2">紫罗兰</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="150" class="oa_cell-left">连接地址：</td>
+                        <td class="oa_cell-right"><input   name="chrurl" id="chrurl" type="text" value="{$chrurl}"  class="form-control "  style="width:400px;"  /></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="padding:10px;">
+                            <input type="hidden" name="iduser" id="iduser" value="{$iduser}"/>
+                            <input type="button" value="发送" onclick="javascript:sendmsg();">
+                            <input type="button" value="取消" onclick="javascript:CloseDiv();">
+                            <input type="button" value="预览" onclick="Preview()">
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script language="JavaScript">
+    function sendmsg() {
+        if($("#chrtitle").val()=="")
+        {
+            alert("标题不能为空");
+            return;
+        }
+        $.ajax({
+            url:'/admin/activity/sendmsg1',
+            type:'POST',
+            data: $('#frm').serialize(),
+            dataType:'json',
+            success:function (data) {
+                if(data.state==1)
+                {
+                    alert(data.msg);
+                    CloseDiv();
+                }
+                else
+                {
+                    alert(data.msg);
+                }
+            }
+        })
+
+    }
+
+
+    /**
+     * 预览
+     * @constructor
+     */
+    function Preview() {
+        var a1 = "<span style='color: "+$("#chrtitlecolor").val()+";'>"+$("#chrtitle").val()+"</span>";
+        var a2 = "<span style='color: "+$("#activitynamecolor").val()+";'>"+$("#nickname").val()+"</span>";
+        var a3 = "<span style='color: "+$("#activitytimecolor").val()+";'>"+$("#nowtime").val()+"</span>";
+        var a4 = "<span style='color: "+$("#remarkcolor").val()+";'>"+$("#remark").val()+"</span>";
+        var content = a1+"<br/>分配客户："+a2+"<br/>分配时间："+a3+"<br/>" + a4;
+        layer.alert(content, {
+            skin: 'layui-layer-lan'
+            ,closeBtn: 0
+            ,anim: 4 //动画类型
+        });
+    }
+
+</script>
+
+</body>
+</html>

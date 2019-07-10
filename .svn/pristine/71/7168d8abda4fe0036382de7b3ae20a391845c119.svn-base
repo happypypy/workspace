@@ -1,0 +1,172 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/static/css/page.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="__PUBLIC__/static/js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/js/lhgdialog.js?skin=aero"></script>
+<script type="text/javascript" src="__PUBLIC__/static/js/CostomLinkOpenSw.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/js/tabscommon.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/js/del-checked.js"></script>
+  <script type="text/javascript" src="__PUBLIC__/static/js/layer/layer.js"></script>
+<script type="text/javascript">
+$(function(){
+  $(document).ready(function() {
+      $('.oa_text-list tr').addClass('odd');
+      $('.oa_text-list tr:even').addClass('even');
+  });
+  $('.oa_text-list tr').hover(
+      function(){
+          $(this).addClass('oa_mouseover-bg');
+      },
+      function(){
+          $(this).removeClass('oa_mouseover-bg');
+      }
+  );
+});
+
+function empty() {
+  window.location.reload();
+}
+
+
+//删除选中
+function del_checked() {
+
+  var b = $(".checked_one");
+  var s = '';
+  for(var i=0;i<b.length;i++){
+      if(b[i].checked){
+          s+= b[i].value+',';
+      }
+  }
+  s = s.substr(0, s.length - 1);
+  $.ajax({
+      url:"{:url('waiter/del')}",
+      data:"id="+s,
+      type:"post",
+      dataType:"json",
+      success:function(msg){
+          $(".checked_one").removeAttr("checked");
+          if (msg==1){
+              layer.alert('{:lang('del success')}', {icon: 1}, function(index){
+                  location.reload();
+                  layer.close(index);
+              });
+          }else{
+              layer.alert('{:lang('del fail')}', {icon: 2}, function(index){
+                  layer.close(index);
+                  location.reload();
+              });
+          }
+
+      }
+  })
+}
+</script>
+</head>
+<body>
+
+<div class="oa_wrapper">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr class="oa_wrapper-display">
+      <td class="oa_wrapper-top-arr-left">&nbsp;</td>
+      <td class="oa_wrapper-top-arr-middle"></td>
+      <td class="oa_wrapper-top-arr-right">&nbsp;</td>
+    </tr>
+    <tr>
+      <td class="oa_wrapper-middle-arr-left oa_wrapper-display"></td>
+      <td class="oa_wrapper-middle-arr-middle">
+        <div class="oa_location clearfix"><span class="oa_ico-left"></span>location<span class="oa_ico-right"></span></div>
+        <div class="oa_main clearfix">
+          <div class="oa_subnav clearfix">
+            <div class="oa_subnav-tab clearfix">
+              <ul>
+                <li class="oa_on" onclick="javascript:window.location='{:url('waiter/index','')}'"><em>客服管理</em></li>
+                <li onclick="javascript:window.location='{:url('waiter/visit','')}'"><em>访问记录</em></li>
+              </ul>
+            </div>
+          </div>
+          <div class="oa_content-area clearfix">
+            <div class="oa_content-main">
+              <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                  <td valign="top">
+                    <div class="oa_title clearfix">
+                      <span class="oa_title-btn">
+                        <ul>
+                          <?php if($cms->CheckPurview('waiter','add')){ ?>
+                          <li class="oa_selected">
+                            <a href="javascript:CustomOpen('{:url('waiter/modi','action=add','')}', 'waiter','添加客服', 550, 260)">添加客服</a>
+                          </li>
+                          <?php } ?>
+                        </ul>
+                      </span>
+                      <span class="oa_ico-left"></span>
+                      客服列表
+                    </div>
+                    <div class="oa_text-list" id="ajaxpage">
+                      <table id="table" width="100%" border="0" cellspacing="0" cellpadding="0" style="table-layout:fixed">
+                        <tr class="oa_text-list-title">
+                          <th width="20" style="text-align:center;"><input id="checked"  onclick="DoCheck();" name="" type="checkbox"/></th>
+                          <th width="30"><span class="oa_arr-text-list-title"></span>头像</th>
+                          <th><span class="oa_arr-text-list-title"></span>客户名称</th>
+                          <th width="70"><span class="oa_arr-text-list-title"></span>电话</th>
+                          <th width="50"><span class="oa_arr-text-list-title"></span>二维码</th>
+                          <th width="60"><span class="oa_arr-text-list-title"></span>操作</th>
+                        </tr>
+                        {if condition="$list eq null"}<tr><td colspan="6">没有找到相关客服信息</td></tr>{else /}
+                        {volist name="list" id="vo"}
+                        <tr class="tr">
+                          <td align="center"><input class="checked_one" type="checkbox" value="{$vo['id']}" /></td>
+                          <td><img src="{$vo.userimg}" style="height:30px"></td>
+                          <td>{$vo.username}</td>
+                          <td>{$vo.telephone}</td>
+                          <td><img src="{$vo.rqcode}" style="height:30px"></td>
+                          <td width="210">
+                            <?php if($cms->CheckPurview('waiter','edit')){ ?>
+                            <a href="javascript:CustomOpen('{:url('waiter/modi','id='.$vo['id'].'&action=edit')}', 'waiter','修改客服信息', 550, 260)">修改</a>
+                            <?php }
+                                  if($cms->CheckPurview('waiter','del')){ ?>
+                            <a onclick="javascript:if (confirm('确定删除吗？')) { return true;}else{return false;};" href="{:url('waiter/del','id='.$vo['id'],'')}">删除</a>
+                            <?php } ?>
+                          </td>
+                        </tr>
+                        {/volist}
+                        {/if}
+                      </table>
+                      <?php if($cms->CheckPurview('waiter','del')){ ?>
+                      <div class="oa_bottom clearfix">
+                        <div class="clearfix">
+                            <div class="oa_op-btn clearfix">
+                                <input value="删除" onclick="javascript:if (confirm('确定删除吗？')) { del_checked();}else{return false;};" type="button" class="oa_input-submit" />
+                            </div>
+                            <div class="oa_page-controls">
+
+                            </div>
+                        </div>
+                        <div class="oa_bottom-bottom"><em></em></div>
+                      </div>
+                      <?php } ?>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <div class="oa_content-main-bottom"></div>
+            </div>
+          </div>
+        </div>
+      </td>
+      <td class="oa_wrapper-middle-arr-right oa_wrapper-display"></td>
+    </tr>
+    <tr class="oa_wrapper-display">
+      <td class="oa_wrapper-bottom-arr-left">&nbsp;</td>
+      <td class="oa_wrapper-bottom-arr-middle"></td>
+      <td class="oa_wrapper-bottom-arr-right">&nbsp;</td>
+    </tr>
+  </table>
+</div>
+</body>
+</html>

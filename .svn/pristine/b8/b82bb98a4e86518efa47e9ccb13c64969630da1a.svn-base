@@ -1,0 +1,27 @@
+function ad_show(siteid,id,index)
+{
+    var data= {"idsite":siteid, "id":id, "index": index};
+    $.ajax({
+        url:"/home/api/adshow",
+        data:data,
+        type:"post",
+        dataType:"json",
+        success:function(msg) {
+            alert(msg[2].ad_id);
+        }
+    });
+}
+
+function ad_visit(siteid,id,index)
+{
+    var data= {"idsite":idsite, "id":id, "title": title,'flag':flag,'index':index};
+    $.ajax({
+        url:"/addVisitRecord",
+        data:data,
+        type:"post",
+        dataType:"json",
+        success:function(msg) {
+
+        }
+    })
+}

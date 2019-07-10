@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/static/css/page.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="__PUBLIC__/static/js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/js/lhgdialog.js?skin=aero"></script>
+<script type="text/javascript" src="__PUBLIC__/static/js/CostomLinkOpenSw.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/js/tabscommon.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/js/del-checked.js"></script>
+ <script type="text/javascript" src="__PUBLIC__/static/js/layer/layer.js"></script>
+</head>
+<body>
+
+<div class="oa_wrapper">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr class="oa_wrapper-display">
+      <td class="oa_wrapper-top-arr-left">&nbsp;</td>
+      <td class="oa_wrapper-top-arr-middle"></td>
+      <td class="oa_wrapper-top-arr-right">&nbsp;</td>
+    </tr>
+    <tr>
+      <td class="oa_wrapper-middle-arr-left oa_wrapper-display"></td>
+      <td class="oa_wrapper-middle-arr-middle">
+        <div class="oa_location clearfix"><span class="oa_ico-left"></span>location<span class="oa_ico-right"></span></div>
+        <div class="oa_main clearfix">
+          <div class="oa_subnav clearfix">
+            <div class="oa_subnav-tab clearfix">
+              <ul>
+                <li  onclick="javascript:window.location='{:url('waiter/index','')}'"><em>客服管理</em></li>
+                <li class="oa_on" onclick="javascript:window.location='{:url('waiter/visit','')}'"><em>访问记录</em></li>
+              </ul>
+            </div>
+          </div>
+          <div class="oa_content-area clearfix">
+            <div class="oa_content-main">
+              <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                  <td valign="top">
+
+                    <div class="oa_title clearfix">
+                      <span class="oa_ico-right"></span>
+
+                      <span class="oa_ico-left"></span>
+                      客服访问记录
+                    </div>
+                    <div class="oa_text-list" id="ajaxpage">
+                      <table id="table" width="100%" border="0" cellspacing="0" cellpadding="0" style="table-layout:fixed">
+                        <tr class="oa_text-list-title">
+                          <th width="250"  style="display: none"><span class="oa_arr-text-list-title"></span>openid</th>
+                          <th ><span class="oa_arr-text-list-title"></span>昵称(姓名)</th>
+                          <th width="60"><span class="oa_arr-text-list-title"></span>访问次数</th>
+                          <th width="120"><span class="oa_arr-text-list-title"></span>最后访问时间</th>
+                        </tr>
+                        {if condition="$list eq null"}<tr><td colspan="4">没有找到客服访问记录</td></tr>{else /}
+                        {volist name="list" id="vo"}
+                        <tr class="tr">
+                          <td style="display: none">{$vo.openid}</td>
+                          <td>
+                            <?php if(empty($vo['name']))
+                            { echo "游客"; }
+                            else
+                            {
+                              if(empty($vo['idmember']))
+                              {
+                            ?>
+                            <a href="javascript:alert('没有找到对应的会员！')"> {$vo['nickname']}({$vo['name']})</a>
+                            <?php } else { ?>
+                            <a href="javascript:CustomOpen('{:url('admin/member/deal','idmember='.$vo['idmember'].'&action=view','')}', 'memberview','查看会员信息', 800, 560)"> {$vo['nickname']}({$vo['name']})</a>
+                            <?php }} ?>
+                          </td>
+                          <td>{$vo.count}</td>
+                          <td><?php echo date('Y-m-d H:i:s',$vo["createtime"]) ?></td>
+                        </tr>
+                        {/volist}
+                        {/if}
+                      </table>
+                      <div class="oa_bottom clearfix">
+                        <div class="clearfix">
+                        </div>
+                        <div class="oa_bottom-bottom"><em></em></div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <div class="oa_content-main-bottom"></div>
+            </div>
+          </div>
+        </div>
+      </td>
+      <td class="oa_wrapper-middle-arr-right oa_wrapper-display"></td>
+    </tr>
+    <tr class="oa_wrapper-display">
+      <td class="oa_wrapper-bottom-arr-left">&nbsp;</td>
+      <td class="oa_wrapper-bottom-arr-middle"></td>
+      <td class="oa_wrapper-bottom-arr-right">&nbsp;</td>
+    </tr>
+  </table>
+</div>
+</body>
+</html>

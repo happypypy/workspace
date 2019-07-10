@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+    <title>报名管理</title>
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+
+    <script type="text/javascript" src="{$roottpl}/js/jquery.min.js"></script>
+    <script type="text/javascript" src="{$roottpl}/js/swiper.min.js"></script>
+    <script type="text/javascript" src="{$roottpl}/js/common.js"></script>
+    <link rel="stylesheet" type="text/css" href="{$roottpl}/style/css/swiper.min.css">
+    <link rel="stylesheet" type="text/css" href="{$roottpl}/style/css/common.css">
+    <link rel="stylesheet" type="text/css" href="{$roottpl}/style/css/pc.css">
+</head>
+<body style="background: #e7e7e7;">
+
+<!--site section start-->
+<div class="site-section clearfix" id="container" style="padding-top: 75px;">
+    <div class="select-bar fixed">
+        <ul class="select-bar-tab" id="select-bar-tab">
+            <li id="s000"  class="btn"><span  id="s_name">全部报名</span></li>
+            <li  id="s100"><a href="#" onclick="javascript:sel(100)">未开始</a></li>
+            <li id="s200"><a href="#"  onclick="javascript:sel(200)">已结束</a></li>
+        </ul>
+        <div class="select-wrapper">
+            <div class="select-main h294">
+                <div class="select-right">
+                    <div class="select-scroller">
+                        <ul>
+                            <li id="s0" onclick="javascript:sel(0)">全部报名</li>
+                            <?php   foreach ($order_state as $k1=>$vo) { ?>
+                            <li id="s{$k1}" onclick="javascript:sel({$k1})">{$vo}</li>
+                            <?php } ?>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <form  id="search_frm"  method="post" class="sign-info-search flex flex-middle" style="padding-top: 5px;">
+            <div class="tit" style="font-size: 15px;">报名信息：</div>
+            <input type="text" name="txtkey" id="txtkey" placeholder="真实姓名，手机，身份证等" class="txt fx1" value="{$txtkey}" />
+            <input type="submit" value="查询" class="submit" />
+        </form>
+    </div>
+    <div class="section-shade" id="section-shade"></div>
+    <div class="news-list activity">
+        <ul id="data">
+            <?php if(empty($list)) { ?>
+            <li>没找到相关报名信息</li>
+            <?php } foreach($list as $k=>$vo) {?>
+            <li>
+                <div class="flex">
+                    <div class="pic"><img src="{$vo['chrimg']}" /></div>
+                    <div class="txt">
+                        <div class="title">{$vo['chrtitle']}</div>
+                        <div class="price"><i class="iconfont price">&#xe620;</i><span>价格：{$vo['price']}元</span></div>
+                        <div class="state"><i class="iconfont laiyuan">&#xe60e;</i>状态：<span>{$order_state[$vo['state']]}</span><span style="color: red;">&nbsp;&nbsp;{$vo['issign']==1?"(已签到)":""}</span></div>
+                        <!-- 拼团 -->
+                        <?php if(checkedMarketingPackage($idsite, 'group_buy') && !empty($vo['group_buy_order_state_name'])): ?>
+                            <div class="state"><i class="iconfont laiyuan">&#xe60e;</i>拼团：<span>{$vo['group_buy_order_state_name']}</span></div>
+                        <?php endif; ?>
+                        <!-- <div class="style"><i class="iconfont laiyuan">&#xe60e;</i>方式：<span>{$order_paytype1[$vo['paytype1']]}</span></div> -->
+                        <div class="time"><i class="iconfont clock">&#xe602;</i><span>购买时间：{$vo['dtcreatetime']}</span></div>
+                                                
+                        <!-- 拼团 -->
+                        <?php if(checkedMarketingPackage($idsite, 'group_buy') && !empty($vo['group_buy_order_state_name'])): ?>
+                            <div class="state"><i class="iconfont laiyuan">&#xe60e;</i>拼团：<span>{$vo['group_buy_order_state_name']}</span></div>
+                        <?php endif; ?>
+
+  
+                        <div class="time"><i class="iconfont clock">&#xe602;</i><span>活动时间：{$vo['dtstart']}~{$vo['dtend']}</span></div>
+                        <div class="btn">
+                            <a href="/{$sitecode}/ordermanagedetail/{$vo['id']}" style="background: #d98bb3;">订单详情</a>
+                            
+                            <!-- 拼团 -->
+                                <?php if(checkedMarketingPackage($idsite, 'group_buy') && !empty($vo['group_buy_order_id']) && $vo['group_buy_order_state'] != 0): ?>
+                                    <a href="/{$sitecode}/group_buy_share/{$vo['group_buy_order_id']}/{$userid}" style="background: #d9b38b; ">拼团情况</a>
+                                <?php endif; ?>
+
+                            <?php if($vo['state']==4 && $vo['isrefund']==1) { ?>
+                            <a style="display:none" href="#" id="refund_{$vo['id']}" onclick="javascript:refund({$vo['id']})" style="background: #ed958f;">退款</a>
+                            <?php } ?>
+                            <a href="#" style="background: #d9b38b; display: none" >查看约玩</a>
+                            <a href="#" style="background: #5fd2b8; display: none">分享福利</a>
+                        </div>
+                    </div>
+                </div>
+            </li>
+            <?php } ?>
+        </ul>
+        <!--<ul id="dataload" style="display: none">-->
+            <!--<li id="loadmsg">数据加载中。。。</li>-->
+        <!--</ul>-->
+        <div id="dataload" class="iconfont iconload" style="display: none">&#xe72f;</div>
+    </div>
+
+    <form id="frm" class="comment-form"  method="post" enctype="multipart/form-data">
+        <div class="comment-textarea">
+            <p>退款理由</p>
+            <textarea name="content" id="content"></textarea>
+        </div>
+        <div class="comment-textarea">
+            <br>
+            <p>退款图片</p>
+            <input type="file" name="image" id="image" />
+        </div>
+        <div class="comment-submit">
+            <input type="hidden" id="orderid" name="orderid" value="">
+            <input type="button" value="取消" id="close-refund" />
+            <input type="button" onclick="javascript:sava_refund();" value="提交" />
+        </div>
+    </form>
+
+    <div class="toTop-btn" title="回到顶部" onclick="toTop()"></div>
+    {include file="M2/lib/footer0" /}
+</div>
+<!--site section end-->
+
+<div class="footer">
+    <ul>
+        <li>
+            <a href="/{$sitecode}">
+                <span><i class="iconfont home">&#xe617;</i></span>
+                <p>主页</p>
+            </a>
+        </li>
+        <li class="on">
+            <a href="/{$sitecode}/mine">
+                <span><i class="iconfont head">&#xe606;</i></span>
+                <p>我的</p>
+            </a>
+        </li>
+    </ul>
+</div>
+
+<script type="text/javascript" src="/static/js/layer/layer.js"></script>
+<script type="text/javascript">
+
+    //==============核心代码=============
+    var winH = $(window).height(); //页面可视区域高度
+
+    var ipage=1;
+    var scrollHandler = function () {
+        var pageH = $(document).height();
+        var scrollT = $(window).scrollTop(); //滚动条top
+
+        if(pageH-winH-scrollT<1)
+        {
+            LoadData(ipage)
+            ipage++;
+        }
+    }
+    //定义鼠标滚动事件
+    $(window).scroll(scrollHandler);
+    //==============核心代码=============
+
+    function LoadData(ipage)
+    {
+        $("#dataload").show();
+        $ (window).unbind ('scroll');
+        $.ajax({
+            url: "/{$sitecode}/signupmanagelist/{$state}",
+            type: 'POST',
+            cache: false,
+            data:{"ipage":ipage,"ajax":1,"txtkey":$("#txtkey").val()} ,
+            success : function(data) {
+
+                if(data== 11)
+                {
+                    $("#dataload").hide();
+                    // $("#loadmsg").html("已无更多数据");
+                    return;
+                }
+                $("#dataload").hide();
+                $("#data").html($("#data").html()+data);
+                $(window).scroll(scrollHandler);
+            }
+        });
+
+    }
+
+    function refund(id)
+    {
+        $("#orderid").val(id);
+        $(".comment-form,.cover").show();
+    }
+
+    function sava_refund()
+    {
+        if($("#content").val()=="")
+        {
+            //layer.alert("请输入退款理由！",{icon:2});
+            alert("请输入退款理由！");
+            return;
+        }
+        $.ajax({
+            url: "/{$sitecode}/refund",
+            type: 'POST',
+            cache: false,
+            data: new FormData($('#frm')[0]),
+            processData: false,
+            contentType: false,
+            dataType:"json",
+            success : function(data) {
+                if (data.state == 1) {
+                    //layer.alert("退款申请成功！",{icon:1});
+                    alert("退款申请成功！");
+                    $(".comment-form,.cover").hide();
+                    $("#refund_"+$("#orderid").val()).hide();
+                } else {
+                    //layer.alert(data.msg,{icon:2});
+                    alert(data.msg);
+                }
+
+            }
+        });
+
+    }
+
+    $(function(){
+        $("#close-refund").on("click",function(){
+            $(".comment-form,.cover").hide();
+        })
+
+        $(".select-bar-tab li.btn").each(function(e){
+            $(this).on("click",function(){
+                if($(this).hasClass("on")){
+                    $(this).removeClass("on");
+                    $(".select-main").removeClass("active");
+                    $(".section-shade").hide();
+                }else{
+                    $(this).addClass("on").siblings().removeClass("on");
+                    $(".section-shade").show();
+                    $(".select-main").eq(e).addClass("active").siblings(".select-main").removeClass("active");
+                }
+            });
+        })
+        $(".select-left li").on("click",function(){
+            $(this).addClass("on").siblings().removeClass("on");
+        });
+        $(".select-right li").on("click",function(){
+            $(this).addClass("on").siblings().removeClass("on");
+            $(".section-shade").hide();
+            $(".select-main").removeClass("active");
+            $(".select-bar-tab li").removeClass("on");
+        });
+        $(".section-shade").on("click",function(){
+            if($(".select-main").hasClass("active")){
+                $(".section-shade").hide();
+                $(".select-main").removeClass("active");
+                $(".select-bar-tab li").removeClass("on");
+            }
+        })
+
+        sets({$state});
+    });
+    function sel(index) {
+        window.location='/{$sitecode}/signupmanagelist/'+index;
+    }
+    function sets(index) {
+        if(index>99)
+        {
+            $("#s"+index).css("background-color","#eee")
+        }
+        else
+        {
+            $("#s000").css("background-color","#eee")
+            $("#s_name").html($("#s"+index).html());
+        }
+    }
+
+
+</script>
+</body>
+</html>

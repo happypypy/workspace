@@ -1,0 +1,41 @@
+		<footer>
+			<div class="footer">
+				<ul>
+					<li>
+
+						<a href="/{$sitecode}/activity">
+							<span><i class="iconfont home">&#xe617;</i></span>
+							<p>更多</p>
+						</a>
+
+					</li>
+
+					<li id="openService">
+						<a href="javascript:;">
+							<span><i class="iconfont consult">&#xe63f;</i></span>
+							<p>咨询</p>
+						</a>
+					</li>
+
+					<li>
+						<a href="javascript:void();" id="show-comment1">
+							<span><i class="iconfont message">&#xe608;</i></span>
+							<p>评论</p>
+						</a>
+					</li>
+					<li>
+						<a href="javascript:void();" onclick="add_collection1()">
+							<span><i class="iconfont fav">&#xe616;</i></span>
+							<p>收藏</p>
+						</a>
+					</li>
+
+					<li class="on">
+						<a href="/{$sitecode}/signup/{$id}" >
+							<span><i class="iconfont message">&#xe608;</i></span>
+							<p id="openSign" >报名</p>
+						</a>
+					</li>
+				</ul>
+			</div>
+		</footer>

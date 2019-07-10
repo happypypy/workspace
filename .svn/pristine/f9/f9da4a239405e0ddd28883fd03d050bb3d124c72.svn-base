@@ -1,0 +1,32 @@
+
+UE.registerUI('myblockquote',function(editor,uiName){
+    editor.registerCommand(uiName,{
+        execCommand:function(){
+            this.execCommand('blockquote',{
+                "style":"border-left: 3px solid #000; margin-left: 0px; padding-left: 5px; line-height:36px;"
+            });
+        }
+    });
+ 
+    var btn = new UE.ui.Button({
+        name:uiName,
+        title:'图片上传',
+        cssRules :"edui-for-myblockquote",
+        onclick:function () {
+            CustomOpen("/editorfileupload?type=1&key="+editor.key,"addcomment","图片上传",500,300);
+        }
+    });
+ 
+    editor.addListener('selectionchange', function () {
+        var state = editor.queryCommandState('blockquote');
+        if (state == -1) {
+            btn.setDisabled(true);
+            btn.setChecked(false);
+        } else {
+            btn.setDisabled(false);
+            btn.setChecked(state);
+        }
+    });
+ 
+    return btn;
+});

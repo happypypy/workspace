@@ -1,0 +1,193 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>短信申请</title>
+    <link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
+    <link href="__PUBLIC__/static/css/page.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="__PUBLIC__/static/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/lhgdialog.js?skin=aero"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/CostomLinkOpenSw.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/tabscommon.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/del-checked.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/layer/layer.js"></script>
+    <script type="text/javascript">
+
+    </script>
+</head>
+<body>
+
+<div class="oa_wrapper">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr class="oa_wrapper-display">
+            <td class="oa_wrapper-top-arr-left">&nbsp;</td>
+            <td class="oa_wrapper-top-arr-middle"></td>
+            <td class="oa_wrapper-top-arr-right">&nbsp;</td>
+        </tr>
+        <tr>
+            <td class="oa_wrapper-middle-arr-left oa_wrapper-display"></td>
+            <td class="oa_wrapper-middle-arr-middle">
+                <div class="oa_location clearfix"><span class="oa_ico-left"></span>location<span class="oa_ico-right"></span></div>
+                <div class="oa_main clearfix">
+                    <div class="oa_subnav clearfix">
+                        <div class="oa_subnav-tab clearfix">
+                            {include file="sms/sms_nav"}
+                        </div>
+                    </div>
+                    <div class="oa_title clearfix">
+                        <span class="oa_title-btn">
+                            <ul>
+                            </ul>
+                          </span>
+                        <span class="oa_ico-left"></span>
+                        短信申请
+                    </div>
+                    <div class="oa_pop-main">
+                        <div class="oa_edition">
+                            <form action="" enctype="multipart/form-data" method="post" onsubmit="return check()">
+                            <table width="100%" border="0" cellspacing="1" cellpadding="0" class="oa_edition">
+                                <tr class="oa_text-list-title">
+                                    <td width="240" class="oa_cell-left"><span style="color:#ff0000">*</span>公司名称：</td>
+                                    <td class="oa_cell-right">
+                                        <input name="sms_company_name" id="sms_company_name" style="width:400px;" autocomplete="off" placeholder="公司名称"  type="text" value="{$sm_info.sms_company_name}" class="form-control " chname="公司名称"  />
+                                        <div style="color: #ff7070;padding: 2px;">公司全称</div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td width="240" class="oa_cell-left"><span style="color:#ff0000">*</span>营业执照：</td>
+                                    <td class="oa_cell-right">
+                                        <input name="sms_business_license" id="sms_business_license" style="width:400px;" type="text" value="{$sm_info.sms_business_license}" chname="" class="form-control" />
+                                        <?php if($sm_info["sms_status"]!=1 && $sm_info["sms_status"]!=2){ ?>
+                                        <input type="button" onclick="GetUploadify(1,'sms_business_license','admin','undefined','*.jpg;*.jpeg;*.png;*.gif;*.jpeg;');" value="上传营业执照" />
+                                        <?php } ?>
+                                        <input onclick="openimg('sms_business_license')" type="button" value="查看营业执照">
+                                    </td>
+                                </tr>
+                                <tr class="oa_text-list-title">
+                                    <td width="240" class="oa_cell-left"><span style="color:#ff0000">*</span>短信签名：</td>
+                                    <td class="oa_cell-right">
+                                        <input name="sms_sign" id="sms_sign" autocomplete="off" style="width:400px;" placeholder="童享云"  type="text" value="{$sm_info.sms_sign}" class="form-control " chname="短信签名"  />
+                                        <div style="color: #ff7070;padding: 2px;">短信前面的签名，如 【童享云】</div>
+                                    </td>
+                                </tr>
+                                <tr class="oa_text-list-title">
+                                     <td width="240" class="oa_cell-left"><span style="color:#ff0000">*</span>承诺函：</td>
+                                     <td class="oa_cell-right">
+                                         <input name="sms_agreement_path" id="sms_agreement_path" style="width:400px;" type="text" value="{$sm_info.sms_agreement_path}" chname="" class="form-control" />
+                                         <?php if($sm_info["sms_status"]!=1 && $sm_info["sms_status"]!=2){ ?>
+                                         <input type="button" onclick="GetUploadify(1,'sms_agreement_path','admin','undefined','*.doc;*.docx;');" value="上传承诺函" />
+                                         <?php } ?>
+                                         <br/>
+                                        <a style=" text-decoration:underline;" href='{:url("sms/download_commitment_template")}'>下载承诺函模版</a>
+                                     </td>
+                                </tr>
+                                <tr class="oa_text-list-title">
+                                    <td width="240" class="oa_cell-left"><span style="color:#ff0000">*</span>申请人姓名：</td>
+                                    <td class="oa_cell-right">
+                                        <input name="sms_contact_name" id="sms_contact_name" style="width:400px;" autocomplete="off" placeholder="申请人姓名"  type="text" value="{$sm_info.sms_contact_name}" class="form-control " chname="申请人姓名"  />
+                                    </td>
+                                </tr>
+                                <tr class="oa_text-list-title">
+                                    <td width="240" class="oa_cell-left"><span style="color:#ff0000">*</span>申请人电话：</td>
+                                    <td class="oa_cell-right">
+                                        <input name="sms_contact_telephone" id="sms_contact_telephone" style="width:400px;" autocomplete="off" placeholder="申请人电话"  type="text" value="{$sm_info.sms_contact_telephone}" class="form-control " chname="申请人电话"  />
+                                    </td>
+                                </tr>
+                                <tr class="oa_text-list-title">
+                                    <td width="240" class="oa_cell-left">申请人职位：</td>
+                                    <td class="oa_cell-right">
+                                        <input name="sms_contact_position" id="sms_contact_position" style="width:400px;" autocomplete="off" placeholder="申请人职位"  type="text" value="{$sm_info.sms_contact_position}" class="form-control " chname="申请人职位"  />
+                                    </td>
+                                </tr>
+                                <tr class="oa_text-list-title">
+                                    <td width="240" class="oa_cell-left">备注：</td>
+                                    <td class="oa_cell-right">
+                                        <textarea id="sms_mark" name="sms_mark" is_null="1" style="width:400px;" cols="50" rows="3"  class="input oa_input-200"  style="height:80px;">{$sm_info.sms_mark}</textarea>
+                                        <!--<div style="color: #ff7070;padding: 2px;">短信前面的签名，如 【童享云】</div>-->
+                                    </td>
+                                </tr>
+                                <tr class="oa_text-list-title">
+                                    <td width="240" class="oa_cell-left">审批状态：</td>
+                                    <td class="oa_cell-right">
+                                    <span class="oa_cell-right">
+                                        <?php if($sm_info["sms_status"]==1){echo "审核中";}elseif($sm_info["sms_status"]==2){echo "审核通过";}elseif($sm_info["sms_status"]==3){echo "<span style='color: #ff7070'>审核不通过</span>";}  ?>
+                                    </td>
+                                </tr>
+                                <?php if($sm_info["sms_status"]==3){ ?>
+                                <tr class="oa_text-list-title">
+                                    <td width="240" class="oa_cell-left">审批意见：</td>
+                                    <td class="oa_cell-right">
+                                        <?php echo $sm_info["sms_apply_comment"]; ?>
+                                    </td>
+                                </tr>
+                                <?php } ?>
+                            </table>
+                            <div class="oa_bottom clearfix">
+                                <div class="clearfix">
+                                    <div class="clearfix" style="padding-left: 20%; padding-top: 1rem; padding-bottom: 1rem;">
+                                        <input type="hidden" name="sms_status" value="{$sm_info.sms_status}" />
+                                        <?php if($sm_info["sms_status"]==0 || ($sm_info["sms_status"]==3)){ ?>
+                                        <input value="保存" type="submit" class="oa_input-submit" />
+                                        <?php } ?>
+                                    </div>
+                                </div>
+                                <div class="oa_bottom-bottom"><em></em></div>
+                            </div>
+                            </form>
+                        </div>
+                        <div class="oa_content-main-bottom"></div>
+                    </div>
+
+                </div>
+            </td>
+            <td class="oa_wrapper-middle-arr-right oa_wrapper-display"></td>
+        </tr>
+        <tr class="oa_wrapper-display">
+            <td class="oa_wrapper-bottom-arr-left">&nbsp;</td>
+            <td class="oa_wrapper-bottom-arr-middle"></td>
+            <td class="oa_wrapper-bottom-arr-right">&nbsp;</td>
+        </tr>
+    </table>
+</div>
+<script type="text/javascript">
+
+    function check() {
+        if($.trim($("#sms_business_license").val())==""){
+            layer.msg('营业执照不能为空！');
+            return false;
+        }
+        if($.trim($("#sms_sign").val())==""){
+            layer.msg('短信签名不能为空！');
+            return false;
+        }
+        if($.trim($("#sms_contact_name").val())==""){
+            layer.msg('申请人姓名不能为空！');
+            return false;
+        }
+        if($.trim($("#sms_contact_telephone").val())==""){
+            layer.msg('申请人电话不能为空！');
+            return false;
+        }
+        if($.trim($("#sms_agreement_path").val())==""){
+            layer.msg('承诺函不能为空！');
+            return false;
+        }
+        return true;
+    }
+
+    function empty() {
+        window.location.reload();
+    }
+
+    function show_agreement() {
+        layer.open({
+            title: "协议书",
+            type: 1,
+            skin: 'layui-layer-rim', //加上边框
+            area: ['420px', '240px'], //宽高
+            content: '协议书内容'
+        });
+    }
+</script>
+</body>
+</html>

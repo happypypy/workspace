@@ -1,0 +1,28 @@
+// JavaScript Document
+//Chechbox
+$(document).ready(function() {
+	$('.list-box-fixed ul li').czCheckbox({
+		initCallback: function() {},
+		});
+	});
+//Tabs
+$(document).ready(function() {  
+    $("#tab").tab({  
+        dft:0,  // 起始显示项,默认为第一项  
+        //auto:true,  // 自动切换,默认为关闭  
+        //act:"mouseover",  // 鼠标划过,默认为单击  
+        effact:" scrolly",  // 横向滚动效果,纵向滚动为 scrolly  
+        effact:"slow",  // "slow" 效果  
+        tabId: ".tabs",  // 切换控制器  
+        tabTag: "li",  // 切换控制器标签  
+        conId: ".tabContent",  // 内容容器  
+        conTag: ".pane"  // 内容容器标签  
+     })  
+
+}) 
+//Iframe HeightAuto
+$(window.parent.document).find(".frameautoheight").load(function(){
+	var main = $(window.parent.document).find(".frameautoheight");
+	var thisheight = $(document).height()+30;
+	main.height(thisheight);
+});

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+<div id="abc"></div>
+<script language="javascript">
+document.getElementById("abc").innerHTML+="&lt!--";
+for(i=600;i<800;i++)
+{
+	document.getElementById("abc").innerHTML+=".ss"+i+":before{content:\"\\e"+i+"\";font-family: 'iconfont';}<br>"
+}
+document.getElementById("abc").innerHTML+="--&gt<br>&ltdiv&gt<br>&lt/style&gt<br>";
+
+for(i=600;i<800;i++)
+{
+	document.getElementById("abc").innerHTML+="&lti class='fa1 ss"+i+"'&gt&lt/i&gt<br>"
+}
+document.getElementById("abc").innerHTML+="&lt/div&gt";
+</script>
+<body>
+<html>

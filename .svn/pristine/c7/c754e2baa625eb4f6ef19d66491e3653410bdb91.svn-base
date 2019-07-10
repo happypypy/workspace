@@ -1,0 +1,117 @@
+﻿<div class="container"  style="height:678px;overflow-y:auto;">
+    <div class=" ui-portlet" id="html-parsers-list">
+        <div style="background-color: #d9edf7; padding: 10px; border-color: #bce8f1; color: #3a87ad;">
+            <p style="font-size: 16px; clear: none;"><strong style="color: red;">提示：</strong>① 在编辑器中粘贴或者输入所有内容，② 点击对应的一键排版规则,③ 全文内容实现自动排版</p>
+        </div>
+        <div style="padding: 0px; overflow-x: hidden;" id="tpl-tab-content">
+            <div id="html-parsers-items" class="tab-pane active">
+                <div id="html-parsers-options">
+                    <section style="white-space: normal; font-size: 14px; line-height: 25px; margin: 2px auto; padding: 10px 10px; border: 2px dashed #dedcde; max-width: 100%;">
+                        <p style="font-size: 12px; font-weight: bold;">参数设置 </p>
+                        <p>
+                            是否自动识别标题 <i title="若设置识别则少于标题最大字数的段落文字将被设为标题" class="showtooltip fa fa-question-circle"></i>：
+                            <select onchange="if(this.value==1) $('#title-text-num-p').hide();else $('#title-text-num-p').show();" name="skip_title">
+                                <option value="">识别</option>
+                                <option value="1">不识别</option>
+                            </select>
+                        </p>
+                        <div id="title-text-num-p">
+                            <p>
+                                标题最大字数 <i title="超过最大字数的段落不会被设置成标题样式" class="showtooltip fa fa-question-circle"></i>：
+                                <input name="title_text_num" style="width: 60px;" value="20" size="3">
+                            </p>
+                            <p>
+                                图片短描述 <i title="图片短描述不会识别为标题，<br>可选择是否有描述及描述出现位置" class="showtooltip fa fa-question-circle"></i>：
+                                <select name="image_desc">
+                                    <option value="">无</option>
+                                    <option value="before">图片前方</option>
+                                    <option value="after">图片后方</option>
+                                </select>
+                            </p>
+                        </div>
+                    </section>
+                </div>
+
+                <div>
+                    <div style="padding: 10px 0;">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-4">
+                                <div class="appmsg clearfix html-parser-rule" style="cursor: pointer; padding: 10px; border-bottom: 1px solid #CCC;" id="html-parser-36" data-id="36">
+                                    <div class="appmsg_content text-center">
+                                        <img src="http://cdn.135editor.com/files/201604/PcIb69IJ_Bwtv.jpg" title="灰白黑简洁模板" class="showtooltip" alt="" />
+                                        <p style="font-weight: normal; font-size: 12px; color: #EF7060;">灰白黑简洁模板</p>
+                                        <p style="font-weight: normal; font-size: 12px; text-align: center; color: #EF7060;">
+                                            免费使用
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-4">
+                                <div class="appmsg clearfix html-parser-rule" style="cursor: pointer; padding: 10px; border-bottom: 1px solid #CCC;" id="html-parser-35" data-id="35">
+                                    <div class="appmsg_content text-center">
+                                        <img src="http://cdn.135editor.com/files/201604/dmG2enZ0_YYfh.jpg" title="黄色系模板" class="showtooltip" alt="" />
+                                        <p style="font-weight: normal; font-size: 12px; color: #EF7060;">黄色系模板</p>
+                                        <p style="font-weight: normal; font-size: 12px; text-align: center; color: #EF7060;">
+                                            免费使用
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-4">
+                                <div class="appmsg clearfix html-parser-rule" style="cursor: pointer; padding: 10px; border-bottom: 1px solid #CCC;" id="html-parser-33" data-id="33">
+                                    <div class="appmsg_content text-center">
+                                        <img src="http://rdn.135editor.com/cache/remote/aHR0cHM6Ly9tbWJpei5xbG9nby5jbi9tbWJpei95cVZBcW9adkRpYkZ6ZG1OaGhXa2E4eElic3ZRSDBFQUk2Uldodm52NFRwbmFVb0owc3JjeHBNOGJIZ3g0R1haZkVqaWMxSFRKVzVuSm92VFJKTUNUT0NnLzA=" title="黑底标题模板" class="showtooltip" alt="" />
+                                        <p style="font-weight: normal; font-size: 12px; color: #EF7060;">黑底标题模板</p>
+                                        <p style="font-weight: normal; font-size: 12px; text-align: center; color: #EF7060;">
+                                            免费使用
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-4">
+                                <div class="appmsg clearfix html-parser-rule" style="cursor: pointer; padding: 10px; border-bottom: 1px solid #CCC;" id="html-parser-7" data-id="7">
+                                    <div class="appmsg_content text-center">
+                                        <img src="http://rdn.135editor.com/cache/remote/aHR0cHM6Ly9tbWJpei5xbG9nby5jbi9tbWJpei9jWlYyaFJwdUFQZ0EwZVoyRWYwNjJnNnhvd3NPUWF3aWN5MURCaWNXdThSc1llbFV1NVo2d0E3VTBzd0dYZnlSZ2liYWo0Q2ljUU1zQm5GQzdndldXTXBaOWcvMA==" title="粉紫色简洁模板" class="showtooltip" alt="" />
+                                        <p style="font-weight: normal; font-size: 12px; color: #EF7060;">粉紫色简洁模板</p>
+                                        <p style="font-weight: normal; font-size: 12px; text-align: center; color: #EF7060;">
+                                            免费使用
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-4">
+                                <div class="appmsg clearfix html-parser-rule" style="cursor: pointer; padding: 10px; border-bottom: 1px solid #CCC;" id="html-parser-5" data-id="5">
+                                    <div class="appmsg_content text-center">
+                                        <img src="http://rdn.135editor.com/cache/remote/aHR0cHM6Ly9tbWJpei5xbG9nby5jbi9tbWJpei95cVZBcW9adkRpYkV4ZVE0SFRyUzhrcXlIQVk4cnVLSEMzVGZ2YlZtdTFnZWNoMWc2RVlvN0JoSllaWFdoNDlvQmhQMDhjaWNsOXVGNHFWV2dpY0R2SkY2Zy8wP3d4X2ZtdD1wbmc=" title="微渐变背景" class="showtooltip" alt="" />
+                                        <p style="font-weight: normal; font-size: 12px; color: #EF7060;">微渐变背景</p>
+                                        <p style="font-weight: normal; font-size: 12px; text-align: center; color: #EF7060;">
+                                            免费使用
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-4">
+                                <div class="appmsg clearfix html-parser-rule" style="cursor: pointer; padding: 10px; border-bottom: 1px solid #CCC;" id="html-parser-3" data-id="3">
+                                    <div class="appmsg_content text-center">
+                                        <img src="http://rdn.135editor.com/cache/remote/aHR0cHM6Ly9tbWJpei5xbG9nby5jbi9tbWJpei95cVZBcW9adkRpYkV4ZVE0SFRyUzhrcXlIQVk4cnVLSEM5Mk9CVmlhVUFFRm9aclRTcmNZbHZCY0pjZU9JU0NXQ2JHMEVLQW8zVUoxeFEyNElOd3dHM2hBLzA/d3hfZm10PXBuZw==" title="文艺小清新二" class="showtooltip" alt="" />
+                                        <p style="font-weight: normal; font-size: 12px; color: #EF7060;">文艺小清新二</p>
+                                        <p style="font-weight: normal; font-size: 12px; text-align: center; color: #EF7060;">
+                                            免费使用
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- </div> -->
+                            <!-- </div> -->
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="pageTitle" style="display: none;">-</div>
+</div>

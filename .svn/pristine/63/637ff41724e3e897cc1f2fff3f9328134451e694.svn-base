@@ -1,0 +1,85 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+    <link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
+    <link href="__PUBLIC__/static/css/page.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="__PUBLIC__/static/js/jquery-3.2.1.min.js"></script>
+</head>
+<body>
+<div class="oa_pop">
+    <div style="height: 6px"></div>
+    <div class="oa_title clearfix">
+        <span class="oa_ico-right"></span>
+        <span class="oa_title-btn"></span>
+        <span class="oa_ico-left"></span>
+        <span>添加营销包</span>
+    </div>
+  <div class="oa_pop-main">
+  	<div class="oa_edition">
+        <form action="{:url('marketingpackage/modi')}" enctype="multipart/form-data" method="post" onsubmit="return checkedSubmit();">
+            <table width="100%" border="0" cellspacing="1" cellpadding="0" class="oa_edition" style="border-bottom: #e0e0e0 solid 1px">
+                <tr>
+                    <td width="200" class="oa_cell-left"><span style="color: red;">*</span>&nbsp;营销包名称：</td>
+                    <td class="oa_cell-right"><input id="marketing_package_name" name="marketing_package_name" type="text" value="{$datainfo.marketing_package_name ?? ''}" class="oa_input-200" /></td>
+                </tr>
+                <tr>
+                    <td width="200" class="oa_cell-left"><span style="color: red;">*</span>&nbsp;营销包代号：</td>
+                    <td class="oa_cell-right"><input id="marketing_package_code" name="marketing_package_code" type="text" value="{$datainfo.marketing_package_code ?? ''}" class="oa_input-200" /></td>
+                </tr>
+                <tr>
+                    <td width="200" class="oa_cell-left">&nbsp;营销包描述：</td>
+                    <td class="oa_cell-right">
+                        <textarea id="marketing_package_desc" name="marketing_package_desc" cols="30" rows="4" style="width: 210px; border: solid 1px #CCCCCC">{$datainfo.marketing_package_desc ?? ''}</textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="200" class="oa_cell-left">序列号：</td>
+                    <td class="oa_cell-right"><input id="idorder" name="idorder" type="text" value="{$datainfo.idorder ?? 0}" class="oa_input-200" /></td>
+                </tr>
+                <tr>
+                    <td width="200" class="oa_cell-left">是否启用：</td>
+                    <td class="oa_cell-right">
+                        {if condition="isset($datainfo.is_use)"}
+                            <input type="radio" name="is_use" value="1" {$datainfo.is_use==1 ? 'checked' : ''}>是
+                            <input type="radio" name="is_use" value="0" {$datainfo.is_use==0 ? 'checked' : ''}>否
+                        {else /}
+                            <input type="radio" name="is_use" value="1" checked>是
+                            <input type="radio" name="is_use" value="0">否
+                        {/if}
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="padding:10px;"><input name="" type="submit" value="保存" /></td>
+                    <td>
+                        <input type="hidden" name="id" value="{$datainfo.id ?? 0}" />
+                        <input type="hidden" name="action" value="{$datainfo.id ? 'edit' : 'add'}" />
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+  </div>
+</div>
+
+<script>
+function checkedSubmit(){
+    var marketing_package_name = $('#marketing_package_name').val();
+    var marketing_package_code = $('#marketing_package_code').val();
+
+    if(marketing_package_name.length <= 0){
+        alert("请输入营销包名称");
+        return false;
+    }
+
+    if(marketing_package_code.length <= 0){
+        alert("请输入营销包代号");
+        return false;
+    }
+
+    return true;
+}
+</script>
+</body>
+</html>

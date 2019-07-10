@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="yes" name="apple-mobile-web-app-capable">
+  <meta content="yes" name="apple-touch-fullscreen">
+  <meta content="telephone=no,email=no" name="format-detection">
+  <meta name="viewport"
+    content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+  <script src="__PUBLIC__/static/js/jquery.min.js"></script>
+  <script src="__PUBLIC__/static/js/integral.js"></script>
+  <link rel="stylesheet" href="__PUBLIC__/static/css/mobile.css">
+  <title>我的积分记录</title>
+</head>
+
+<body class="flexCol">
+  {include file="M6/lib/header2" /}
+
+  <section class="score-record-section">
+    <div class="select-box">
+      <form action="" method="" class="flex">
+        <div class="select">
+          <select class="classify" name="classify" id="classify">
+            <option value="0">全部积分</option>
+            {volist name="$member_integral_category" id="vo"  key="k"}
+            <option value="{$k}">{$vo}</option>
+            {/volist}
+          </select>
+        </div>
+        <div class="select">积分获取</div>
+        <div class="select">积分扣除</div>
+      </form>
+    </div>
+
+    <div class="score-record-list">
+      <ul id="integral_record">
+
+      </ul>
+      <div class="load" style="display: none;"><span id="dataload" class="iconfont iconload">&#xe618;</span></div>
+    </div>
+  </section>
+  
+  {include file="M6/lib/footer3" /}
+</body>
+<script src="__PUBLIC__/static/js/pub.js"></script>
+<script type="text/javascript">
+  document.body.style.visibility = "visible";
+  var index = 0,category_id = 0;
+  var page = 1;
+  var pageSize = 8;
+  var scrollState = true;  // 下拉滚动状态, true：启用 false: 禁用
+
+  // 积分选择
+  $('#classify').change(function(){
+    category_id = $("#classify").val();
+    loadData();
+  });
+
+  // 菜单选择
+  $('.select').on('click',function(){
+    $('.select').removeClass("on");
+    $(this).addClass("on");
+    index = $(".select").index(this);
+    category_id = 0;
+    page = 1;
+    if(index !== 0){
+      loadData();
+    }
+  });
+
+  loadData();
+  // 加载数据
+  function loadData(){
+    $('.load').show();
+    $.ajax({
+      type: "POST",
+      url: "/{$sitecode}/getintegralrecord",
+      data: {menu_type:index,category_id:category_id,page:page,pageSize:pageSize},
+      dataType: "JSON",
+      success:function(result){
+        if(result.data.length == 0){
+          scrollState = false;
+          if(page == 1){
+            $('#integral_record').html('<li class="flex">未查询到更多积分记录</li>');
+          }
+          $('.load').hide();
+          return;
+        }
+
+        var html = "";
+        result.data.forEach(item => {
+          html += '<li class="flex add">';
+          if(item.category_id==1 || item.category_id==2 || item.category_id==3 || item.category_id==6 || item.category_id==7){
+            html += '<div class="tit flex">+'+ item.integral +'</div>';
+          }else if(item.category_id == 4){
+            html += '<div class="tit flex" style="color:gray;">-'+ item.integral +'</div>';
+          }else{
+            html += '<div class="tit flex" style="color:green;">-'+ item.integral +'</div>';
+          }
+          html += '<div class="txt flexCol">';
+          html += '<div class="time">'+ formatTime(item.create_time) +'</div>';
+          var freeze = '';
+          if(item.is_freeze == 1){
+            freeze = '冻结：活动未完成';
+          }else if(item.is_freeze == 3){
+            freeze = '失效：活动退款';
+          }
+          var category_name = '';
+          if(item.category_id == 1){
+            category_name = '签到'
+          }else if(item.category_id == 2){
+            category_name = '活动报名'
+          }else if(item.category_id == 3){
+            category_name = '评论'
+          }else if(item.category_id == 4){
+            category_name = '活动退款'
+          }else if(item.category_id == 5){
+            category_name = '商品兑换'
+          }else if(item.category_id == 6){
+            category_name = '赠送积分'
+          }else if(item.category_id == 7){
+            category_name = '取消兑换'
+          }
+          html += '<div class="info">'+ category_name +' <div style="float:right;color:red;">'+ freeze +'</div></div>';
+          html += '</div>';
+          html += '</li>';
+        });
+        if(page == 1){
+          $('#integral_record').html(html);
+        }else{
+          $('#integral_record').append(html);
+        }
+        scrollState = true;
+        $('.load').hide();
+        page++;
+      }
+    });
+  }
+  
+  // 时间格式化
+  function formatTime(timestamp){
+    var now = new Date(timestamp*1000);
+    var   year=now.getFullYear();    
+    var   month=now.getMonth()+1;    
+    var   date=now.getDate();    
+    var   hour=now.getHours();    
+    var   minute=now.getMinutes();    
+    var   second=now.getSeconds();    
+    return   year+"-"+month+"-"+date+"   "+hour+":"+minute+":"+second;    
+  }
+  //获取滚动条当前的位置
+  function getScrollTop() {
+      var scrollTop = 0;
+      if (document.documentElement && document.documentElement.scrollTop) {
+          scrollTop = document.documentElement.scrollTop;
+      } else if (document.body) {
+          scrollTop = document.body.scrollTop;
+      }
+      return scrollTop;
+  }
+  //获取当前可视范围的高度
+  function getClientHeight() {
+      var clientHeight = 0;
+      if (document.body.clientHeight && document.documentElement.clientHeight) {
+          clientHeight = Math.min(document.body.clientHeight, document.documentElement.clientHeight);
+      } else {
+          clientHeight = Math.max(document.body.clientHeight, document.documentElement.clientHeight);
+      }
+      return clientHeight;
+  }
+  //获取文档完整的高度
+  function getScrollHeight() {
+      return Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+  }
+  //滚动事件触发
+  window.onscroll = function () {
+    if (getScrollTop() + getClientHeight() === getScrollHeight() && scrollState == true) {
+      loadData();
+    }
+  };
+</script>
+</html>

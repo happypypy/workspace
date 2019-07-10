@@ -1,0 +1,186 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>短信申请</title>
+    <link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
+    <link href="__PUBLIC__/static/css/page.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="__PUBLIC__/static/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/lhgdialog.js?skin=aero"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/CostomLinkOpenSw.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/tabscommon.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/del-checked.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/layer/layer.js"></script>
+    <script type="text/javascript">
+
+    </script>
+</head>
+<body>
+
+<div class="oa_wrapper">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr class="oa_wrapper-display">
+            <td class="oa_wrapper-top-arr-left">&nbsp;</td>
+            <td class="oa_wrapper-top-arr-middle"></td>
+            <td class="oa_wrapper-top-arr-right">&nbsp;</td>
+        </tr>
+        <tr>
+            <td class="oa_wrapper-middle-arr-left oa_wrapper-display"></td>
+            <td class="oa_wrapper-middle-arr-middle">
+                <div class="oa_location clearfix"><span class="oa_ico-left"></span>location<span class="oa_ico-right"></span></div>
+                <div class="oa_main clearfix">
+                    <div class="oa_pop-main">
+                        <div class="oa_edition">
+                            <table width="100%" border="0" cellspacing="1" cellpadding="0" class="oa_edition" id="part1" style="border: #e0e0e0 solid 1px;margin-top: 30px">
+                                <tr class="oa_text-list-title" >
+                                    <td class="oa_cell-left" ><span style="color:#ff0000">*</span>充值短信数量：</td>
+                                    <td class="oa_cell-right">
+
+                                        <!--<input type="number" step="1" min="1" max="100"/>-->
+                                        <!--<select name="sms_num" id="sms_num"  onchange="showPrice()" >-->
+                                            <!--<?php for($num=1000;$num<=10000;$num+=1000){ ?>-->
+                                            <!--<option value="{$num}">{$num}</option>-->
+                                            <!--<?php } ?>-->
+                                        <!--</select>-->
+                                        <input name="sms_num" id="sms_num" onchange="showPrice()"  style="width:100px; height: 20px" autocomplete="off" placeholder="0" type="number" min="0" value="0" class="form-control "  />单位:千条
+                                        <!--<div style="color: #ff7070;padding: 2px;">需为1000的倍数</div>-->
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td  class="oa_cell-left"><span style="color:#ff0000">*</span>金额：</td>
+                                    <td class="oa_cell-right">
+                                        <label id="price">0</label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="text-align: center;">
+                                        <input value="下一步" type="button" onclick="recharge(this)" class="oa_input-submit" style="margin: 10px 0"/>
+                                    </td>
+                                </tr>
+                            </table>
+                            <div class="oa_bottom clearfix" style="display: none;border-top: #e0e0e0 solid 1px" id="part2">
+                                <div class="oa_bottom-bottom" style="text-align: center;">
+                                    <em>
+                                        <img id="pay_qrcode" src="" style="width: 11rem;display: none;" alt="充值二维码" />
+                                    </em>
+                                    <br/>
+                                    <label id="str_pay_qrcode" style="display: none">请扫描微信二维码进行支付</label>
+                                    <br/><br/>
+                                    <input value="充值完成" type="button" onclick="recharge_complete()" class="oa_input-submit" />
+                                    <input value="返回上一步" type="button" onclick="back()" class="oa_input-submit" />
+                                    <br/><br/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="oa_content-main-bottom"></div>
+                    </div>
+
+                </div>
+            </td>
+            <td class="oa_wrapper-middle-arr-right oa_wrapper-display"></td>
+        </tr>
+        <tr class="oa_wrapper-display">
+            <td class="oa_wrapper-bottom-arr-left">&nbsp;</td>
+            <td class="oa_wrapper-bottom-arr-middle"></td>
+            <td class="oa_wrapper-bottom-arr-right">&nbsp;</td>
+        </tr>
+    </table>
+</div>
+<script type="text/javascript">
+    var t;
+    var waitTime = 0;
+    function showPrice() {
+        var sms_num = $("#sms_num").val();
+        sms_num = sms_num;
+        $("#price").text(sms_num * 60);
+    }
+
+
+    /**
+     * 充值
+     */
+    function recharge(objThis) {
+        var sms_num = $("#sms_num").val();
+        sms_num = sms_num*1000;
+        var flag = true;
+        if (sms_num < 1000) {
+            layer.msg('短信充值数量不能少于1000条！');
+            flag = false;
+            return flag;
+        }
+        if((sms_num%1000) != 0){
+            layer.msg('短信充值数量须为1000的倍数！');
+            flag = false;
+            return flag;
+        }
+
+        if (flag) {
+            var url = "/admin/sms/pay/sms_num/" + sms_num;
+            if (waitTime != 0) {
+                $("#part1").hide();
+                $("#part2").show();
+            } else {
+                var msg = "您将购买"+sms_num+"条短信，共计"+((sms_num*0.06).toFixed(2))+"元，确认支付？";
+                layer.confirm(msg, {
+                    btn: ['确定','取消'] //按钮
+                }, function() {
+                    layer.closeAll();
+                    $(objThis).attr("disabled", true);
+                    $.ajax({
+                        url: url,
+                        type: "post",
+                        dataType: 'json',
+                        success: function (obj) {
+                            if (obj.status === "success") {
+                                $("#part1").hide();
+                                $("#part2").show();
+                                waitTime = 60;
+                                $(objThis).attr("disabled", false);
+                                setTimeout(function () {
+                                    $(objThis).val("下一步");
+                                    clearInterval(t);
+                                }, 61000);
+                                t = setInterval(function () {
+                                    waitTime--;
+                                    $(objThis).val("继续支付(" + (waitTime) + "s后可重新生成订单)");
+                                }, 1000);
+                                $("#pay_qrcode").show();
+                                $("#str_pay_qrcode").show();
+                                $("#pay_qrcode").attr("src", obj.pay_url);
+                            } else {
+                                $(objThis).attr("disabled", false);
+                                layer.alert('请求支付失败，请刷新后重试', {icon: 2}, function (index) {
+                                    layer.close(index);
+                                });
+                            }
+                        },
+                        error: function (msg) {
+                            $(objThis).attr("disabled", false);
+                            layer.alert('操作失败', {icon: 2}, function (index) {
+                                layer.close(index);
+                                // location.reload();
+                            });
+                        }
+                    })
+                });
+            }
+        }
+    }
+    
+    function recharge_complete() {
+        closewin();
+    }
+    function closewin()
+    {
+        CloseDiv();
+        GetOpenerWin().empty();
+    }
+
+    function back() {
+
+        $("#part1").show();
+        $("#part2").hide();
+    }
+</script>
+</body>
+</html>

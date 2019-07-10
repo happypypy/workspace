@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+    <link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
+    <link href="__PUBLIC__/static/css/page.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div class="oa_pop">
+    <div style="height: 6px"></div>
+    <div class="oa_pop-main">
+        <div class="oa_title clearfix">
+            <span class="oa_ico-right"></span>
+            <span class="oa_title-btn"></span>
+            <span class="oa_ico-left"></span>
+            <span>{:lang('module name')}</span></span>
+        </div>
+  <div class="oa_pop-main">
+  	<div class="oa_edition">
+        <form action="{:url('menu/modupost')}" enctype="multipart/form-data" method="post">
+            <table width="100%" border="0" cellspacing="1" cellpadding="0" class="oa_edition" style="border-bottom: #e0e0e0 solid 1px">
+                <tr>
+                    <td width="100" class="oa_cell-left"><span style="color: red;">*</span>&nbsp;{:lang('module name')}：</td>
+                    <td class="oa_cell-right"><input name="chrname" type="text" value="{$moduinfo['chrname']}" class="oa_input-200" /></td>
+                </tr>
+                <tr>
+                    <td width="100" class="oa_cell-left"><span style="color: red;">*</span>&nbsp;{:lang('module code')}：</td>
+                    <td class="oa_cell-right"><input name="chrcode" type="text" value="{$moduinfo['chrcode']}" class="oa_input-200" /></td>
+                </tr>
+                <tr>
+                    <td width="100" class="oa_cell-left"><span style="color: red;">*</span>&nbsp;{:lang('module file')}：</td>
+                    <td class="oa_cell-right"><input name="operation" type="text" value="{$moduinfo['operation']}" class="oa_input-200" /></td>
+                </tr>
+                <tr>
+                    <td width="100" class="oa_cell-left"><span style="color: red;">*</span>&nbsp;{:lang('serial')}：</td>
+                    <td class="oa_cell-right"><input name="intsn" type="text" value="{$moduinfo['intsn']}" class="oa_input-200" /></td>
+                </tr>
+                <tr>
+                    <td width="100" class="oa_cell-left">是否系统：</td>
+                    <td class="oa_cell-right">
+                        <input type="radio" name="intflag" value="1"{$moduinfo['intflag']==1?"checked":""}>是
+                        <input type="radio" name="intflag" value="2"{$moduinfo['intflag']==2?"checked":""}>否
+                    </td>
+                </tr>
+                <tr>
+                    <td width="100" class="oa_cell-left"><span style="color: red;">*</span>&nbsp;{:lang('column belong')}：</td>
+                    <td class="oa_cell-right">
+                        <select name="codecatalog">
+                            <option value="">{:lang('choice column')}</option>
+                            {volist name="columnlist" id="vo"}
+                            <option value="{$vo['chrcode']}" {$vo['chrcode']==$moduinfo['codecatalog']?"selected":""}>{$vo['chrname']}</option>
+                            {/volist}
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="200" class="oa_cell-left">{:lang('module picture')}：</td>
+                    <td class="oa_cell-right">{if condition="$moduinfo['action'] eq 'add'"}
+                        <input name="chrimgpath1" type="hidden" value=""><input type="file" name="chrimgpath"/>{else /}
+                        <input name="chrimgpath1" type="text" value="{$moduinfo['chrimgpath']}" class="oa_input-200" />
+                        <input type="file" name="chrimgpath"/>
+                        {/if}</td>
+                </tr>
+                <tr>
+                    <td class="oa_cell-left">{:lang('remarks')}：</td>
+                    <td class="oa_cell-right">
+                        <textarea name="textremark" cols="30" rows="4" style="border: solid 1px #CCCCCC">{$moduinfo['textremark']}</textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <input type="hidden" value="{$request['flag']}" name="flag">
+                    <td colspan="2" style="padding:10px;"><input name="" type="submit" value="{:lang('save')}" /></td>
+                    <td><input type="hidden" name="action" value="{$moduinfo['action']}"></td>
+                </tr>
+                <tr>
+                    {if condition="$moduinfo['action'] eq 'edit'"}
+                    <td><input type="hidden" name="moduleid" value="{$moduinfo['idmodule']}"></td>
+                    {/if}
+                </tr>
+            </table>
+        </form>
+    </div>
+  </div>
+</div>
+</body>
+</html>

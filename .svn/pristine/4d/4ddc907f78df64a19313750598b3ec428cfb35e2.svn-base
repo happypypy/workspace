@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>首页配置</title>
+    <link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
+    <link href="__PUBLIC__/static/css/page.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="__PUBLIC__/static/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/layer/layer.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/ContorlValidator.js"></script>
+</head>
+<body>
+<div class="oa_pop">
+    <div style="height: 6px"></div>
+    <div class="oa_pop-main">
+        <div class="oa_title clearfix">
+            <span class="oa_ico-right"></span>
+            <span class="oa_title-btn"></span>
+            <span class="oa_ico-left"></span>
+            首页配置        </div>
+        <div class="oa_edition">
+            <form action="" method="post">
+                <table width="100%" border="0" cellspacing="1" cellpadding="0" class="oa_edition" style="border-bottom: #e0e0e0 solid 1px">
+                                        <tr>
+                        <td width="150" class="oa_cell-left">代号<span style="color:Red">*</span>：</td>
+                        <td class="oa_cell-right">
+                            <input name="chrcode" id="chrcode" type="text" value="{$datainfo['chrcode']}" class="oa_input-200" onblur="SingleTextType(this,'0','','','')"  chname="代号" />
+                            <div id="lbl_chrcode" style="color:Red; font-weight:bold;"></div>
+                        </td>
+                    </tr>
+                                        <tr>
+                        <td width="150" class="oa_cell-left">名称<span style="color:Red">*</span>：</td>
+                        <td class="oa_cell-right">
+                            <input id="chrname" name="chrname" type="text" value="{$datainfo['chrname']}" class="oa_input-200" onblur="SingleTextType(this,'0','','','')"  chname="名称" />
+                            <div id="lbl_chrname" style="color:Red; font-weight:bold;"></div>
+                        </td>
+                    </tr>
+                                        <tr>
+                        <td width="150" class="oa_cell-left">类型：</td>
+                        <td class="oa_cell-right">
+                            <select name="inttype" class="select">
+                                <option value="1" {$datainfo['inttype']==1?'selected':''}>列表</option>
+                                <option value="2" {$datainfo['inttype']==2?'selected':''}>工作状态</option>
+                                <option value="3" {$datainfo['inttype']==3?'selected':''}>简介</option>
+                            </select>
+                         </td>
+                    </tr>
+                                        <tr>
+                        <td width="150" class="oa_cell-left">名称连接地址：</td>
+                        <td class="oa_cell-right"><input name="chrlink" type="text" value="{$datainfo['chrlink']}" class="oa_input-300" /></td>
+                    </tr>
+                                        <tr>
+                        <td width="150" class="oa_cell-left">在开方式：</td>
+                        <td class="oa_cell-right">
+                            <select name="intopentype" class="select">
+                                <option value="1" {$datainfo['intopentype']==1?'selected':''}>本窗体</option>
+                                <option value="2" {$datainfo['intopentype']==2?'selected':''}>新窗体</option>
+                            </select>
+                        </td>
+                    </tr>
+                                        <tr>
+                        <td width="150" class="oa_cell-left">图标：</td>
+                        <td class="oa_cell-right"><input name="chrico" type="text" value="{$datainfo['chrico']}" class="oa_input-200" /></td>
+                    </tr>
+                                        <tr>
+                        <td width="150" class="oa_cell-left">返回记录数：</td>
+                        <td class="oa_cell-right"><input name="inttopn" type="text" value="{$datainfo['inttopn']}" class="oa_input-100" /></td>
+                    </tr>
+                                        <tr>
+                        <td width="150" class="oa_cell-left">获取数据地址：</td>
+                        <td class="oa_cell-right"><input name="chrsrc" type="text" value="{$datainfo['chrsrc']}" class="oa_input-300" /></td>
+                    </tr>
+                                        <tr>
+                        <td width="150" class="oa_cell-left">显示类型：</td>
+                        <td class="oa_cell-right">
+                            <select name="distype" class="select">
+                                <option value="1" {$datainfo['distype']==1?'selected':''}>不显示</option>
+                                <option value="2" {$datainfo['distype']==2?'selected':''}>显示</option>
+                                <option value="3" {$datainfo['distype']==3?'selected':''}>固定</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="padding:10px;"><input type="submit" value="确定"></td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

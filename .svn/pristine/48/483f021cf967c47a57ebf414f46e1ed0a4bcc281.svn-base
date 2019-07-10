@@ -1,0 +1,167 @@
+<?php
+// +----------------------------------------------------------------------
+// | ThinkPHP [ WE CAN DO IT JUST THINK IT ]
+// +----------------------------------------------------------------------
+// | Copyright (c) 2006-2014 http://thinkphp.cn All rights reserved.
+// +----------------------------------------------------------------------
+// | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
+// +----------------------------------------------------------------------
+// | Author: 麦当苗儿 <zuojiazi@vip.qq.com> <http://www.zjzit.cn>
+// +----------------------------------------------------------------------
+namespace think;
+use think\Url;
+class Page{
+    public $firstRow; // 起始行数
+    public $pageSize; // 列表每页显示行数 
+    public $parameter; // 分页跳转时要带的参数
+    public $count; // 总行数   count
+    public $pageCount; // 分页总页面数  Pagecount
+    public $rollPage   = 10;// 分页栏每页显示的页数
+    public $lastSuffix = true; // 最后一页是否显示总页数
+
+    public $p       = 'p'; //分页参数名
+    public $url     = ''; //当前链接URL
+    public $iPage = 1;  //iPage
+
+	// 分页显示定制
+    private $config  = array(
+        'header' => '<span class="rows">共%TOTAL_ROW%条记录&nbsp;</span>',
+        'body'       =>'<input type="hidden" id="total_page" value="%TOTAL_PAGE%" /> <span class="rows">总页数:%TOTAL_PAGE%&nbsp;</span>',
+        /*
+        'prev'   => '<<',
+        'next'   => '>>',
+        'first'  => '1...',
+        'last'   => '...%TOTAL_PAGE%',
+        */
+        'prev'   => '上一页',
+        'next'   => '下一页',
+        'first'  => '首页',
+        'last'   => '尾页',
+        'theme'  => '%BODY% %HEADER% %FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %JUMP_PAGE%',
+    );
+
+    /**
+     * 架构函数
+     * @param array $count  总的记录数
+     * @param array $pageSize  每页显示记录数
+     * @param array $parameter  分页跳转的参数
+     */
+    public function __construct($count, $pageSize=20, $parameter = array()) {
+       // C('VAR_PAGE') && $this->p = C('VAR_PAGE'); //设置分页参数名称
+        /* 基础设置 */
+        $p =Request::instance()->param('p');
+        $this->count  = $count; //设置总记录数
+        $this->pageSize   = $pageSize;  //设置每页显示行数
+        $this->parameter  = empty($parameter) ? input() : $parameter;
+        $this->iPage    = empty($p) ? 1 : intval($p);
+        //$this->parameter  = empty($parameter) ? $_REQUEST : $parameter;
+        //$this->iPage    = empty($_REQUEST[$this->p]) ? 1 : intval($_REQUEST[$this->p]);
+        $this->iPage    = $this->iPage>0 ? $this->iPage : 1;
+        $this->firstRow   = $this->pageSize * ($this->iPage - 1);
+
+        /* 计算分页信息 */
+        $this->pageCount = ceil($this->count / $this->pageSize)>0 ? ceil($this->count / $this->pageSize) : 1; //总页数
+    }
+
+    /**
+     * 定制分页链接设置
+     * @param string $name  设置名称
+     * @param string $value 设置值
+     */
+    public function setConfig($name,$value) {
+        if(isset($this->config[$name])) {
+            $this->config[$name] = $value;
+        }
+    }
+
+    /**
+     * 生成链接URL
+     * @param  integer $page 页码
+     * @return string
+     */
+    public function url($page){
+        return str_replace(urlencode('[PAGE]'), $page, $this->url);
+    }
+
+    /**
+     * 组装分页链接
+     * @return string
+     */
+    public function show() {
+        if(0 == $this->count) return '';
+        /* 生成URL */
+        $this->parameter[$this->p] = '[PAGE]';
+
+        $arr=[];
+        foreach ($this->parameter as $k=>$vo)
+        {
+            $arr[$k]=is_array($vo)?implode(',',$vo):$vo;
+        }
+
+
+        $this->url = Url::build(ACTION_NAME, $arr);
+        if(!empty($this->pageCount) && $this->iPage > $this->pageCount) {
+            $this->iPage = $this->pageCount;
+        }
+
+        /* 计算分页临时变量 */
+        $now_cool_page      = $this->rollPage/2;
+		$now_cool_page_ceil = ceil($now_cool_page);
+		$this->lastSuffix && $this->config['last'] = $this->pageCount;
+        $this->config['last'] = '尾页';
+        //上一页
+        $up_row  = $this->iPage - 1;
+        $up_page = $up_row > 0 ? '<li id="example1_previous" class="paginate_button previous disabled"><a class="prev" href="' . $this->url($up_row) . '">' . $this->config['prev'] . '</a></li>' : '<li>'.$this->config['prev'].'</li>';
+
+        //下一页
+        $down_row  = $this->iPage + 1;
+        $down_page = ($down_row <= $this->pageCount) ? '<li id="example1_next" class="paginate_button next"><a class="next" href="' . $this->url($down_row) . '">' . $this->config['next'] . '</a></li>' : '<li>'.$this->config['next'].'</li>';
+
+        //第一页
+        $the_first = '';
+        if($this->pageCount > $this->rollPage && ($this->iPage - $now_cool_page) >= 1){
+            $the_first = '<li id="example1_previous" class="paginate_button previous disabled"><a class="first" href="' . $this->url(1) . '">' . $this->config['first'] . '</a></li>';
+        }
+
+        //最后一页
+        $the_end = '';
+        if($this->pageCount > $this->rollPage && ($this->iPage + $now_cool_page) < $this->pageCount){
+            $the_end = '<li id="example1_previous" class="paginate_button previous disabled"><a class="end" href="' . $this->url($this->pageCount) . '">' . $this->config['last'] . '</a></li>';
+        }
+
+        //数字连接
+        $link_page = "";
+        for($i = 1; $i <= $this->rollPage; $i++){
+			if(($this->iPage - $now_cool_page) <= 0 ){
+				$page = $i;
+			}elseif(($this->iPage + $now_cool_page - 1) >= $this->pageCount){
+				$page = $this->pageCount - $this->rollPage + $i;
+			}else{
+				$page = $this->iPage - $now_cool_page_ceil + $i;
+			}
+            if($page > 0 && $page != $this->iPage){
+
+                if($page <= $this->pageCount){
+                    $link_page .= '<li class="paginate_button"><a class="num" href="' . $this->url($page) . '">' . $page . '</a></li>';
+                }else{
+                    break;
+                }
+            }else{
+                if($page > 0 && $this->pageCount != 1){
+//                    $link_page .= '<span class="current">' . $page . '</span>';
+                    $link_page .= '<li class="paginate_button active"><a tabindex="0" data-dt-idx="1" style="color:red;" aria-controls="example1" href="#">' . $page . '</a></li>';
+
+                }
+            }
+        }
+
+        $jump_page = '<li clas="paginate_jump"><form action="" method="get" style="display: inline;"><input type="text" style="width: 30px; margin-right: 8px;" value="" name="p"><input type="submit" class="oa_input-submit" value="跳转"></form></li>';
+
+        //替换分页内容
+        $page_str = str_replace(
+            array('%HEADER%','%BODY%', '%NOW_PAGE%', '%UP_PAGE%', '%DOWN_PAGE%', '%FIRST%', '%LINK_PAGE%', '%END%', '%TOTAL_ROW%', '%TOTAL_PAGE%', '%JUMP_PAGE%'),
+            array($this->config['header'],$this->config['body'], $this->iPage, $up_page, $down_page, $the_first, $link_page, $the_end, $this->count, $this->pageCount,$jump_page),
+            $this->config['theme']);
+        return "<div class='dataTables_paginate paging_simple_numbers' style='display: inline'><ul class='pagination'>{$page_str}</ul></div>";
+    }
+}

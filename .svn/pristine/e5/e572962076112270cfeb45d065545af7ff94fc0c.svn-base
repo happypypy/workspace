@@ -1,0 +1,525 @@
+/*
+ * EM Tabs - 1.1
+ * ����:��ext����, ҳǩ����,iframeҳǩ,ҳǩscrolling,�̶���ҳǩ�ڿ��ư�.
+ * 1.1�¼����¼�����.
+ * ��ӭ�޸�.����Ļ�˳��������ԭ�����.
+ * �����ϲ���������ռ�����滻,��Ӱ��ʹ��.
+ * Copyright (c) 2009 PWY ()
+ */
+EM = {};
+EM.recycler = (function() { var t = document.createElement('div'); t.id = "recycler"; return t; })();
+EM.destroyElement = function(el) {
+    el = typeof (el) === 'string' ? document.getElementById(el) : el;
+    if (el.hasChildNodes()) {
+        EM.destroyElement(el.firstChild);
+        EM.destroyElement(el);
+    }
+    if (el.tagName === 'IFRAME') {
+        $(el).unbind();
+        el.src = 'about:blank';
+        if (typeof el.contentWindow.document === 'object') {
+            el.contentWindow.document.open();
+            el.contentWindow.document.write('');
+			try{
+            el.contentWindow.document.clear();
+			}catch(e){}
+            el.contentWindow.document.close();
+        };
+    };
+    if (el && EM.recycler) {
+        $(el).unbind(); //������а��¼�����ֹ�ڴ�й¶
+        EM.recycler.appendChild(el);
+        EM.recycler.innerHTML = '';
+    }
+};
+EM.Events = function(D) {
+    var scope = D;
+    var events = [];
+    return {
+        addEvents: function() {
+            for (var i = 0; i < arguments.length; i++) {
+                if (this.indexOfEvent(arguments[i]) < 0) {
+                    events.push({ name: arguments[i], handlers: null });
+                }
+            }
+        },
+        addEventHandler: function(key, fn) {
+            var evtIndex = this.indexOfEvent(key);
+            if (evtIndex > -1) {
+                if (!events[evtIndex].handlers) {
+                    events[evtIndex].handlers = [];
+                }
+                events[evtIndex].handlers.push(fn);
+            }
+        },
+        trigger: function(key) {
+            var evtIndex = this.indexOfEvent(key);
+            if (evtIndex > -1) {
+                if (!events[evtIndex].handlers) {
+                    return;
+                }
+                for (var i = 0; i < events[evtIndex].handlers.length; i++) {
+                    events[evtIndex].handlers[i].apply(scope, Array.prototype.slice.call(arguments, 1));
+                }
+            }
+        },
+        removeEvents: function() {
+            for (var i = 0; i < arguments.length; i++) {
+                var evtIndex = this.indexOfEvent(arguments[i]);
+                if (evtIndex > -1) {
+                    events[evtIndex] = null;
+                    events.splice(evtIndex, 1);
+                }
+            }
+        },
+        indexOfEvent: function(key) {
+            for (var j = 0; j < events.length; j++) {
+                if (events[j].name === key) {
+                    return j;
+                }
+            }
+            return -1;
+        }
+    }
+};
+EM.ui = EM.ui || {};
+EM.ui.tabs = function(opt) {
+    this._init(opt);
+};
+$.extend(EM.ui.tabs.prototype, {
+    _init: function(opt) {
+        this.options = $.extend({
+            el: null,
+            closable: false,
+            width: 'auto',
+            height: 'auto',
+            headerWidth: 'auto',
+            handlers: null,
+            selectedIndex: 0,
+            headerTemplate: '<a href="#{href}"><span>#{text}</span></a><a class="em-tab-close"><img border="0" src="'+_PUBLIC+'/static/images/tab-close.gif" class="em-tab-closable-#{closable}"/></a>',
+            frameTemplate: '<div id="#{id}"><iframe url="#{url}" id="iframe-#{id}" name="iframe-#{id}"  scrolling="yes" src="" frameborder="0" style="width: 100%;height: 100%; visibility: inherit;display: inherit;"></iframe></div>',
+			Repeat:true
+        }, opt);
+        if (typeof this.options.el != 'object' && typeof this.options.el != 'string') {
+            alert("��ʼ������Ϊ�ջ򲻴���");
+            return;
+        }
+        this.events = new EM.Events(this);
+        this.events.addEvents('tabadd', 'tabremove', 'tabchange', 'tabbeforeload', 'tabshow', 'tabcontextmenu', 'tabload');
+        if (this.options.handlers) {
+            for (var i = 0, l = this.options.handlers.length; i < l; i++) {
+                this.events.addEventHandler(this.options.handlers[i].name, this.options.handlers[i].fn);
+            }
+        }
+
+        this.items = EM.ui.tabs.ItemStack();
+        this.stack = EM.ui.tabs.AccessStack();
+        this.frameCount = 0;
+        this.body = $(this.options.el).addClass('em-tab-panel')
+                                              .width(this.options.width)
+                                              .height(this.options.height);
+        this.strip = this.body.find('ul:first').addClass('em-tab-strip')
+                                      .wrap('<div class="em-tab-panel-header"></div>')
+                                      .wrap('<div class="em-tab-strip-wrap"></div>');
+        this.stripWrap = this.strip.parent();
+        this.header = this.stripWrap.parent();
+        this.scrollLeft = $('<div  class="em-tab-scroller-left"></div>').prependTo(this.header).hide();
+        this.scrollRight = $('<div  class="em-tab-scroller-right"></div>').prependTo(this.header).hide();
+        this.scrollable = false;
+
+        var LIs = this.strip.find('li');
+        for (var i = 0, L = LIs.length; i < L; i++) {
+            var oldA = $(LIs[i]).find('a');
+            $(LIs[i]).html(this.options.headerTemplate.replace(/#\{text\}/g, oldA.text()).replace(/#\{closable\}/g, $(LIs[i]).attr('closable') || this.options.closable))
+		    		         .children('a:first')
+		    		         .attr('href', oldA.attr('href'));
+            EM.destroyElement(oldA.get(0));
+            this._addTab(LIs[i]);
+        };
+        LIs = null;
+        this.select(this.options.selectedIndex);
+        //this._createScrollers();
+    },
+	add: function(H, C, A,code,R) {
+		var IsHave=this.items.checkCode(code);
+		var sysRepeat=((R!=null) ? R : this.options.Repeat);
+		if(!sysRepeat&&IsHave)
+		{
+			return;
+		}
+        C = typeof C === 'string' ? C : '#' + $(C).attr('id');
+        var li = $('<li>' + this.options.headerTemplate.replace(/#\{text\}/g, H).replace(/#\{closable\}/g, A ? A : this.options.closable) + '</li>').appendTo(this.strip);
+        li.find('a:first').attr('href', C);
+        this._addTab(li.get(0),code);
+        li = null;
+        if (this.getHeadersWidth() > this.stripWrap.width() && !this.scrollable) {
+            this._showScrollers();
+        }
+        if (this.scrollable && this.scrollerLimite != this.getHeadersWidth()) {
+            this.updateScrollers();
+        }
+        this.select(this.getTabCount() - 1);
+        this.events.trigger('tabadd', this.getSelectedTab());
+    },
+    select: function(n) {
+        if (n < 0 || n >= this.getTabCount())
+            return;
+        if (n != this.getSelectedIndex()) {
+            this.stack.add(this.getSelectedTab());
+        }
+        var preTab = this.getSelectedTab();
+        preTab ? this._hideTab(preTab) : null; //��ֹû�г�ʼѡ�����쳣
+        this.options.selectedIndex = n;
+        var curTab = this.getSelectedTab();
+        this._showTab(curTab);
+        var iframe = $(curTab.content).find('iframe');
+        if (curTab.type === 'url' && iframe.attr('src') === '') {
+            this.events.trigger('tabbeforeload', curTab);
+            //.ready(function() { this.events.trigger('tabload', curTab); });
+            iframe.bind('load', { obj: this.events, args: curTab }, function(e) { e.data.obj.trigger('tabload', e.data.args); });
+            iframe.attr('src', iframe.attr('url'));
+        }
+
+        if (this.scrollable) {
+            this.scrollToTab(n);
+        }
+        this.events.trigger('tabchange', curTab, preTab);
+        preTab = iframe = null;
+        //this.strip.animate({ left: this.stripWrap.width() - headersWidth }, 1000);
+        return curTab;
+    },
+	selectAndUpdateUrl: function(n,url) {
+        if (n < 0 || n >= this.getTabCount())
+            return;
+        if (n != this.getSelectedIndex()) {
+            this.stack.add(this.getSelectedTab());
+        }
+        var preTab = this.getSelectedTab();
+        preTab ? this._hideTab(preTab) : null; //��ֹû�г�ʼѡ�����쳣
+        this.options.selectedIndex = n;
+        var curTab = this.getSelectedTab();
+        this._showTab(curTab);
+		var iframe = $(curTab.content).find('iframe');
+		var Updateurl=((url!=null) ? url : iframe.attr('url'));
+   
+       
+            this.events.trigger('tabbeforeload', curTab);
+            //.ready(function() { this.events.trigger('tabload', curTab); });
+            iframe.bind('load', { obj: this.events, args: curTab }, function(e) { e.data.obj.trigger('tabload', e.data.args); });
+            iframe.attr('src', Updateurl);
+        
+
+        if (this.scrollable) {
+            this.scrollToTab(n);
+        }
+        this.events.trigger('tabchange', curTab, preTab);
+        preTab = iframe = null;
+        //this.strip.animate({ left: this.stripWrap.width() - headersWidth }, 1000);
+        return curTab;
+    },
+	selectByCode:function(c)
+	{
+		var index=this.items.getIndexByCode(c);
+		this.select(index);
+	},
+	getTabsIndexByCode:function(c)
+	{
+		var index=this.items.getIndexByCode(c);
+		return index;
+	},
+    scrollToTab: function(n) {
+
+        var A = this.getHeadersWidth(n - 1);
+        var B = A + $(this.items.get(n).header).outerWidth();
+        var C = parseInt(this.strip.css('left'));
+
+
+        if (B + C > this.stripWrap.width()) {
+            this.strip.animate({ left: this.stripWrap.width() - B }, 1000);
+        } else if (A + C <= 0) {
+            this.getHeadersWidth() - this.getHeadersWidth(n - 1) < this.stripWrap.width() ?
+                          this.strip.animate({ left: this.stripWrap.width() - this.getHeadersWidth() }, 1000) :
+                          this.strip.animate({ left: -A }, 1000);
+        } else if (this.getHeadersWidth() + parseInt(this.strip.css('left')) < this.stripWrap.width()) {
+            this.strip.animate({ left: this.stripWrap.width() - this.getHeadersWidth() }, 1000);
+        }
+        A = B = C = null;
+    },
+    removeByCode:function(_code){
+    	var index=this.items.getIndexByCode(_code);
+    	this.remove(index);
+    },
+    remove: function(n) {
+        var t = this.getTab(n);
+        if (!t) {
+            return;
+        }
+        this._removeTab(t);
+
+        if (this.getHeadersWidth() < this.stripWrap.width() && this.scrollable) {
+            this._hideScrollers();
+        }
+        if (this.scrollable) {
+            this.updateScrollers();
+        }
+
+
+        var nx = false;
+        if (n < this.getSelectedIndex()) {
+            this.options.selectedIndex--;
+        } else if (n === this.getSelectedIndex()) {
+            nx = this.getIndex(this.stack.next());
+        }
+
+        if (typeof nx === 'number') {
+            this.select(nx < 0 ? this.getTabCount() - 1 : nx);
+        } else {
+            this.scrollable ? this.scrollToTab(this.getSelectedIndex()) : null;
+        }
+        t = nx = null;
+        this.events.trigger('tabremove');
+
+    },
+    updateScrollers: function() {
+        //this.strip.animate({ left: this.stripWrap.width() - headersWidth }, 1000);
+        this.scrollerLimite = this.getHeadersWidth();
+        this.scrollLeft.unbind().bind('mousedown', { offset: '0', strip: this.strip }, this._scrolling)
+                                   .bind('mouseup', { strip: this.strip }, this._stopScrolling);
+        this.scrollRight.unbind().bind('mousedown', { offset: this.stripWrap.width() - this.scrollerLimite, strip: this.strip }, this._scrolling)
+                                    .bind('mouseup', { strip: this.strip }, this._stopScrolling);
+
+    },
+    contextmenu: function(n) {
+        this.events.trigger('contextmenu', this.getTab(n));
+    },
+    getTab: function(n) {
+        return this.items.get(n);
+    },
+    getSelectedTab: function() {
+        return this.getSelectedIndex() < this.getTabCount() && this.getSelectedIndex() >= 0 ? this.getTab(this.getSelectedIndex()) : null;
+    },
+    getTabCount: function() {
+        return this.items.getCount();
+    },
+    getBody: function() {
+        return this.body.get(0);
+    },
+    getSelectedIndex: function() {
+        return this.options.selectedIndex;
+    },
+    getIndex: function(Tab) {
+        for (var C = 0, B = this.getTabCount(); C < B; C++) {
+            if (this.getTab(C) === Tab) {
+                return C;
+            }
+        }
+        return -1;
+    },
+    getContentHeight: function() {
+        var preHeight = 0;
+        var preV = this.body.children('div:visible:not(.em-tab-content-selected)');
+        for (var i = 0, L = preV.length; i < L; i++) {
+            preHeight += $(preV[i]).height();
+        }
+        preV = null;
+        return this.body.height() - preHeight;
+    },
+    getHeadersWidth: function(n) {
+        n = typeof n === 'number' ? n : this.items.getCount() - 1;
+        var allWidth = parseInt(this.strip.css('padding-left'));
+
+        for (var i = 0; i <= n; i++) {
+            allWidth += $(this.items.get(i).header).outerWidth(true);
+        }
+        return allWidth;
+    },
+    _addTab: function(LI,code) {
+        $(LI).find('a:first').width(this.options.headerWidth);
+        var a = $(LI).find('a:first');
+        var t = this._getTabType(a);
+        this.items.add(this._createItem(LI, this._getTabContent(a), t,code)); //��li�Ͷ�Ӧ������Ԫ�ش���items��,ͬʱ��������Ԫ���Ƿ�Ϊurl
+        $(LI).find('a:first').unbind('click').bind('click', {
+            'obj': this,
+            'action': 'select'
+        }, this._headerEventHander);
+        $(LI).unbind('contextmenu').bind('contextmenu', {
+            'obj': this,
+            'action': 'contextmenu'
+        }, this._headerEventHander);
+        $(LI).find('img').unbind('click').bind('click', {
+            'obj': this,
+            'action': 'remove'
+        }, this._headerEventHander);
+        a = LI = t = null;
+    },
+    _removeTab: function(t) {
+        EM.destroyElement(t.header);
+        EM.destroyElement(t.content);
+        if (t.type === 'url')
+            this.frameCount--;
+        this.stack.remove(t);
+        this.items.remove(t);
+    },
+    _createItem: function(H, C, T,o) {
+        return {
+            'header': H,
+            'content': C,
+            'type': (T != 'url' ? 'div' : T),
+			'code':o
+        };
+    },
+    _hideTab: function(T) {
+        $(T.header).removeClass('em-tab-selected');
+        $(T.content).removeClass('em-tab-content-selected').addClass('em-tab-content');
+        T = null;
+    },
+    _showTab: function(T) {
+        $(T.header).addClass('em-tab-selected');
+        $(T.content).addClass('em-tab-content-selected').removeClass('em-tab-content');
+        this.events.trigger('tabshow', T);
+        T = null;
+    },
+    _getTabContent: function(A) {//������֮����ִ��_getTabType,���صĽ��������div
+        var target = null, preV = null;
+        if (this._getTabType(A) === 'div') {
+            target = $(A.attr('href')).addClass('em-tab-content');
+        }
+        else {
+            target = $(this.options.frameTemplate.replace(/#\{url\}/g, A.attr('href'))
+					                            .replace(/#\{id\}/g, A.attr('href') + '-' + this.frameCount++))
+					                            .appendTo(this.body).addClass('em-tab-content');
+            A.attr('href', '#' + A.attr('href'));
+        }
+        A = preHeight = preV = null;
+        target.height(this.getContentHeight());
+        return target.get(0); //���������#��ͷ���ַ���������Ϊiframe����
+    },
+    _getTabType: function(D) {//��ʼ��֮ǰ�ж�tab����
+        if (D.attr('href').substring(0, 1) === '#')
+            return 'div';
+        return 'url';
+    },
+    _headerEventHander: function(e) {
+        e.preventDefault();
+        var li = $(this).parents('li:eq(0)').get(0);
+        var tabs = e.data.obj;
+        for (var i = 0, L = tabs.getTabCount(); i < L; i++) {
+            if (tabs.getTab(i).header === li) {
+                if (e.data.action === 'select') {
+                    i === tabs.getSelectedIndex() ? null : tabs[e.data.action](i);
+                    this.blur();
+                }
+                else
+                    tabs[e.data.action](i);
+                break;
+            }
+        }
+        li = tabs = null;
+    },
+    _showScrollers: function() {
+        this.scrollLeft.show();
+        this.scrollRight.show();
+        this.stripWrap.css('margin-left', this.scrollLeft.width())
+                              .css('margin-right', this.scrollRight.width())
+                              .width(this.stripWrap.width() - this.scrollLeft.width() - this.scrollRight.width());
+        this.updateScrollers();
+        this.scrollable = true;
+    },
+    _hideScrollers: function() {
+        this.strip.css('left', '0px');
+        this.scrollLeft.hide().unbind();
+        this.scrollRight.hide().unbind();
+        this.stripWrap.css('margin-left', '0')
+                              .css('margin-right', '0')
+                              .width(this.stripWrap.width() + this.scrollLeft.width() + this.scrollRight.width());
+
+        this.scrollable = false;
+    },
+    _scrolling: function(e) {
+        e.preventDefault();
+        e.data.strip.animate({ left: e.data.offset }, 'slow');
+    },
+    _stopScrolling: function(e) {
+        e.preventDefault();
+        e.data.strip.stop();
+    }
+});
+
+EM.ui.tabs.ItemStack = function() {
+    var A = [];
+
+    return {
+        get: function(i) {
+            return A[i];
+        },
+        add: function(B) {
+            A.push(B);
+        },
+        remove: function(E) {
+            if (typeof E === 'number') {
+                A.splice(E, 1);
+                return;
+            }
+            var D = [];
+            for (var C = 0, B = A.length; C < B; C++) {
+                if (A[C] != E) {
+                    D.push(A[C]);
+                }
+            }
+            A = D;
+            D = null;
+        },
+        getCount: function() {
+            return A.length;
+        },
+		checkCode:function(O){
+			for (var C = 0; C < A.length; C++) {
+                if (A[C].code == O) {
+                    return true;
+                }
+            }
+			return false;
+		},
+		getItemByCode:function(co)
+		{
+			for (var C = 0; C < A.length; C++) {
+                if (A[C].code == co) {
+                    return A[C];
+                }
+            }
+			return null;
+		},
+		getIndexByCode:function(co)
+		{
+			for (var C = 0; C < A.length; C++) {
+                if (A[C].code == co) {
+                    return C;
+                }
+            }
+			return -1;
+		}
+    }
+};
+EM.ui.tabs.AccessStack = function() {
+    var A = [];
+    return {
+        add: function(B) {
+            A.push(B);
+            if (A.length > 10) {
+                A.shift();
+            }
+        },
+        remove: function(E) {
+            var D = [];
+            for (var C = 0, B = A.length; C < B; C++) {
+                if (A[C] != E) {
+                    D.push(A[C]);
+                }
+            }
+            A = D
+        },
+        next: function() {
+            return A.pop();
+        }
+    }
+};

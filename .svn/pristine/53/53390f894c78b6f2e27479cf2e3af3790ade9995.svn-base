@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>短信申请</title>
+    <link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
+    <link href="__PUBLIC__/static/css/page.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="__PUBLIC__/static/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/lhgdialog.js?skin=aero"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/CostomLinkOpenSw.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/tabscommon.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/del-checked.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/layer/layer.js"></script>
+    <script type="text/javascript">
+
+    </script>
+</head>
+<body>
+
+<div class="oa_wrapper">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr class="oa_wrapper-display">
+            <td class="oa_wrapper-top-arr-left">&nbsp;</td>
+            <td class="oa_wrapper-top-arr-middle"></td>
+            <td class="oa_wrapper-top-arr-right">&nbsp;</td>
+        </tr>
+        <tr>
+            <td class="oa_wrapper-middle-arr-left oa_wrapper-display"></td>
+            <td class="oa_wrapper-middle-arr-middle">
+                <div class="oa_location clearfix"><span class="oa_ico-left"></span>location<span class="oa_ico-right"></span></div>
+                <div class="oa_main clearfix">
+                    <div class="oa_pop-main">
+                        <div class="oa_edition">
+                            <form method="post" action="" onsubmit="return recharge()">
+                            <table width="100%" border="0" cellspacing="1" cellpadding="0" class="oa_edition" id="part1" style="border: #e0e0e0 solid 1px;">
+                                <tr>
+                                    <td  class="oa_cell-left">充值方式：</td>
+                                    <td class="oa_cell-right">
+                                        <select name="type" title="充值方式">
+                                            <option value="2">机构充值</option>
+                                            <option value="3">赠送</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr class="oa_text-list-title">
+                                    <td  class="oa_cell-left"><span style="color:#ff0000">*</span>充值短信数量：</td>
+                                    <td class="oa_cell-right">
+                                        <input name="sms_num" id="sms_num" style="width:100px; height: 20px" autocomplete="off" placeholder="0" type="number" value="" class="form-control "  />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td  class="oa_cell-left">充值金额：</td>
+                                    <td class="oa_cell-right">
+                                        <input name="recharge_price" id="recharge_price" style="width:100px; height: 20px" autocomplete="off" placeholder="0.00" type="text" value="" class="form-control "  />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="text-align: center;">
+                                        <input value="充值" type="submit" class="oa_input-submit" />
+                                    </td>
+                                </tr>
+                            </table>
+                            </form>
+                        </div>
+                        <div class="oa_content-main-bottom"></div>
+                    </div>
+
+                </div>
+            </td>
+            <td class="oa_wrapper-middle-arr-right oa_wrapper-display"></td>
+        </tr>
+        <tr class="oa_wrapper-display">
+            <td class="oa_wrapper-bottom-arr-left">&nbsp;</td>
+            <td class="oa_wrapper-bottom-arr-middle"></td>
+            <td class="oa_wrapper-bottom-arr-right">&nbsp;</td>
+        </tr>
+    </table>
+</div>
+<script type="text/javascript">
+    var t;
+    var waitTime = 0;
+
+
+    /**
+     * 充值
+     */
+    function recharge() {
+        var sms_num = $("#sms_num").val();
+        if(sms_num <= 0){
+            layer.alert('短信充值数量不能为空', {icon: 2}, function(index){
+                layer.close(index);
+            });
+            return false;
+        }
+        return true;
+
+
+    }
+</script>
+</body>
+</html>

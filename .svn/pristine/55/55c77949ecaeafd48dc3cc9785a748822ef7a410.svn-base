@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/static/css/page.css?1" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div class="oa_pop">
+  <div class="oa_pop-main">
+      <div style="height: 6px"></div>
+      <div class="oa_title clearfix">
+          <span class="oa_ico-right"></span>
+          <span class="oa_title-btn"></span>
+          <span class="oa_ico-left"></span>
+        {if condition="$ad_position_info['action'] eq 'edit'"}广告位编辑{else /}广告位添加{/if}
+      </div>
+  	<div class="oa_edition">
+        <form action="{:url('admin/advert/advpositionpost')}" method="post">
+            <table width="100%" border="0" cellspacing="1" cellpadding="0" class="oa_edition">
+                <tr>
+                    <td width="150" class="oa_cell-left"><span style="color: red;">*</span>&nbsp;广告位名称：</td>
+                    <td class="oa_cell-right">
+                        <input type="text" name="position_name" value="{$ad_position_info.position_name}" class="oa_input-200" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="oa_cell-left">广告位宽度：</td>
+                    <td class="oa_cell-right">
+                        <input name="ad_width" type="text" value="{$ad_position_info.ad_width}" class="oa_input-200" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="oa_cell-left">广告位高度：</td>
+                    <td class="oa_cell-right">
+                        <input name="ad_height" type="text" value="{$ad_position_info.ad_height}" class="oa_input-200" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="oa_cell-left">广告位描述：</td>
+                    <td class="oa_cell-right">
+                        <input name="position_desc" type="text" value="{$ad_position_info.position_desc}" class="oa_input-200" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="oa_cell-left">是否启用：</td>
+                    <td class="oa_cell-right">
+                        <input name="is_open" type="radio" value="1" {if condition="$ad_position_info['is_open'] eq 1"}checked{/if} />是
+                        <input name="is_open" type="radio" value="2" {if condition="$ad_position_info['is_open'] eq 2"}checked{/if} />否
+                    </td>
+                </tr>
+                <tr><td style="padding:10px;"><input type="submit" name="submit" value="确定"></td></tr>
+                <tr>
+                    <td>
+                        <input type="hidden" name="action" value="{$ad_position_info.action}"/>
+                        <input type="hidden" name="idsite" value="{$ad_position_info.idsite}"/>
+                    </td>
+                    <td>
+                        {if condition="$ad_position_info['action'] eq 'edit'"}
+                        <input type="hidden" name="position_id" value="{$ad_position_info.position_id}"/>
+                        {/if}
+                    </td>
+
+                </tr>
+            </table>
+        </form>
+    </div>
+  </div>
+
+</div>
+
+</body>
+<script type="text/javascript">
+    $("#tab tr td").on('click',"a",function(){
+
+        $(this).parent().parent().remove();
+    });
+    $("#tab tr td a").click(function(){
+
+    })
+</script>
+</html>

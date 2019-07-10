@@ -1,0 +1,26 @@
+<header class="flex">
+    <a href="/{$sitecode}" class="logo flex">
+      <img src="{$cms->GetConfigVal('webset','weblogo',$idsite);}">
+    </a>
+    <div class="menu-btns iconfont">
+      <span class="menu-btn1 iconfont fl" onclick="javascript:location.href='/{$sitecode}/mine'">&#xe615;</span>
+      <span class="menu-btn2 iconfont fl" id="open-menu">&#xe602;</span>
+      <span class="menu-btn3 iconfont fl" id="close-menu">&#xe677;</span>
+    </div>
+  </header>
+  <aside>
+    <div class="menu" id="menu">
+      <ul>
+        <?php  $result=$cms->GetAllNodes(['showonmenu'=>1,'nodetype'=>['in','1,2'],'parentid'=>0],'idorder asc,nodeid asc','',20,$idsite);
+        foreach($result as $k=>$v){
+        $jumpUrl ="/". $sitecode.$v["url"];
+        if(substr( $v["url"],0,4 ) == "http"){
+        $jumpUrl = $v["url"];
+        }
+        ?>
+        <li><a href="{$jumpUrl}">{$v['nodename']}</a></li>
+        <?php }?>
+      </ul>
+    </div>
+    <div class="menu-cover"></div>
+  </aside>

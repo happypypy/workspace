@@ -1,0 +1,12 @@
+
+function visit() {
+
+    data= {"name": "uname", "age": 18};
+    $.ajax({
+        url:"{:url('home/api/visitdata')}",
+        data:data,
+        type:"post",
+        dataType:"json",
+        success:function(msg) {}
+    })
+}

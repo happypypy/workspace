@@ -1,0 +1,153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>信息发送</title>
+    <link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
+    <link href="__PUBLIC__/static/css/page.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="__PUBLIC__/static/css/bootstrap.min.css">
+    <script type="text/javascript" src="__PUBLIC__/static/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/del-checked.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/layer/layer.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/CostomLinkOpenSw.js"></script>
+
+</head>
+<body>
+<div class="oa_pop">
+    <div class="oa_pop-main">
+        <div style="height: 6px"></div>
+        <div class="oa_title clearfix">
+            <span class="oa_ico-right"></span>
+            <span class="oa_title-btn"></span>
+            <span class="oa_ico-left"></span>
+            信息发送        </div>
+        <div class="oa_edition">
+            <form action="" method="post" id="frm">
+                <table id="tabcontent" width="100%" border="0" cellspacing="1" cellpadding="0" class="oa_edition" style="border-bottom: #e0e0e0 solid 1px">
+                    <tr class="oa_text-list-title">
+                        <td style="font-weight:bold" colspan="2">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;账号签名：<span style="color: dodgerblue;">【{$sm_info["sms_sign"]}】</span>   &nbsp;&nbsp;当前计费字数67个字，当前已输入<span id="current_input_num"> </span>个字，分一条短信发送
+                        </td>
+                    </tr>
+                    <tr class="oa_text-list-title">
+                        <td style="font-weight:bold" colspan="2">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;短信剩余发送条数：{$sm_info["sms_num"]}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td  class="oa_cell-left">短信内容：</td>
+                        <td class="oa_cell-right">
+                            <label>
+                                <textarea id="content" rows="6" style="width: 450px;" cols="1" name="content">【{$sm_info.sms_sign}】</textarea>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td  class="oa_cell-left">
+                            手机号码:
+                        </td>
+                        <td class="oa_cell-right" id="mobile_part">
+                            <label><input id="checked"  onclick="DoCheck();" name="" type="checkbox" value="" checked />全选</label>
+                            <br/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="padding:10px;">
+                            <input type="hidden" name="touser" id="touser" value=""/>
+                            <input type="button" value="发送" onclick="javascript:sendmsg();">
+                            <input type="button" value="取消" onclick="javascript:CloseDiv();">
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script language="JavaScript">
+    $(function(){
+        var userids = GetOpenerWin().userids;
+        $("#touser").val(userids);
+        $.ajax({
+            url:'/admin/activity/get_mobile_by_user_ids',
+            type:'POST',
+            data: {userids:userids},
+            dataType:'json',
+            success:function (data) {
+                if(data.mobile_list.length>0)
+                {
+                    $.each(data.mobile_list,function (index,value) {
+                        $("#mobile_part").append("<label><input class=\"checked_one\" type=\"checkbox\" name=\"mobile[]\" value='"+value+"' checked />"+value+"</label>&nbsp;&nbsp;");
+                    });
+                }
+            }
+        })
+    });
+
+    //全选
+    function DoCheck(){
+        if($("#checked").is(':checked')){
+            $("#mobile_part .checked_one").prop("checked", true);
+        }else{
+            $("#mobile_part .checked_one").prop("checked", false);
+        }
+    }
+
+    function sendmsg() {
+        if ($("#content").val() == "") {
+            alert("发送内容不能为空");
+            return false;
+        }
+        var b = $(".checked_one");
+        var s = '';
+        for (var i = 0; i < b.length; i++) {
+            if (b[i].checked) {
+                if ($(".checked_one").eq(i).val() != "") {
+                    s += $(".checked_one").eq(i).val() + ',';
+                }
+            }
+        }
+        if (s != "") {
+            s = s.substr(0, s.length - 1);
+        }
+
+        if (s == "") {
+            alert("请选择要发送的手机号码");
+            return false;
+        }
+        $.ajax({
+            url: '/admin/activity/send_sms_msg',
+            type: 'POST',
+            data: $('#frm').serialize(),
+            dataType: 'json',
+            success: function (data) {
+                if (data.state == 1) {
+                    alert('信息发送成功');
+                    CloseDiv();
+                } else {
+                    alert(data.msg);
+                }
+            }
+        })
+
+    }
+
+    $(document).ready(function () {
+        $("#current_input_num").text($("#content").val().length);
+    });
+
+    $("#content").keyup(function() {
+        var len = $(this).val().length;
+        if (len > 66) {
+            $(this).val($(this).val().substring(0, 67));
+            $("#current_input_num").text(67);
+        }else{
+            $("#current_input_num").text(len);
+        }
+    });
+
+</script>
+
+</body>
+</html>

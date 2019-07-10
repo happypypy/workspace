@@ -1,0 +1,145 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/static/css/page.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="__PUBLIC__/static/js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/js/lhgdialog.js?skin=aero"></script>
+<script type="text/javascript" src="__PUBLIC__/static/js/CostomLinkOpenSw.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/js/tabscommon.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/js/del-checked.js"></script>
+<script type="text/javascript">
+    $(function(){
+        $(document).ready(function() {
+            $('.oa_text-list tr').addClass('odd');
+            $('.oa_text-list tr:even').addClass('even');
+        });
+        $('.oa_text-list tr').hover(
+            function(){
+                $(this).addClass('oa_mouseover-bg');
+            },
+            function(){
+                $(this).removeClass('oa_mouseover-bg');
+            }
+        );
+    });
+
+    //全选
+    function DoCheck(modulecode) {
+
+        var flag = $("#"+modulecode).is(':checked');
+
+            if(flag){
+                $("."+modulecode).attr("checked", true);
+            }else{
+                $("."+modulecode).removeAttr('checked');
+            }
+
+
+    }
+
+
+</script>
+</head>
+<body>
+<div class="oa_wrapper">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr class="oa_wrapper-display">
+            <td class="oa_wrapper-top-arr-left">&nbsp;</td>
+            <td class="oa_wrapper-top-arr-middle"></td>
+            <td class="oa_wrapper-top-arr-right">&nbsp;</td>
+        </tr>
+        <tr>
+            <td class="oa_wrapper-middle-arr-left oa_wrapper-display"></td>
+            <td class="oa_wrapper-middle-arr-middle">
+                <div class="oa_location clearfix"><span class="oa_ico-left"></span>location<span class="oa_ico-right"></span></div>
+                <div class="oa_main clearfix">
+                    <div class="oa_content-area clearfix">
+                        <div class="oa_content-main">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td valign="top">
+                                        <div class="oa_title clearfix">
+                                            <span class="oa_ico-right"></span>
+                                            <span class="oa_title-btn"></span>
+                                            <span class="oa_ico-left"></span>
+                                            <span style="color: #2A5B9D">“{$role_info['rolename']}”{:lang('role purview')}</span>
+                                        </div>
+                                        <form action="{:url('role/purviewpost')}" method="post">
+                                            <div class="oa_text-list">
+                                                {volist name="columnname" id="v3"}<!--循环栏目-->
+                                                   <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                    <tr>
+                                                        <th colspan="3" style=" background-color: #c1c1c1; text-align: center;color: red;font-size: 14px;height: 28px;line-height: 28px">{$v3['chrname']}</th>
+                                                    </tr>
+                                                    {volist name="columninfo" id="vo"} <!--循环模块-->
+                                                    {if condition="$v3['chrcode'] eq $vo['codecatalog']"}
+                                                    <tr>
+                                                        <td align="right" style="width:150px;"><input id="{$vo['chrcode']}" class="check_all" type="checkbox" onclick='DoCheck("{$vo['chrcode']}");' value="{$vo['chrcode']}" >{$vo['chrname']}</td>
+                                                        <td >
+                                                            {volist name="resourcelist" id="v"} <!--循环资源-->
+                                                            {if condition="$v['modulecode'] eq $vo['chrcode']"}
+
+                                                            <div style="font-size: 12px;height: 24px;line-height: 24px;">
+                                                                <span  style="display: inline-block;width: 130px; text-align: right;padding-right: 20px">{$v['chrname']}</span>
+
+                                                                {volist name="operatelist" id="v1"} <!--循环操作-->
+                                                                {if condition="$v1['chrmodulecode'] eq $vo['chrcode'] and $v1['chrresourcecode'] eq $v['chrcode']"}
+                                                                    <input class="{$vo['chrcode']}" id="{$vo['chrcode']}_{$v['chrcode']}_{$v1['chrcode']}" type="checkbox" name="operate_list[]" value="{$vo['chrcode']}_{$v['chrcode']}_{$v1['chrcode']}" {volist name="roleoperate" id="v2"} {$v2['chrmodulecode']==$vo['chrcode']&&$v1['chrcode']==$v2['chroperatecode']&&$v2['chrresourcecode']==$v['chrcode']?"checked":""} {/volist}>{$v1['chrname']}
+                                                                {/if}
+                                                                {/volist}
+                                                            </div>
+
+                                                            {/if}
+                                                            {/volist}
+                                                        </td>
+
+                                                    </tr>
+                                                    {/if}
+                                                    {/volist}
+                                                   </table>
+                                                <br>
+                                                <br>
+                                                {/volist}
+
+                                                <div class="oa_bottom clearfix">
+                                                    <div class="clearfix">
+                                                        <div class="oa_op-btn clearfix">
+                                                            {volist name="roleoperate" id="v2"}
+                                                            <input type="hidden" name="modulecode[]" value="{$vo['chrcode']}">
+                                                           <!-- <input type="hidden" name="module[]" value="{$v2['chrmodulecode']}">
+                                                            <input type="hidden" name="resource[]" value="{$v2['chrresourcecode']}">-->
+                                                            <input type="hidden" name="roleoperate[]" value="{$v2['chrmodulecode']}_{$v2['chrresourcecode']}_{$v2['chroperatecode']}">
+                                                            <input type="hidden" name="roleoperate_id[]" value="{$v2['idrole_operate']}">
+                                                            {/volist}
+                                                            <input type="hidden" name="roleid" value="{$request['roleid']}">
+                                                            <input type="hidden" name="idsite" value="{$role_info['idsite']}">
+                                                            <input name="" value="{:lang('save')}" type="submit" class="oa_input-submit" />
+                                                            <input name="" value="{:lang('return')}" onclick="back();" type="button" class="oa_input-submit" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="oa_bottom-bottom"><em></em></div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </td>
+                                </tr>
+                            </table>
+                            <div class="oa_content-main-bottom"></div>
+                        </div>
+                    </div>
+                </div>
+            </td>
+            <td class="oa_wrapper-middle-arr-right oa_wrapper-display"></td>
+        </tr>
+        <tr class="oa_wrapper-display">
+            <td class="oa_wrapper-bottom-arr-left">&nbsp;</td>
+            <td class="oa_wrapper-bottom-arr-middle"></td>
+            <td class="oa_wrapper-bottom-arr-right">&nbsp;</td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

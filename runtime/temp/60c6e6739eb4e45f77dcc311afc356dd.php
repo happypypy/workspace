@@ -1,0 +1,75 @@
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:66:"D:\workspace\work\public/../application/admin\view\index\tabs.html";i:1561691687;}*/ ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<link  href="/static/css/tabs.css" rel="stylesheet" type="text/css" />
+<script type=text/javascript src="/static/js/jquery-3.2.1.min.js"></script>
+<script type=text/javascript src="/static/js/EM.ui.tabs.js"></script>
+<script type=text/javascript src="/static/js/tabscommon.js"></script>
+<link type="text/css" href="/static/css/EM.ui.tabs.css" rel="stylesheet" />
+<script type="text/javascript">
+
+var _PUBLIC	="";
+var ifheight=0;
+var ifwidth=0;
+var IdLoad=false;
+//var TabCodes="";
+function getWindHeight()
+{
+	var wheight=$(window).height();
+	var wwidth=$(window).width();
+	if(wheight<5)  //处理IE10的兼容模式有问题；
+    {
+        wheight=window.document.body.clientHeight ;
+        wwidth=window.document.body.clientwidth ;
+    }
+    ifheight=wheight;
+    ifwidth=wwidth;
+
+	$("div").filter("div[class*='em-tab-content']").height(ifheight-40);
+	$("#container-1").height(ifheight);
+}
+$(document).ready(function(){
+	getWindHeight();
+
+});
+
+
+$(window).resize(function(){
+    getWindHeight();
+});
+
+      	var tabs;
+        $(function() {
+            tabs = new EM.ui.tabs({ 'el': '#container-1', 'closable': false, 'selectedIndex': -1, 'width': 'auto', 'height': ifheight, headerWidth: '90px', handlers: [{ name: 'tabload', fn: testArgs}] });
+            tabs.events.addEventHandler('tabload', function() { });
+			if(!IdLoad)
+			{
+				tabs.add("桌面","<?php echo url('admin/index/main'); ?>",false,"sysdisk");
+				IdLoad=true;
+			}
+        });
+        function testArgs(event) {
+            document.title = "loadcomplete";
+
+        }
+
+        function closeSelfAndSelectsysdisk(){
+            //alert(tabs.getSelectedTab().code);
+            tabs.removeByCode(tabs.getSelectedTab().code);
+            tabs.selectByCode("sysdisk");
+        }
+
+
+</script>
+</head>
+<body>
+  <div id="container-1" >
+	<ul>
+	</ul>
+</div>
+
+</body>
+</html>

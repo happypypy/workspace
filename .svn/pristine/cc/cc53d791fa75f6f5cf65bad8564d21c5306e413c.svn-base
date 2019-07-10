@@ -1,0 +1,17 @@
+/* CSS Document */
+html,body{ height:100%;}
+body{color:#000000; font-size:12px; font-weight:normal; text-align:center; background:url(../images/bg-login_body_reply.jpg) top repeat-x #edfafd; padding:0; margin:0 auto;}
+table,tr,td{font-size:12px; font-weight:normal;}
+input{ padding:0; margin:0;}
+form{padding:0; margin:0;}
+.clear{clear:both;}
+table.login-area{background:url(../images/bg-login_body.jpg) center 0 no-repeat;}
+table.login-main{ width:538px; height:330px; background:url(../images/bg-login-main.png) 0 0 no-repeat;}
+
+.login-main_bottom{ height:108px; width:530px; background:url(../images/bg-login-main-bottom.png) center 0 no-repeat; margin:0 auto;}
+input.login-input-01{ width:242px; height:33px; line-height:28px; border:none; background:url(../images/bg-login_input.png) 0 0 no-repeat; padding:0 0 0 10px; margin:0;}
+input.login-input-02{ width:125px; height:34px; line-height:28px; border:none; background:url(../images/bg-login_input1.png) 0 0 no-repeat; padding:0 0 0 10px; margin:0;}
+table.login-enter{margin:35px 0 0 0;}
+table.login-enter td{color:#1253a4; font-size:13px; font-weight:bold;}
+table.login-enter td table td{ font-size:12px; font-weight:normal;}
+

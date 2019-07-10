@@ -1,0 +1,28 @@
+
+<?php if($list){foreach($list as $k=>$vo) {?>
+<li>
+    <div class="flex">
+        <div class="pic"><img src="{$vo['chrimg']}" /></div>
+        <div class="txt">
+            <div class="title">{$vo['chrtitle']}</div>
+            <div class="price"><i class="iconfont price">&#xe620;</i><span>价格：{$vo['chrtitle']}元</span></div>
+            <div class="state"><i class="iconfont laiyuan">&#xe60e;</i>状态：<span>{$order_state[$vo['state']]}</span><span style="color: red;">&nbsp;&nbsp;{$vo['issign']==1?"(已签到)":""}</span></div>
+            <!-- <div class="style"><i class="iconfont laiyuan">&#xe60e;</i>方式：<span>{$order_paytype1[$vo['paytype1']]}</span></div> -->
+            <div class="time"><i class="iconfont clock">&#xe602;</i><span>购买时间：{$vo['dtcreatetime']}</span></div>
+            <div class="time"><i class="iconfont clock">&#xe602;</i><span>活动时间：{$vo['dtstart']}~{$vo['dtend']}</span></div>
+            <div class="btn">
+                <a href="/{$sitecode}/orderdetail/{$vo['id']}" style="background: #d98bb3;">订单详情</a>
+                <?php if($vo['state']==4 && $vo['isrefund']==1 && $vo['issign']!=1) { ?>
+                <a href="#" id="refund_{$vo['id']}" onclick="javascript:refund({$vo['id']})" style="background: #ed958f;">退款</a>
+                <?php } ?>
+                <!--支付成功后-->
+                <?php if($vo['state']==4 && $vo['share_plan_id'] > 0) { ?>
+                <a href="/{$sitecode}/share/{$vo['id']}/0" style="background: #5fd2b8; ">分享现金券</a>
+                <?php } ?>
+                <a href="#" style="background: #d9b38b; display: none" >查看约玩</a>
+            </div>
+        </div>
+    </div>
+</li>
+<?php }}else{echo 11;exit;} ?>
+        

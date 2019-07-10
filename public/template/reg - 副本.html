@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+<title>企业信息登记</title>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<script type="text/javascript" src="/static/js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="/static/js/layer/layer.js"></script></head>
+<body>
+<style>
+    div{padding: 5px 0;}
+
+</style>
+<div style="padding: 30px; text-align: center">
+    <div>企业名称</div>
+    <div><input type="text" name="companyname" id="companyname" value="" /></div>
+    <div>联系人</div>
+    <div><input type="text" name="Contacts" id="Contacts" value="" /></div>
+    <div>联系电话</div>
+    <div><input type="text" name="Contactstel" id="Contactstel" value="" /></div>
+	<div>验证码</div>
+    <div><img style="height: 30px; margin-top:-5px; cursor:pointer" src="{:url('Admin/index/vertify')}"  id="imgVerify" alt="" onclick="fleshVerify()"></div>
+	<div><input name="txtICode" type="text" maxlength="5" id="txtICode" tabindex="4"  /></div>
+	<div><input type="button" name="sub1" value="确认" onclick="javascript:add()"></div>
+</div>
+<script language="JavaScript">
+function fleshVerify(){
+    $('#imgVerify').attr('src',"{:url('admin/index/vertify')}?r="+Math.floor(Math.random()*100));
+}
+function add() {
+
+    var companyname=$("#companyname").val();
+    var Contacts=$("#Contacts").val();
+    var Contactstel=$("#Contactstel").val();
+    var txtICode=$("#txtICode").val();
+
+    if(companyname=="")
+    {
+        layer.confirm('企业名称不能为空！',{btn:['关闭']});
+        return;
+    }
+    if(Contacts=="")
+    {
+        layer.confirm('联系人不能为空！',{btn:['关闭']});
+        return;
+    }
+    if(Contactstel=="")
+    {
+        layer.confirm('联系电话不能为空！',{btn:['关闭']});
+        return;
+    }
+    if(txtICode=="")
+    {
+        layer.confirm('验证码不能为空！',{btn:['关闭']});
+        return;
+    }
+
+    var data= {"companyname":companyname,"Contacts":Contacts,"Contactstel": Contactstel,'txtICode':txtICode};
+    $.ajax({
+        url:"/reg",
+        data:data,
+        type:"post",
+        dataType:"json",
+        success:function(msg) {
+            if(msg.state==1)
+            {
+                layer.confirm('企业信息已成功登记！',{btn:['关闭']});
+            }
+            else
+            {
+                layer.confirm(msg.msg,{btn:['关闭']});
+            }
+        }
+    })
+}
+
+</script>
+</body>
+</html>

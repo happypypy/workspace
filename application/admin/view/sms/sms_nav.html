@@ -1,0 +1,25 @@
+<ul>
+    <?php if($cms->CheckPurview('sms','send') || $cms->CheckPurview('sms','sendmanage')){ ?>
+        <li id="send_log" onclick="javascript:window.location='{:url('sms/send_log','')}'"><em>发送记录</em></li>
+    <?php } ?>
+
+    <?php if($cms->CheckPurview('sms','recharge')){ ?>
+        <li id="sms_recharge_list" onclick="javascript:window.location='{:url('sms/sms_recharge_list',array('id'=>1,'flag'=>10))}'"><em>短信充值</em></li>
+    <?php } ?>
+
+    <?php if($cms->CheckPurview('sms','autosend')){ ?>
+        <li id="sms_open_config" onclick="javascript:window.location='{:url('sms/sms_open_config','')}'"><em>发送设置</em></li>
+    <?php } ?>
+
+    <?php if($cms->CheckPurview('sms','opensms')){ ?>
+        <li id="sms_apply" onclick="javascript:window.location='{:url('sms/sms_apply','')}'"><em>短信申请</em></li>
+    <?php } ?>
+
+    <?php if($cms->CheckPurview('sms','msgpattern')){ ?>
+        <li id="sms_template_list" onclick="javascript:window.location='{:url('sms/sms_template_list','')}'"><em>短信模版</em></li>
+    <?php } ?>
+</ul>
+
+<script type="text/javascript">
+    $("#" + "<?= $action_name ?>").addClass("oa_on");
+</script>

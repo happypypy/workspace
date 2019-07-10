@@ -1,0 +1,91 @@
+
+// 不能重复添加
+function TabAdd(url,title,code)
+{
+/**
+     tabs.addTab({
+			    title: title,
+			    code: code,
+			    update:true,
+			    height: ifheight,
+			    width: '100',
+			    closeable: true,
+			    el: '<iframe frameborder="0" marginheight="0" marginwidth="0" vspace="0" hspace="0" width="100%" class="frameautoheight" height="100%"  src="'+url+'"></iframe>' 
+		    });
+		    tabs.select(code);	
+			
+			if((","+TabCodes+",").indexOf((","+code+","))<0)
+				if(TabCodes.lenght>0)
+				{
+					TabCodes=TabCodes+","+code;
+				}else
+				{
+					TabCodes=code;
+				}
+			}
+			{*/
+				tabs.add(title, url,true,code,false);
+				tabs.selectByCode(code);
+			
+    
+}
+// 不能重复添加
+function CheckTabAdd(url,title,code)
+{
+
+	tabs.add(title, url,true,code,false);
+	tabs.selectByCode(code);
+			
+    
+}
+// 不能重复添加
+function CheckTabAddAbdUpdateUrl(url,title,code)
+{
+				
+
+				tabs.selectAndUpdateUrl(tabs.getTabsIndexByCode(code),url);
+			
+    
+}
+// 可以重复添加
+function TabAdd1(url,title,code)
+{
+/**
+     tabs.addTab({
+			    title: title,
+			    code: code,
+			    height: ifheight,
+			    width: '100',
+			    closeable: true,
+			    el: '<iframe frameborder="0" marginheight="0" marginwidth="0" vspace="0" hspace="0" width="100%" class="frameautoheight" height="100%"  src="'+url+'"></iframe>' 
+		    });
+		    tabs.select(code);	
+			*/
+}
+
+
+/**
+*	添加不重复的
+*	url : 连接地址
+	title:tab 的名称
+	code:代号
+*/
+function TabNoRepeat(url,title,code){
+
+    if(code!='TableManage')
+    {
+	    var tabindex=tabs.getTabsIndexByCode(code);	
+	    if(tabindex==-1){
+		    //如果不存在则添加
+		    tabs.add(title, url,true,code,true);
+	    }else{
+		    //如果存在则选择
+		    tabs.selectByCode(code);	
+	    }
+	}else{
+	     tabs.add(title, url,true,code,true);
+	}
+}
+
+
+

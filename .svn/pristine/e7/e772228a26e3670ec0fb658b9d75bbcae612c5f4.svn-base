@@ -1,0 +1,30 @@
+
+var App = {
+	editRegion : {
+		url : ''
+	},
+	defaultViewSet : {
+		theme : 'default',
+		editRegion : {
+			type : "none",
+			show : "true",
+			resizable : false,
+			position : ["center", "center"],
+			width : 420,
+			height : 180
+		}
+	}
+};
+App.viewSet = App.defaultViewSet;
+App.options = function(self, cfg) {
+	self.empty();
+	$.each(cfg.data, function(i, n) {
+		var k = cfg.keyField, v = cfg.displayField
+			, a = $('<option></option>').appendTo(self);
+		a.attr('value', (k? n[k]:i));
+		a.append(cfg.render? cfg.render(n):(v? n[v]:n));
+	});
+	return self;
+};
+
+

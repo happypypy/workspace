@@ -1,0 +1,130 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>内容管理</title>
+<link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/static/css/page.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="__PUBLIC__/static/js/jquery-3.2.1.min.js"></script>
+</head>
+<body>
+<div class="oa_pop">
+    <div style="height: 6px"></div>
+    <div class="oa_pop-main">
+        <div class="oa_title clearfix">
+            <span class="oa_ico-right"></span>
+            <span class="oa_title-btn"></span>
+            <span class="oa_ico-left"></span>
+            会员管理
+        </div>
+        <div class="oa_edition">
+            <form action="" method="post">
+                <table width="100%" border="0" cellspacing="1" cellpadding="0" class="oa_edition">
+                    <tr>
+                        <td width="150" class="oa_cell-left">userID：</td>
+                        <td class="oa_cell-right">
+                            <input name="userid" type="text" value="{$user_info.idmember}" readonly="true" class="oa_input-200" />
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td width="150" class="oa_cell-left">openID：</td>
+                        <td class="oa_cell-right"><input name="openid" type="text" value="{$user_info.openid}" class="oa_input-200" /></td>
+                    </tr>
+
+                    <tr>
+                        <td width="150" class="oa_cell-left">帐号：</td>
+                        <td class="oa_cell-right">
+                            <input name="chraccount" type="text" value="{$user_info.chraccount}" class="oa_input-200" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="150" class="oa_cell-left">密码：</td>
+                        <td class="oa_cell-right">
+                            <input name="chrpwd" type="text" value="{$user_info.chrpwd}" class="oa_input-200" />
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td width="150" class="oa_cell-left">会员类别：</td>
+                        <td class="oa_cell-right">
+                            <input name="intlevel" type="text" value="{$user_info.intlevel}" class="oa_input-200" />
+                        </td>
+                    </tr>
+
+
+                    {volist name="member_field" id="vo"}
+                    {if condition="$vo.isusing eq 1"}
+                    <tr>
+                        <td width="150" class="oa_cell-left">{$vo.fieldalias}：</td>
+                        <td class="oa_cell-right">
+                            {$vo|getControl}
+                        </td>
+                    </tr>
+                    {/if}
+                    {/volist}
+                    <tr>
+                        <td width="150" class="oa_cell-left">活动分销权限：</td>
+                        <td class="oa_cell-right">
+                            <input name="isonepage" type="radio" value="1" />是&nbsp;&nbsp;&nbsp;&nbsp;
+                            <input name="isonepage" type="radio" value="2" />否
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="150" class="oa_cell-left">分销等级：</td>
+                        <td class="oa_cell-right">
+                            <input name="showonmenu" type="radio" value="1"  />是&nbsp;&nbsp;&nbsp;&nbsp;
+                            <input name="showonmenu" type="radio" value="2" />否
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="150" class="oa_cell-left">参与分销结算：</td>
+                        <td class="oa_cell-right">
+                            <input name="showonpath" type="radio" value="1" />是&nbsp;&nbsp;&nbsp;&nbsp;
+                            <input name="showonpath" type="radio" value="2" />否
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="150" class="oa_cell-left">家长学堂博客发布：</td>
+                        <td class="oa_cell-right"><input name="templateofnodeindex" type="text" value="" class="oa_input-200" /></td>
+                    </tr>
+                    <tr style="text-align: right">
+                        <td colspan="2"><input type="submit" value="确定"></td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+    if($("#is_comment").is(":checked")){
+        $("#comment_model").show();
+    }else {
+        $("#comment_model").hide();
+    }
+
+    if($("#is_entry").is(":checked")){
+        $("#entry_model").show();
+    }else {
+        $("#entry_model").hide();
+    }
+
+    $("#is_comment").click(function(){
+        if($("#is_comment").is(":checked")){
+            $("#comment_model").show();
+        }else {
+            $("#comment_model").hide();
+        }
+    });
+
+    $("#is_entry").click(function(){
+        if($("#is_entry").is(":checked")){
+            $("#entry_model").show();
+        }else {
+            $("#entry_model").hide();
+        }
+    });
+</script>
+
+</html>

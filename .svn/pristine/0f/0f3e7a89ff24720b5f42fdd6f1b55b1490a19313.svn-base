@@ -1,0 +1,256 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>现金券领取报表</title>
+    <link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
+    <link href="__PUBLIC__/static/css/page.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="__PUBLIC__/static/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/lhgdialog.js?skin=aero"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/CostomLinkOpenSw.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/tabscommon.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/del-checked.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/layer/layer.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/js/daterangepicker/daterangepicker-bs3.css" />
+    <link rel="stylesheet" type="text/css" href="/static/js/bootstrap-datetimepicker/bootstrap-datetimepicker.min.css" />
+    <script type="text/javascript" src="/static/js/daterangepicker/moment.min.js"></script>
+    <script type="text/javascript" src="/static/js/daterangepicker/daterangepicker.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap-datetimepicker/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap-datetimepicker/locales/bootstrap-datetimepicker.zh-CN.js"></script>
+    <script type="text/javascript">
+        function shearch_check() {
+            var begin_year_time=$("#begin_year_time").val();
+            var end_year_time=$("#end_year_time").val();
+            var begin_month_time=$("#begin_month_time").val();
+            var end_month_time=$("#end_month_time").val();
+            var begintime=$("#begintime").val();
+            var endtime=$("#endtime").val();
+            if(begin_year_time!="" && end_year_time!="")
+            {
+                var begin_year_time=new Date(begin_year_time.replace("-", "/").replace("-", "/"));
+                var end_year_time=new Date(end_year_time.replace("-", "/").replace("-", "/"));
+                if(end_year_time < begin_year_time)
+                {
+                    layer.alert("自定义开始时间不能大于结束时间！");
+                    return;
+                }
+            }
+            if(begin_month_time!="" && end_month_time!="")
+            {
+                var begin_month_time=new Date(begin_month_time.replace("-", "/").replace("-", "/"));
+                var end_month_time=new Date(end_month_time.replace("-", "/").replace("-", "/"));
+                if(end_month_time<begin_month_time)
+                {
+                    layer.alert("月份开始时间不能大于结束时间！");
+                    return;
+                }
+            }
+            // console.log(begintime+'kk'+endtime);return;
+            if(begintime!="" && endtime!="")
+            {
+                if(endtime < begintime)
+                {
+                    layer.alert("年份开始时间不能大于结束时间！");
+                    return;
+                }
+            }
+            $("#form1").submit();
+
+        }
+    </script>
+</head>
+<body>
+
+<div class="oa_wrapper">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr class="oa_wrapper-display">
+            <td class="oa_wrapper-top-arr-left">&nbsp;</td>
+            <td class="oa_wrapper-top-arr-middle"></td>
+            <td class="oa_wrapper-top-arr-right">&nbsp;</td>
+        </tr>
+        <tr>
+            <td class="oa_wrapper-middle-arr-left oa_wrapper-display"></td>
+            <td class="oa_wrapper-middle-arr-middle">
+                <div class="oa_location clearfix"><span class="oa_ico-left"></span>location<span class="oa_ico-right"></span></div>
+                <div class="oa_main clearfix">
+                    <div class="oa_subnav clearfix">
+                        <div class="oa_subnav-tab clearfix">
+                            <ul>
+                                <?php if($cms->CheckPurview('cashedplan','view')){ ?>
+                                <li onclick="javascript:window.location='{:url('cashed/index','')}'"><em>现金券计划列表 </em></li>
+                                <?php } if($cms->CheckPurview('cashedrecord','view')){  ?>
+                                <li  onclick="javascript:window.location='{:url('cashed/receive_record','')}'"><em>现金券领取记录 </em></li>
+                                <?php } if($cms->CheckPurview('newusercashed','set')){?>
+                                <li onclick="javascript:window.location='{:url('cashed/new_member_cashed_set','')}'"><em>新用户关注发券设置 </em></li>
+                                <?php } if($cms->CheckPurview('cashedreport','view')){?>
+                                <li class="oa_on" onclick="javascript:window.location='{:url('cashed/cashed_report','')}'"><em>报表 </em></li>
+                                <?php } ?>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="oa_search-area clearfix">
+
+                        <div class="oa_title clearfix">
+                        <span class="oa_title-btn">
+                                                        <!--<a href="javascript:export_data();" style="padding: 25px">导出数据</a>-->
+                          </span>
+                            <span class="oa_ico-right"></span>
+                            <span class="oa_ico-left"></span>
+                            搜索
+                        </div>
+                        <div class="oa_search-area clearfix">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td>
+                                        <div class="oa_search-type clearfix">
+                                            <form action="" method="post" id="form1">
+                                                <table width="100%" border="0" cellspacing="1" cellpadding="0">
+
+                                                    <tr>
+                                                        <td width="100" class="oa_cell-left">查询报表：</td>
+                                                        <td class="oa_cell-right">
+                                                            <select title="查询报表" name="time_range" id="time_range">
+                                                                <option value="">请选择</option>
+                                                                <option value="year" <?php if(isset($_POST['time_range']) && $_POST['time_range']=="year"){echo "selected";} ?>>年报</option>
+                                                                <option value="month" <?php if(isset($_POST['time_range']) && $_POST['time_range']=="month"){echo "selected";} ?>>月报</option>
+                                                                <option value="custom" <?php if(isset($_POST['time_range']) && $_POST['time_range']=="custom"){echo "selected";} ?>>自定义时间范围</option>
+                                                            </select>
+                                                        </td>
+                                                    </tr>
+                                                    <tr id="year_part" style="<?php if($search['begin_year_time']){echo "";}else{echo 'display: none';} ?>">
+                                                    <td width="100"   class="oa_cell-left">年份：</td>
+                                                    <td class="oa_cell-right">
+                                                        <input type="text"  style="width: 80px;"  id="begintime" name="begin_year_time" class="form-control" autocomplete="off"  value="<?php if(isset($_POST['begin_year_time']) ){echo $_POST['begin_year_time'];} ?>"> -
+                                                        <input type="text" style="width: 80px;" id="endtime" name="end_year_time" class="form-control"  autocomplete="off" value="<?php if(isset($_POST['end_year_time']) ){echo $_POST['end_year_time'];} ?>">
+                                                        <script language='JavaScript'>setDatetimepicker("begintime","yyyy",4);setDatetimepicker("endtime","yyyy",4);</script>                                                        </td>
+                                                    </tr>
+                                                    <tr id="month_part" style="<?php if($search['begin_month_time']){echo "";}else{echo 'display: none';} ?>">
+                                                    <td width="100"   class="oa_cell-left">月份：</td>
+                                                    <td class="oa_cell-right">
+                                                        <input type="text"  style="width: 80px;"  id="begin_month_time" name="begin_month_time" class="form-control" autocomplete="off"  value="<?php if(isset($_POST['begin_month_time']) ){echo $_POST['begin_month_time'];} ?>"> -
+                                                        <input type="text" style="width: 80px;" id="end_month_time" name="end_month_time" class="form-control"  autocomplete="off" value="<?php if(isset($_POST['end_month_time']) ){echo $_POST['end_month_time'];} ?>">
+                                                        <script language='JavaScript'>setDatetimepicker("begin_month_time","yyyy-mm",3);setDatetimepicker("end_month_time","yyyy-mm",3);</script>                                                        </td>
+                                                    </tr>
+                                                    <tr id="time_part" style="<?php if($search['begintime']){echo "";}else{echo 'display: none';} ?>">
+                                                        <td width="100"   class="oa_cell-left">时间段：</td>
+                                                        <td class="oa_cell-right">
+                                                            <input type="text"  style="width: 80px;"  id="begin_year_time" name="begintime" class="form-control" autocomplete="off"  value="<?php if(isset($_POST['begintime']) ){echo $_POST['begintime'];} ?>"> -
+                                                            <input type="text" style="width: 80px;" id="end_year_time" name="endtime" class="form-control"  autocomplete="off" value="<?php if(isset($_POST['endtime']) ){echo $_POST['endtime'];} ?>">
+                                                            <script language='JavaScript'>setDatetimepicker("begin_year_time","yyyy-mm-dd",2);setDatetimepicker("end_year_time","yyyy-mm-dd",2);</script>                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td height="30"></td>
+                                                        <td class="oa_cell-right"><input  name="subSearch" type="button" value="搜索" onclick="javascript:shearch_check();" class="oa_search-btn" /></td>
+                                                    </tr>
+                                                </table>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                    </div>
+                    <div class="oa_title clearfix">
+                        <span class="oa_title-btn">
+                          </span>
+                        <span class="oa_ico-left"></span>
+                        现金券领取报表
+                    </div>
+                    <div class="oa_text-list">
+                        <table width="100%" border="0" cellspacing="0" cellpadding="0" style="table-layout:fixed">
+                            <tr class="oa_text-list-title">
+                                <th><span class="oa_arr-text-list-title"></span>日期</th>
+                                <th><span class="oa_arr-text-list-title"></span>领券总人数</th>
+                                <th><span class="oa_arr-text-list-title"></span>领券总次数</th>
+                                <th><span class="oa_arr-text-list-title"></span>领券总金额</th>
+                                <th><span class="oa_arr-text-list-title"></span>已用总金额</th>
+                                <th><span class="oa_arr-text-list-title"></span>未用总金额</th>
+                                <th><span class="oa_arr-text-list-title"></span>过期总金额</th>
+                                <th><span class="oa_arr-text-list-title"></span>冻结总金额</th>
+                            </tr>
+                            <?php if(empty($list)){?>
+                            <tr>
+                                <td colspan="8" style="height: 50px; text-align: center">当前没有领取记录</td>
+                            </tr>
+                            <?php }else{ ?>
+                            {volist name="list" id="vo"}
+                            <tr>
+                                <td>{$key}</td>
+                                <td>{$vo["receive_people"]}</td>
+                                <td>{$vo["receive_total"]}</td>
+                                <td>{$vo["receive_total_amount"]}</td>
+                                <td>{$vo["had_used_amount"]}</td>
+                                <td>{$vo["no_used_amount"]}</td>
+                                <td>{$vo["no_past_amount"]}</td>
+                                <td>{$vo["freeze_amount"]}</td>
+                            </tr>
+                            {/volist}
+                            {if condition="$total"}
+                            <tr style="color: red">
+                                <td>汇总</td>
+                                <td>{$total["total_receive_people"]}</td>
+                                <td>{$total["total_receive_total"]}</td>
+                                <td>{$total["total_receive_total_amount"]}</td>
+                                <td>{$total["total_had_used_amount"]}</td>
+                                <td>{$total["total_no_used_amount"]}</td>
+                                <td>{$total["total_no_past_amount"]}</td>
+                                <td>{$total["total_freeze_amount"]}</td>
+                            </tr>
+                            {/if}
+                            <?php } ?>
+                        </table>
+                    </div>
+                    <div class="oa_content-main-bottom"></div>
+
+                </div>
+            </td>
+            <td class="oa_wrapper-middle-arr-right oa_wrapper-display"></td>
+        </tr>
+        <tr class="oa_wrapper-display">
+            <td class="oa_wrapper-bottom-arr-left">&nbsp;</td>
+            <td class="oa_wrapper-bottom-arr-middle"></td>
+            <td class="oa_wrapper-bottom-arr-right">&nbsp;</td>
+        </tr>
+    </table>
+</div>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#time_range').change(function(){
+            var range = $(this).children('option:selected').val();
+            //如果等于日期范围
+            if(range =="custom"){
+                $("#time_part").show();
+                $("#year_part").hide();
+                $("#month_part").hide();
+            }else if(range =="year"){
+                $("#year_part").show();
+                $("#time_part").hide();
+                $("#month_part").hide();
+            }else if(range =="month"){
+                $("#month_part").show();
+                $("#time_part").hide();
+                $("#year_part").hide();
+            }else{
+                $("#time_part").hide();
+                $("#month_part").hide();
+                $("#year_part").hide();
+            }
+        })
+    });
+
+    function empty() {
+        window.location.reload();
+    }
+
+
+    function export_data(id,p) {
+        var time_range = $("#time_range").val();
+        var begintime = $("#begintime").val();
+        var endtime = $("#endtime").val();
+        var url = "/admin/report/member_report/time_range/"+time_range+"/begintime/"+begintime+'/endtime/'+endtime;
+        window.open(url,"_blank");
+    }
+</script>
+</body>
+</html>

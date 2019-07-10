@@ -1,0 +1,50 @@
+<table id="table" width="100%" border="0" cellspacing="0" cellpadding="0" style="table-layout:fixed">
+  <tr class="oa_text-list-title">
+    <th><span class="oa_arr-text-list-title"></span>配置代号</th>
+    <th><span class="oa_arr-text-list-title"></span>配置项别名</th>
+    <th><span class="oa_arr-text-list-title"></span>类型</th>
+    <th><span class="oa_arr-text-list-title"></span>排序</th>
+    <th><span class="oa_arr-text-list-title"></span>是否显示</th>
+    <th><span class="oa_arr-text-list-title"></span>是否系统</th>
+    <th width="100"><span class="oa_arr-text-list-title"></span>操作</th>
+  </tr>
+  {volist name="rulelist" id="vo"}
+  <tr class="tr">
+    <td><span>{$vo['fieldname']}</span></td>
+    <td><span>{$vo['chrname']}</span></td>
+    <td>
+                            <span>
+                              {if condition="$vo['fieldtype'] eq 1"}单行文本{/if}
+                              {if condition="$vo['fieldtype'] eq 2"}多行文本{/if}
+                              {if condition="$vo['fieldtype'] eq 3"}编辑器{/if}
+                              {if condition="$vo['fieldtype'] eq 4"}多选列表框{/if}
+                              {if condition="$vo['fieldtype'] eq 5"}复选框{/if}
+                              {if condition="$vo['fieldtype'] eq 6"}单选按钮{/if}
+                              {if condition="$vo['fieldtype'] eq 7"}下拉列表{/if}
+                              {if condition="$vo['fieldtype'] eq 8"}数字型{/if}
+                              {if condition="$vo['fieldtype'] eq 9"}日期{/if}
+                              {if condition="$vo['fieldtype'] eq 10"}图片{/if}
+                              {if condition="$vo['fieldtype'] eq 11"}多图片{/if}
+                              {if condition="$vo['fieldtype'] eq 12"}文件{/if}
+                              {if condition="$vo['fieldtype'] eq 13"}多文件{/if}
+                              {if condition="$vo['fieldtype'] eq 14"}单行文本{/if}
+                              {if condition="$vo['fieldtype'] eq 15"}相关内容{/if}
+                              {if condition="$vo['fieldtype'] eq 16"}相关栏目{/if}
+                              {if condition="$vo['fieldtype'] eq 17"}相关栏目(多选){/if}
+                              {if condition="$vo['fieldtype'] eq 18"}只读文本{/if}
+                              {if condition="$vo['fieldtype'] eq 19"}弹窗分页(单选{/if}
+                              {if condition="$vo['fieldtype'] eq 20"}弹窗分页(多选){/if}
+                              {if condition="$vo['fieldtype'] eq 21"}相关产品{/if}
+                              {if condition="$vo['fieldtype'] eq 22"}日期和时间{/if}
+                            </span>
+    </td>
+    <td><span>{$vo['intsn']}</span></td>
+    <td><span>{$vo['isshow']==1?"显示":"不显示"}</span></td>
+    <td><span>{$vo['intflag']==1?"是":"否"}</span></td>
+    <td width="100">
+      <a href="javascript:CustomOpen('{:url('configs/ruledeal','id='.$vo['id'].'&menucode='.$vo['menucode'].'&action=edit','')}', 'account','修改配置项', 800, 800)">修改</a>
+      {if condition="$vo['intflag'] eq 2"}<a href="{:url('configs/ruledel','id='.$vo['id'],'')}">删除</a>{/if}
+    </td>
+  </tr>
+  {/volist}
+</table>

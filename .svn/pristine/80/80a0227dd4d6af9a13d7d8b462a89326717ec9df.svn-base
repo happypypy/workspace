@@ -1,0 +1,46 @@
+a:active, a:hover, a:focus,a:mouseover,a:mousedown
+{
+	color: #f30;
+	list-style-type: none;
+	outline-color:-moz-use-text-color;
+	outline-style:none;
+	outline-width:medium;
+	text-decoration:none !important;
+	margin:-1;
+}
+
+form, ul, li, dl, dt, dd
+{
+	padding: 0px;
+	margin: 0px;
+}
+ul
+{
+	list-style-type: none;
+}
+
+/*FrameTabs*/
+.em-tab-panel {overflow:hidden;}
+.em-tab-panel-header {	width:100%; background:url(../images/oa_bg-tabs.gif) 0 0 repeat-x;height:38px; position:relative; margin:0px;  top:0px;}
+.em-tab-strip-wrap{width:100%;overflow:hidden;position:relative;zoom:1;height:38px;}
+.em-tab-strip{DISPLAY: block;WIDTH: 5000px;zoom: 1;position:absolute; left:0; padding-left:4px;}
+
+.em-tab-panel li{ line-height:30px;font-size:14px;text-align:center;float:left;background:url(../images/oa_bg-tabs-default.gif) 0 0 repeat-x; margin:6px 0 0 0;}
+
+.em-tab-panel li a{ overflow:hidden;display:block; float:left; color:#416aa3; text-decoration:none;padding-left:8px;}
+.em-tab-panel li a.em-tab-close{ background:url(../images/oa_bg-tabs-default-right.gif) right 0 no-repeat;height:38px; cursor:pointer; display:block;}
+.em-tab-panel li a.em-tab-close img{margin:4px 6px 0 0;}
+.em-tab-panel li.em-tab-selected { line-height:33px;text-align:center;background:url(../images/oa_bg-tabs-on.gif) 0 0 no-repeat; margin:4px 0 0 0;}
+.em-tab-panel li.em-tab-selected a{ background-position: left 0px;overflow:hidden; font-weight:bold;}
+.em-tab-panel li.em-tab-selected a.em-tab-close{ background:url(../images/oa_bg-tabs-on-right.gif) right 0 no-repeat;height:38px; cursor:pointer; display:block;}
+.em-tab-panel li.em-tab-selected a.em-tab-close img{margin:4px 6px 0 0;}
+.em-tab-closable-true { border:0; display:block;}
+.em-tab-closable-false { border:0; display:none;}
+.em-tab-content{display:none}
+.em-tab-content-selected{display:block;-webkit-overflow-scrolling:touch;overflow:auto;}
+
+
+.em-tab-scroller-right {Z-INDEX: 10;background:transparent url(../images/oa_btn-tabs-right.gif) no-repeat 0 9px;width:18px; height:30px;CURSOR: pointer;POSITION: absolute;TOP: 0px; right:0px;}
+.em-tab-scroller-right-disabled {	BACKGROUND-POSITION: 0px 0px;	FILTER: alpha(opacity=50);	CURSOR: default;	moz-opacity: .5;	opacity: .5}
+.em-tab-scroller-left {	Z-INDEX: 10;BACKGROUND:transparent url(../images/oa_btn-tabs-left.gif) no-repeat 0 9px;width:18px; height:30px;CURSOR: pointer;POSITION: absolute;TOP: 0px; left:0px;}
+.em-tab-scroller-left-disabled {	BACKGROUND-POSITION: -18px 0px;	FILTER: alpha(opacity=50);	CURSOR: default;	moz-opacity: .5;	opacity: .5}

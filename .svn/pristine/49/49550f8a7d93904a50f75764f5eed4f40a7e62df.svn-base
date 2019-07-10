@@ -1,0 +1,159 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>角色管理</title>
+  <link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
+  <link href="__PUBLIC__/static/css/page.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="__PUBLIC__/static/js/jquery-3.2.1.min.js"></script>
+  <script type="text/javascript" src="__PUBLIC__/static/js/lhgdialog.js?skin=aero"></script>
+  <script type="text/javascript" src="__PUBLIC__/static/js/CostomLinkOpenSw.js"></script>
+  <script type="text/javascript" src="__PUBLIC__/static/js/tabscommon.js"></script>
+  <script type="text/javascript" src="__PUBLIC__/static/js/del-checked.js"></script>
+  <script type="text/javascript" src="__PUBLIC__/static/js/layer/layer.js"></script>
+  <script type="text/javascript">
+      $(function(){
+          $(document).ready(function() {
+              $('.oa_text-list tr').addClass('odd');
+              $('.oa_text-list tr:even').addClass('even');
+          });
+          $('.oa_text-list tr').hover(
+              function(){
+                  $(this).addClass('oa_mouseover-bg');
+              },
+              function(){
+                  $(this).removeClass('oa_mouseover-bg');
+              }
+          );
+      });
+      function empty() {
+          window.location.reload();
+      }
+
+      //删除选中
+      function del_checked() {
+          var b = $(".checked_one");
+          var s = '';
+          for(var i=0;i<b.length;i++){
+              if(b[i].checked){
+                  s+= b[i].value+',';
+              }
+          }
+          s = s.substr(0, s.length - 1);
+          $.ajax({
+              url:"{:url('role/delchecked')}",
+              data:"id="+s,
+              type:"post",
+              dataType:"json",
+              success:function(msg){
+                  if (msg==1){
+                      layer.alert('{:lang('del success')}', {icon: 1}, function(index){
+                          location.reload();
+                          $(".checked_one").attr("checked",false);
+                          layer.close(index);
+                      });
+                  }else{
+                      layer.alert('{:lang('del fail')}', {icon: 2}, function(index){
+                          layer.close(index);
+                          location.reload();
+                      });
+                  }
+              }
+          })
+      }
+  </script>
+</head>
+<body>
+<div class="oa_wrapper">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+    <tr class="oa_wrapper-display">
+      <td class="oa_wrapper-top-arr-left">&nbsp;</td>
+      <td class="oa_wrapper-top-arr-middle"></td>
+      <td class="oa_wrapper-top-arr-right">&nbsp;</td>
+    </tr>
+    <tr>
+      <td class="oa_wrapper-middle-arr-left oa_wrapper-display"></td>
+      <td class="oa_wrapper-middle-arr-middle">
+        <div class="oa_location clearfix"><span class="oa_ico-left"></span>location<span class="oa_ico-right"></span></div>
+        <div class="oa_main clearfix">
+          <div class="oa_subnav clearfix">
+            <div class="oa_subnav-tab clearfix">
+              <ul>
+
+                <li class="oa_on" style="display: none"><a href="{:url('Admin/work/index')}"><em>分类管理</em></a></li>
+
+                <?php if($cms->CheckPurview('bookcontent','view')){ ?>
+                {foreach name="book_list" id="vo"}
+                <li><em><a href="{:url('Admin/work/content','bookcode='.$vo['code'])}">{$vo['name']}</a></em></li>
+                {/foreach}
+                <?php } ?>
+
+              </ul>
+            </div>
+          </div>
+          <div class="oa_content-area clearfix">
+            <div class="oa_content-main">
+              <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                  <td valign="top">
+                    <div class="oa_title clearfix">
+                      <span class="oa_title-btn" style="display: none">
+                        <ul>
+                          <li class="oa_selected">
+                              <a href="javascript:CustomOpen('{:url('Admin/work/bookdeal','action=add')}','work','分类管理',400,220)">添加分类</a>
+                          </li>
+                        </ul>
+                      </span>
+                      <span class="oa_ico-left"></span>列表
+                    </div>
+                    <div class="oa_text-list">
+                      <table width="100%" border="0" cellspacing="0" cellpadding="0" style="table-layout:fixed">
+                        <tr class="oa_text-list-title">
+                          <th width="80"><span class="oa_arr-text-list-title"></span>分类ID</th>
+                          <th width="200"><span class="oa_arr-text-list-title"></span>分类名称</th>
+                          <th style="display: none;"><span class="oa_arr-text-list-title"></span>分类代号</th>
+                          <th width="180"><span class="oa_arr-text-list-title"></span>排序</th>
+                          <th width="180"><span class="oa_arr-text-list-title"></span>操作</th>
+                        </tr>
+                        {volist name="book_list" id="vo"}
+                        <tr>
+                          <td><span>{$vo['id']}</span></td>
+                          <td>{$vo['name']}</td>
+                          <td style="display: none;">{$vo['code']}</td>
+                          <td>{$vo['order']}</td>
+                          <td>
+                            <?php if($cms->CheckPurview('bookcate','edit')){ ?>
+                            <a href="javascript:CustomOpen('{:url('Admin/work/bookdeal','bookcode='.$vo['code'].'&action=edit')}','work','分类管理',400,220)">修改</a>
+                            <?php } ?>
+                            <?php if($cms->CheckPurview('bookcate','del')){ ?>
+                            <a onclick="javascript:if(confirm('确定删除吗？')){return true;}else{return false;};" href="{:url('index/bookdel','bookcode='.$vo['code'])}');">删除</a>
+                            <?php } ?>
+                          </td>
+                        </tr>
+                        {/volist}
+                      </table>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <div class="oa_content-main-bottom"></div>
+            </div>
+          </div>
+        </div>
+      </td>
+      <td class="oa_wrapper-middle-arr-right oa_wrapper-display"></td>
+    </tr>
+    <tr class="oa_wrapper-display">
+      <td class="oa_wrapper-bottom-arr-left">&nbsp;</td>
+      <td class="oa_wrapper-bottom-arr-middle"></td>
+      <td class="oa_wrapper-bottom-arr-right">&nbsp;</td>
+    </tr>
+  </table>
+</div>
+</body>
+<script type="text/javascript">
+    function book_del(code) {
+
+    }
+</script>
+</html>

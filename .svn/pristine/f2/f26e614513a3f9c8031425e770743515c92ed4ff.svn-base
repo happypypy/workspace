@@ -1,0 +1,229 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>内容管理</title>
+<script type="text/javascript" src="__PUBLIC__/static/js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/js/CostomLinkOpenSw.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/js/tabscommon.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/js/layer/layer.js"></script>
+<!-- 模态框（Modal）JS加载 -->
+<link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/static/css/page.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<style>
+    .oa_cell-right{background-color: #eee;}
+    .oa_cell-left{color:#2D64B3;}
+</style>
+<br>
+<div class="oa_pop">
+    <div class="oa_pop-main">
+        <div class="oa_title clearfix">
+            <span class="oa_ico-right"></span>
+            <span class="oa_title-btn"></span>
+            <span class="oa_ico-left"></span>
+            用户信息
+        </div>
+        <div class="oa_edition"  style="margin-bottom: 5px">
+                <table width="100%" border="0" cellspacing="1" cellpadding="0" class="oa_edition"  style="border-bottom: #e0e0e0 solid 1px">
+                    <tr>
+                        <td width="100" class="oa_cell-left">姓名：</td>
+                        <td class="oa_cell-right">{$memberinfo.chrname}</td>
+                        <td width="100" class="oa_cell-left">昵称：</td>
+                        <td class="oa_cell-right">{$memberinfo.nickname}</td>
+                    </tr>
+                    <tr>
+                        <td  width="100" class="oa_cell-left">电话：</td>
+                        <td class="oa_cell-right">{$memberinfo.chrtel}</td>
+                        <td  width="100" class="oa_cell-left">邮箱：</td>
+                        <td class="oa_cell-right">{$memberinfo.chrmail}</td>
+                    </tr>
+                    <tr>
+                        <td  width="100" class="oa_cell-left">用户分类：</td>
+                        <td class="oa_cell-right"><?php echo array_key_exists($memberinfo['categoryid'],$hyfl)?$hyfl[$memberinfo['categoryid']]:""; ?></td>
+                        <td  width="100" class="oa_cell-left">地址：</td>
+                        <td  class="oa_cell-right">{$memberinfo.chraddress}</td>
+                    </tr>
+                    <tr>
+                        <td  width="100" class="oa_cell-left">商务：</td>
+                        <td class="oa_cell-right"><?php echo array_key_exists($memberinfo['iduser'],$account)?$account[$memberinfo['iduser']]:""; ?></td>
+                        <td  width="100" class="oa_cell-left">跟踪时间：</td>
+                        <td class="oa_cell-right">{notempty name="$memberinfo['followuptime']"}{$memberinfo['followuptime']|date="Y-m-d H:i:s",###}{/notempty}</td>
+                    </tr>
+                </table>
+        </div>
+        <?php if(!empty($memberinfo["childname1"])) { ?>
+        <div class="oa_title clearfix">
+            <span class="oa_ico-right"></span>
+            <span class="oa_title-btn"></span>
+            <span class="oa_ico-left"></span>
+            小孩信息
+        </div>
+        <div class="oa_edition" style="margin-bottom: 5px">
+            <table width="100%" border="0" cellspacing="1" cellpadding="0" class="oa_edition" style="border-bottom: #e0e0e0 solid 1px">
+                <tr>
+                    <td width="100" class="oa_cell-left">姓名：</td>
+                    <td class="oa_cell-right">{$memberinfo.childname1}</td>
+                    <td  width="100" class="oa_cell-left">性别：</td>
+                    <td class="oa_cell-right">
+                        {$memberinfo['childsex1']=="1"?"男":""}{$memberinfo['childsex1']=="2"?"女":""}
+                    </td>
+                    <td  width="100" class="oa_cell-left">年龄：</td>
+                    <td class="oa_cell-right">{$memberinfo.childage1}</td>
+                </tr>
+                <?php } if(!empty($memberinfo["childname2"])) { ?>
+                <tr>
+                    <td width="100" class="oa_cell-left">姓名：</td>
+                    <td class="oa_cell-right">{$memberinfo.childname2}</td>
+                    <td  width="100" class="oa_cell-left">性别：</td>
+                    <td class="oa_cell-right">
+                        {$memberinfo['childsex2']=="1"?"男":""}{$memberinfo['childsex2']=="2"?"女":""}
+                    </td>
+                    <td  width="100" class="oa_cell-left">年龄：</td>
+                    <td class="oa_cell-right">{$memberinfo.childage2}</td>
+                </tr>
+                <?php } if(!empty($memberinfo["childname3"])) { ?>
+                <tr>
+                    <td width="100" class="oa_cell-left">姓名：</td>
+                    <td class="oa_cell-right">{$memberinfo.childname3}</td>
+                    <td  width="100" class="oa_cell-left">性别：</td>
+                    <td class="oa_cell-right">
+                        {$memberinfo['childsex3']=="1"?"男":""}{$memberinfo['childsex3']=="2"?"女":""}
+                    </td>
+                    <td  width="100" class="oa_cell-left">年龄：</td>
+                    <td class="oa_cell-right">{$memberinfo.childage3}</td>
+                </tr>
+                <?php } ?>
+            </table>
+        </div>
+        <div class="oa_title clearfix">
+            <span class="oa_ico-right"></span>
+            <span class="oa_title-btn"></span>
+            <span class="oa_ico-left"></span>
+           参与活动详情
+        </div>
+        <div class="oa_edition" style="margin-bottom: 5px">
+            <table width="100%" border="0" cellspacing="1" cellpadding="0" class="oa_edition" style="border-bottom: #e0e0e0 solid 1px">
+                <tr>
+                    <td colspan="2"  class="oa_cell-left" style="width: 50%;text-align: center;">免费活动</td>
+                    <td colspan="2" class="oa_cell-left" style="width: 50%;text-align: center;">收费活动</td>
+
+                </tr>
+                <tr>
+                    <td width="15%" class="oa_cell-left">参与活动：</td>
+                    <td width="35%" class="oa_cell-right"><a target="_blank" href="{:url('member/order',array('userid'=>$userid,'state'=>3))}">{$s_order[3]}</a></td>
+                    <td width="15%" class="oa_cell-left">未付款：</td>
+                    <td width="35%" class="oa_cell-right"><a target="_blank" href="{:url('member/order',array('userid'=>$userid,'state'=>11))}">{$s_order[11]}</a></td>
+                </tr>
+                <tr>
+                    <td class="oa_cell-left">审批不通过：</td>
+                    <td class="oa_cell-right"><a target="_blank" href="{:url('member/order',array('userid'=>$userid,'state'=>2))}">{$s_order[2]}</a></td>
+                    <td  class="oa_cell-left">已付款：</td>
+                    <td class="oa_cell-right"><a target="_blank" href="{:url('member/order',array('userid'=>$userid,'state'=>4))}">{$s_order[4]}</a></td>
+                </tr>
+                <tr>
+                    <td  class="oa_cell-left">已取消：</td>
+                    <td class="oa_cell-right"><a target="_blank" href="{:url('member/order',array('userid'=>$userid,'state'=>10))}">{$s_order[10]}</a></td>
+                    <td  class="oa_cell-left">已退款：</td>
+                    <td class="oa_cell-right"><a target="_blank" href="{:url('member/order',array('userid'=>$userid,'state'=>6))}">{$s_order[7]+$s_order[6]}</a></td>
+                </tr>
+            </table>
+        </div>
+        <div class="oa_title clearfix">
+            <span class="oa_ico-right"></span>
+            <span class="oa_title-btn"></span>
+            <span class="oa_ico-left"></span>
+            评论详情
+        </div>
+        <div class="oa_edition" style="margin-bottom: 5px">
+            <table width="100%" border="0" cellspacing="1" cellpadding="0" class="oa_edition" style="border-bottom: #e0e0e0 solid 1px">
+
+                <tr>
+                    <td width="13%" class="oa_cell-left">活动评论：</td>
+                    <td  class="oa_cell-right"><a target="_blank" href="{:url('member/comment',array('userid'=>$userid,'show'=>0,'flag'=>2))}">{$s_comment[3]+$s_comment[4]}</a></td>
+                    <td width="10%" class="oa_cell-left">入选：</td>
+                    <td width="20%" class="oa_cell-right"><a target="_blank" href="{:url('member/comment',array('userid'=>$userid,'show'=>1,'flag'=>2))}">{$s_comment[3]}</a></td>
+                    <td width="10%" class="oa_cell-left">屏蔽：</td>
+                    <td width="20%" class="oa_cell-right"><a target="_blank" href="{:url('member/comment',array('userid'=>$userid,'show'=>2,'flag'=>2))}">{$s_comment[4]}</a></td>
+                </tr>
+                <tr>
+                    <td class="oa_cell-left">文章评论：</td>
+                    <td class="oa_cell-right"><a target="_blank" href="{:url('member/comment',array('userid'=>$userid,'show'=>0,'flag'=>1))}">{$s_comment[1]+$s_comment[2]}</a></td>
+                    <td class="oa_cell-left">入选：</td>
+                    <td class="oa_cell-right"><a target="_blank" href="{:url('member/comment',array('userid'=>$userid,'show'=>1,'flag'=>1))}">{$s_comment[1]}</a></td>
+                    <td class="oa_cell-left">屏蔽：</td>
+                    <td class="oa_cell-right"><a target="_blank" href="{:url('member/comment',array('userid'=>$userid,'show'=>2,'flag'=>1))}">{$s_comment[2]}</a></td>
+                </tr>
+            </table>
+        </div>
+        <div class="oa_title clearfix">
+            <span class="oa_ico-right"></span>
+            <span class="oa_title-btn"></span>
+            <span class="oa_ico-left"></span>
+            收藏详情
+        </div>
+        <div class="oa_edition" style="margin-bottom: 5px">
+            <table width="100%" border="0" cellspacing="1" cellpadding="0" class="oa_edition"   style="border-bottom: #e0e0e0 solid 1px">
+
+                <tr>
+                    <td width="20%" class="oa_cell-left">活动：</td>
+                    <td width="30%" class="oa_cell-right"><a target="_blank" href="{:url('member/collection',array('userid'=>$userid,'flag'=>2))}">{$s_collection[2]}</a></td>
+                    <td width="20%" class="oa_cell-left">文章：</td>
+                    <td width="30%" class="oa_cell-right"><a target="_blank" href="{:url('member/collection',array('userid'=>$userid,'flag'=>1))}">{$s_collection[1]}</a></td>
+                </tr>
+            </table>
+        </div>
+        {if condition="$is_cashed"}
+        <div class="oa_title clearfix">
+            <span class="oa_ico-right"></span>
+            <span class="oa_title-btn"></span>
+            <span class="oa_ico-left"></span>
+            现金券领取信息
+        </div>
+        <div class="oa_edition" style="margin-bottom: 5px">
+            <table width="100%" border="0" cellspacing="1" cellpadding="0" class="oa_edition"   style="border-bottom: #e0e0e0 solid 1px">
+
+                <tr>
+                    <td width="20%" class="oa_cell-left">未使用：</td>
+                    <td width="30%" class="oa_cell-right"><a target="_blank" href="{:url('member/receive_record',array('receive_member_id'=>$userid,'used_status'=>1))}">{$cashed_count['no_use']}</a></td>
+                    <td width="20%" class="oa_cell-left">已使用：</td>
+                    <td width="30%" class="oa_cell-right"><a target="_blank" href="{:url('member/receive_record',array('receive_member_id'=>$userid,'used_status'=>5))}">{$cashed_count['has_use']}</a></td>
+                </tr>
+
+                <tr>
+                    <td width="20%" class="oa_cell-left">已过期：</td>
+                    <td width="30%" class="oa_cell-right"><a target="_blank" href="{:url('member/receive_record',array('receive_member_id'=>$userid,'used_status'=>15))}">{$cashed_count['past']}</a></td>
+                    <td width="20%" class="oa_cell-left">冻结：</td>
+                    <td width="30%" class="oa_cell-right"><a target="_blank" href="{:url('member/receive_record',array('receive_member_id'=>$userid,'used_status'=>10))}">{$cashed_count['freeze']}</a></td>
+                </tr>
+            </table>
+        </div>
+        {/if}
+
+        <div class="oa_title clearfix">
+            <span class="oa_ico-right"></span>
+            <span class="oa_title-btn"></span>
+            <span class="oa_ico-left"></span>
+            最近10次访问地址
+        </div>
+        <div class="oa_text-list" style="margin-bottom: 5px">
+            <table width="100%" border="0" cellspacing="0" cellpadding="0" class="oa_edition" style="table-layout:fixed">
+                <tr class="oa_text-list-title">
+                    <th><span class="oa_arr-text-list-title"></span>地址</th>
+                    <th  WIDTH="120"><span class="oa_arr-text-list-title"></span>时间</th>
+                </tr>
+                <?php foreach($s_login as $k=>$vo) { ?>
+                <tr>
+                    <td class="oa_cell-right" style=" height: 20px; background-color:#fff">{$vo["address"]}</td>
+                    <td style="width:120px;background-color:#fff;" class="oa_cell-right">{$vo["createtime"]|date="Y-m-d H:i:s",###}</td>
+                </tr>
+                <?php } ?>
+            </table>
+        </div>
+    </div>
+</div>
+<br>
+
+</body>
+</html>

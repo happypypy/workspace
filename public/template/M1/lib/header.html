@@ -1,0 +1,22 @@
+	<header>
+		<a href="/{$sitecode}" class="logo"><img src="{$cms->GetConfigVal('webset','weblogo',$idsite);}"></a>
+		<div class="btns">
+			<a class="btn1" href="/{$sitecode}/mine"></a>
+			<a class="btn2" href="javascript:;" id="open-menu"></a>
+			<a class="btn3" href="javascript:;" id="close-menu"></a>
+		</div>
+	</header>
+	<div class="menu" id="menu">
+		<ul>
+			<?php  $result=$cms->GetAllNodes(['showonmenu'=>1,'nodetype'=>['in','1,2'],'parentid'=>0],'idorder asc,nodeid asc','',20,$idsite);
+			foreach($result as $k=>$v){
+			$jumpUrl ="/". $sitecode.$v["url"];
+			if(substr( $v["url"],0,4 ) == "http"){
+			$jumpUrl = $v["url"];
+			}
+			?>
+			<li><a href="{$jumpUrl}">{$v['nodename']}</a></li>
+			<?php }?>
+		</ul>
+	</div>
+	<div class="menu-cover"></div>

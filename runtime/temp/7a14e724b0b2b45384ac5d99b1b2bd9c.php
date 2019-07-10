@@ -1,0 +1,760 @@
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:79:"D:\workspace\work\public/../application/admin\view\activity\one_click_sync.html";i:1561691685;}*/ ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>一键同步</title>
+    <link href="/static/css/layout.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/page.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="/static/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="/static/js/lhgdialog.js?skin=aero"></script>
+    <script type="text/javascript" src="/static/js/CostomLinkOpenSw.js"></script>
+    <script type="text/javascript" src="/static/js/tabscommon.js"></script>
+    <script type="text/javascript" src="/static/js/del-checked.js"></script>
+    <script type="text/javascript" src="/static/js/layer/layer.js"></script>
+    <script type="text/javascript">
+
+    </script>
+
+    <style type="text/css">
+        /*.class_1 */
+        .label_selected{
+            text-decoration: underline;
+            color: #0d6aad;
+        }
+
+        .ability_label div,.activity_label div,.summer_activity_label div{
+            display: block;
+            float: left;
+            padding: 0 10px;
+            margin: 5px;
+            height: 26px;
+            line-height: 21px;
+            color: #666;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        .ability_label span,.activity_label span,.summer_activity_label span{
+            padding: 5px 0 5px 5px;
+            margin: 0 0 0 10px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .only_summer{
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="oa_pop">
+    <div class="oa_pop-main">
+        <div style="height: 6px"></div>
+        <div class="oa_title clearfix">
+            <span class="oa_ico-right"></span>
+            <span class="oa_title-btn"></span>
+            <span class="oa_ico-left"></span>
+            一键同步        </div>
+
+                        <div class="oa_edition">
+                            <form action="" enctype="multipart/form-data" method="post" id="form1">
+                            <table width="100%" border="0" cellspacing="1" cellpadding="0" style="border: #e0e0e0 solid 1px;border-top: 0">
+                                <tr class="oa_text-list-title">
+                                    <td width="240" class="oa_cell-left"><span style="color:#ff0000">*</span>类型：</td>
+                                    <td class="oa_cell-right">
+                                        <label><input type="radio" name="tid" value="1" checked />活动</label>
+                                        <label><input type="radio" name="tid" value="2" <?php if($tid == 2): ?>checked<?php endif; ?> />夏令营</label>
+                                    </td>
+                                </tr>
+                                <tr class="oa_text-list-title only_activity">
+                                    <td width="240" class="oa_cell-left"><span style="color:#ff0000">*</span>活动一级分类：</td>
+                                    <td class="oa_cell-right class_1">
+                                    </td>
+                                </tr>
+                                <tr class="oa_text-list-title only_activity">
+                                    <td width="240" class="oa_cell-left"><span style="color:#ff0000">*</span>活动二级分类：</td>
+                                    <td class="oa_cell-right class_2"></td>
+                                </tr>
+                                <tr class="oa_text-list-title only_activity">
+                                    <td width="240" class="oa_cell-left"></td>
+                                    <td class="oa_cell-right activity_label"></td>
+                                </tr>
+                                <tr class="oa_text-list-title only_summer">
+                                    <td width="240" class="oa_cell-left"><span style="color:#ff0000">*</span>活动一级分类：</td>
+                                    <td class="oa_cell-right summer_class_1">
+                                    </td>
+                                </tr>
+                                <tr class="oa_text-list-title only_summer">
+                                    <td width="240" class="oa_cell-left"><span style="color:#ff0000">*</span>活动二级分类：</td>
+                                    <td class="oa_cell-right summer_class_2"></td>
+                                </tr>
+                                <tr class="oa_text-list-title only_summer">
+                                    <td width="240" class="oa_cell-left"></td>
+                                    <td class="oa_cell-right summer_activity_label"></td>
+                                </tr>
+                                <tr class="oa_text-list-title">
+                                    <td width="240" class="oa_cell-left">能力标签：</td>
+                                    <td class="oa_cell-right class_3"></td>
+                                </tr>
+                                <tr class="oa_text-list-title">
+                                    <td width="240" class="oa_cell-left"></td>
+                                    <td class="oa_cell-right ability_label"></td>
+                                </tr>
+                                <tr class="oa_text-list-title only_activity">
+                                    <td width="240" class="oa_cell-left"><span style="color:#ff0000">*</span>活动区域：</td>
+                                    <td class="oa_cell-right">
+                                        <select id="activity_area">
+                                            <option value="">请选择</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr class="oa_text-list-title only_activity">
+                                    <td width="240" class="oa_cell-left">活动商圈：</td>
+                                    <td class="oa_cell-right">
+                                        <select id="activity_bussarea">
+                                            <option value="">请选择</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr class="oa_text-list-title only_summer">
+                                    <td width="240" class="oa_cell-left">国家：</td>
+                                    <td class="oa_cell-right">
+                                        <select id="country">
+                                            <option value="">请选择</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr class="oa_text-list-title only_summer">
+                                    <td width="240" class="oa_cell-left">省份：</td>
+                                    <td class="oa_cell-right">
+                                        <select id="province">
+                                            <option value="">请选择</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr class="oa_text-list-title only_summer">
+                                    <td width="240" class="oa_cell-left">城市：</td>
+                                    <td class="oa_cell-right">
+                                        <select id="city">
+                                            <option value="">请选择</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr class="oa_text-list-title">
+                                    <td width="240" class="oa_cell-left"></td>
+                                    <td class="oa_cell-right area_label"><?php echo $chraddress; ?></td>
+                                </tr>
+                            </table>
+                            <div class="oa_bottom clearfix">
+                                <div class="clearfix">
+                                    <div class="clearfix" style="padding-left: 20%; padding-top: 1rem; padding-bottom: 1rem;">
+                                        <input value="确认同步" type="button" onclick="save()" />
+                                    </div>
+                                </div>
+                                <div class="oa_bottom-bottom"><em></em></div>
+                            </div>
+                                <input name="label_array" type="hidden" id="label_array" value="" />
+                                <input name="ability_label_array" type="hidden" id="ability_label_array" value="" />
+                                <input name="summer_label_array" type="hidden" id="summer_label_array" value="" />
+                                <input name="chrdistrict" type="hidden" id="chrdistrict" value="" />
+                                <input name="id" type="hidden" value="<?php echo $id; ?>"/>
+                                <input name="activity_area" type="hidden" class="activity_area" value="<?php echo $fidarea; ?>" />
+                                <input name="activity_bussarea" type="hidden" class="activity_bussarea" value="<?php echo $fiddistrict; ?>" />
+                                <input name="country" type="hidden" class="country" value="<?php echo $tourismid; ?>" />
+                                <input name="province" type="hidden" class="province" value="<?php echo $province; ?>" />
+                                <input name="city" type="hidden" class="city" value="<?php echo $city; ?>" />
+                                <input name="pre_tid" type="hidden" class="pre_tid" value="<?php echo $tid; ?>" />
+                            </form>
+                        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    <?php if($tid == 2): ?>
+    changeType(<?php echo $tid; ?>);
+    <?php endif; ?>
+    var label_array = JSON.parse('<?php echo $chrtypename; ?>');
+    if(label_array==""){
+        label_array = new Array();
+    }else{
+        $.each(label_array,function (index,value) {
+            var arr = value.split('|');
+            $(".activity_label").append("<div pid='" + arr[0] + "' id='" + arr[1] + "' chrname='"+arr[2]+"'>" + arr[2] + "<span>x</span></div>");
+        })
+    }
+
+    var ability_label_array = JSON.parse('<?php echo $abilitytagsname; ?>');
+    if(ability_label_array==""){
+        ability_label_array = new Array();
+    }else{
+        $.each(ability_label_array,function (index,value) {
+            var arr = value.split('|');
+            $(".ability_label").append("<div id='" + arr[0] + "' chrname='" + arr[1] + "'>" + arr[1] + "<span>x</span></div>");
+        })
+    }
+    var summer_label_array =JSON.parse('<?php echo $summer_chrtypename; ?>');
+    if(summer_label_array==""){
+        summer_label_array = new Array();
+    }else{
+        $.each(summer_label_array,function (index,value) {
+            var arr = value.split('|');
+            $(".summer_activity_label").append("<div pid='" + arr[0] + "' id='" + arr[1] + "' chrname='"+arr[2]+"'>" + arr[2] + "<span>x</span></div>");
+        })
+    }
+    //加载
+    $(document).ready(function () {
+        //获取活动一级分类
+        $.ajax({
+            url:"<?php echo url('Admin/activity/get_wntx_info_by_code'); ?>",
+            data:"code=commontype",
+            type:"post",
+            dataType:"json",
+            success:function(obj){
+                $(".class_1").empty();
+                if(obj.status == "success") {
+                    $.each(obj.list, function (index, value) {
+                        $(".class_1").append("<label intvalue='"+value.intvalue+"'>"+value.chrname+"</label>&nbsp;");
+                    })
+                }
+            },
+            error:function(obj){
+            }
+        });
+
+        //获取能力标签
+        $.ajax({
+            url:"<?php echo url('Admin/activity/get_wntx_info_by_code'); ?>",
+            data:"code=commonability",
+            type:"post",
+            dataType:"json",
+            success:function(obj){
+                $(".class_3").empty();
+                if(obj.status == "success") {
+                    $.each(obj.list, function (index, value) {
+                        $(".class_3").append("<label intvalue='"+value.intvalue+"'>"+value.chrname+"</label>&nbsp;");
+                    })
+                }
+            },
+            error:function(obj){
+            }
+        });
+
+
+        //获取活动区域
+        // $.ajax({
+        //     url:"<?php echo url('Admin/activity/get_wntx_info_by_code'); ?>",
+        //     data:"code=commoneare",
+        //     type:"post",
+        //     dataType:"json",
+        //     success:function(obj){
+        //         if(obj.status == "success") {
+        //             $.each(obj.list, function (index, value) {
+        //                 $("#activity_area").append("<option value='"+value.intvalue+"'>"+value.chrname+"</option>");
+        //             })
+        //         }
+        //     },
+        //     error:function(obj){
+        //     }
+        // });
+
+        $.ajax({
+            url:"<?php echo url('Admin/activity/get_wntx_info_by_code'); ?>",
+            data:"code=commoneare",
+            type:"post",
+            dataType:"json",
+            success:function(obj){
+                if(obj.status == "success") {
+                    $.each(obj.list, function (index, value) {
+                        var fidareaId = <?php echo $fidarea; ?>;
+                        if(fidareaId == value.intvalue){
+                            $("#activity_area").append("<option value='" + value.intvalue + "' selected>" + value.chrname + "</option>");
+
+                            $.ajax({
+                                url: "<?php echo url('Admin/activity/get_wntx_info_by_code'); ?>",
+                                data: "code=commonbusseare&pid=" + fidareaId,
+                                type: "post",
+                                dataType: "json",
+                                success: function (obj) {
+                                    if (obj.status == "success") {
+                                        $.each(obj.list, function (index, value) {
+                                            var fiddistrictId = <?php echo $fiddistrict; ?>;
+                                            if(fiddistrictId == value.intvalue){
+                                                $("#activity_bussarea").append("<option value='" + value.intvalue + "' selected>" + value.chrname + "</option>");
+                                            }else{
+                                                $("#activity_bussarea").append("<option value='" + value.intvalue + "'>" + value.chrname + "</option>");
+                                            }
+                                        })
+                                    }
+                                },
+                                error: function (obj) {
+                                }
+                            });
+                        }else{
+                            $("#activity_area").append("<option value='" + value.intvalue + "'>" + value.chrname + "</option>");
+                        }
+                    })
+                }
+            },
+            error:function(obj){
+            }
+        });
+
+        $('input[type=radio][name=tid]').change(function() {
+            $(".area_label").html("");
+
+            changeType(parseInt($(this).val()));
+
+        });
+
+    });
+
+    // function changeType(tid){
+    //     switch (parseInt(tid)) {
+    //         case 1:
+    //             $(".only_activity").show();
+    //             $(".only_summer").hide();
+    //             if($("#activity_area option:selected").html() !="请选择") {
+    //                 $(".area_label").html($("#activity_area option:selected").html());
+    //                 if($("#activity_bussarea option:selected").html() !="请选择"){
+    //                     $(".area_label").append($("#activity_bussarea option:selected").html());
+    //                 }
+    //             }
+    //             break;
+    //         case 2:
+    //             $(".only_activity").hide();
+    //             $(".only_summer").show();
+    //             if($("#city option:selected").html() !="请选择") {
+    //                 $(".area_label").html($("#city option:selected").html());
+    //             }
+    //             break;
+    //     }
+    //
+    //     if (tid == 2 && $.trim($(".summer_class_1").html()) == "") {
+    //         //获取夏令营活动一级分类
+    //         $.ajax({
+    //             url: "<?php echo url('Admin/activity/get_wntx_info_by_code'); ?>",
+    //             data: "code=summercamptype",
+    //             type: "post",
+    //             dataType: "json",
+    //             success: function (obj) {
+    //                 $(".summer_class_1").empty();
+    //                 if (obj.status == "success") {
+    //                     $.each(obj.list, function (index, value) {
+    //                         $(".summer_class_1").append("<label intvalue='" + value.intvalue + "'>" + value.chrname + "</label>&nbsp;");
+    //                     })
+    //                 }
+    //             },
+    //             error: function (obj) {
+    //             }
+    //         });
+    //
+    //         $.ajax({
+    //             url: "<?php echo url('Admin/activity/get_wntx_info_by_code'); ?>",
+    //             data: "code=summercampcountry",
+    //             type: "post",
+    //             dataType: "json",
+    //             success: function (obj) {
+    //                 if (obj.status == "success") {
+    //                     $.each(obj.list, function (index, value) {
+    //                         $("#country").append("<option value='" + value.intvalue + "'>" + value.chrname + "</option>");
+    //                     })
+    //                 }
+    //             },
+    //             error: function (obj) {
+    //             }
+    //         });
+    //     }
+    // }
+
+        function changeType(tid){
+            switch (parseInt(tid)) {
+                case 1:
+                    $(".only_activity").show();
+                    $(".only_summer").hide();
+                    if($("#activity_area option:selected").html() !="请选择") {
+                        $(".area_label").html($("#activity_area option:selected").html());
+                        if($("#activity_bussarea option:selected").html() !="请选择"){
+                            $(".area_label").append($("#activity_bussarea option:selected").html());
+                        }
+                    }
+                    break;
+                case 2:
+                    $(".only_activity").hide();
+                    $(".only_summer").show();
+                    if($("#city option:selected").html() !="请选择") {
+                        $(".area_label").html($("#city option:selected").html());
+                    }
+                    break;
+            }
+
+            if (tid == 2 && $.trim($(".summer_class_1").html()) == "") {
+                //获取夏令营活动一级分类
+                $.ajax({
+                    url: "<?php echo url('Admin/activity/get_wntx_info_by_code'); ?>",
+                    data: "code=summercamptype",
+                    type: "post",
+                    dataType: "json",
+                    success: function (obj) {
+                        $(".summer_class_1").empty();
+                        if (obj.status == "success") {
+                            $.each(obj.list, function (index, value) {
+                                $(".summer_class_1").append("<label intvalue='" + value.intvalue + "'>" + value.chrname + "</label>&nbsp;");
+                            })
+                        }
+                    },
+                    error: function (obj) {
+                    }
+                });
+
+                $.ajax({
+                    url: "<?php echo url('Admin/activity/get_wntx_info_by_code'); ?>",
+                    data: "code=summercampcountry",
+                    type: "post",
+                    dataType: "json",
+                    success: function (obj) {
+                        if (obj.status == "success") {
+                            $.each(obj.list, function (index, value) {
+                                // $("#country").append("<option value='" + value.intvalue + "'>" + value.chrname + "</option>");
+                                var countryId = <?php echo $tourismid; ?>;
+                                // console.log(countryid);
+                                if(countryId == value.intvalue){
+                                    $("#country").append("<option value='" + value.intvalue + "' selected >" + value.chrname + "</option>");
+
+                                    $.ajax({
+                                        url: "<?php echo url('Admin/activity/get_wntx_info_by_code'); ?>",
+                                        data: "code=summercampprovince&pid=" + countryId,
+                                        type: "post",
+                                        dataType: "json",
+                                        success: function (obj) {
+                                            if (obj.status == "success") {
+                                                $.each(obj.list, function (index, value) {
+                                                    var provinceId = <?php echo $province; ?>;
+                                                    // console.log(provinceId);
+                                                    if(provinceId == value.intvalue){
+                                                        $("#province").append("<option value='" + value.intvalue + "' selected>" + value.chrname + "</option>");
+                                                        $.ajax({
+                                                            url: "<?php echo url('Admin/activity/get_wntx_info_by_code'); ?>",
+                                                            data: "code=summercampcity&pid=" + provinceId,
+                                                            type: "post",
+                                                            dataType: "json",
+                                                            success: function (obj) {
+                                                                if (obj.status == "success") {
+                                                                    $.each(obj.list, function (index, value) {
+                                                                        var cityId = <?php echo $city; ?>;
+                                                                        if( cityId == value.intvalue){
+                                                                            $("#city").append("<option value='" + value.intvalue + "' selected>" + value.chrname + "</option>");
+                                                                        }else{
+                                                                            $("#city").append("<option value='" + value.intvalue + "'>" + value.chrname + "</option>");
+                                                                        }
+
+                                                                    })
+                                                                }
+                                                            },
+                                                            error: function (obj) {
+                                                            }
+                                                        });
+                                                    }else{
+                                                        $("#province").append("<option value='" + value.intvalue + "'>" + value.chrname + "</option>");
+                                                    }
+
+                                                })
+                                            }
+                                        },
+                                        error: function (obj) {
+                                        }
+                                    });
+                                }else{
+                                    $("#country").append("<option value='" + value.intvalue + "'>" + value.chrname + "</option>");
+                                }
+                            })
+                        }
+                    },
+                    error: function (obj) {
+                    }
+                });
+            }
+        }
+
+    $("body .class_1").on("click","label",function () {
+        $(this).addClass("label_selected").siblings().removeClass("label_selected");
+        var pid = $(this).attr("intvalue");
+        var chrname = $(this).html();
+        $(".class_2").empty();
+        $.ajax({
+            url:"<?php echo url('Admin/activity/get_wntx_info_by_code'); ?>",
+            data:"code=commontype1&pid="+pid,
+            type:"post",
+            dataType:"json",
+            success:function(obj){
+                if(obj.status == "success") {
+                    $.each(obj.list, function (index, value) {
+                        $(".class_2").append("<label intvalue='"+value.intvalue+"' parent_chrname='"+chrname+"' parent_intvalue='"+pid+"'>"+value.chrname+"</label>&nbsp;");
+                    })
+                }else{
+                    $(".class_2").append("<label parent_intvalue='"+pid+"' intvalue='0'>"+chrname+"</label>&nbsp;");
+                }
+            },
+            error:function(obj){
+            }
+        });
+    });
+
+
+    //夏令营分类获取二级分类
+    $("body .summer_class_1").on("click","label",function () {
+        $(this).addClass("label_selected").siblings().removeClass("label_selected");
+        var pid = $(this).attr("intvalue");
+        var chrname = $(this).html();
+        $(".summer_class_2").empty();
+        $.ajax({
+            url:"<?php echo url('Admin/activity/get_wntx_info_by_code'); ?>",
+            data:"code=summercamptype1&pid="+pid,
+            type:"post",
+            dataType:"json",
+            success:function(obj){
+                if(obj.status == "success") {
+                    $.each(obj.list, function (index, value) {
+                        $(".summer_class_2").append("<label intvalue='"+value.intvalue+"' parent_chrname='"+chrname+"' parent_intvalue='"+pid+"'>"+value.chrname+"</label>&nbsp;");
+                    })
+                }else{
+                    $(".summer_class_2").append("<label parent_intvalue='"+pid+"' intvalue='0'>"+chrname+"</label>&nbsp;");
+                }
+            },
+            error:function(obj){
+            }
+        });
+    });
+
+    //点击夏令营活动二级分类
+    $("body .summer_class_2").on("click","label",function () {
+        $(this).addClass("label_selected").siblings().removeClass("label_selected");
+        //<div>三级1<span v="o_1_1_1">x</span></div>
+        var pid = $(this).attr("parent_intvalue");
+        var id = $(this).attr("intvalue");
+        if($(this).attr("intvalue")==0){
+            var chrname = $(this).html();
+        }else {
+            var chrname = $(this).attr("parent_chrname") + "-" + $(this).html();
+        }
+        var key = pid+"|"+id+"|"+chrname;
+        if($.inArray(key,summer_label_array) !== -1){
+            layer.msg(chrname+'已添加', {icon: 1});
+        }else {
+            summer_label_array.push(key);
+            $(".summer_activity_label").append("<div pid='" + pid + "' id='" + id + "' chrname='"+chrname+"'>" + chrname + "<span>x</span></div>");
+        }
+    });
+
+    //点击活动二级分类
+    $("body .class_2").on("click","label",function () {
+        $(this).addClass("label_selected").siblings().removeClass("label_selected");
+        //<div>三级1<span v="o_1_1_1">x</span></div>
+        var pid = $(this).attr("parent_intvalue");
+        var id = $(this).attr("intvalue");
+        if($(this).attr("intvalue")==0){
+            var chrname = $(this).html();
+        }else {
+            var chrname = $(this).attr("parent_chrname") + "-" + $(this).html();
+        }
+        var key = pid+"|"+id+"|"+chrname;
+        if($.inArray(key,label_array) !== -1){
+            layer.msg(chrname+'已添加', {icon: 1});
+        }else {
+            label_array.push(key);
+            $(".activity_label").append("<div pid='" + pid + "' id='" + id + "' chrname='"+chrname+"'>" + chrname + "<span>x</span></div>");
+        }
+    });
+
+
+    $("body .summer_activity_label").on("click","span",function () {
+        var pid = $(this).parent("div").attr("pid");
+        var id = $(this).parent("div").attr("id");
+        var chrname = $(this).parent("div").attr("chrname");
+        var key = pid+"|"+id+"|"+chrname;
+        var index = $.inArray(key,summer_label_array);
+        if(index !== -1){
+            summer_label_array.splice(index,1);
+            $(this).parent("div").remove();
+        }
+        console.log(summer_label_array);
+    });
+
+    $("body .activity_label").on("click","span",function () {
+        var pid = $(this).parent("div").attr("pid");
+        var id = $(this).parent("div").attr("id");
+        var chrname = $(this).parent("div").attr("chrname");
+        var key = pid+"|"+id+"|"+chrname;
+        var index = $.inArray(key,label_array);
+        if(index !== -1){
+            label_array.splice(index,1);
+            $(this).parent("div").remove();
+        }
+        console.log(label_array);
+    });
+
+
+    //点击能力标签分类
+    $("body .class_3").on("click","label",function () {
+        $(this).addClass("label_selected").siblings().removeClass("label_selected");
+        var id = $(this).attr("intvalue");
+        var chrname = $(this).html();
+        var key = id+"|"+chrname;
+        if(ability_label_array.length>1){
+            layer.msg('能力标签最多选择2个', {icon: 1});
+        }else {
+            if ($.inArray(key, ability_label_array) !== -1) {
+                layer.msg(chrname + '已添加', {icon: 1});
+            } else {
+                ability_label_array.push(key);
+                $(".ability_label").append("<div id='" + id + "' chrname='" + chrname + "'>" + chrname + "<span>x</span></div>");
+            }
+        }
+    });
+
+
+    $("body .ability_label").on("click","span",function () {
+        var id = $(this).parent("div").attr("id");
+        var chrname = $(this).parent("div").attr("chrname");
+        var key = id+"|"+chrname;
+        var index = $.inArray(key,ability_label_array);
+        if(index !== -1){
+            ability_label_array.splice(index,1);
+            $(this).parent("div").remove();
+        }
+    });
+
+    //选择框改变事件
+    $("body").on("change","#activity_area",function () {
+        var pid = $(this).val();
+        $(".activity_area").val(pid);
+        if(pid>0) {
+            $(".area_label").html($("#activity_area option:selected").html());
+        }else{
+            $(".area_label").html("");
+        }
+        if(pid != "") {
+            $.ajax({
+                url: "<?php echo url('Admin/activity/get_wntx_info_by_code'); ?>",
+                data: "code=commonbusseare&pid=" + pid,
+                type: "post",
+                dataType: "json",
+                success: function (obj) {
+                    $("#activity_bussarea").empty();
+                    $("#activity_bussarea").append("<option value=''>请选择</option>");
+                    if (obj.status == "success") {
+                        $.each(obj.list, function (index, value) {
+                            $("#activity_bussarea").append("<option value='" + value.intvalue + "'>" + value.chrname + "</option>");
+                        })
+                    }
+                },
+                error: function (obj) {
+                }
+            });
+        }
+    });
+
+    $("body").on("change","#activity_bussarea",function () {
+        $(".activity_bussarea").val($(this).val());
+        if($(this).val()>0) {
+            $(".area_label").append($("#activity_bussarea option:selected").html());
+        }else{
+            $(".area_label").html("");
+        }
+    });
+
+
+    $('body').on("change","#country",(function() {
+
+        var country_id = $(this).val();
+        $(".country").val(country_id);
+        if(country_id != "") {
+            $.ajax({
+                url: "<?php echo url('Admin/activity/get_wntx_info_by_code'); ?>",
+                data: "code=summercampprovince&pid="+country_id,
+                type: "post",
+                dataType: "json",
+                success: function (obj) {
+                    $("#province").empty();
+                    $("#province").append("<option value=''>请选择</option>");
+                    $("#city").empty();
+                    $("#city").append("<option value=''>请选择</option>");
+                    if (obj.status == "success") {
+                        $.each(obj.list, function (index, value) {
+                            $("#province").append("<option value='" + value.intvalue + "'>" + value.chrname + "</option>");
+                        })
+                    }
+                },
+                error: function (obj) {
+                }
+            });
+        }
+    }));
+
+
+    $('body').on("change","#province",(function() {
+
+        var province_id = $(this).val();
+        $(".province").val(province_id);
+        if(province_id != "请选择") {
+            $.ajax({
+                url: "<?php echo url('Admin/activity/get_wntx_info_by_code'); ?>",
+                data: "code=summercampcity&pid="+province_id,
+                type: "post",
+                dataType: "json",
+                success: function (obj) {
+                    $("#city").empty();
+                    $("#city").append("<option value=''>请选择</option>");
+                    if (obj.status == "success") {
+                        $.each(obj.list, function (index, value) {
+                            $("#city").append("<option value='" + value.intvalue + "'>" + value.chrname + "</option>");
+                        })
+                    }
+                },
+                error: function (obj) {
+                }
+            });
+        }
+    }));
+
+    $('body').on("change","#city",(function() {
+        var cityid = $(this).val();
+        $(".city").val(cityid);
+        $(".area_label").html($("#city option:selected").html());
+    }));
+
+
+    function save() {
+        $("#label_array").val(label_array.join("-&-"));
+        $("#ability_label_array").val(ability_label_array.join("-&-"));
+        $("#summer_label_array").val(summer_label_array.join("-&-"));
+
+        $("#chrdistrict").val($(".area_label").html());
+        $.ajax({
+            url: "<?php echo url('activity/save_wntx_sync_info'); ?>",
+            data: $("#form1").serialize(),
+            type: "post",
+            dataType: "json",
+            success: function (obj) {
+                if(obj.status=="success"){
+                    closewin();
+                }else{
+                    layer.msg(obj.msg);
+                }
+            },
+            error: function (obj) {
+                layer.msg("网络错误");
+            }
+        });
+        // return true;
+    }
+
+    function closewin()
+    {
+        CloseDiv();
+        GetOpenerWin().empty();
+    }
+</script>
+</body>
+</html>

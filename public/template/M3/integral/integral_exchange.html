@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="yes" name="apple-mobile-web-app-capable">
+  <meta content="yes" name="apple-touch-fullscreen">
+  <meta content="telephone=no,email=no" name="format-detection">
+  <meta name="viewport"
+    content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+  <script src="__PUBLIC__/static/js/jquery.min.js"></script>
+  <script src="__PUBLIC__/static/js/integral.js"></script>
+  <link rel="stylesheet" href="__PUBLIC__/static/css/mobile.css">
+  <title>我的积分记录</title>
+</head>
+
+<body class="flexCol">
+  {include file="M3/lib/header2" /}
+
+  <section class="score-exchange-section">
+    <form class="flexCol">
+      <input type="hidden" id="goods_id" value="{$integral_mall_goods.id}" />
+      <input type="hidden" id="sitecode" value="{$sitecode}" />
+      <input type="hidden" id="goods_number" value="{$integral_mall_goods.goods_number}" />
+      <input type="hidden" id="is_virtual" value="{$integral_mall_goods.is_virtual}" />
+      <ul>
+        <li class="flex">*请如实填写以下信息</li>
+        <li class="flex"><label for="">收件人姓名：</label><input name="consignee_name" id="consignee_name" type="text"></li>
+        <li class="flex"><label for="">收件人电话：</label><input name="consignee_phone" id="consignee_phone" type="text"></li>
+        {if condition="!$integral_mall_goods.is_virtual"}
+        <li class="flex"><label for="">收件地址：</label><input name="consignee_address" id="consignee_address" type="text"></li>
+        {/if}
+        <li class="flex">
+          <label for="">兑换数量：</label>
+          <div class="minus" onclick="changepaynum(1);"></div>
+          <div class="num" id="divpaynum">1</div>
+          <div class="plus" onclick="changepaynum(2);"></div>
+          <input type="hidden" id="exchange_number" name="exchange_number" value="1">
+          <div class="fr my-score flex">
+            <span>我的积分：</span> {$userinfo.integral}
+          </div>
+      </li>
+      </ul>
+      <div class="s-submit flex">
+        {if condition="$integral_mall_goods.goods_number"}
+        <div>[库存：{$integral_mall_goods.goods_number}件]&nbsp;&nbsp;</div>
+        {else/}
+        <div>[已售完]&nbsp;&nbsp;</div>
+        {/if}
+        <div>兑换所需积分：<span id="total_integral">{$integral_mall_goods.integral}</span></div>
+        <input type="button" onclick="confirminfo()" class="submit" value="提交">
+      </div>
+    </form>
+  </section>
+
+    {include file="M3/lib/footer3" /}
+</body>
+<script src="__PUBLIC__/static/js/pub.js"></script>
+<script src="__PUBLIC__/static/js/layer/layer.js"></script>
+<script type="text/javascript">
+  document.body.style.visibility = "visible";
+
+  // 修改商品数量
+  function changepaynum(type){
+    var goods_id = {$integral_mall_goods.id};
+    var exchange_num = parseInt($('#divpaynum').text());
+    var goods_integral = {$integral_mall_goods.integral};
+    
+    if(type == 1){
+      exchange_num -= 1;
+      if(exchange_num < 1){
+        layer.msg('兑换数量不能小于0');
+        return false;
+      }
+
+    }else if(type == 2){
+      exchange_num += 1;
+      var bool = 0;
+      $.ajax({
+        url: '/{$sitecode}/integralvalidation',
+        type: 'POST',
+        data: {goods_id:goods_id, goods_integral: goods_integral, exchange_num: exchange_num},
+        dataType: "JSON",
+        async: false, 
+        success:function(result){
+          bool = result.status;
+        }
+      });
+      if(bool == 1){
+        layer.msg('库存不足');
+        return false;
+      }else if(bool == 2){
+        layer.msg('积分不足');
+        return false;
+      }
+    }
+
+    $('#total_integral').html(goods_integral * exchange_num);
+    $('#divpaynum').html(exchange_num);
+    $('#exchange_number').val(exchange_num);
+  }
+
+  // 确认信息
+  function confirminfo(){
+    var goods_number =  parseInt($('#goods_number').val());
+    var consignee_name = $('#consignee_name').val();
+    var consignee_phone = $('#consignee_phone').val();
+    var exchange_number = $('#exchange_number').val();
+    var is_virtual = $('#exchange_number').val();
+    var consignee_address = $('#consignee_address').val() ? $('#consignee_address').val() : '';
+
+    if(consignee_name.length <= 0){
+      layer.msg('请输入收件人姓名');
+      return false;
+    }
+
+    if(consignee_phone.length <= 0){
+      layer.msg('输入电话格式不正确');
+      return false;
+    }
+
+    var isMobile = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1})|(17[0-9]{1})|(14[0-9]{1})|(19[0-9]{1}))+\d{8})$/;
+    var isPhone = /^(?:(?:0\d{2,3})-)?(?:\d{7,8})(-(?:\d{3,}))?$/;
+    if(isMobile.test(consignee_phone)==false && isPhone.test(consignee_phone)==false)
+    {
+      layer.msg('输入格式不正确');
+      return false;
+    }
+
+    
+    if(is_virtual == 0){
+      if(consignee_address.length <= 0){
+        layer.msg('请输入收件人地址');
+        return false;
+      }
+    }
+
+    if(goods_number <= 0 || exchange_number > goods_number){
+      layer.msg('库存不足');
+      return;
+    }
+
+    var content = '';
+    if(is_virtual == 0){
+      content = '<ul class="order-info-ul"><li>姓名：'+consignee_name+'</li><li>电话：'+consignee_phone+'</li><li>地址：'+consignee_address+'</li></ul>'
+    }else{
+      content = '<ul class="order-info-ul"><li>姓名：'+consignee_name+'</li><li>电话：'+consignee_phone+'</li></ul>'
+    }
+    var index = layer.open({
+      title: '确认信息',
+      area: '100%',
+      skin: 'my-layer',
+      btn: ['返回修改', '确认提交'],
+      btnAlign: 'c',
+      content: content,
+      yes: function(index, layero){
+        layer.close(index);
+      },
+      btn2: function(index, layero){
+        exchange();
+      }
+    });
+  }
+
+  // 兑换商品
+  function exchange(){
+    var id = $('#goods_id').val();
+    var sitecode = $('#sitecode').val();
+    var consignee_name = $('#consignee_name').val();
+    var consignee_phone = $('#consignee_phone').val();
+    var consignee_address = $('#consignee_address').val() ? $('#consignee_address').val() : '';
+    var exchange_number = $('#exchange_number').val();
+
+    $.ajax({
+      url: "/{$sitecode}/exchangegoods",
+      type: "POST",
+      data: {id:id,sitecode:sitecode,consignee_name:consignee_name, consignee_phone:consignee_phone, consignee_address:consignee_address, exchange_number:exchange_number},
+      dataType: "JSON",
+      success: function(result){
+        if(result.status == 0){
+          layer.msg('兑换失败，请稍后重试');
+        }else if(result.status == 1){
+          layer.msg('兑换成功');
+          location.href = '/{$sitecode}/integralmall/tabType/2';
+        }else if(result.status == 2){
+          layer.msg('积分不足');
+        }else if(result.status == 3){
+          layer.msg('库存不足');
+        }
+      }
+    })
+  }
+</script>
+
+</html>

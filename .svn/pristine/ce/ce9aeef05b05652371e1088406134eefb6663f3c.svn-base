@@ -1,0 +1,137 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>内容管理</title>
+    <script type="text/javascript" src="__PUBLIC__/static/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/tabscommon.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/layer/layer.js"></script>
+    <link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
+    <link href="__PUBLIC__/static/css/page.css" rel="stylesheet" type="text/css" />
+    <link href="__PUBLIC__/static/js/daterangepicker/daterangepicker-bs3.css" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="__PUBLIC__/static/js/daterangepicker/moment.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/daterangepicker/daterangepicker.js"></script>
+</head>
+<body>
+<script language="JavaScript">
+    function getNow() {
+        var myDate = new Date();
+        var y=myDate.getYear();        //获取当前年份(2位)
+        var Y=myDate.getFullYear();    //获取完整的年份(4位,1970-????)
+        var m=myDate.getMonth()+1;       //获取当前月份(0-11,0代表1月)
+        var d=myDate.getDate();        //获取当前日(1-31)
+        var w=myDate.getDay();         //获取当前星期X(0-6,0代表星期天)
+        var H=myDate.getHours();       //获取当前小时数(0-23)
+        var M=myDate.getMinutes();     //获取当前分钟数(0-59)
+        var s=myDate.getSeconds();     //获取当前秒数(0-59)
+        return Y+"-"+m+"-"+d+" "+H+":"+M+":"+s;
+    }
+    function seltime(id,timeformat) {
+        $('#'+id).daterangepicker(
+            {
+                format:timeformat,
+                singleDatePicker: true,
+                showDropdowns: true,
+                minDate:'1900-01-01',
+                maxDate:'2030-01-01',
+                startDate: $('#'+id).val()==""?getNow():$('#'+id).val(),
+                timePicker : true, //是否显示小时和分钟
+                timePickerIncrement:1,//time选择递增数
+                timePicker12Hour : false, //是否使用12小时制来显示时间
+
+                locale : {
+                    applyLabel : '确定',
+                    cancelLabel : '取消',
+                    fromLabel : '起始时间',
+                    toLabel : '结束时间',
+                    customRangeLabel : '自定义',
+                    daysOfWeek : [ '日', '一', '二', '三', '四', '五', '六' ],
+                    monthNames : [ '一月', '二月', '三月', '四月', '五月', '六月','七月', '八月', '九月', '十月', '十一月', '十二月' ],
+                    firstDay : 1
+                }
+            }
+        );}
+</script>
+<div class="oa_pop">
+    <div class="oa_pop-main">
+        <div style="height: 6px"></div>
+        <div class="oa_title clearfix">
+            <span class="oa_ico-right"></span>
+            <span class="oa_title-btn"></span>
+            <span class="oa_ico-left"></span>
+            用户管理
+        </div>
+        <div class="oa_edition">
+            <form id="handleposition" action="" method="post" >
+                <table width="100%" border="0" cellspacing="1" cellpadding="0" class="oa_edition" style="border-bottom: #e0e0e0 solid 1px">
+                   <style>
+                       input{
+                           border: 1px solid #DEDEDE;
+                       }
+                   </style>
+                    <tr>
+                        <td height="40px" width="150" class="oa_cell-left">访谈对像：</td>
+                        <td class="oa_cell-right">{$datainfo.membername}
+                            <input type="hidden" name="username" value="{$datainfo.membername}" class="oa_input-200" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td height="40px" width="150" class="oa_cell-left">访谈方式：</td>
+                        <td class="oa_cell-right">
+                            <select id="inttype" name="inttype">
+                                <option value="">请选择访谈方式</option>
+                                <option value="1">微信/QQ</option>
+                                <option value="2">电话</option>
+                                <option value="3">面谈</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td  class="oa_cell-left">访谈内容：</td>
+                        <td class="oa_cell-right">
+                            <textarea id="content" name="content" style="width: 400px; height: 100px;"></textarea>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td height="40px" width="150" class="oa_cell-left">下次跟进时间：</td>
+                        <td class="oa_cell-right">
+                            <input type="text" name="uptime" id="uptime" value="" class="oa_input-200" />
+                            <script language='JavaScript'>seltime("uptime","YYYY-MM-DD HH:mm:ss")</script>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><input style="margin:10px;height: 30px;width: 50px" type="button" onclick="adsubmit()" value="确定"></td>
+                        <td>&nbsp;</td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </div>
+
+</div>
+</body>
+<script>
+
+        function adsubmit(){
+            if($("#inttype").val()=="")
+            {
+                alert("请选择访谈方式");
+                return false;
+            }
+            if($("#inttype").val()=="")
+            {
+                alert("访谈内容不能为空");
+                return false;
+            }
+            if($("#uptime").val()=="")
+            {
+                alert("下次跟进时间不能为空");
+                return false;
+            }
+             $('#handleposition').submit();
+        }
+
+
+</script>
+
+</html>

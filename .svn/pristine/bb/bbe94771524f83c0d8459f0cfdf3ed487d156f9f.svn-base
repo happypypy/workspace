@@ -1,0 +1,135 @@
+    $(function(){   
+    $("#Floor1 .Floor_content_Infos .floor_right").eq(0).show();
+    $("#Floor2 .Floor_content_Infos .floor_right").eq(0).show();
+    $("#Floor3 .Floor_content_Infos .floor_right").eq(0).show();
+    $("#Floor1 .JS_floor_nav ul li").click(function(){
+        $(this).addClass('curent').siblings().removeClass('curent');
+        $('#Floor1 .Floor_content_Infos>div:eq('+$(this).index()+')').show().siblings().hide(); 
+    });
+    $("#Floor2 .JS_floor_nav ul li").click(function(){
+        $(this).addClass('curent').siblings().removeClass('curent');
+        $('#Floor2 .Floor_content_Infos>div:eq('+$(this).index()+')').show().siblings().hide(); 
+    });
+    $("#Floor3 .JS_floor_nav ul li").click(function(){
+        $(this).addClass('curent').siblings().removeClass('curent');
+        $('#Floor3 .Floor_content_Infos>div:eq('+$(this).index()+')').show().siblings().hide(); 
+    });
+    $("#Floor4 .JS_floor_nav ul li").click(function(){
+        $(this).addClass('curent').siblings().removeClass('curent');
+    });
+});
+
+$(function(){
+	$(".Floor_BD .Floor_UL .Floor_Li").mouseenter(function(){
+		$(this).children(".Brand_Logo").hide();
+		$(this).children(".Brand_Detail").fadeIn("slow");
+	}).mouseleave(function(){
+		$(this).children(".Brand_Logo").show();
+		$(this).children(".Brand_Detail").fadeOut("slow");
+	});
+});
+
+// JavaScript Document
+$(document).ready(function(){
+NewsProducts_Lb(); openFun();
+});
+
+function NewsProducts_Lb(){	
+	var list = $("#NewsProducts_Lb");
+	var li = $("#NewsProducts_Lb ul li");
+	var len = li.length;
+	if (len > 0) {
+	if (len >= 1){
+	    list.jCarouselLite({  
+		btnPrev: "#NewsProducts_Lb_prev",   //上一张按钮  
+    	btnNext: "#NewsProducts_Lb_next",   //下一张按钮  
+		visible:1,     // 显示图片数量 
+		auto:3000,    //是否自动滚动，填写毫秒，null为不自动
+		speed: 1000,   //滚动时长
+		circular: true, //是否重复播放，首尾相接
+		start:0,        //从第几个开始滚动，默认第一个
+		speed: 1000,    //滚动完成时长 单位毫秒  
+		scroll: 1  ,     // 每次滚动图片数量 
+		vertical: false, //滚动方向true为垂直，false为水平 
+		beforeStar:null, //滚动前调用函数
+		afterEnd:null //滚动后调用函数
+	});	
+	
+	}else{
+		list.jCarouselLite({  
+		visible:len,     // 显示图片数量 
+		auto:null,    //是否自动滚动，填写毫秒，null为不自动
+		speed: 1000,   //滚动时长
+		circular: false, //是否重复播放，首尾相接
+		start:0,        //从第几个开始滚动，默认第一个
+		speed: 1000,    //滚动完成时长 单位毫秒  
+		scroll: 1  ,     // 每次滚动图片数量 
+		vertical: false, //滚动方向true为垂直，false为水平 
+		beforeStar:null, //滚动前调用函数
+		afterEnd:null //滚动后调用函数
+	});	
+		};	
+		};	
+};
+
+function openFun(){
+	banner($("#pic ul li"),$("#ben span"),"on",1000);
+	banner($("#JS_floorpic1 ul li"),$("#JS_floorben1 span"),"on",1000);
+	banner($("#JS_floorpic2 ul li"),$("#JS_floorben2 span"),"on",500);
+	banner($("#JS_floorpic3 ul li"),$("#JS_floorben3 span"),"on",1000);
+	banner($("#JS_floorpic4 ul li"),$("#JS_floorben4 span"),"on",1000);
+	banner($("#JS_floorpic5 ul li"),$("#JS_floorben5 span"),"on",1000);
+	}
+
+function banner(PicImg,PicPage,PicOn,picTime){
+var DEMO;
+var currentIndex=0;
+var currentID=0;
+var pictureID=0;
+var len = PicImg.length;
+
+
+if(len > 1){
+	
+antoScroll();
+PicPage.hover(function(){
+	StopScrolll();
+    currentID=$(this).attr("id");
+	pictureID= currentID.substring(currentID.length-1);
+	PicImg.eq(pictureID).fadeIn("fast");
+	PicImg.not(PicImg[pictureID]).fadeOut("fast");
+	PicPage.eq(pictureID).addClass(PicOn);
+	PicPage.not(PicPage[pictureID]).removeClass(PicOn);
+},function(){
+	currentID=$(this).attr("id");
+	pictureID= currentID.substring(currentID.length-1);
+	currentIndex = pictureID;
+	antoScroll();
+});
+
+}else{
+	PicImg.eq(0).fadeIn(picTime);
+	PicPage.eq(0).addClass(PicOn);
+	StopScrolll();
+	};
+
+function antoScroll(){
+	PicPage.eq(currentIndex).addClass(PicOn);
+	PicPage.eq(currentIndex-1).removeClass(PicOn);
+	PicImg.eq(currentIndex).fadeIn(picTime);
+	PicImg.eq(currentIndex-1).fadeOut(picTime);
+	currentIndex++; currentIndex= currentIndex>=len?0:currentIndex;
+	DEMO= setTimeout(antoScroll,5000);
+}
+function StopScrolll(){
+	clearTimeout(DEMO);
+}
+};	
+
+$(function(){
+$(".categorys_mini").hover(function(){
+	if($(this).children(".categorys_mini_main").is(":visible"))
+	{$(this).children(".cw_icon").removeClass("current").siblings(".categorys_mini_main").hide();}
+	else{$(this).children(".cw_icon").addClass("current").siblings(".categorys_mini_main").show();}		
+	});
+});

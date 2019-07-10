@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/static/css/page.css?1" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="__PUBLIC__/static/js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/js/del-checked.js"></script>
+</head>
+<body>
+<div class="oa_pop">
+  <div class="oa_pop-main">
+      <div style="height: 6px"></div>
+      <div class="oa_title clearfix">
+          <span class="oa_ico-right"></span>
+          <span class="oa_title-btn"></span>
+          <span class="oa_ico-left"></span>
+          信息
+      </div>
+  	<div class="oa_edition">
+
+            <table width="100%" border="0" cellspacing="1" cellpadding="0" class="oa_edition">
+                <tr>
+                    <td class="oa_cell-left">JavaScript:</td>
+                    <td class="oa_cell-right">
+                        <input type="text" value="<script type='text/javascript' src='index.php?m=Home&c=Api&a=ad_show&pid={$request.id}&limit=1'></script>" class="oa_input-300" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="oa_cell-left">PHP:</td>
+                    <td class="oa_cell-right">
+                        <input type="text" value="<adv pid='{$request.id}' limit='1' item='v'></adv>" class="oa_input-300" />
+                    </td>
+                </tr>
+
+            </table>
+
+    </div>
+  </div>
+
+</div>
+
+</body>
+<script type="text/javascript">
+    $("#tab tr td").on('click',"a",function(){
+
+        $(this).parent().parent().remove();
+    });
+    $("#tab tr td a").click(function(){
+
+    });
+</script>
+<script type="text/javascript">
+    $(".lang").eq(0).css("color","#f00");
+    var type = $(".lang").eq(0).attr("lang");
+    $("table .tr").hide();
+    $("."+type).show();
+    $(".lang").click(function () {
+        var lang = $(this).attr("lang");
+        $(this).css("color","#f00");
+        $(this).siblings().css("color","#000");
+        $(".tr").hide();
+        $(".public").show();
+        $("."+lang).show();
+    });
+
+</script>
+</html>

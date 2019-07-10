@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="viewport"
+    content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <script src="./js/common.js"></script>
+  <link rel="stylesheet" href="./css/common.css">
+  <title>Document</title>
+</head>
+
+<body>
+  <header>
+    <a href="/tongxiang" class="logo"><img
+        src="/public/uploads/7/admin/2019/05-17/6213ccb439082963a6b7232864cda5af.png"></a>
+    <div class="btns">
+      <a class="btn1" href="/tongxiang/mine"></a>
+      <a class="btn2" href="javascript:;" id="open-menu"></a>
+      <a class="btn3" href="javascript:;" id="close-menu"></a>
+    </div>
+  </header>
+  <div class="menu" id="menu">
+    <ul>
+      <li><a href="/tongxiang/content/1209">童享云</a></li>
+      <li><a href="http://www.txy123.com/newindex">蜗牛童行</a></li>
+      <li><a href="https://www.hdxx123.com/newindex">立即试用</a></li>
+      <li><a href="/tongxiang/activity/1092">购童享云</a></li>
+      <li><a href="/tongxiang/content/1212">认识我们</a></li>
+      <li><a href="/tongxiang/node/1071">功能介绍</a></li>
+      <li><a href="/tongxiang/node/1072">最新资讯</a></li>
+      <li><a href="/tongxiang/content/1207">立即咨询</a></li>
+    </ul>
+  </div>
+  <div class="menu-cover"></div>
+  <div class="site-section clearfix" id="container">
+    <div class="select-bar">
+      <ul class="select-bar-tab select-bar-tab11 flex">
+        <li onclick="javascript:window.location='/share/index';">代言数据</li>
+        <li>可代言活动</li>
+        <li>已代言活动</li>
+        <li class="on">佣金结算</li>
+      </ul>
+    </div>
+    <div class="commission-data-box">
+      <ul>
+        <li class="empty">未查询到相关信息</li>
+        <li>
+          <div class="flex info">
+            <div class="tit">结算金额</div>：
+            <div class="txt">10（元）</div>
+          </div>
+          <div class="flex info">
+            <div class="tit">状态</div>：
+            <div class="txt state">审核中</div>
+          </div>
+          <div class="flex info">
+            <div class="tit">申请时间</div>：
+            <div class="txt">2019-07-03 17:07:12</div>
+          </div>
+        </li>
+        <li>
+          <div class="flex info">
+            <div class="tit">结算金额</div>：
+            <div class="txt">10（元）</div>
+          </div>
+          <div class="flex info">
+            <div class="tit">状态</div>：
+            <div class="txt state">审核中</div>
+          </div>
+          <div class="flex info">
+            <div class="tit">申请时间</div>：
+            <div class="txt">2019-07-03 17:07:12</div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="add-account-box flex">
+    <a class="add-account-btn flex" >
+      <span class="iconfont">&#xe68d;</span>
+      <p>新增结算</p>
+    </a>
+  </div>
+</body>
+
+</html>

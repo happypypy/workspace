@@ -1,0 +1,40 @@
+@charset "utf-8";
+/* CSS Document */
+/*Create 2012-08-08 Updata:2012-08-09 by:Tim.lai*/
+body{color:#333;font-size:12px; font-weight:normal; font-family:"宋体",Arial, Helvetica, sans-serif; padding:0; margin:0;}
+a{color:#4e4e4e; text-decoration:none;}
+a:hover{color:#f60; text-decoration:underline;}
+img{border:none;}
+form{padding:0;margin:0;}
+/*clear float*/
+.clearfix:after{content:".";display:block;height:0;clear:both;visibility:hidden;}
+.clearfix{zoom:1;}
+/*clear end*/
+body{background:url(../images/oa_bg-leftbar.gif) 0 0 repeat-y;}
+.leftbar{width:100%; padding:10px 0 0 0;}
+	.leftbar dl{width:178px; background:url(../images/oa_bg-leftbar-middle.gif) 0 0 repeat-y; list-style:none; padding:0; margin:3px auto 0 auto;}
+		.leftbar dl dt{ font-size:16px;color:#2a5b9d; font-weight:bold;height:28px; line-height:28px;background:url(../images/oa_bg-leftbar-title-hid.gif) 0 0 no-repeat; cursor:pointer;}
+		.leftbar dl dt.nav-title{background:url(../images/oa_bg-leftbar-title.gif) 0 0 no-repeat;}
+	
+			.leftbar dl dt span.nav-ico{width:40px; text-align:center;display:block; float:left;}
+				.leftbar dl dt span.nav-ico img{ margin:3px 0 0 10px;}
+			
+			.leftbar dl dt .nav-ico1{width:22px; height:22px; background:url(../images/oa_ico-nav1.gif) 0 0 no-repeat; margin:2px 0 0 26px; display:block; position:absolute;}
+			.leftbar dl dt .nav-ico2{width:22px; height:22px; background:url(../images/oa_ico-nav2.gif) 0 0 no-repeat; margin:2px 0 0 26px; display:block; position:absolute;}
+			.leftbar dl dt .nav-ico3{width:22px; height:22px; background:url(../images/oa_ico-nav3.gif) 0 0 no-repeat; margin:2px 0 0 26px; display:block; position:absolute;}
+			.leftbar dl dt .nav-ico4{width:22px; height:22px; background:url(../images/oa_ico-nav4.gif) 0 0 no-repeat; margin:2px 0 0 26px; display:block; position:absolute;}
+			.leftbar dl dt .nav-ico5{width:22px; height:22px; background:url(../images/oa_ico-nav5.gif) 0 0 no-repeat; margin:2px 0 0 26px; display:block; position:absolute;}
+			.leftbar dl dt .nav-ico6{width:22px; height:22px; background:url(../images/oa_ico-nav6.gif) 0 0 no-repeat; margin:2px 0 0 26px; display:block; position:absolute;}
+			.leftbar dl dt .nav-ico7{width:22px; height:22px; background:url(../images/oa_ico-nav7.gif) 0 0 no-repeat; margin:2px 0 0 26px; display:block; position:absolute;}
+			.leftbar dl dt .nav-ico8{width:22px; height:22px; background:url(../images/oa_ico-nav8.gif) 0 0 no-repeat; margin:2px 0 0 26px; display:block; position:absolute;}
+			.leftbar dl dt .nav-ico9{width:22px; height:22px; background:url(../images/oa_ico-nav9.gif) 0 0 no-repeat; margin:2px 0 0 26px; display:block; position:absolute;}
+		.leftbar dl dd{ list-style:none; padding:0; margin:0;}
+		.leftbar dl dd ul{ list-style:none;padding: 0; margin:0; }
+			.leftbar dl dd ul li{color:#4071b3;text-indent:60px;line-height:26px; background:url(../images/oa_arr-leftbar-nav2.gif) 0 bottom no-repeat;}
+			.leftbar dl dd ul li.secondMenuLi{line-height:28px;}
+			.leftbar dl dd ul li a{color:#4071b3;display: block; width: 100%; background:url(../images/oa_arr-leftbar-nav2.gif) 0 bottom no-repeat;}
+			.leftbar dl dd ul li a.secondMenu{background:url(../images/oa_arr-leftbar-nav.gif) 0 bottom no-repeat; font-size: 14px; font-weight: bold;}
+			.leftbar dl dd ul li.on{color:#9e7f40; font-weight:bold;text-indent:60px;line-height:27px; background:url(../images/oa_arr-leftbar-nav-on.gif) 0 0 no-repeat; margin:-1px 0 0 0;}
+			.leftbar dl dd ul li.on a{color:#9e7f40; font-weight:bold;}
+			.leftbar dl dd ul li.nav-bottom{ font-size:7px; height:17px; background:url(../images/oa_bg-leftbar-bottom.gif) 0 bottom no-repeat;display:none;}
+			.thirdMenu{display: none;}

@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/static/css/page.css?1" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div class="oa_pop">
+  <div class="oa_pop-main">
+      <div style="height: 6px"></div>
+      <div class="oa_title clearfix">
+          <span class="oa_ico-right"></span>
+          <span class="oa_title-btn"></span>
+          <span class="oa_ico-left"></span>
+        {if condition="$account['action'] eq 'edit'"}{:lang('account editor')}{elseif condition="$account['action'] eq 'view'" /}{:lang('account check')}{else /}{:lang('account add')}{/if}
+      </div>
+  	<div class="oa_edition">
+        <form action="{:url('admin/accountsite/post_data')}" method="post">
+            <table width="100%" border="0" cellspacing="1" cellpadding="0" class="oa_edition" style="border-bottom: #e0e0e0 solid 1px">
+                <tr>
+                    <td width="100" class="oa_cell-left"><span style="color: red;">*</span>&nbsp;{:lang('account')}：</td>
+                    <td class="oa_cell-right">
+                        {if condition="$account['action'] eq 'add'"}
+                            <input type="text" name="chraccount" value="{$account.chraccount}" class="oa_input-200" />
+                        {elseif condition="$account['action'] eq 'edit'"}
+                            &nbsp;{$account['chraccount']}
+                        {/if}
+                        <!-- <input type="text" name="chraccount" value="{$account.chraccount}" class="oa_input-200" /> -->
+                    </td>
+                </tr>
+                <tr>
+                    <td class="oa_cell-left"><span style="color: red;">*</span>&nbsp;姓名：</td>
+                    <td class="oa_cell-right">
+                        <input type="text" name="chrname" value="{$account.chrname}" class="oa_input-200" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="oa_cell-left"><span style="color: red;">*</span>&nbsp;{:lang('account password')}：</td>
+                    <td class="oa_cell-right">
+                        <!-- <input name="chrpassword" autocomplete="off" onfocus="this.type=password" type="text" value="********" class="oa_input-200" /> -->
+                        <input name="chrpassword" type="password" value="********" class="oa_input-200" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="oa_cell-left">{:lang('status')}：</td>
+                    <td class="oa_cell-right">
+                        <input type="radio" name="intflag" value="1"  {$account['intflag']=="1"?"checked":""}/>{:lang('not locked')} &nbsp;&nbsp;&nbsp;
+                        <input type="radio" name="intflag" value="2"  {$account['intflag']=="2"?"checked":""}/>{:lang('lock')}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="oa_cell-left">&nbsp;手机号码：</td>
+                    <td class="oa_cell-right">
+                        <input name="mobile" type="text" value="{$account.mobile}" class="oa_input-200" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="oa_cell-left">{:lang('serial')} ：</td>
+                    <td class="oa_cell-right">
+                        <input type="text" name="intsn" value="{$account.intsn}" class="oa_input-200" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="oa_cell-left">{:lang('describe')}：</td>
+                    <td class="oa_cell-right">
+                        <textarea name="chrremark" value=""  style= " width: 220px;height: 50px; border: solid 1px #CCCCCC">{$account.chrremark}</textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="oa_cell-left">关联的用户id：</td>
+                    <td class="oa_cell-right">
+                        <input type="text" name="idmember" value="{$account.idmember}" class="oa_input-200" />
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding:10px;">{if condition="$account['action'] eq 'add'"}<input type="submit" name="submit" value="{:lang('add account')}">{elseif condition="$account['action'] eq 'edit'" /}
+                        <input type="submit" name="submit" value="{:lang('revise')}">{else /}
+                        {/if}
+                    </td>
+                </tr>
+                <tr>
+                    <td><input type="hidden" name="action" value="{$account.action}"/></td>
+                    <td>{if condition="$account['action'] eq 'edit'"}<input type="hidden" name="account_id" value="{$account.idaccount}"/>{/if}</td>
+                    {:token('__token__', 'sha1')}
+                </tr>
+            </table>
+        </form>
+    </div>
+  </div>
+
+</div>
+
+</body>
+
+</html>

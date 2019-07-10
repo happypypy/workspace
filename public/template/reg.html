@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+<title>企业信息登记</title>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+
+<link rel="stylesheet" type="text/css" href="/static/reg/style/css/common.css">
+</head>
+<body>
+
+<section class="content">    <div class="logo">
+        <img src="/static/reg/images/logo.png" />
+    </div>
+
+    <div class="txt">
+        <p>感谢您关注童享云，童享云是一个面向活动机构、教培机构的云服务平台，帮助机构轻松建立承载业务的微信公众号微网站，助力机构提升业绩、优化内容管理。</p>
+        <p>我们已经为贵司准备好童享云的试用版本了，请填写您的联系方式，稍后为您安排专属顾问联系您，让您更好的了解和试用童享云。</p>
+    </div>
+
+    <form class="form">
+        <input type="text" name="companyname" id="companyname" placeholder="公司全称" class="text text1" />
+        <input type="text"  name="Contacts" id="Contacts" placeholder="联系人" class="text text1" />
+        <input type="text" name="Contactstel" id="Contactstel" placeholder="联系电话" class="text text1" />
+        <div class="flex">
+            <div class="fx1">
+                <input type="text" name="txtICode" id="txtICode" placeholder="验证码" class="text text1" />
+            </div>
+			<img class="yzm"  src="{:url('Admin/index/vertify')}"  id="imgVerify" alt="" onclick="fleshVerify()">
+        </div>
+        <input type="button" value="提交" class="submit" onclick="javascript:add()" />
+    </form>
+</section>
+
+</body>
+<script type="text/javascript" src="/static/js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="/static/js/layer/layer.js"></script></head>
+<script type="text/javascript">
+/*文字大小自适应*/
+var handlerOrientationChange = function () {
+    var width = window.innerWidth <= 320 ? 320 : window.innerWidth >= 640 ? 640 : window.innerWidth;
+    var fontSize = 100 * (width / 320);
+    document.documentElement.style.fontSize = fontSize + 'px';
+};
+window.onresize = handlerOrientationChange;
+setTimeout(function () {
+    handlerOrientationChange();
+}, 0);  
+
+function fleshVerify(){
+    $('#imgVerify').attr('src',"{:url('admin/index/vertify')}?r="+Math.floor(Math.random()*100));
+}
+function add() {
+
+    var companyname=$("#companyname").val();
+    var Contacts=$("#Contacts").val();
+    var Contactstel=$("#Contactstel").val();
+    var txtICode=$("#txtICode").val();
+
+    if(companyname=="")
+    {
+        //layer.confirm('公司名称不能为空！',{btn:['关闭']});
+        alert("公司名称不能为空！");
+        return;
+    }
+    if(Contacts=="")
+    {
+        //layer.confirm('联系人不能为空！',{btn:['关闭']});
+        alert("联系人不能为空！");
+        return;
+    }
+    if(Contactstel=="")
+    {
+        //layer.confirm('联系电话不能为空！',{btn:['关闭']});
+        alert("联系方式不能为空！");
+        return;
+    }
+    if(txtICode=="")
+    {
+        //layer.confirm('验证码不能为空！',{btn:['关闭']});
+        alert("验证码不能为空！");
+        return;
+    }
+
+    var data= {"companyname":companyname,"Contacts":Contacts,"Contactstel": Contactstel,'txtICode':txtICode};
+    $.ajax({
+        url:"/reg",
+        data:data,
+        type:"post",
+        dataType:"json",
+        success:function(msg) {
+            fleshVerify();
+            if(msg.state==1)
+            {
+
+                $("#companyname").val("");
+                $("#Contacts").val("");
+                $("#Contactstel").val("");
+                $("#txtICode").val("");
+                alert("公司信息已成功登记！");
+                //layer.confirm('公司信息已成功登记！',{btn:['关闭']});
+            }
+            else
+            {
+                $("#txtICode").val("");
+                alert(msg.msg);
+                layer.confirm(msg.msg,{btn:['关闭']});
+            }
+        }
+    })
+}
+</script>
+</html>
+
+

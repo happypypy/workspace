@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>现金券详情</title>
+    <link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
+    <link href="__PUBLIC__/static/css/page.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="__PUBLIC__/static/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/layer/layer.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/ContorlValidator.js"></script>
+
+</head>
+<body>
+<div class="oa_pop">
+    <div class="oa_pop-main">
+        <div style="height: 6px"></div>
+        <div class="oa_title clearfix">
+            <span class="oa_title-btn"></span>
+            <span class="oa_ico-left"></span>
+            现金券详情        </div>
+        <div class="oa_edition" style="margin-bottom: 5px">
+                <table width="100%" border="0" cellspacing="1" cellpadding="0" class="oa_edition" style="border-bottom: #e0e0e0 solid 1px">
+                   <tr>
+                        <td width="150" class="oa_cell-left">名称：</td>
+                        <td class="oa_cell-right">{$datainfo['receive_cashed_name']}</td>
+                    </tr>
+                   <tr>
+                        <td width="150" class="oa_cell-left">类型：</td>
+                        <td class="oa_cell-right"><?php $a = ''; if($datainfo['cashed_type'] == 1){
+                                                                $a =  '分享现金券';
+                                                            }elseif($datainfo['cashed_type'] == 2){
+                                                                $a =  '活动专用现金券';
+                                                            }elseif($datainfo['cashed_type'] == 3){
+                                                                $a =  '新用户关注专用现金券';
+                                                            }elseif($datainfo['cashed_type'] == 4){
+                                                                $a =  '赠送现金券';
+                                                            }
+                                                        ?>{$a}</td>
+                    </tr>
+                   <tr>
+                        <td width="150" class="oa_cell-left">编号：</td>
+                        <td class="oa_cell-right">{$datainfo['receive_no']}</td>
+                    </tr>
+                   <tr>
+                        <td width="150" class="oa_cell-left">金额（元）：</td>
+                        <td class="oa_cell-right">{$datainfo['cashed_amount']}
+                        </td>
+                   </tr>
+                   <tr>
+                        <td width="150" class="oa_cell-left">有效期：</td>
+                        <td class="oa_cell-right">{$datainfo['cashed_validity_time']}</td>
+                    </tr>
+                    <tr>
+                        <td width="150" class="oa_cell-left">领取来源（活动名称）：</td>
+                        <td class="oa_cell-right">{$datainfo['receive_activity_name']}</td>
+                    </tr>
+                    <tr>
+                        <td width="150" class="oa_cell-left">分享人：</td>
+                        <td class="oa_cell-right"><?php $share_nick_name = $datainfo['share_nick_name']; if($datainfo['is_manage'] == 1){ $share_nick_name .= '<span style="color: red">(管理员)</span>'; } ?>{$share_nick_name}</td>
+                    </tr>
+                    <tr>
+                        <td width="150" class="oa_cell-left">领券人：</td>
+                        <td class="oa_cell-right">{$datainfo['receive_nick_name']}</td>
+                    </tr>
+                    <tr>
+                        <td width="150" class="oa_cell-left">领取时间：</td>
+                        <td class="oa_cell-right">{$datainfo['create_time']}</td>
+                    </tr>
+                    <tr>
+                        <td width="150" class="oa_cell-left">状态：</td>
+                        <td class="oa_cell-right"><?php if($datainfo['used_status'] == 1){
+                                                                echo '未使用';
+                                                            }elseif($datainfo['used_status'] == 5){  ?>
+                            <span style="color: red">已使用</span>
+                            <?php
+                                                            }elseif($datainfo['used_status'] == 10){
+                                                                echo '冻结';
+                                                            }elseif($datainfo['used_status'] == 15){
+                                                                echo '已过期';
+                                                            }
+                                                        ?></td>
+                    </tr>
+                    <tr>
+                        <td width="150" class="oa_cell-left">领取时间：</td>
+                        <td class="oa_cell-right">{$datainfo['create_time']}</td>
+                    </tr>
+                    <tr>
+                        <td width="150" class="oa_cell-left">使用时间：</td>
+                        <td class="oa_cell-right">{$datainfo['used_time']}</td>
+                    </tr>
+                    <tr>
+                        <td width="150" class="oa_cell-left">使用对象：</td>
+                        <td class="oa_cell-right">{$datainfo['used_activity_name']}</td>
+                    </tr>
+                    {if condition="$datainfo['cashed_type'] == 4"}
+                    <tr>
+                        <td width="150" class="oa_cell-left">赠券原因：</td>
+                        <td class="oa_cell-right">{$datainfo['remark']}</td>
+                    </tr>
+                    {/if}
+
+                </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

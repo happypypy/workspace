@@ -1,0 +1,184 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/static/css/page.css?1" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="__PUBLIC__/static/js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/js/del-checked.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/CostomLinkOpenSw.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/lhgdialog.js?skin=aero"></script>
+</head>
+<body>
+<div class="oa_pop">
+  <div class="oa_pop-main">
+      <div style="height: 6px"></div>
+      <div class="oa_title clearfix">
+          <span class="oa_ico-right"></span>
+          <span class="oa_title-btn"></span>
+          <span class="oa_ico-left"></span>
+          {if condition="$datainfo['action'] eq 'edit'"}编辑现金券计划{else /}新建现金券计划{/if}
+      </div>
+  	<div class="oa_edition">
+        <form action="{:url('admin/cashed/modi')}" method="post" id="form1">
+            <table width="100%" border="0" cellspacing="1" cellpadding="0" class="oa_edition"  style="border-bottom: #e0e0e0 solid 1px">
+                <tr>
+                    <td class="oa_cell-left">
+                        <span style="color: red;">*</span>
+                        名称：</td>
+                    <td class="oa_cell-right">
+                        <input name="plan_name" type="text" value="{$datainfo.plan_name}" class="oa_input-200" style="width:250px;"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="oa_cell-left">
+                        描述：</td>
+                    <td class="oa_cell-right">
+                        <textarea id="copyright" name="plan_desc"  cols="50" rows="3" class="form-control input oa_input-200" style="width:300px;height:80px;"></textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="oa_cell-left">
+                        <span style="color: red;">*</span>
+                        设置概率：</td>
+                    <td class="oa_cell-right">
+                        <div style="margin-bottom: 5px">
+                            <input name="price_min1" type="text" value="{$datainfo.price_min1}" style="width: 50px" />元&nbsp;-
+                            <input name="price_max1" type="text" value="{$datainfo.price_max1}" style="width: 50px" />元&nbsp;=
+                            <input name="rate1" type="text" value="{$datainfo.rate1}" style="width: 60px" />%
+                        </div>
+                        <div style="margin-bottom: 5px">
+                            <input name="price_min2" type="text" value="{$datainfo.price_min2}" style="width: 50px" />元&nbsp;-
+                            <input name="price_max2" type="text" value="{$datainfo.price_max2}" style="width: 50px" />元&nbsp;=
+                            <input name="rate2" type="text" value="{$datainfo.rate2}" style="width: 60px" />%
+                        </div>
+                        <div>
+                            <input name="price_min3" type="text" value="{$datainfo.price_min3}" style="width: 50px" />元&nbsp;-
+                            <input name="price_max3" type="text" value="{$datainfo.price_max3}" style="width: 50px" />元&nbsp;=
+                            <input name="rate3" type="text" value="{$datainfo.rate3}" style="width: 60px" />%
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="oa_cell-left">
+                        <span style="color: red;">*</span>
+                        有效期：</td>
+                    <td class="oa_cell-right">
+                        <input name="cashed_validity_day" type="text" value="{$datainfo.cashed_validity_day}" class="oa_input-100" />（天）
+                    </td>
+                </tr>
+                <tr>
+                    <td class="oa_cell-left">
+                        <span style="color: red;">*</span>
+                        派发数量：</td>
+                    <td class="oa_cell-right">
+                        <input name="cashed_num" type="text" value="{$datainfo.cashed_num}" class="oa_input-100" />（份）
+                    </td>
+                </tr>
+                <tr>
+                    <td class="oa_cell-left"><span style="color: red;">*</span>是否启用：</td>
+                    <td class="oa_cell-right">
+                        <label>
+                        <input name="is_open" type="radio" value="1" {if condition="$datainfo.is_open eq 1"}checked{/if} checked />是&nbsp;
+                        </label>
+                        <label>
+                        <input name="is_open" type="radio" value="2" {if condition="$datainfo.is_open eq 2"}checked{/if} />否
+                        </label>
+                    </td>
+                </tr>
+
+                <tr><td style="padding:10px;"><input type="button" value="确定" onclick="verify_param()"></td></tr>
+                <tr>
+                    <td><input type="hidden" name="action" value="{$datainfo.action}"/></td>
+                    <td>
+                        {if condition="$datainfo['action'] eq 'edit'"}
+                        <input type="hidden" name="id" value="{$datainfo.id}"/>
+                        {/if}
+                        <input type="hidden" name="site_id" value="{$datainfo.site_id}" />
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+  </div>
+
+</div>
+
+</body>
+<script type="text/javascript">
+    function verify_param() {
+        var plan_name = $('input[name="plan_name"]').val();
+        var price_min1 = $('input[name="price_min1"]').val();
+        var price_max1 = $('input[name="price_max1"]').val();
+        var rate1 = $('input[name="rate1"]').val();
+
+        var price_min2 = $('input[name="price_min2"]').val();
+        var price_max2 = $('input[name="price_max2"]').val();
+        var rate2 = $('input[name="rate2"]').val();
+
+        var price_min3 = $('input[name="price_min3"]').val();
+        var price_max3 = $('input[name="price_max3"]').val();
+        var rate3 = $('input[name="rate3"]').val();
+
+        var cashed_validity_day = $('input[name="cashed_validity_day"]').val();
+        var cashed_num = $('input[name="cashed_num"]').val();
+        var is_open = $('input[name="is_open"]:checked').val();
+
+        var price = /^(([1-9]\d{0,6})|0)([.]{1}[0-9]{1,2})?$/; //金额
+        var int =  /^[0-9]*$/;//整数
+        var int_not_zero = /^[1-9]\d{0,8}$/;
+
+        if(plan_name == ''){
+            alert('名称不能为空');
+            return false ;
+        }
+
+        if(!int_not_zero.test(price_min1) || !int_not_zero.test(price_max1) || !int_not_zero.test(rate1)){
+            alert('最少需要要设置一项概率，并且每一项得填完整！金额区间和中奖概率需为整数！');
+            return false ;
+        }
+        if(parseInt(price_min1) > parseInt(price_max1)){
+            alert('第一项概率的金额范围有误');
+            return false ;
+        }
+        //如果设置了第二个概率项
+        if(price_min2 != '' || price_max2 != '' || rate2 != ''){
+            if(!int_not_zero.test(price_min2) || !int_not_zero.test(price_max2) || !int_not_zero.test(rate2)){
+                alert('请把第二项概率填完整，并且金额区间和中奖概率需为整数！');
+                return false ;
+            }
+            // debugger;
+            if(parseInt(price_min2) > parseInt(price_max2)){
+                alert('第二项概率的金额范围有误');
+                return false ;
+            }
+        }
+        //如果设置了第三个概率项
+        if(price_min3 != '' || price_max3 != '' || rate3 != ''){
+            if(!int_not_zero.test(price_min3) || !int_not_zero.test(price_max3) || !int_not_zero.test(rate3)){
+                alert('请把第二项概率填完整，金额区间和中奖概率需为整数！');
+                return false ;
+            }
+            if(parseInt(price_min3) > parseInt(price_max3)){
+                alert('第三项概率的金额范围有误');
+                return false ;
+            }
+        }
+        if(!int_not_zero.test(cashed_validity_day)){
+            alert('请填写非零的整数作为有效期');
+            return false ;
+        }
+        if(!int_not_zero.test(cashed_num)){
+            alert('请填写非零的整数作为派发数量');
+            return false ;
+        }
+        if(is_open == undefined){
+            alert('请选择是否启用');
+            return false ;
+        }
+        $('#form1').submit();
+    }
+
+</script>
+</html>

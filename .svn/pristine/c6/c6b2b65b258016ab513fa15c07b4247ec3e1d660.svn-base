@@ -1,0 +1,350 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/static/css/page.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="__PUBLIC__/static/js/jquery-3.2.1.min.js"></script>
+    <script src="__PUBLIC__/static/js/jquery-3.1.1.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        function selectSettings(index)
+        {
+            switch(index)
+            {
+                case '2':
+                    break;
+                case '3':
+                    break;
+                default:
+                    index=1;
+            }
+            $("#GetType"+index).attr("checked","checked");
+            showSettings(index);
+        }
+        function selectFileType()
+        {
+            var index=$("#FieldType").val();
+            switch(index)
+            {
+                case '1':
+                    $(".tr").hide();
+                    $("#fieldtype").show();
+                    $("#divGetType").hide();
+                    break;
+                case '7':
+                    $(".tr").show();
+                    $("#fieldtype").hide();
+                    $("#divGetType").show();
+                    break;
+                case '4':
+                case '5':
+                case '6':
+
+                case '19':
+                case '20':
+                    $(".tr").hide();
+                    $("#fieldtype").hide();
+                    $("#divGetType").show();
+                    break;
+                default:
+                    $(".tr").hide();
+                    $("#fieldtype").hide();
+                    $("#divGetType").hide();
+            }
+        }
+        function showSettings(index)
+        {
+            if(index==1)
+            {
+                $("#settings2").hide();
+                $("#settings1").show();
+            }
+            else if(index==2)
+            {
+                $("#settings1").hide();
+                $("#settings2").show();
+            }
+            else
+            {
+                $("#settings1").hide();
+                $("#settings2").hide();
+            }
+        }
+
+    </script>
+</head>
+<body>
+<div class="oa_pop">
+    <div style="height: 6px"></div>
+  <div class="oa_pop-main">
+  	<div class="oa_title clearfix">
+      <span class="oa_ico-right"></span>
+      <span class="oa_title-btn"></span>
+      <span class="oa_ico-left"></span>
+        {$request['action']=='add'?"添加配置项":"修改配置项"}
+    </div>
+  	<div class="oa_edition">
+        <form action="{:url('configs/rulepost')}" method="post">
+            <table width="100%" border="0" cellspacing="1" cellpadding="0" class="oa_edition">
+                <tr>
+                    <td class="oa_cell-left">所属栏目：</td>
+                    <td class="oa_cell-right">
+                        <select name="id_menu">
+                            {volist name="configmenu" id="vo"}
+                            <option value="{$vo['id']}" {$vo['chrcode']==$ruleinfo['menucode']?"selected":""} >{$vo['chrname']}</option>
+                            {/volist}
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="oa_cell-left"><span style="color: red;">*</span>&nbsp;配置项名称：</td>
+                    <td class="oa_cell-right">
+                        <input type="text" name="fieldname" value="{$ruleinfo['fieldname']}" class="oa_input-200 must" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="oa_cell-left"><span style="color: red;">*</span>&nbsp;配置项显示名称：</td>
+                    <td class="oa_cell-right">
+                        <input name="chrname" type="text" value="{$ruleinfo['chrname']}" class="oa_input-200 must" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="oa_cell-left">表单提示：</td>
+                    <td class="oa_cell-right">
+                        <input name="tips" type="text" value="{$ruleinfo['tips']}" class="oa_input-200" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="oa_cell-left">配置描述：</td>
+                    <td class="oa_cell-right">
+                        <input name="remark" type="text" value="{$ruleinfo['remark']}" class="oa_input-200" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="oa_cell-left">类型：</td>
+                    <td class="oa_cell-right">
+                        <select name="type">
+                            <option value="1" {$vo['type']==1?"selected":""}>全部</option>
+                            <option value="2" {$vo['type']==2?"selected":""}>文字</option>
+                            <option value="3" {$vo['type']==3?"selected":""}>数字</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="oa_cell-left"><span style="color: red;">*</span>&nbsp;字段类型：</td>
+                    <td class="oa_cell-right">
+                        <select onchange="javascript:selectFileType();" class="input-sm must" id="FieldType" name="fieldtype">
+                            <option value="">请选择类型</option>
+                            <option value="1" {$ruleinfo['fieldtype']==1?"selected":""}>单行文本</option>
+                            <option value="18"{$ruleinfo['fieldtype']==18?"selected":""}>只读文本</option>
+                            <option value="2" {$ruleinfo['fieldtype']==2?"selected":""}>多行文本</option>
+                            <option value="3" {$ruleinfo['fieldtype']==3?"selected":""}>编辑器</option>
+                            <option value="4" {$ruleinfo['fieldtype']==4?"selected":""}>多选列表框</option>
+                            <option value="5" {$ruleinfo['fieldtype']==5?"selected":""}>复选框</option>
+                            <option value="6" {$ruleinfo['fieldtype']==6?"selected":""}>单选按钮</option>
+                            <option value="7" {$ruleinfo['fieldtype']==7?"selected":""}>下拉列表</option>
+                            <option value="8" {$ruleinfo['fieldtype']==8?"selected":""}>数字型</option>
+                            <option value="9" {$ruleinfo['fieldtype']==9?"selected":""}>日期</option>
+                            <option value="22" {$ruleinfo['fieldtype']==22?"selected":""}>日期和时间</option>
+                            <option value="10" {$ruleinfo['fieldtype']==10?"selected":""}>图片</option>
+                            <option value="11" {$ruleinfo['fieldtype']==11?"selected":""}>多图片</option>
+                            <option value="12" {$ruleinfo['fieldtype']==12?"selected":""}>文件</option>
+                            <option value="13" {$ruleinfo['fieldtype']==13?"selected":""}>多文件</option>
+                            <option value="15" {$ruleinfo['fieldtype']==15?"selected":""}>相关内容</option>
+                            <option value="16" {$ruleinfo['fieldtype']==16?"selected":""}>相关栏目</option>
+                            <option value="17" {$ruleinfo['fieldtype']==17?"selected":""}>相关栏目(多选)</option>
+                            <option value="19" {$ruleinfo['fieldtype']==19?"selected":""}>弹窗分页(单选)</option>
+                            <option value="20" {$ruleinfo['fieldtype']==20?"selected":""}>弹窗分页(多选)</option>
+                            <option value="21" {$ruleinfo['fieldtype']==21?"selected":""}>相关产品</option>
+                        </select></td>
+                </tr>
+                <tr class="tr">
+                    <td class="oa_cell-left">是否级联：</td>
+                    <td class="oa_cell-right">
+                        <input type="radio" name="child" value="1" {if condition="$ruleinfo['childsetting'][0] eq 1"}checked{/if}>是
+                        <input type="radio" name="child" value="2" {if condition="$ruleinfo['childsetting'][0] eq 2"}checked{/if}>否
+                    </td>
+                </tr>
+                <tr class="tr">
+                    <td class="oa_cell-left">下级名称：</td>
+                    <td class="oa_cell-right"><input type="text" name="childname" value="{$ruleinfo['childsetting'][1]}"></td>
+                </tr>
+                <tr class="tr">
+                    <td class="oa_cell-left">调用函数地址：</td>
+                    <td class="oa_cell-right">
+                        <input type="text" name="childurl" value="{$ruleinfo['childsetting'][2]}">
+                    </td>
+                </tr>
+                <tr class="tr">
+                    <td class="oa_cell-left">调用函数：</td>
+                    <td class="oa_cell-right">
+                        <input type="text" name="func" value="{$ruleinfo['childsetting'][3]}">
+                    </td>
+                </tr>
+                <tr>
+                    <td class="oa_cell-left">默认值：</td>
+                    <td class="oa_cell-right">
+                        <input name="defaultval" type="text" value="{$ruleinfo['defaultval']}" class="oa_input-200" />
+                    </td>
+                </tr>
+                <tr id="fieldtype" {if condition="$ruleinfo.fieldtype neq 1"}style="display:none"{/if}>
+                <td class="oa_cell-left"><span style="color: red;">*</span>&nbsp;验证规则：</td>
+                <td class="oa_cell-right">
+                    <select id="dropRegPattern" name="dropRegPattern" class="input-sm">
+                        <option {if condition="$ruleinfo['settings'][0] eq 0"} selected="selected"{/if} value="0">无</option>
+                        <option {if condition="$ruleinfo['settings'][0] eq 0"} selected="selected"{/if} value="1">Email地址</option>
+                        <option {if condition="$ruleinfo['settings'][0] eq 0"} selected="selected"{/if} value="2">固定电话号码</option>
+                        <option {if condition="$ruleinfo['settings'][0] eq 0"} selected="selected"{/if} value="3">手机号码</option>
+                        <option {if condition="$ruleinfo['settings'][0] eq 0"} selected="selected"{/if} value="4">邮政编码</option>
+                        <option {if condition="$ruleinfo['settings'][0] eq 0"} selected="selected"{/if} value="5">纯数字</option>
+                        <option {if condition="$ruleinfo['settings'][0] eq 0"} selected="selected"{/if} value="6">纯英文字母</option>
+                        <option {if condition="$ruleinfo['settings'][0] eq 0"} selected="selected"{/if} value="7">纯中文</option>
+                        <option {if condition="$ruleinfo['settings'][0] eq 0"} selected="selected"{/if} value="8">自定义正则</option>
+                        <option {if condition="$ruleinfo['settings'][0] eq 0"} selected="selected"{/if} value="9">自定义函数</option>
+                    </select>
+                    <br />
+                    正则或函数名：
+                    <input style="margin:10px 0"  name="txtRegPattern" class="form-control-auto" value=""/>
+                    <br />
+                    错误提示信息：
+                    <input name="txtErrorMessage" class="form-control-auto" value="" />
+                </td>
+                </tr>
+
+                <tr id="divGetType"><notin name="info.fieldtype" value="4,5,6,7,19,20"></notin>
+                <td class="oa_cell-left"><span style="color: red;">*</span>&nbsp;多项选择属性列表：</td>
+                <td class="oa_cell-right">
+                    <table border="0">
+                        <tr>
+                            <td><input id="GetType1" onclick="javascript:showSettings(1)" type="radio" value="1" name="GetType" {if condition="$ruleinfo['settings'][0] eq 1"}checked="checked"{/if} />手动设置列表值&nbsp;&nbsp;</td>
+                            <td><input id="GetType2" onclick="javascript:showSettings(2)" type="radio" value="2" name="GetType" {if condition="$ruleinfo['settings'][0] eq 2"}checked="checked"{/if} />从表中自动获取&nbsp;&nbsp;</td>
+                            <td><input id="GetType3" onclick="javascript:showSettings(3)" type="radio" value="3" name="GetType" {if condition="$ruleinfo['settings'][0] eq 3"}checked="checked"{/if} />从数据字典中读取&nbsp;&nbsp;</td>
+                        </tr>
+                    </table>
+                    <div id="settings1">
+                        <textarea name="ModelName" cols="30" rows="4" class="form-control">{$ruleinfo['settings'][1]}</textarea>
+                        <br /><div style="color: blue;">格式如:红色|1,白色|2</div>
+                    </div>
+                    <div id="settings2">
+                        <br/>
+                        <table border="0" class="table" style="margin-bottom:0px">
+                            <tr>
+                                <td width="100">数据表名：</td><td><input class="form-control-auto"  name="txtTableName" value="" /></td>
+                            </tr>
+                            <tr>
+                                <td>条件表达式：</td><td><input class="form-control-auto"  name="txtExpression" value=""  /><br/><div style="color: blue;">例如：chrName like '%深圳%' and idUser&gt;5 </div></td>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>获取条数：</td><td><input  class="form-control-auto"   name="txtGetNum" value=""  /></td>
+                            </tr>
+                            <tr>
+                                <td>文本字段：</td><td><input  class="form-control-auto"  name="txtTextColumnName" value=""  /></td>
+                            </tr>
+                            <tr>
+                                <td>值字段：</td><td><input class="form-control-auto"  name="txtValueColumnName" value=""  /></td>
+                            </tr>
+                        </table>
+                    </div>
+                </td>
+                </tr>
+
+
+                <tr>
+                    <td class="oa_cell-left">文本框长度：</td>
+                    <td class="oa_cell-right">
+                        <input name="txtwidth" type="text" value="{$ruleinfo['txtwidth']}" class="oa_input-200" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="oa_cell-left">文本框高度：</td>
+                    <td class="oa_cell-right">
+                        <input name="txtheight" type="text" value="{$ruleinfo['txtheight']}" class="oa_input-200" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="oa_cell-left">最大字符数：</td>
+                    <td class="oa_cell-right">
+                        <input name="maxlength" type="text" value="{$ruleinfo['maxlength']}" class="oa_input-200" />
+                    </td>
+                </tr>
+                <tr>
+                    <td class="oa_cell-left">文本框类型：</td>
+                    <td class="oa_cell-right">
+                        <input type="radio" name="txttype" value="1" {$ruleinfo['txttype']==1?"checked":""} />普通 &nbsp;&nbsp;
+                        <input type="radio" name="txttype" value="2" {$ruleinfo['txttype']==2?"checked":""} />密码
+                    </td>
+                </tr>
+                <tr>
+                    <td class="oa_cell-left">是否显示：</td>
+                    <td class="oa_cell-right">
+                        <input type="radio" name="isshow" value="1" {$ruleinfo['isshow']==1?"checked":""} />显示 &nbsp;&nbsp;
+                        <input type="radio" name="isshow" value="2" {$ruleinfo['isshow']==2?"checked":""} />不显示
+                    </td>
+                </tr>
+                <tr>
+                    <td class="oa_cell-left">是否系统选项：</td>
+                    <td class="oa_cell-right">
+                        <input type="radio" name="intflag" value="1" {$ruleinfo['intflag']==1?"checked":""} />是 &nbsp;&nbsp;&nbsp;
+                        <input type="radio" name="intflag" value="2" {$ruleinfo['intflag']==2?"checked":""} />不是&nbsp;&nbsp;&nbsp;
+                        <span style="color: #00b7dd">注：系统选项不能删除</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="oa_cell-left">排序：</td>
+                    <td class="oa_cell-right">
+                        <input name="intsn" type="text" value="{$ruleinfo['intsn']}" class="oa_input-200" />
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding:10px;"><input type="submit" name="" value="确定"/></td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="hidden" name="action" value="{$ruleinfo['action']}"/>
+                        <input id="type" type="hidden" value="{$ruleinfo['fieldtype']}"/>
+                        <input id="gettype" type="hidden" value="{$ruleinfo['settings'][0]}"/>
+                        {if condition="$ruleinfo['action'] eq 'edit'"}
+                        <input type="hidden" name="menucode" value="{$request['menucode']}">
+                        <input name="id" type="hidden" value="{$ruleinfo['id']}"/>
+                        {/if}
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+  </div>
+</div>
+<notin name="info.fieldtype" value="4,5,6,7,19,20"><script language="javascript">selectSettings('<?php echo $ruleinfo['settings'][0] ?>')</script></notin>
+</body>
+<script type="text/javascript">
+    var filed_val = {$ruleinfo['fieldtype']};
+    switch(filed_val)
+    {
+        case '1':
+            $(".tr").hide();
+            $("#fieldtype").show();
+            $("#divGetType").hide();
+            break;
+        case '7':
+            $(".tr").show();
+            $("#fieldtype").hide();
+            $("#divGetType").show();
+            break;
+        case '4':
+        case '5':
+        case '6':
+        case '19':
+        case '20':
+            $(".tr").hide();
+            $("#fieldtype").hide();
+            $("#divGetType").show();
+            break;
+        default:
+            $(".tr").hide();
+            $("#fieldtype").hide();
+            $("#divGetType").hide();
+    }
+</script>
+</html>

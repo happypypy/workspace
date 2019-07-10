@@ -1,0 +1,31 @@
+// JavaScript Document
+$(document).ready(function(){
+openFun(); 
+});
+
+function openFun(){
+	tad($("#HYJJ_tadLi ul li"),$("#HYJJ_tadCon .R_list"),"on");
+	}
+
+function tad(li,con,on){
+		li.each(function(j){
+			$(this).click(function(){
+			$(this).addClass(on).siblings().removeClass(on);	
+			con.eq(j).show().siblings().hide();;					
+				});
+			});
+	};
+	
+
+
+
+$(function(){
+$(".logistics_information_dl dd h3").click(
+		function(){
+			if($(this).siblings(".logistics_information").is(":visible")){
+				$(this).removeClass("cur").siblings(".logistics_information").hide();
+			}
+			else{$(this).addClass("cur").siblings(".logistics_information").show();}
+		});
+});
+

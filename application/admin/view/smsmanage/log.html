@@ -1,0 +1,150 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>短信管理</title>
+    <link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
+    <link href="__PUBLIC__/static/css/page.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="__PUBLIC__/static/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/lhgdialog.js?skin=aero"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/CostomLinkOpenSw.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/tabscommon.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/del-checked.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/layer/layer.js"></script>
+    <script type="text/javascript">
+
+    </script>
+</head>
+<body>
+
+<div class="oa_wrapper">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr class="oa_wrapper-display">
+            <td class="oa_wrapper-top-arr-left">&nbsp;</td>
+            <td class="oa_wrapper-top-arr-middle"></td>
+            <td class="oa_wrapper-top-arr-right">&nbsp;</td>
+        </tr>
+        <tr>
+            <td class="oa_wrapper-middle-arr-left oa_wrapper-display"></td>
+            <td class="oa_wrapper-middle-arr-middle">
+                <div class="oa_location clearfix"><span class="oa_ico-left"></span>location<span class="oa_ico-right"></span></div>
+                <div class="oa_main clearfix">
+                    <!--<div class="oa_subnav clearfix">-->
+                        <!--<div class="oa_subnav-tab clearfix">-->
+                            <!--<ul>-->
+                                <!--<li onclick="javascript:window.location='{:url('smsmanage/index','')}'"><em>短信管理</em></li>-->
+                                <!--<li class="oa_on"  onclick="javascript:window.location='{:url('smsmanage/log','')}'"><em>短信记录</em></li>-->
+                            <!--</ul>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <div class="oa_content-area clearfix">
+                        <div class="oa_content-main">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td valign="top">
+                                        <div class="oa_title clearfix">
+                                            <span class="oa_ico-right"></span>
+                                            <span class="oa_ico-left"></span>
+                                            {:lang('search')}
+                                        </div>
+                                        <div class="oa_search-area clearfix">
+                                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                <tr>
+                                                    <td>
+                                                        <div class="oa_search-type clearfix">
+                                                            <form action="" method="post" id="form1">
+                                                                <table width="100%" border="0" cellspacing="1" cellpadding="0">
+                                                                    <tr>
+                                                                        <td width="100" class="oa_cell-left">充值类型：</td>
+                                                                        <td class="oa_cell-right">
+                                                                            <select name="type" style="width: 200px">
+                                                                                <option value="">请选择</option>
+                                                                                <option value="1" <?php if($search["type"]==1){echo "selected";} ?>>线上</option>
+                                                                                <option value="2" <?php if($search["type"]==2){echo "selected";} ?>>机构充值</option>
+                                                                                <option value="3" <?php if($search["type"]==3){echo "selected";} ?>>赠送</option>
+                                                                            </select>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td height="30"></td>
+                                                                        <td class="oa_cell-right"><input  name="" type="submit" value="{:lang('search')}" class="oa_search-btn" /></td>
+                                                                    </tr>
+                                                                </table>
+                                                            </form>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <div class="oa_title clearfix">
+                        <span class="oa_title-btn">
+                            <ul>
+                            </ul>
+                          </span>
+                                            <span class="oa_ico-left"></span>
+                                            短信管理
+                                        </div>
+                                        <div class="oa_text-list">
+                                            <table width="100%" border="0" cellspacing="0" cellpadding="0" style="table-layout:fixed">
+                                                <tr class="oa_text-list-title">
+                                                    <th><span class="oa_arr-text-list-title"></span>短信条数</th>
+                                                    <th><span class="oa_arr-text-list-title"></span>充值金额</th>
+                                                    <th><span class="oa_arr-text-list-title"></span>充值类型</th>
+                                                    <th><span class="oa_arr-text-list-title"></span>操作者(ID)</th>
+                                                    <th><span class="oa_arr-text-list-title"></span>ip地址</th>
+                                                    <th><span class="oa_arr-text-list-title"></span>创建时间</th>
+                                                </tr>
+                                                {if condition="$site_list eq null"}<tr><td colspan="6" style="text-align: center">{:lang('data empty')}</td></tr>{else}
+                                                {volist name="site_list" id="vo"}
+                                                <tr>
+                                                    <td>{$vo['sms_num']}</td>
+                                                    <td>{$vo['recharge_price']}</td>
+                                                    <td>{$vo['str_type']}</td>
+                                                    <td>{$vo['str_account']}({$vo['accountid']})</td>
+                                                    <td>{$vo['ip']}</td>
+                                                    <td>{$vo['create_time']}</td>
+                                                </tr>
+                                                {/volist}
+                                                {/if}
+                                            </table>
+                                            <div class="oa_bottom clearfix">
+                                                <div class="clearfix">
+                                                    <div class="oa_page-controls">
+                                                        <ul>
+                                                            <li></li>
+                                                            <li>
+                                                                {if condition="$site_list neq null"}
+                                                                {$page->show()}
+                                                                {/if}
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <div class="oa_bottom-bottom"><em></em></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </td>
+            <td class="oa_wrapper-middle-arr-right oa_wrapper-display"></td>
+        </tr>
+        <tr class="oa_wrapper-display">
+            <td class="oa_wrapper-bottom-arr-left">&nbsp;</td>
+            <td class="oa_wrapper-bottom-arr-middle"></td>
+            <td class="oa_wrapper-bottom-arr-right">&nbsp;</td>
+        </tr>
+    </table>
+</div>
+<script type="text/javascript">
+    function empty() {
+        window.location.reload();
+    }
+
+</script>
+</body>
+</html>

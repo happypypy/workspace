@@ -1,0 +1,154 @@
+
+var gobalindex=1977;
+var api =null;
+ var w=null;
+try{
+	api=frameElement.api;
+	w=api.opener;
+ }catch(e)
+ {
+ 
+ }
+
+
+function calcZindex(){
+	try{
+		if(null!=w&&"undefined"!=w)
+		{
+			gobalindex=w.gobalindex+100;
+		}
+	}
+	catch(e)
+	{
+	
+	}
+}
+
+function getAbsoluteUrl(url){
+    var a = document.createElement('A');
+    a.href = url;  // 设置相对路径给Image, 此时会发送出请求
+    url = a.href;  // 此时相对路径已经变成绝对路径
+    return url;
+}
+var toAbsURL =function(url){var div = document.createElement('div'); div.innerHTML ='<a href="'+ url.replace(/"/g,'%22')+'"/>';return div.firstChild.href;};
+
+// JavaScript Document
+function CustomOpen(url, code, title, width, height) {
+	calcZindex();
+	var abcd123=toAbsURL(url);
+	$.dialog(
+	{
+		content: 'url:'+abcd123,
+		width: parseInt(width), 
+        height: parseInt(height), 
+		title:title,
+		lock:true,
+		zIndex:gobalindex
+	});
+}
+
+//寮瑰嚭灞?
+function OpenDiv(url,divwidth,divheight,notsure1,notsure2)
+{
+	calcZindex();
+	var abcd123=toAbsURL(url);
+	$.dialog(
+	{
+		content: 'url:'+abcd123,
+		width: parseInt(divwidth), 
+        height:parseInt(divheight),
+		lock:true,
+		zIndex:gobalindex
+	});
+
+
+}
+//寮瑰嚭椤甸潰
+function OpenWin(url , width , height)
+{
+ window.open(url , "" , "height="+height+",width="+width+",status=no,toolbar=no,menubar=no,location=no,resizable=yes,scrollbars=yes");
+}
+
+function CloseMe1()
+{
+
+if (parent == this.window){return window.close();}else{return CloseDiv();}
+}
+function CloseDiv1()
+{
+
+if (parent == this.window){return window.close();}else{
+	try{
+		api.close();
+	}catch(e)
+	{
+	    try{
+		api.opener.close();
+		}catch(e){}
+	}
+
+}
+
+}
+
+function CloseDiv()
+{
+  setTimeout(CloseDiv1,50);
+}
+function CloseMe()
+{
+ setTimeout(CloseMe1,50);
+}
+//鑾峰彇褰撳墠椤甸潰鐨勭埗绾ч〉闈㈠璞?
+//api.lhgDG.curWin
+function GetOpenerWin()
+{
+    try{
+    if (parent == this.window)
+        {return opener;}
+    else{return api.opener;}
+    }
+    catch(e){return parent}
+
+}
+
+
+function DragTableCell(TableId)
+{
+	 //按需求配置     
+    $('table#'+TableId).bestTable({     
+    isDrog:true, //不允许拖动表头宽度  
+    oddtrBackgroundColor:'', //改变odd背景色
+		isEditor:false,      
+    isEffect:true, //关闭鼠标滑动特效     
+    isEditorNewColor:false //编辑完成后不改变背景色     
+    }); 
+}
+
+
+function ParentWindowAutoIFrameHeight(IframeId)
+{
+    $("#"+IframeId).load(function(){
+        var mainheight = $(this).contents().find("body").height()+30;
+        $(this).height(mainheight);
+    }); 
+}
+
+
+function IFrameContentWindowAutoIFrameHeight(IframeId)
+{
+    $(window.parent.document).find("#"+IframeId).load(function(){
+        var main = $(window.parent.document).find("#"+IframeId);
+        var thisheight = $(document).height()+30;
+        main.height(thisheight);
+    }); 
+}
+
+function  ShowSucceed(mes)
+  {
+    alert(mes);
+  }
+  function ShowFailed(mes)
+  {
+  alert(mes);
+  }

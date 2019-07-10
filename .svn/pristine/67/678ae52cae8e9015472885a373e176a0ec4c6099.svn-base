@@ -1,0 +1,210 @@
+<link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/static/css/page.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="__PUBLIC__/static/js/jquery-3.2.1.min.js"></script>
+
+
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+
+                <h4 class="modal-title" id="myModalLabel">
+                    详情信息
+                </h4>
+            </div>
+
+            <div class="modal-body">
+                <form id="form1" action="" method="post">
+                    栏目信息：
+                    <select class="input-sm" name="nodeid" id="select">
+                        {foreach name="nodename" item="v" key="k1" style="width: 100px;"}
+                            <option  value="{$v.nodeid}"><?php for($x=0;$x<=$v['level'];$x++){ echo "&nbsp;&nbsp;&nbsp;&nbsp;";} ?> {$v.nodename}</option>
+                        {/foreach}
+                    </select>
+                    标题：<input type="text" name="title" value="" id="biaoti">
+                    <!--<input type="submit" name="submit"  value="搜索">-->
+                    <input type="button" name="button" id="chazhao" value="查找">
+                </form>
+            </div>
+
+            <hr>
+
+            <div id="content" class="modal-body">
+                内容列表:
+                <form action="" method="post" >
+                    <table id="table">
+                        <tr>
+                            <td  style="width: 30px;height: auto;border: darkgrey solid 1px;text-align: center;"><input type="checkbox" name="allChecked1"  onclick="DoCheck1();" ></td>
+                            <td style="width: 60px;height: auto;border: darkgrey solid 1px;">ID</td>
+                            <td style="width:390px;height: auto;border: darkgrey solid 1px;">标题</td>
+                        </tr>
+                    </table>
+                    <input type="button" id="button" value="添加到相关内容">
+                    <input type="button" id="buttonx" value="删除">
+                </form>
+            </div>
+            <div class="modal-body">
+                相关内容:
+                <table id="tablex">
+                    <tr>
+                        <td ><input type="hidden" name="allChecked" id="allChecked"></td>
+                        <th style="width: 90px;height: auto;border: darkgrey solid 1px;">内容ID</th>
+                        <th style="width: 340px;height: auto;border: darkgrey solid 1px;">标题</th>
+                        <th style="width: 50px;height: auto;border: darkgrey solid 1px;text-align: center;">操作</th>
+                    </tr>
+                    <tr id="trx">
+                    </tr>
+                </table>
+                <input type="text" value="" id="selectcomtentids" name="selectcomtentids" style="width:481px;">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+                <!--<button type="button" class="btn btn-primary" id="queren">
+                    确认
+                </button>-->
+                <button type="button" class="btn btn-primary" data-dismiss="modal" id="queren">
+                    确认
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+
+    //创建ajax对象 查找
+    $("#chazhao").click(function(){
+        //给id=button 添加点击时间
+        $.ajax({
+            url:"{:url('content/ajaxclick')}",
+            data:$("#form1").serialize(),
+            type:"post",
+            dataType:"json",
+            success:function(msg){
+                $("#table .tr2 td[value!='']").remove();
+
+                //style="width: 100px;height: auto;border: darkgrey solid 1px;"
+                for(var i=0;i<msg[1].length;i++){
+                    $("<tr class='tr2'>"+
+                        "<td style='border: darkgrey solid 1px;text-align: center;'><input type='checkbox'   name='content'value='"+msg[1][i].title+","+msg[1][i].contentid+"'>"+"</td>"+
+                        "<td style='border: darkgrey solid 1px;'>"+msg[1][i].contentid+"</td>"+
+                        "<td style='border: darkgrey solid 1px;'>"+msg[1][i].title+"</td>"+"</tr>")
+                        .appendTo($("#table"))
+                }
+            },
+            error:function(msg){
+                alert("服务器没有正确的处理");
+            }
+        })
+    });
+
+    //添加到相关内容
+    $("#button").click(function (){
+        selIDs=$("#selectcomtentids").val();
+        var obj = document.getElementsByName("content");
+        var check_val =[];
+        for (var i = 0; i < obj.length; i++){
+            if(obj[i].checked == true){
+                if(selIDs.indexOf(obj[i].value.split(",")[1]+",")==-1) {
+                    check_val.push(obj[i].value);
+                    selIDs+= obj[i].value.split(",")[1]+",";
+                    $("#selectcomtentids").val(selIDs);
+                }
+            }
+        }
+        for (var j=0;j<check_val.length;j++){
+            var check_valux = [];
+            check_valx = check_val[j].split(",");
+            var tablecount = document.getElementById("tablex");
+            var tdcount = tablecount.getElementsByClassName("yz");
+
+            $("<tr class='tr3'>"+
+                "<td><input type='hidden' class='content1' title='"+check_valx[0]+"'   name='contentx'value='"+check_valx[1]+"'>"+"</td>"+
+                "<td class='yz'style='border: darkgrey solid 1px;'>"+check_valx[1]+"</td>"+
+                "<td style='border: darkgrey solid 1px;'>"+check_valx[0]+"</td>"+
+                "<td class='td1'style='border: darkgrey solid 1px;text-align: center;'><input type='button' style='border: none;background: none;'  code='"+check_valx[1]+"' class='shanchu'  name='button1'value='"+"删除"+"'>"+"</td>"
+                +"</tr>").appendTo($("#tablex"))
+        }
+    });
+
+
+    //操作删除
+    $("#tablex").on('click',".shanchu",function(){
+        var contentid =$("#selectcomtentids").val();//拿到id的值
+        contentid = contentid.replace($(this).attr("code")+",","");
+        $("#selectcomtentids").val(contentid);
+        $(this).parent().parent().remove();
+    });
+
+    $("#tab").on('click',"a",function(){
+        $(this).parent().parent().remove();
+    });
+
+    $(".div").on('click',"a",function(){
+        $(this).parent().remove();
+    });
+
+
+    function DoCheck1()
+    {
+        var ch1=document.getElementsByName("content");
+        if(document.getElementsByName("allChecked1")[0].checked==true)
+        {
+            for(var i=0;i<ch1.length;i++)
+            {
+                ch1[i].checked=true;
+            }
+        }else{
+            for(var i=0;i<ch1.length;i++)
+            {
+                ch1[i].checked=false;
+            }
+        }
+    }
+
+    //删除
+    $("#buttonx").click(function() {
+        var boxes = document.getElementsByName("contentx");//获得contentx所有的节点
+        var contentid =$("#selectcomtentids").val();//拿到id的值
+        for(var i=boxes.length-1;i>=0;i--){
+            if(boxes[i].checked == true){
+                contentid = contentid.replace(boxes[i].value+",","");
+                $("#selectcomtentids").val(contentid);
+            }
+        }
+        for(var i=boxes.length-1;i>=0;i--){
+            if(boxes[i].checked == true){
+                tr = boxes[i].parentNode.parentNode;
+                tr.parentNode.removeChild(tr);
+            }
+        }
+    });
+
+    //确认
+    $("#queren").click(function () {
+        //创建节点
+        alert(11);
+        var se = document.getElementsByName("contentx");
+        var text = document.getElementsByClassName("test");
+        var title_val = [];
+        obj = {};
+        for (var i=0;i<se.length;i++){
+            obj[se[i].title]=1;
+        }
+        for(var k=0;k<text.length;k++){
+            if(obj[text[k].value]){
+                obj[text[k].value]=2;
+            }
+        }
+        for(var key in obj){
+            if(obj[key] == 1){
+                title_val.push(key);
+            }
+        }
+        for(var j=0;j<title_val.length;j++){
+            //$("<table id='tab'>"+"<tr>"+"<td>"+"标题"+"</td>"+"<td>"+"操作"+"</td>"+"</tr>"+"</table>");
+            $("<tr>"+"<td>"+"<input type='text' readonly= 'true' name='MetaDescription[]' class='test' value="+title_val[j]+">"+"</td>"+"<td>"+"<a href='#none'>"+"删除"+"</a>"+"</td>"+"</tr>").appendTo($("#tab"));
+
+        }
+    })
+</script>

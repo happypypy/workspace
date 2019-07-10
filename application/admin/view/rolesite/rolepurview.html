@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/static/css/page.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="__PUBLIC__/static/js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/js/lhgdialog.js?skin=aero"></script>
+<script type="text/javascript" src="__PUBLIC__/static/js/CostomLinkOpenSw.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/js/tabscommon.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/js/del-checked.js"></script>
+
+</head>
+<body>
+<div class="oa_content-area clearfix">
+            <div class="oa_content-main">
+              <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                  <td valign="top">
+                    <div class="oa_title clearfix">
+                      <span class="oa_ico-right"></span>
+                      <span class="oa_ico-left"></span>
+                      <span style="color: #2A5B9D">“{$request['rolename']}”{:lang('role purview')}</span>
+                    </div>
+                    <div class="oa_text-list" id="ajaxpage">
+                      <table id="table" width="100%" border="0" cellspacing="0" cellpadding="0" style="table-layout:fixed">
+                        {volist name="columnlist" id="vo"}
+                        <tr class="oa_text-list-title">
+                          <td width="50" colspan="8"><a style="color: red" href="{:url('rolesite/columninfo','columnid='.$vo['idcatalog'].'&roleid='.$request['roleid'].'&rolename='.$request['rolename'],'')}">{$vo['chrname']}</a></td>
+                        </tr>
+
+                        <tr>
+                          <?php $index=0; ?>
+                        {volist name="modulelist" id="v"}
+
+                        {if condition="$vo['chrcode'] eq $v['codecatalog']"}
+                          <?php
+                            $index++;
+                            if($index >8)
+                            {
+                                echo '</tr><tr>';
+                                $index=1;
+                            }
+                          ?>
+                            <td width="100"><a href="{:url('rolesite/moduleinfo','columnid='.$vo['idcatalog'].'&modulecode='.$v['chrcode'].'&rolename='.$request['rolename'].'&roleid='.$request['roleid'],'')}">{$v['chrname']}</a></td>
+
+                        {/if}
+                        {/volist}
+                        <?php
+                            $index++;
+                            for($i=$index;$i<9;$i++)
+                            {
+                            echo '<td>&nbsp;</td>';
+                            }
+                        ?>
+
+                      </tr>
+                        {/volist}
+                      </table>
+                      <div class="oa_bottom clearfix">
+                        <div class="clearfix">
+                            <div class="oa_op-btn clearfix">
+                                <input name="" value="{:lang('return')}" onclick="javascript:window.location='{:url('admin/rolesite/index/')}';" type="button" class="oa_input-submit" />
+                            </div>
+                        </div>
+                        <div class="oa_bottom-bottom"><em></em></div>
+                      </div>
+                        <style type="text/css">
+                          a{
+                            cursor: pointer;
+                          }
+                            .pagination{
+                                display: inline;
+                                font-size: 14px;
+                                letter-spacing: 4px;
+                                font-family: "宋体", Gadget, sans-serif;
+                            }
+                        </style>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <div class="oa_content-main-bottom"></div>
+            </div>
+          </div>
+</body>
+</html>

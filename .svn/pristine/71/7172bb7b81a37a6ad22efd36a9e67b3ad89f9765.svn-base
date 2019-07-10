@@ -1,0 +1,86 @@
+@charset "utf-8";
+/* CSS Document */
+/*Create 2012-08-08 Updata:2012-08-09 by:Chang*/
+body{color:#333;font-size:12px; font-weight:normal; font-family:"宋体",Arial, Helvetica, sans-serif; padding:0; margin:0;}
+a{color:#333; text-decoration:none;}
+a:hover{color:#f60; text-decoration:underline;}
+img{border:none;}
+form{padding:0;margin:0;}
+td{ font-size:12px;}
+/*clear float*/
+.clearfix:after{content:".";display:block;height:0;clear:both;visibility:hidden;}
+.clearfix{zoom:1;}
+/*clear end*/
+/*Font Style*/
+.font-red{color:#ff0000;}
+.font-red a{color:#ff0000;}
+.font-blue{color:#1992e7;}
+.font-blue a{color:#1992e7;}
+.font-green{color:#45a400;}
+.font-green a{color:#45a400;}
+.font-orange{color:#f60;}
+.font-orange a{color:#f60;}
+/*输入框*/
+.oa_input-20{ width:20px; line-height:20px; text-indent:5px; border:#ccc solid 1px; padding:0; margin:0;}
+.oa_input-50{ width:50px; line-height:20px; text-indent:5px; border:#ccc solid 1px; padding:0; margin:0;}
+.oa_input-80{ width:80px; line-height:20px; text-indent:5px; border:#ccc solid 1px; padding:0; margin:0;}
+.oa_input-100{ width:100px; line-height:20px; text-indent:5px; border:#ccc solid 1px; padding:0; margin:0;}
+.oa_input-150{ width:150px; line-height:20px; text-indent:5px; border:#ccc solid 1px; padding:0; margin:0;}
+.oa_input-200{ width:200px; line-height:20px; border:#ccc solid 1px; padding:0; margin:0;}
+.oa_input-300{ width:300px; line-height:20px; text-indent:5px; border:#ccc solid 1px; padding:0; margin:0;}
+.oa_input-500{ width:500px; line-height:20px; text-indent:5px; border:#ccc solid 1px; padding:0; margin:0;}
+.oa_textarea-300{ width:300px; line-height:20px; text-indent:5px;border:#ccc solid 1px; margin:0; overflow:auto;}
+.oa_textarea-500{ width:500px; line-height:20px; text-indent:5px;border:#ccc solid 1px; margin:0; overflow:auto;}
+/*Font End*/
+.oa_tabs{height:38px; line-height:38px; background:url(../images/oa_bg-tabs.gif) 0 0 repeat-x; overflow:hidden;}
+	.oa_tabs ul{list-style:none; padding:0; margin:0 80px 0 10px; table-layout:fixed;}
+		.oa_tabs ul li{color:#2a5b9d;width:12.5%; min-width:50px; height:30px; line-height:30px; text-align:center; background:url(../images/oa_bg-tabs-default.gif) 0 1px no-repeat; white-space:nowrap;text-overflow:ellipsis;-o-text-overflow:ellipsis; overflow:hidden; margin:4px 0 0 0; display:block; float:left;}
+			.oa_tabs ul li span.btn-close{height:30px;background:url(../images/oa_bg-tabs-default-right.gif) right 1px no-repeat; padding:12px 8px 0 0;display:block; float:right;}
+		.oa_tabs ul li.on{font-weight:bold;background:url(../images/oa_bg-tabs-on.gif) 0 0 no-repeat;}
+			.oa_tabs ul li.on span.btn-close{height:30px;background:url(../images/oa_bg-tabs-on-right.gif) right 0 no-repeat; padding:12px 8px 0 0;display:block; float:right;}
+	.oa_tabs-btn{width:60px;right:0;position:absolute;}
+		.oa_tabs-btn dl{ text-align:center;list-style:none; padding:0; margin:0;}
+			.oa_tabs-btn dl dd{list-style:none; padding:0; margin:0; display:inline; }
+				.oa_tabs-btn dl dd img{margin:10px -5px 0 0;}
+.oa_wrapper{}
+	.oa_wrapper .oa_wrapper-display{}
+	.oa_wrapper .oa_wrapper-top-arr-left{width:12px;}
+	.oa_wrapper .oa_wrapper-top-arr-right{width:12px;}
+	/*位置导航*/
+.oa_location{ display:none;}
+
+
+
+/*Js 多选框*/	
+.czCheckbox .default {background-image: url('../images/czCheckbox.gif') ; background-repeat:no-repeat; background-position:-7px -1px; height:20px; width:15px; padding:0; margin:0 0 0 -20px; position:absolute;} 
+.czCheckbox .default_checked {background-position:-7px -30px;  } 
+.czCheckbox .disabled{background-position:-7px -60px;}
+.czCheckbox .disabled_checked {background-position:-7px -88px;}
+/*JS Select*/
+.dropdown {width:85px;outline:none;display:inline-block;*display:inline; border-right:#ccc solid 1px; padding:0 5px; float:left;}
+.dropdown * {-moz-user-select:none;}
+.dropdown h4.over { width:75px; overflow:hidden;}
+.dropdown div {display:block; /*fix bug*/}
+.dropdown ul{position:absolute;display:none;margin:0;padding:0;float:left;clear:both; }
+.dropdown ul li{text-indent:5px;margin:0;padding:0;list-style:none;display:block;cursor:default;}
+.dropdown ul li.over{}
+.dropselectbox {display:inline;}
+.dropdown h4{color:#a7a7a7; font-weight:normal;height:30px; background:url(../images/oa_arr-07.gif) right 12px no-repeat;cursor: pointer; margin:0; padding:0 5px; width:75px; overflow:hidden;}
+.dropdown h4.over{ width:75px; overflow:hidden;}
+.dropdown h4.current{ width:75px; overflow:hidden;}
+.dropdown ul{border:1px solid #ccc;  background:#FFF; padding:0 5px 5px 5px; margin:-1px 0 0 -6px;}
+.dropdown ul li{background:#FFF; line-height:22px; cursor:pointer;}
+.dropdown ul li.over{background:#369; color:#FFF;}
+.hidBtn {display:none;}
+/*补充样式*/
+.tipsFont{color:#f00; padding:0 0 0 5px;}
+.node{position:relative; cursor:pointer;}
+#Y0{ padding:5px 0 0 0;}
+td.td_node img{ padding:0 3px 0 0;vertical-align:middle;}
+
+/*开关按钮*/
+.chooseBtn {display: none;}
+.choose-label {box-shadow: #ccc 0px 0px 0px 1px;width: 40px;height: 20px;display: inline-block;border-radius: 20px;position: relative;background-color: #bdbdbd;overflow: hidden;}
+.choose-label:before {content: '';position: absolute;left: 0;width: 20px;height: 20px;display: inline-block;border-radius: 20px;background-color: #fff;z-index: 20;-webkit-transition: all 0.5s;transition: all 0.5s;}
+.chooseBtn:checked + label.choose-label:before {left: 20px;}
+.chooseBtn:checked + label.choose-label {background-color: #51ccee;}

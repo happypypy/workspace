@@ -1,0 +1,390 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: admin
+ * Date: 2018/2/23
+ * Time: 17:31
+ */
+
+namespace app\admin\controller;
+
+
+use think\Request;
+use think\Log;
+
+class Wxtemplate extends Base{
+    //广告列表
+    public function index()
+    {
+        $idsite = session('idsite');
+        $idsite = isset($idsite) ? $idsite : 0;
+        $sitecode = getSiteCode($idsite);
+        $config = getWeiXinConfig(strtolower($sitecode));
+        $appId = trim($config['appid']);
+        $appSecret = trim($config['appsecret']);
+        $api = new \think\wx\Api(
+            array(
+                'appId' => $appId,
+                'appSecret' => $appSecret
+            )
+        );
+        $res = $api->get_all_private_template();
+        $template_list = array();
+        if ($res->template_list) {
+            foreach ($res->template_list as $key => $template) {
+                if ($key == 0) {
+                    continue;
+                }
+                $tmp = array();
+                $tmp["template_id"] = $template->template_id;
+                $tmp["title"] = $template->title;
+                $tmp["content"] = $template->content;
+                $template_list[] = $tmp;
+            }
+        }
+        $this->assign('template_list', $template_list);
+        return $this->fetch();
+    }
+
+    /**
+     * 删除微信消息模版
+     */
+    public function delete_template()
+    {
+
+        $request = Request::instance()->param();
+        $template_id = isset($request["template_id"])?trim($request["template_id"]):"";
+        if (empty($template_id)) {
+            echo json_encode(array("status"=>"fail"));exit;
+        } else {
+            $idsite = session('idsite');
+            $idsite = isset($idsite) ? $idsite : 0;
+            $sitecode = getSiteCode($idsite);
+            if(empty($idsite) || empty($sitecode)){
+                echo json_encode(array("status"=>"fail"));exit;
+            }
+            $config = getWeiXinConfig(strtolower($sitecode));
+            $appId = trim($config['appid']);
+            $appSecret = trim($config['appsecret']);
+            $api = new \think\wx\Api(
+                array(
+                    'appId' => $appId,
+                    'appSecret' => $appSecret
+                )
+            );
+            $res = $api->del_private_template($template_id);
+            if($res){
+                db("wx_template")->where("template_id='".$template_id."' and idsite=".$idsite)->delete();
+                echo json_encode(array("status"=>"success"));
+                exit;
+            }else{
+                echo json_encode(array("status"=>"fail"));exit;
+            }
+        }
+    }
+
+
+    /**
+     * 初始化模版id
+     *
+
+     *-----------------------
+     * 绑定成功通知
+     * OPENTM204633353
+     * {{first.DATA}}
+     * 姓名：{{keyword1.DATA}}
+     * 手机：{{keyword2.DATA}}
+     * 绑定时间：{{keyword3.DATA}}
+     * {{remark.DATA}}
+     * -----------------------
+     * 咨询反馈结果通知
+     * OPENTM417773778
+     * {{first.DATA}}
+     * 受理人：{{keyword1.DATA}}
+     * 回复内容：{{keyword2.DATA}}
+     * 回复时间：{{keyword3.DATA}}
+     * {{remark.DATA}}
+     * -----------------------
+     * 报名结果通知
+     * OPENTM411026400
+     * {{first.DATA}}
+     * 报名内容：{{keyword1.DATA}}
+     * 报名结果：{{keyword2.DATA}}
+     * {{remark.DATA}}
+     * -----------------------
+     * 活动取消通知
+     *  OPENTM405761330
+     * {{first.DATA}}
+     * 主题：{{keyword1.DATA}}
+     * 时间：{{keyword2.DATA}}
+     * 地点：{{keyword3.DATA}}
+     * {{remark.DATA}}
+     * -----------------------
+     * 预约成功提醒
+     * OPENTM417027250
+     * {{first.DATA}}
+     * 活动主题：{{keyword1.DATA}}
+     * 活动地点：{{keyword2.DATA}}
+     * 预约时间：{{keyword3.DATA}}
+     * 负责老师：{{keyword4.DATA}}
+     * {{remark.DATA}}
+     * -----------------------
+     * 提交申请通知
+     *  OPENTM401832781
+     * {{first.DATA}}
+     * 申请人：{{keyword1.DATA}}
+     * 申请类型：{{keyword2.DATA}}
+     * 审核状态：{{keyword3.DATA}}
+     * {{remark.DATA}}
+     * -----------------------
+     * 活动结果提醒
+     *  OPENTM205732148
+     * {{first.DATA}}
+     * 活动主题：{{keyword1.DATA}}
+     * 活动时间：{{keyword2.DATA}}
+     * 活动结果：{{keyword3.DATA}}
+     * {{remark.DATA}}
+     * -----------------------
+     * 取消活动提醒
+     * OPENTM205702101
+     * {{first.DATA}}
+     * 主题：{{keyword1.DATA}}
+     * 时间：{{keyword2.DATA}}
+     * 状态：{{keyword3.DATA}}
+     * {{remark.DATA}}
+     *-----------------------
+     * 活动即将开始提醒
+     * OPENTM205702264
+     * {{first.DATA}}
+     * 主题：{{keyword1.DATA}}
+     * 时间：{{keyword2.DATA}}
+     * {{remark.DATA}}
+     *-----------------------
+     * 行前提醒
+     * OPENTM405768058
+     * {{first.DATA}}
+     * 姓名：{{keyword1.DATA}}
+     * 订单号：{{keyword2.DATA}}
+     * 出发日期：{{keyword3.DATA}}
+     * 出行国家：{{keyword4.DATA}}
+     * {{remark.DATA}}
+     *-----------------------
+     * 退款通知
+     * OPENTM414474089
+     * {{first.DATA}}
+     * 退款原因：{{keyword1.DATA}}
+     * 退款金额：{{keyword2.DATA}}
+     * {{remark.DATA}}
+     *-----------------------
+     * 咨询结果通知
+     * OPENTM415048822
+     * {{first.DATA}}
+     * 咨询内容：{{keyword1.DATA}}
+     * 咨询时间：{{keyword2.DATA}}
+     * 咨询结果：{{keyword3.DATA}}
+     * {{remark.DATA}}
+     *-----------------------
+     * 客户跟进提醒
+     * OPENTM412448014
+     * {{first.DATA}}
+     * 学员姓名：{{keyword1.DATA}}
+     * 已约时间：{{keyword2.DATA}}
+     * {{remark.DATA}}
+     *-----------------------
+     * 分配提醒
+     * OPENTM206165551
+     * {{first.DATA}}
+     * 分配客户：{{keyword1.DATA}}
+     * 分配时间：{{keyword2.DATA}}
+     * {{remark.DATA}}
+     *-----------------------
+     * 反馈结果通知
+     * OPENTM413616012
+     * {{first.DATA}}
+     * 反馈内容：{{keyword1.DATA}}
+     * 反馈回复：{{keyword2.DATA}}
+     * 处理时间：{{keyword3.DATA}}
+     * {{remark.DATA}}
+     *-----------------------
+     * 退款取消通知
+     * OPENTM413425049
+     * {{first.DATA}}
+     * 退款订单：{{keyword1.DATA}}
+     * 取消原因：{{keyword2.DATA}}
+     * 取消时间：{{keyword3.DATA}}
+     * {{remark.DATA}}
+     *-----------------------
+     * 退款申请处理通知
+     * OPENTM412357964
+     * {{first.DATA}}
+     * 申请原因：{{keyword1.DATA}}
+     * 处理结果：{{keyword2.DATA}}
+     * 处理理由：{{keyword3.DATA}}
+     * {{remark.DATA}}
+     *-----------------------
+     * 申请结果通知---用于发送退款申请通知
+     * OPENTM411136263
+     * {{first.DATA}}
+     * 申请人：{{keyword1.DATA}}
+     * 申请手机号：{{keyword2.DATA}}
+     * 申请日期：{{keyword3.DATA}}
+     * {{remark.DATA}}
+     *
+     */
+    public function init_wxtemplate()
+    {
+        $request = Request::instance()->param();
+        if(isset($request["idsite"])){
+            $idsite = $request["idsite"];
+        }else{
+
+            $idsite = session('idsite');
+        }
+        $template_id_short_list = config('template_id_short_list');
+
+        $idsite = isset($idsite)?$idsite:0;
+        $sitecode=getSiteCode($idsite);
+        $config=getWeiXinConfig(strtolower($sitecode));
+        $appId =trim($config['appid']) ;
+        $appSecret = trim($config['appsecret']);
+        $api = new \think\wx\Api(
+            array(
+                'appId' => $appId,
+                'appSecret'    => $appSecret
+            )
+        );
+        $industry = $api->get_industry();
+        Log::info('获取模板行业，返回数据：' . print_r($industry, true) . ' config: ' . print_r($config, true));
+        if($industry->primary_industry) {
+            if ($industry->primary_industry->first_class != "教育" || $industry->primary_industry->second_class != "培训") {
+                echo json_encode(array("status" => "success", "msg" => "模版行业不是教育/培训，无法创建"));
+                exit;
+            }
+        }
+
+        $wx_template_list = db("wx_template")->where("idsite=" . $idsite)->select();
+        $tmp_template_id_short_list = array();
+        //已保存的消息模版id
+        foreach ($wx_template_list as $wx_template) {
+            if (!empty($wx_template["template_id"])) {
+                $tmp_template_id_short_list[] = trim($wx_template["template_id_short"]);
+            }
+        }
+        $result = [];
+        $success_num = 0;
+        //消息编号列表
+        foreach ($template_id_short_list as $template_id_short) {
+            if (in_array($template_id_short, $tmp_template_id_short_list)) {
+                continue;
+            }
+            $template_id = $api->api_add_template($template_id_short);
+            if(!empty($template_id)) {
+                $rs =db("wx_template")->insert(array(
+                    "template_id" => $template_id,
+                    "template_id_short" => $template_id_short,
+                    "idsite" => $idsite,
+                ));
+                if($rs){
+                    $success_num++;
+                }
+            }
+            $result[] = $template_id;
+        }
+
+        if($success_num > 0)
+        {
+            //删除模板id的缓存，在获取缓存时会自动更新
+            cache('wx_template_id', null);
+        }
+
+        echo json_encode(array("status"=>"success","msg"=>"当前更新了".$success_num."条数据","result"=>$result));exit;
+    }
+
+    // 批量初始化微信模版
+    public function batch_wxtemplate(){
+        $template_id_short_list = config('template_id_short_list');
+
+        $resultArray = [];
+
+        $map = [
+            'appId' => ['neq', ""],
+            'appsecret' => ['neq', ""],
+            'token' => ['neq', ""],
+            'encodingaeskey' => ['neq', ""],
+        ];
+        // 循环初始化微信模板
+        $site_manage = db('site_manage')->field('id,site_name,site_code,appid,appsecret')->where($map)->select();
+
+        $success_num = 0;
+        $fail_num = 0;
+        foreach($site_manage as $manage){
+            $siteId =  trim($manage['id']);
+            $siteName = trim($manage['site_name']);
+            $siteCode = trim($manage['site_code']);
+            $appId = trim($manage['appid']);
+            $appSecret = trim($manage['appsecret']);
+
+            $api = new \think\wx\Api(['appId' => $appId,'appSecret' => $appSecret]);
+            $industry = $api->get_industry();
+
+            // 获取模版行业成功
+            if(isset($industry->primary_industry)){
+                if($industry->primary_industry) {
+                    if ($industry->primary_industry->first_class != "教育" || $industry->primary_industry->second_class != "培训") {
+                        $errorData[] = ['id'=>$siteId, 'site_name'=>$siteName, 'site_code'=>$siteCode, 'status'=>'fail','msg'=>'模版行业不是教育/培训，无法创建'];
+                        $fail_num++;
+                        continue;
+                    }
+                }
+    
+                $tmp_template_id_short_list = db("wx_template")->where("idsite",$siteId)->column('template_id_short');
+
+                // 消息编号列表
+                foreach ($template_id_short_list as $template_id_short) {
+                    if (in_array($template_id_short, $tmp_template_id_short_list)) {
+                        continue;
+                    }
+
+                    // 循环申请微信模板
+                    $template_id = $api->api_add_template($template_id_short);
+                    if(!empty($template_id)) {
+                        $rs = db("wx_template")->insert(array(
+                            "template_id" => $template_id,
+                            "template_id_short" => $template_id_short,
+                            "idsite" => $siteId,
+                        ));
+                    }
+                }
+                $success_num++;
+            }else{
+                $errorData[] = ['id'=>$siteId, 'site_name'=>$siteName, 'site_code'=>$siteCode, 'status'=>'fail','msg'=>'ACCESSTOKEN获取失败'];
+                $fail_num++;
+            }
+        }
+
+        $jsonResult = [
+            'total_num' => count($site_manage),
+            'success_num' => $success_num,
+            'fail_num' => $fail_num,
+            'errorData' => $errorData
+        ];
+        echo json_encode($jsonResult);
+    }
+
+    public function test(){
+        $idsite = session('idsite');
+        $idsite = isset($idsite)?$idsite:0;
+        $sitecode=getSiteCode($idsite);
+        $config=getWeiXinConfig(strtolower($sitecode));
+        $appId =trim($config['appid']) ;
+        $appSecret = trim($config['appsecret']);
+        $api = new \think\wx\Api(
+            array(
+                'appId' => $appId,
+                'appSecret'    => $appSecret
+            )
+        );
+        $res=$api->api_add_template("");
+        var_dump($res);exit;
+    }
+}

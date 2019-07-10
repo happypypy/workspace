@@ -1,0 +1,445 @@
+/**
+ * Created by admin on 2017/7/12.
+ */
+
+/**
+ * 删除
+ * @returns {void}
+ */
+function del_fun(del_url)
+{
+    if(confirm("确定要删除吗?"))
+        location.href = del_url;
+}
+
+
+ /**
+  * 修改指定表的指定字段值
+  * table表名
+  * id_name表主键字段
+  * id_value表id
+  * field要修改的字段
+  * obj
+ * */
+ var __public='/public'
+ function changeTableVal(table,id_name,id_value,field,obj)
+ {
+     var src = "";
+
+     if($(obj).attr('src').indexOf("cancel.png") > 0 )
+     {
+         src = '/static/images/yes.png';
+         var val= 1;
+     }else{
+         src = '/static/images/cancel.png';
+         var val = 2;
+     }
+     $.ajax({
+         url:"/Admin/Pattern/changeTableVal/table/"+table+"/id_name/"+id_name+"/id_value/"+id_value+"/field/"+field+'/value/'+val,
+         success: function(data){
+             $(obj).attr('src',src);
+             if(data == 1){
+                 layer.alert("修改成功",{icon:1});
+             }else {
+                 layer.alert("修改失败",{icon:2});
+             }
+         }
+     });
+ }
+
+// 修改指定表的排序字段
+function updateSort(table,id_name,id_value,field,obj)
+{
+    var value = $(obj).val();
+    $.ajax({
+        url:"/index.php?m=Admin&c=Index&a=changeTableVal&table="+table+"&id_name="+id_name+"&id_value="+id_value+"&field="+field+'&value='+value,
+        success: function(data){
+            layer.msg('更新成功', {icon: 1});
+        }
+    });
+}
+
+// 修改指定表的指定字段值 给商家使用的函数
+function changeTableVal2(table,id_name,id_value,field,obj)
+{
+    var src = "";
+    if($(obj).attr('src').indexOf("cancel.png") > 0 )
+    {
+        src = '/public/images/yes.png';
+        var value = 1;
+
+    }else{
+        src = '/public/images/cancel.png';
+        var value = 0;
+    }
+    $.ajax({
+        url:"/index.php?m=Seller&c=Index&a=changeTableVal&table="+table+"&id_name="+id_name+"&id_value="+id_value+"&field="+field+'&value='+value,
+        success: function(data){
+            $(obj).attr('src',src);
+        }
+    });
+}
+
+// 修改指定表的排序字段 给商家使用的函数
+function updateSort2(table,id_name,id_value,field,obj)
+{
+    var value = $(obj).val();
+    $.ajax({
+        url:"/index.php?m=Seller&c=Index&a=changeTableVal&table="+table+"&id_name="+id_name+"&id_value="+id_value+"&field="+field+'&value='+value,
+        success: function(data){
+            layer.msg('更新成功', {icon: 1});
+        }
+    });
+}
+
+/**
+ * 获取省份
+ */
+function get_province(){
+    var url = '/Index.php?m=Admin&c=Api&a=getRegion&level=1&parent_id=0';
+    $.ajax({
+        type : "GET",
+        url  : url,
+        error: function(request) {
+            alert("服务器繁忙, 请联系管理员!");
+            return;
+        },
+        success: function(v) {
+            v = '<option value="0">选择省份</option>'+ v;
+            $('#province').empty().html(v);
+        }
+    });
+}
+
+
+/**
+ * 获取城市
+ * @param t  省份select对象
+ */
+function get_city(t,selected){
+    var parent_id = $(t).val();
+    if(!parent_id > 0){
+        return;
+    }
+    $('#twon').empty().css('display','none');
+    var url = '/Admin/Api/getRegion/level/2/parent_id/'+ parent_id+"/selected/"+selected;
+    $.ajax({
+        type : "GET",
+        url  : url,
+        error: function(request) {
+            alert("服务器繁忙, 请联系管理员!");
+            return;
+        },
+        success: function(v) {
+            v = '<option value="0">选择城市</option>'+ v;
+            $('#intcity').empty().html(v);
+        }
+    });
+}
+
+/**
+ * 获取地区
+ * @param t  城市select对象
+ */
+function get_area(t){
+    var parent_id = $(t).val();
+    if(!parent_id > 0){
+        return;
+    }
+    var url = '/Admin/Api/getRegion/level/3/parent_id/'+ parent_id;
+    $.ajax({
+        type : "GET",
+        url  : url,
+        error: function(request) {
+            alert("服务器繁忙, 请联系管理员!");
+            return;
+        },
+        success: function(v) {
+            v = '<option value="0">选择区域</option>'+ v;
+            $('#intarea').empty().html(v);
+        }
+    });
+}
+// 获取最后一级乡镇
+function get_twon(obj){
+    var parent_id = $(obj).val();
+    var url = '/Index.php?m=Home&c=Api&a=getTwon&parent_id='+ parent_id;
+    $.ajax({
+        type : "GET",
+        url  : url,
+        success: function(res) {
+            if(parseInt(res) == 0){
+                $('#twon').empty().css('display','none');
+            }else{
+                $('#twon').css('display','block');
+                $('#twon').empty().html(res);
+            }
+        }
+    });
+}
+
+
+
+//反选
+function DoCheck(){
+    debugger;
+    if($('.checkall').is(':checked')){
+        $(".checked_one").attr("checked", true);
+    }else{
+        $(".checked_one").attr("checked", false);
+    }
+}
+
+
+
+//删除选中
+function del_checked() {
+    var b = $(".checked_one");
+    var s = '';
+    for(var i=0;i<b.length;i++){
+        if(b[i].checked){
+            s+= b[i].value+',';
+        }
+    }
+    s = s.substr(0, s.length - 1);
+    $.ajax({
+        url:"{:url('menu/delchecked')}",
+        data:"type=column&id="+s,
+        type:"post",
+        dataType:"json",
+        success:function(msg){
+            if (msg==1){
+                alert("删除成功");
+                location.reload();
+            }else{
+                alert("删除失败");
+                location.reload();
+            }
+        }
+    })
+
+}
+
+//返回上一页
+function back(){
+    window.history.back();
+}
+
+function SelectImg()
+{
+    var upurl ='/index.php/Admin/Uploadify/selimg';
+    var iframe_str='<iframe frameborder="0" ';
+    iframe_str=iframe_str+'id=uploadify ';
+    iframe_str=iframe_str+' src='+upurl;
+    iframe_str=iframe_str+' allowtransparency="true" class="uploadframe" scrolling="no"> ';
+    iframe_str=iframe_str+'</iframe>';
+    $("body").append(iframe_str);
+    $("iframe.uploadframe").css("height",$(document).height()).css("width","100%").css("position","absolute").css("left","0px").css("top","0px").css("z-index","999999").show();
+    $(window).resize(function(){
+        $("iframe.uploadframe").css("height",$(document).height()).show();
+    });
+}
+
+function GetUploadify(num,elementid,path,callback,type){
+
+    common_uploadify(num,elementid,path,callback,type, 'Admin');
+}
+/*
+ * 通用图片上传方法
+ */
+function common_uploadify(num,elementid,path,callback ,type, module)
+{
+    var upurl ='/index.php/'+module+'/Uploadify/upload/num/'+num+'/input/'+elementid+'/path/'+path+'/func/'+callback+'/type/'+type;
+    var iframe_str='<iframe frameborder="0" ';
+    iframe_str=iframe_str+'id=uploadify ';
+    iframe_str=iframe_str+' src='+upurl;
+    iframe_str=iframe_str+' allowtransparency="true" class="uploadframe" scrolling="no"> ';
+    iframe_str=iframe_str+'</iframe>';
+    $("body").append(iframe_str);
+    $("iframe.uploadframe").css("height",$(document).height()).css("width","100%").css("position","absolute").css("left","0px").css("top","0px").css("z-index","999999").show();
+    $(window).resize(function(){
+        $("iframe.uploadframe").css("height",$(document).height()).show();
+    });
+}
+
+function uploadimgcut(elementid,path,w,h)
+{
+    var upurl ='/index.php/admin/Uploadify/uploadimgcut/input/'+elementid+'/w/'+w+'/h/'+h+'/path/'+path;
+    CustomOpen(upurl,elementid, '文件上传', 765, 545);
+}
+function  openimg(id) {
+    CustomOpen("/showimg.php?url="+$('#'+id).val(),id, '查看图片', 320, 320);
+}
+
+/*function GetUploadify(num,elementid,path,callback,type)
+{
+
+    //var upurl ='/Index.php?m=Admin&c=Uploadify&a=upload&num='+num+'&input='+elementid+'&path='+path+'&func='+callback+'&type='+type;
+    var upurl ='/tp5/public/index.php/Admin/Uploadify/upload/num/'+num+'/input/'+elementid+'/path='+path+'/func='+callback+'/type/'+type;
+
+    var iframe_str='<iframe frameborder="0" ';
+    iframe_str=iframe_str+'id=uploadify ';
+    iframe_str=iframe_str+' src='+upurl;
+    iframe_str=iframe_str+' allowtransparency="true" class="uploadframe" scrolling="no"> ';
+    iframe_str=iframe_str+'</iframe>';
+    $("body").append(iframe_str);
+    $("iframe.uploadframe").css("height",$(document).height()).css("width","100%").css("position","absolute").css("left","0px").css("top","0px").css("z-index","999999").show();
+    $(window).resize(function(){
+        $("iframe.uploadframe").css("height",$(document).height()).show();
+    });
+}*/
+
+
+/*
+ * 上传图片 前台专用
+ * @access  public
+ * @null int 一次上传图片张图
+ * @elementid string 上传成功后返回路径插入指定ID元素内
+ * @path  string 指定上传保存文件夹,默认存在Public/upload/temp/目录
+ * @callback string  回调函数(单张图片返回保存路径字符串，多张则为路径数组 )
+ */
+function GetUploadify2(num,elementid,path,callback,type)
+{
+    var upurl ='/Index.php?m=Home&c=Uploadify&a=upload&num='+num+'&input='+elementid+'&path='+path+'&func='+callback+'&type='+type;
+    var iframe_str='<iframe frameborder="0" ';
+    iframe_str=iframe_str+'id=uploadify ';
+    iframe_str=iframe_str+' src='+upurl;
+    iframe_str=iframe_str+' allowtransparency="true" class="uploadframe" scrolling="no"> ';
+    iframe_str=iframe_str+'</iframe>';
+    $("body").append(iframe_str);
+    $("iframe.uploadframe").css("height",$(document).height()).css("width","100%").css("position","absolute").css("left","0px").css("top","0px").css("z-index","999999").show();
+    $(window).resize(function(){
+        $("iframe.uploadframe").css("height",$(document).height()).show();
+    });
+}
+
+//获取城市
+function getChild(t,selected,child_id,url1){
+    var parent_id = t;
+    if(!parent_id > 0){
+        //return;
+    }
+    $('#twon').empty().css('display','none');
+    var url = url1+'/level/2/parent_id/'+ parent_id+"/selected/"+selected;
+    $.ajax({
+        type : "GET",
+        url  : url,
+        error: function(request) {
+            alert("服务器繁忙, 请联系管理员!");
+            return;
+        },
+        success: function(v) {
+            v = '<option value="0">请选择</option>'+ v;
+            $('#'+child_id).empty().html(v);
+        }
+    });
+
+}
+
+
+function getNow() {
+    var myDate = new Date();
+    var y=myDate.getYear();        //获取当前年份(2位)
+    var Y=myDate.getFullYear();    //获取完整的年份(4位,1970-????)
+    var m=myDate.getMonth()+1;       //获取当前月份(0-11,0代表1月)
+    var d=myDate.getDate();        //获取当前日(1-31)
+    var w=myDate.getDay();         //获取当前星期X(0-6,0代表星期天)
+    var H=myDate.getHours();       //获取当前小时数(0-23)
+    var M=myDate.getMinutes();     //获取当前分钟数(0-59)
+    var s=myDate.getSeconds();     //获取当前秒数(0-59)
+    return Y+"-"+m+"-"+d+" "+H+":"+M+":"+s;
+}
+
+
+function selectTime1(obj,timeformat) {
+    obj.daterangepicker(
+        {
+            format:timeformat,
+            singleDatePicker: true,
+            showDropdowns: true,
+            minDate:'2008-04-18',
+            maxDate:'2030-01-01',
+            startDate: obj.val() == "" ? getNow() : obj.val(),
+            timePicker : false, //是否显示小时和分钟
+            timePickerIncrement:1,//time选择递增数
+            timePicker12Hour : false, //是否使用12小时制来显示时间
+
+            locale : {
+                applyLabel : '确定',
+                cancelLabel : '取消',
+                fromLabel : '起始时间',
+                toLabel : '结束时间',
+                customRangeLabel : '自定义',
+                daysOfWeek : [ '日', '一', '二', '三', '四', '五', '六' ],
+                monthNames : [ '一月', '二月', '三月', '四月', '五月', '六月','七月', '八月', '九月', '十月', '十一月', '十二月' ],
+                firstDay : 1
+            }
+        }
+    );
+}
+function selectTime(obj,timeformat) {
+    obj.daterangepicker(
+        {
+            format:timeformat,
+            singleDatePicker: true,
+            showDropdowns: true,
+            minDate:'2008-04-18',
+            maxDate:'2030-01-01',
+            startDate: obj.val() == "" ? getNow() : obj.val(),
+            timePicker : timeformat.indexOf("HH")>0, //是否显示小时和分钟
+            timePickerIncrement:1,//time选择递增数
+            timePicker12Hour : false, //是否使用12小时制来显示时间
+
+            locale : {
+                applyLabel : '确定',
+                cancelLabel : '取消',
+                fromLabel : '起始时间',
+                toLabel : '结束时间',
+                customRangeLabel : '自定义',
+                daysOfWeek : [ '日', '一', '二', '三', '四', '五', '六' ],
+                monthNames : [ '一月', '二月', '三月', '四月', '五月', '六月','七月', '八月', '九月', '十月', '十一月', '十二月' ],
+                firstDay : 1
+            }
+        }
+    );
+}
+
+function seltime(id,timeformat) {
+    $('#'+id).daterangepicker(
+        {
+            format:timeformat,
+            singleDatePicker: true,
+            showDropdowns: true,
+            minDate:'2008-04-18',
+            maxDate:'2030-01-01',
+            startDate: $('#'+id).val()==""?getNow():$('#'+id).val(),
+            timePicker : timeformat.indexOf("HH")>0, //是否显示小时和分钟
+            timePickerIncrement:1,//time选择递增数
+            timePicker12Hour : false, //是否使用12小时制来显示时间
+
+            locale : {
+                applyLabel : '确定',
+                cancelLabel : '取消',
+                fromLabel : '起始时间',
+                toLabel : '结束时间',
+                customRangeLabel : '自定义',
+                daysOfWeek : [ '日', '一', '二', '三', '四', '五', '六' ],
+                monthNames : [ '一月', '二月', '三月', '四月', '五月', '六月','七月', '八月', '九月', '十月', '十一月', '十二月' ],
+                firstDay : 1
+            }
+        }
+    );}
+	
+	
+function setDatetimepicker(id,format,view){
+	$('#'+id).datetimepicker({
+        format: format,  
+        weekStart: 1,  
+        autoclose: true,  
+        startView: view,
+        minView: view,  
+        forceParse: false,  
+        language: 'zh-CN'
+	});
+}
+	

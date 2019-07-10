@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+<title>{$node_info['nodename']}</title>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+
+<script type="text/javascript" src="{$roottpl}/js/jquery.min.js"></script>
+<script type="text/javascript" src="{$roottpl}/js/swiper.min.js"></script>
+<script type="text/javascript" src="{$roottpl}/js/common.js"></script>
+<link rel="stylesheet" type="text/css" href="{$roottpl}/style/css/swiper.min.css">
+<link rel="stylesheet" type="text/css" href="{$roottpl}/style/css/common.css">
+<link rel="stylesheet" type="text/css" href="{$roottpl}/style/css/pc.css">
+</head>
+<body>
+	{include file="M1/lib/header" /}
+	<div class="site-section clearfix">
+		<div class="where jigou">
+			<p>{$node_info['nodename']}</p>
+			<a href="/{$sitecode}">返回首页</a>
+		</div>
+		<ul class="common-list">
+			<?php  $re = $cms->GetNodeContents($nodeid,[],'linkurl,summary,picurl,sys00003,hits,contentid,title,en_title,tc_title','',10);
+			foreach($re as $k=>$val){ ?>
+			<li>
+				<a href="/content/{$val['contentid']}">
+					<img src="{$val['picurl']}">
+					<div class="word">
+						<div class="tit">{$val['title']}</div>
+						<div class="txt">{$val['summary']}</div>
+						<div class="info">
+							<!--<div class="type">活动</div>-->
+							<div class="view"><span>{$val['hits']}</span>浏览</div>
+							<div class="time">{:date('m-d',strtotime($val['sys00003']))}</div>
+						</div>
+					</div>
+				</a>
+			</li>
+			<?php } ?>
+		</ul>
+		{include file="M1/lib/footer" /}
+	</div>
+</body>
+</html>

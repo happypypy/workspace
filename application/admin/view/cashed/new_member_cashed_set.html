@@ -1,0 +1,132 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/static/css/page.css?1" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="__PUBLIC__/static/js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/js/del-checked.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/CostomLinkOpenSw.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/lhgdialog.js?skin=aero"></script>
+</head>
+<body>
+<div class="oa_wrapper">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr class="oa_wrapper-display">
+            <td class="oa_wrapper-top-arr-left">&nbsp;</td>
+            <td class="oa_wrapper-top-arr-middle"></td>
+            <td class="oa_wrapper-top-arr-right">&nbsp;</td>
+        </tr>
+        <tr>
+            <td class="oa_wrapper-middle-arr-left oa_wrapper-display"></td>
+            <td class="oa_wrapper-middle-arr-middle">
+                <div class="oa_location clearfix"><span class="oa_ico-left"></span>location<span class="oa_ico-right"></span></div>
+                <div class="oa_main clearfix">
+                    <div class="oa_subnav clearfix">
+                        <div class="oa_subnav-tab clearfix">
+                            <ul>
+                                <?php if($cms->CheckPurview('cashedplan','view')){ ?>
+                                <li onclick="javascript:window.location='{:url('cashed/index','')}'"><em>现金券计划列表 </em></li>
+                                <?php } if($cms->CheckPurview('cashedrecord','view')){  ?>
+                                <li  onclick="javascript:window.location='{:url('cashed/receive_record','')}'"><em>现金券领取记录 </em></li>
+                                <?php } if($cms->CheckPurview('newusercashed','set')){?>
+                                <li class="oa_on" onclick="javascript:window.location='{:url('cashed/new_member_cashed_set','')}'"><em>新用户关注发券设置 </em></li>
+                                <?php } if($cms->CheckPurview('cashedreport','view')){?>
+                                <li onclick="javascript:window.location='{:url('cashed/cashed_report','')}'"><em>报表 </em></li>
+                                <?php } ?>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="oa_pop-main">
+                        <div style="height: 6px"></div>
+                        <div class="oa_title clearfix">
+                            <span class="oa_ico-right"></span>
+                            <span class="oa_title-btn"></span>
+                            <span class="oa_ico-left"></span>
+                            新用户关注发券设置
+                        </div>
+                        <div class="oa_edition">
+                            <form action="{:url('admin/cashed/new_member_cashed_set')}" method="post" id="form1">
+                                <table width="100%" border="0" cellspacing="1" cellpadding="0" class="oa_edition"  style="border-bottom: #e0e0e0 solid 1px">
+                                    <tr>
+                                        <td class="oa_cell-left">
+                                            <span style="color: red;">*</span>
+                                            设置金额：</td>
+                                        <td class="oa_cell-right">
+                                            <input name="send_cashed_amount" type="text" value="{$datainfo.send_cashed_amount}" class="oa_input-100" />（元）
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="oa_cell-left">
+                                            <span style="color: red;">*</span>
+                                            有效期：</td>
+                                        <td class="oa_cell-right">
+                                            <input name="send_cashed_validity" type="text" value="{$datainfo.send_cashed_validity}" class="oa_input-100" />（天）
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="oa_cell-left"><span style="color: red;">*</span>是否启用：</td>
+                                        <td class="oa_cell-right">
+                                            <label>
+                                                <input name="is_send_cashed" type="radio" value="1" {if condition="$datainfo.is_send_cashed eq 1"}checked{/if} />是&nbsp;
+                                            </label>
+                                            <label>
+                                                <input name="is_send_cashed" type="radio" value="2" {if condition="$datainfo.is_send_cashed eq 2"}checked{/if} />否
+                                            </label>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td></td>
+                                        <td style="padding:10px;"><input type="button" value="确定" onclick="verify_param()" style="cursor: pointer"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            {if condition="$datainfo['id'] > 0"}
+                                            <input type="hidden" name="id" value="{$datainfo.id}"/>
+                                            {/if}
+                                            <input type="hidden" name="site_id" value="{$datainfo.site_id}" />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+</div>
+
+</body>
+<script type="text/javascript">
+    function verify_param() {
+
+        var send_cashed_validity = $('input[name="send_cashed_validity"]').val();
+        var send_cashed_amount = $('input[name="send_cashed_amount"]').val();
+        var is_send_cashed = $('input[name="is_send_cashed"]:checked').val();
+
+        var price = /^(([1-9]\d{0,6})|0)([.]{1}[0-9]{1,2})?$/; //金额
+        var int =  /^[0-9]*$/;//整数
+        var int_not_zero = /^[1-9]\d{0,8}$/;
+
+        if(!price.test(send_cashed_amount)){
+            alert('请设置有效的金额值');
+            return false ;
+        }
+        if(!int_not_zero.test(send_cashed_validity)){
+            alert('请填写非零的整数作为有效期');
+            return false ;
+        }
+        if(is_send_cashed == undefined){
+            alert('请选择是否启用');
+            return false ;
+        }
+        $('#form1').submit();
+    }
+
+</script>
+</html>

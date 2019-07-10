@@ -1,0 +1,89 @@
+<html>
+ <head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  
+  <title>一个简单的数字时钟</title>
+  <script type="text/javascript" charset="utf-8">
+   // 定义一个函数用以显示当前时间
+   var i=0;
+   var f=true;
+   function displayTime() {
+    var elt = document.getElementById("clock"); // 通过id= "clock"找到元素
+    var now = new Date(); // 得到当前时间
+    elt.innerHTML = now.toLocaleTimeString(); //让elt来显示它
+	if(f)
+		i++;
+		
+	document.getElementById("aa").innerHTML=i;
+    setTimeout(displayTime,1000); //在1秒后再次执行
+   }
+   window.onload = displayTime; //当onload事件发生时开始显示时间
+   
+   
+   var b=getTime();
+
+ function getTime()
+ {
+ return Date.now();
+
+ }
+
+document.addEventListener('webkitvisibilitychange',function()
+ {
+
+ if(document.webkitVisibilityState=='hidden')
+ {
+ //b=getTime();
+	f=false;
+ }else
+ {
+	f=true;
+ //document.body.appendChild(document.createTextNode('间隔:'+(getTime()-b)))
+
+ }
+ });
+
+   
+  </script>
+  <style type="text/css" media="all">
+   #clock {
+    font: bold 24pt sans;
+    background: #ddf;
+    padding: 10px;
+    border: 2px solid black;
+    border-radius: 10px;
+   }
+   
+   
+  </style>
+ </head>
+ <body>
+  <h1>一个简单的数字时钟</h1>
+  <span id="clock"></span>
+  <span id="aa"></span>
+ </body>
+ 
+ 
+<script type="text/javascript" src="/static/js/wgs2mars.min.js"></script>
+<script type="text/javascript" src="https://map.qq.com/api/js?v=2.exp&key=d84d6d83e0e51e481e50454ccbe8986b"></script>
+<script language="JavaScript">
+
+	var geocoder = new qq.maps.Geocoder({
+		complete: function (result) {   //解析成功的回调函数
+			var address = result.detail.address;  //获取详细地址信息
+			alert(address);
+		}
+	});
+	
+	qq.maps.convertor.translate(new qq.maps.LatLng(22.538694381713867,114.0162353515625), 2, function(res) {
+		latlng = res[0];
+		//fn(latlng.lng,latlng.lat);//实际处理逻辑
+		geocoder.getAddress(new qq.maps.LatLng(latlng.lat,latlng.lng));
+	});
+
+	//var trueLoc = transformFromWGSToGCJ(parseFloat(114.0162353515625),parseFloat(22.538694381713867));
+	//geocoder.getAddress(new qq.maps.LatLng(trueLoc.lat,trueLoc.lng));
+			
+</script>
+ 
+</html>

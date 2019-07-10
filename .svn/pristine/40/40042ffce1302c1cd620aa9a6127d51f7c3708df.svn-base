@@ -1,0 +1,40 @@
+<?php
+
+namespace app\admin\module;
+
+use think\Model;
+use think\Page;
+use think\Db;
+use think\Session;
+use think\exception\StaleObjectException;
+use think\Exception;
+use think\Log;
+
+
+class Package extends \app\common\model\Package{
+    public function updatePackage($data)
+    {
+        $sql = $this->where(['package_id' => $data['package_id']])->update($data);
+    }
+
+
+    public function deletePackage($activityId, $packageId)
+    {
+        $order = db('order')->where(['dataid' => $activityId])->find();
+        //已发布活动不允许删除套餐
+        if($order)
+        {
+            throw new Exception('已报名活动不允许删除套餐');
+        }
+
+        $packageCount = db('package')->where(['activity_id' => $activityId,'state' => 1])->count();
+        //如果有效套餐数已小于等于1，拒绝删除
+        if($packageCount <= 1)
+        {
+            throw new Exception('线上下单活动必须至少有一个套餐');
+        }
+
+        //删除
+        db('package')->where(['package_id' => $packageId])->update(['state' => 0]);
+    }
+}
