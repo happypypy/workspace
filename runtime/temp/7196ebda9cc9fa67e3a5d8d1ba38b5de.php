@@ -1,8 +1,11 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:4:{s:28:"template/M1/node/detail.html";i:1561691696;s:67:"C:\phpStudy\PHPTutorial\WWW\work\public\template\M1\lib\header.html";i:1561691693;s:68:"C:\phpStudy\PHPTutorial\WWW\work\public\template\M1\lib\footer0.html";i:1561691693;s:68:"C:\phpStudy\PHPTutorial\WWW\work\public\template\M1\lib\footer2.html";i:1561691693;}*/ ?>
-<?php $info = $cms->GetContentInfo($content_id,'contentid,picurl,title,content,nodeid,inputer,sys00003');
+<?php if (!defined('THINK_PATH')) exit(); /*a:4:{s:28:"template/M1/node/detail.html";i:1562747027;s:52:"D:\workspace\work\public\template\M1\lib\header.html";i:1561691693;s:53:"D:\workspace\work\public\template\M1\lib\footer0.html";i:1561691693;s:53:"D:\workspace\work\public\template\M1\lib\footer2.html";i:1561691693;}*/ ?>
+<?php $info = $cms->GetContentInfo($content_id,'contentid,picurl,title,content,nodeid,inputer,sys00003,fieldspare10');
 if(empty($info))
 {
 header("location:/error.php?msg=".urlencode("没找到相关文章，有疑问请和管理联系！")."&url=".urlencode("/".$sitecode));
+exit();
+}elseif(isset($usertypeflag) && $usertypeflag==1){
+header("location:/error.php?msg=".urlencode("你好，该内容只有【".$usertype."】才可以查看/购买。如有疑问，请联系客服，谢谢！")."&url=".urlencode("/".$sitecode));
 exit();
 }
 ?>

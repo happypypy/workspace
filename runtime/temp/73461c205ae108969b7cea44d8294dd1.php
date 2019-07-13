@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:40:"template/M1/assemble/assemble_share.html";i:1562119017;s:52:"D:\workspace\work\public\template\M1\lib\header.html";i:1561691693;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:40:"template/M1/assemble/assemble_share.html";i:1562915707;s:52:"D:\workspace\work\public\template\M1\lib\header.html";i:1561691693;}*/ ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -59,9 +59,15 @@
             </div>
         </div>
         <div class="ass-share-info"  data-end="<?php echo $data['expiration']; ?>">
-            <div class="ass-timebox">距离结束拼团还有：
+                <?php if($data['left'] <= 0): ?>
+               <div class="ass-timebox">
+                <span class="count-down">
+                 <span> 恭喜您，已成团！</span>
+                <?php else: ?>
+                <div class="ass-timebox">距离结束拼团还有：
             <span class="count-down">
                 <span class="day">0</span> 天 <span class="hour">0</span> 时 <span class="minute">0</span> 分 <span class="sec">0</span> 秒
+                <?php endif; ?>
             </span><!-- <span>拼团已结束</span> --></div>
             <div class="ass-share-item">
                 <a href="">
@@ -76,7 +82,7 @@
 
             <div class="present-box">
                 <?php if($data['left'] > 0): ?>
-                    <div>需拼团人数：<span><?php echo $data['group_num']; ?>件</span>&nbsp;&nbsp;<span>还差<?php echo $data['left']; ?>人</span></div>
+                    <div>需拼团数：<span><?php echo $data['group_num']; ?></span>&nbsp;&nbsp;<span>还差<?php echo $data['left']; ?></span></div>
                 <?php else: ?>
                     <div><span>已成团</span></div>
                 <?php endif; ?>

@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:29:"template/M1/order/signup.html";i:1562659494;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:29:"template/M1/order/signup.html";i:1562997484;}*/ ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -530,13 +530,10 @@ $(".pwclass").eq(0).click();
                                     //关闭继续提交弹窗
                                     close_confirm()
                                     layer.closeAll('loading');
-
                                     //格式化data数据
                                     data=JSON.parse(data)
                                     //用户再次提交订单
                                         //追加元素
-                                   //console.log(data)
-                                    //console.log(data.order_id)
                                     var htmlappend="<input id='orderid' type=\"hidden\" name=\"order_id\" value=\""+data.order_id+"\">"
                                     $("#txtpaynum").after(htmlappend)
                                     if(data.res==1){
@@ -587,7 +584,7 @@ $(".pwclass").eq(0).click();
                                                             window.location = "/" + data.sitecode + "/detail/" + data.dataID;
                                                             return false;
                                                         }});
-                                                if(data.err_arr){
+                                                if(data.err_arr.length != 0){
                                                     layer.confirm(
                                                         data.err_arr[0]["err"],
                                                         {
@@ -602,7 +599,7 @@ $(".pwclass").eq(0).click();
                                             }
                                         }
                                     }
-                                }
+                                },
                             }
                         );
                     }

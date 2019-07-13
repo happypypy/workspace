@@ -1,1 +1,111 @@
-oZS4v1aiMfreRinDgG-uWZFEDpnk1===============开始消关注==============={"intstate":2,"dtunsubscribetime":1537415866}已取消关注===============
+oZS4v1aiMfreRinDgG-uWZFEDpnk1===============开始消关注==============={"intstate":2,"dtunsubscribetime":1537415866}已取消关注===============Array
+(
+    [fiduser] => 51
+    [wechatid] => oZS4v1aiMfreRinDgG-uWZFEDpnk
+    [chrusername] => 雨智
+    [dataid] => 105
+    [package_id] => 125
+    [chrtitle] => ()分销代言)【端午营】划龙舟、挂菖蒲、斗百草、包粽子、地道过端午，玩帆船、定向、枪战、射箭有趣有料的玩法在这里！（6.7-9）
+    [ischarge] => 2
+    [chrimg] => 
+    [chraddress] => 
+    [dtstart] => 2019-06-26 08:00:00
+    [dtend] => 2019-08-31 18:00:00
+    [pusilhid] => 
+    [pusilhname] => 
+    [marketid] => 0
+    [marketname] => 
+    [group_buy_order_id] => 
+    [state] => 12
+    [paynum] => 1
+    [payname] => 3人团报 0(0.01元)
+    [price] => 0.01
+    [dtcreatetime] => 2019-07-13 09:24:58
+    [issettlement] => 0
+    [isrefund] => 1
+    [txtfield] => 姓名∫9☆联系电话∫10
+    [txtdata] => 呵呵打啊☆13344910012
+    [txtfield1] => 
+    [txtdata1] => 
+    [intflag] => 1
+    [idsite] => 7
+    [lock_stock_at] => 1562981098
+    [stock_locked] => 1
+    [cashed_amount] => 0
+    [receive_cashed_id] => 
+    [share_plan_id] => 5
+)
+Array
+(
+    [fiduser] => 51
+    [wechatid] => oZS4v1aiMfreRinDgG-uWZFEDpnk
+    [chrusername] => 雨智
+    [dataid] => 105
+    [package_id] => 125
+    [chrtitle] => ()分销代言)【端午营】划龙舟、挂菖蒲、斗百草、包粽子、地道过端午，玩帆船、定向、枪战、射箭有趣有料的玩法在这里！（6.7-9）
+    [ischarge] => 2
+    [chrimg] => 
+    [chraddress] => 
+    [dtstart] => 2019-06-26 08:00:00
+    [dtend] => 2019-08-31 18:00:00
+    [pusilhid] => 
+    [pusilhname] => 
+    [marketid] => 0
+    [marketname] => 
+    [group_buy_order_id] => 
+    [state] => 12
+    [paynum] => 1
+    [payname] => 3人团报 0(0.01元)
+    [price] => 0.01
+    [dtcreatetime] => 2019-07-13 09:25:18
+    [issettlement] => 0
+    [isrefund] => 1
+    [txtfield] => 姓名∫9☆联系电话∫10
+    [txtdata] => 呵呵打啊☆13344910013
+    [txtfield1] => 
+    [txtdata1] => 
+    [intflag] => 1
+    [idsite] => 7
+    [lock_stock_at] => 1562981118
+    [stock_locked] => 1
+    [cashed_amount] => 0
+    [receive_cashed_id] => 
+    [share_plan_id] => 5
+)
+Array
+(
+    [fiduser] => 51
+    [wechatid] => oZS4v1aiMfreRinDgG-uWZFEDpnk
+    [chrusername] => 雨智
+    [dataid] => 180
+    [package_id] => 161
+    [chrtitle] => 测试非拼团的订单的库存
+    [ischarge] => 2
+    [chrimg] => 
+    [chraddress] => 
+    [dtstart] => 2019-06-07 08:00:46
+    [dtend] => 2020-07-31 09:46:46
+    [pusilhid] => 
+    [pusilhname] => 
+    [marketid] => 0
+    [marketname] => 
+    [group_buy_order_id] => 
+    [state] => 12
+    [paynum] => 1
+    [payname] => 套餐一 111(9.00元)
+    [price] => 9
+    [dtcreatetime] => 2019-07-13 10:10:59
+    [issettlement] => 0
+    [isrefund] => 1
+    [txtfield] => 姓名∫9☆联系电话∫10
+    [txtdata] => 呵呵打啊☆13344910011
+    [txtfield1] => 
+    [txtdata1] => 
+    [intflag] => 1
+    [idsite] => 7
+    [lock_stock_at] => 1562983859
+    [stock_locked] => 1
+    [cashed_amount] => 0
+    [receive_cashed_id] => 
+    [share_plan_id] => 
+)

@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:34:"template/M1/order/again_order.html";i:1562308033;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:34:"template/M1/order/again_order.html";i:1562308188;}*/ ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -632,7 +632,7 @@ $(".pwclass").click(function(){
     loadprice();
 });
 $(".pwclass").eq(0).click();
-                    
+
                     //判断是否在pc端
                     function IsPC() {
                         var userAgentInfo = navigator.userAgent;

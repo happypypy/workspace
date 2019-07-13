@@ -1364,6 +1364,7 @@ class Index extends Base {
         }
 
         //判断用户是否有权限可以查看此详情页
+
         if(!empty($activity['usertype'])){
             //.获取用户分类
             $userid=$this->getUserInfo("userid");
@@ -1915,7 +1916,8 @@ class Index extends Base {
                     'id',
                     'package_id',
                     'paynum',
-                    'receive_cashed_id'
+                    'receive_cashed_id',
+                    'group_buy_order_id',
                 ]
             )
             ->find();
@@ -1927,7 +1929,17 @@ class Index extends Base {
         {
             $query = new Query;
             $query->startTrans();
-            $res = changeStock($expiredOrders['package_id'], $expiredOrders['paynum'], true);
+            //判断是否为团购活动，
+            if($expiredOrders['group_buy_order_id'] != '' && $expiredOrders['group_buy_order_id'] != 0)
+            {
+                // 拼团订单，释放库存路径不同
+                $res = changeGroupStock($expiredOrders['group_buy_order_id'], $expiredOrders['paynum']);
+            }else
+            {
+                $res = changeStock($expiredOrders['package_id'], $expiredOrders['paynum'], false);
+
+            }
+            //$res = changeStock($expiredOrders['package_id'], $expiredOrders['paynum'], false);
             if($res)
             {
                 db('order')->where(['id' => $expiredOrders['id']])->update(['stock_locked' => 0,'state'=>10]);//改为终止服务
@@ -2735,7 +2747,7 @@ class Index extends Base {
                         // TODO 验证拼团有效期
                         $groupBuy = db('group_buy')->find($request['group_buy_id']);
                         $price = $groupBuy['group_buy_price'] * $paynum;
-                        if(!isset($request['group_buy_order_id']))
+                        if(!isset($request['group_buy_order_id']) || $request['group_buy_order_id'] ==0 )
                         {
                             // TODO 验证拼团启用状态
                             // 开团购买数量小于等于拼团数量限制 拼团数量小于等于套餐剩余库存
@@ -2782,6 +2794,7 @@ class Index extends Base {
 
             if($flag == 1)
             {
+
                 if($content_info)
                 {
                     $ischarge=$content_info['ischarge'];
@@ -2798,7 +2811,7 @@ class Index extends Base {
                     if(isset($request['group_buy_id']) && !empty($request['group_buy_id']))
                     {
                         $groupBuyOrderModel = new GroupBuyOrder;
-                        if(isset($request['group_buy_order_id']) && !empty($request['group_buy_order_id']))
+                        if(isset($request['group_buy_order_id']) && !empty($request['group_buy_order_id']) && $request['group_buy_order_id'] !=0)
                         {
                             //锁定本次订单库存
                             $groupBuyOrderId = $request['group_buy_order_id'];
@@ -2887,21 +2900,36 @@ class Index extends Base {
                                 $ordersn,
                                 $groupBuyOrderId
                             );
+
                             //获取订单id
-                            $order_id = Db::name('order')->getLastInsID();
+                            $order_id = db('order')->where(['ordersn'=>$ordersn])->value('id');
                             $ajaxdate['order_id']=$order_id;
-                            //那么就是修改订单的数据
-                        }elseif(!array_key_exists('order_state',$request) && array_key_exists('order_id',$request)){
                             $res = true;
-                            $stockLocked = db('order')->field('stock_locked')->find($request['order_id']);
-                            if($stockLocked == 0)
+                            $stockLocked = db('order')->field('stock_locked')->find($order_id);
+                            if($stockLocked['stock_locked'] == 1)
                             {
                                 //减库存
                                 $res = changeStock($package['package_id'], $paynum);
                             }
                             if(!$res)
                             {
-                                throw new Exception('商品已售完');
+                                throw new Exception('商品库存不足');
+                            }
+                            //那么就是修改订单的数据
+                        }elseif(!array_key_exists('order_state',$request) && array_key_exists('order_id',$request)){
+                            $res = true;
+                            $add=true;
+                            $stockLocked = db('order')->field('stock_locked,paynum')->find($request['order_id']);
+                            if($stockLocked['stock_locked'] == 1)
+                            {
+                                //先释放原来的库存
+                                $add=changeStock($package['package_id'], $stockLocked['paynum'],false);
+                                //减库存
+                                $res = changeStock($package['package_id'], $paynum);
+                            }
+                            if(!$res && !$add)
+                            {
+                                throw new Exception('商品库存不足');
                             }
 
                             $ordersn = $obj->updateOrder($idsite,
@@ -2927,6 +2955,7 @@ class Index extends Base {
                                 $request['order_id']//订单id
                             );
                             $ajaxdate['order_id']=$request['order_id'];
+
                         }
                         if(!$ordersn)
                         {
@@ -3005,7 +3034,7 @@ class Index extends Base {
                 {
                     Db::rollBack();
                     Log::error('下单及扣除库存失败。[ SQL ] ' . Db::getLastSql());
-                    $errmsg ='下单及扣除库存失败';// $e->getMessage();
+                    $errmsg ='下单及扣除库存失败';//
                     $flag = 2;
                     // throw $e;
                 }
@@ -3025,19 +3054,7 @@ class Index extends Base {
 //        $this->assign('ordersn',$ordersn);
 //        $this->assign('is_cashed',checkedMarketingPackage($idsite,'cashed'));
         // var_dump($flag, $errmsg)
-//        $ajaxdate=[
-//            'res'=>1,
-//            'flag'=>$flag,
-//            'price'=>$price,
-//            'errmsg'=>$errmsg,
-//            'err_arr'=>$err_arr,
-//            'roottpl'=>'/'.$roottpl,
-//            'sitecode'=>$sitecode,
-//            'ischarge'=>$ischarge,
-//            'ordersn'=>$ordersn,
-//            'dataID'=>$dataID,
-//            'is_cashed'=>checkedMarketingPackage($idsite,'cashed'),
-//        ];
+//
         $ajaxdate['res']=1;
         $ajaxdate['flag']=$flag;
         $ajaxdate['price']=$price;
@@ -3050,7 +3067,7 @@ class Index extends Base {
         $ajaxdate['dataID']=$dataID;
         $ajaxdate['is_cashed']=checkedMarketingPackage($idsite,'cashed');
         
-        //dump($err_arr);
+
         $ajaxdate=json_encode($ajaxdate, JSON_UNESCAPED_UNICODE);
       // return $this->fetch($url);
       return $ajaxdate;
@@ -4014,7 +4031,7 @@ class Index extends Base {
         $arr['flag']=$flag;
         $arr['createtime']=time();
         $arr['intstate']=2;
-        $arr['show']=1;
+        $arr['show']=0;
         //print_r($arr);
         $bool=db('comment')->insert($arr);
         //评论添加成功
@@ -4212,7 +4229,7 @@ class Index extends Base {
         $content_id = $request['contentid']; // 当前内容id
 
         //检测它的父节点是否需要登录才能浏览
-        $content_info = db('content')->where('contentid='.$request['contentid'])->field('siteid,nodeid')->find();
+        $content_info = db('content')->where('contentid='.$request['contentid'])->field('siteid,nodeid,fieldspare10')->find();
         if(empty($content_info))
         {
             header("location:/error.php?msg=".urlencode("没找到相关文章，有疑问请和管理联系！")."&url=");
@@ -4260,6 +4277,45 @@ class Index extends Base {
                 $visitflag=1;
 
         }
+
+        //查询用户是否有权限查看此文章
+        $content_usertype=$content_info['fieldspare10'];
+        if(!empty($content_usertype)){
+            $usertype=db('member')->where(['idmember'=>$userid])->column('categoryid');
+
+            if(empty($usertype))
+            {
+                $usertype="123456asdfzdsfv";
+            }
+            else
+            {
+                $usertype=$usertype[0];
+            }
+
+            //dump($usertype);
+
+            //获取分类的名字
+            $obj = new \app\admin\module\activity($idsite);
+            $hyfl=$obj->getDic("hyfl");
+            $type=[];
+            foreach($hyfl as $v){
+                $type[$v['id']]=$v['name'];
+            }
+            $usertypename='';
+            foreach (explode('|',$content_usertype) as $v){
+                $usertypename=$usertypename.$type[$v].',';
+            }
+            $usertypename=rtrim($usertypename,',');
+            if(strpos($content_usertype,$usertype) == false){
+                $usertypeflag=1;
+                $this->assign('usertypeflag',$usertypeflag);
+                $this->assign('usertype',$usertypename);
+            }
+
+
+        }
+
+
 
 
         $this->assign('roottpl','/'.$roottpl);
@@ -5095,14 +5151,14 @@ class Index extends Base {
                 // 6已部分退款 继续服务，
                 // 7已退款 继续服务，
                 // 8.已报名 退款不通过，
-                'state' => ['in', [4,5,6,7,8]],
+               // 'state' => ['in', [4,5,6,7,8]],
             ])
             ->order('id asc')
             ->select();
 
-        if(!$orders)
+        if(empty($orders))
         {
-            return false;
+            //return false;
         }
 
         $imgs = db('member')->where([

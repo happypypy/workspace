@@ -226,6 +226,10 @@ function getControl($v,$value=null,$prefix=null)
             }
             return $strTmp."</select>";
         case 5://复选框
+            if(is_string($value) && strpos($value,"|"))
+            {
+                $value=explode("|",$value);
+            }
 
             $strTmp = "";
             $arr=getSettingData($v['settings']);
@@ -538,7 +542,13 @@ function getSettingData($s)
 
         }
         elseif (intval($arrTmp[0] == 3)){
-            $book_list = db('work_content')->where(['bookcode'=>$arr1[6]])->cache(true,60)-> select();
+            if(session('idsite')){
+                $map['idsite']=session('idsite');
+                $map['bookcode']=$arr1[6];
+            }else{
+                $map['bookcode']=$arr1[6];
+            }
+            $book_list = db('work_content')->where($map)->cache(true,60)-> select();
             foreach ($book_list as $key=>$value){
                 $Data[] = array($value['name'],$value['code']);
             }
@@ -2179,6 +2189,11 @@ function changeStock($packageId, $num, $sell = true, $sold = 'sold', $versionNam
         $tableName = 'activity';
         $where = ['idactivity' => $oldData['activity_id']];
         $oldData = db('activity')->where($where)->find();
+
+        if(empty($oldData))
+        {
+            return false;
+        }
         // 如果活动库存无限
         if($oldData['intsignnum'] == 0)
         {
@@ -2205,14 +2220,62 @@ function changeStock($packageId, $num, $sell = true, $sold = 'sold', $versionNam
     }else
     {
         //释放库存
-        $data[$sold] = (new Query)->raw($sold . ' - ' . (int)$num);
+        $data[$sold] = (new Query)->raw($sold . ' -' . (int)$num);
         // 已卖出数量大于等于退货数量
         $where[$sold] = ['egt', $num];
     }
 
     // $sql = db($tableName)->fetchSql(true)->where($where)->update($data);
     // var_dump($sql);die;
-    return db($tableName)->where($where)->update($data);
+    $res=db($tableName)->where($where)->update($data);
+    return $res;
+}
+/**
+ * 增减库存，用于有乐观锁的表增减库存或其他操作
+ * @author Hlt
+ * @DateTime 2019-05-17T11:30:04+0800
+ * @param    string                   $tableName   表名，无前缀
+ * @param    array                    $where       条件，必须有主键条件
+ * @param    integer                  $num         增减数量
+ * @param    boolean                  $sell        是否为卖出商品
+ * @param    string                   $sold        已卖出字段
+ * @param    string                   $versionName 版本字段名
+ * @return   void
+ */
+
+function changeGroupStock($groupbuyId, $num, $sell = true, $sold = 'sold')
+{
+    if($num <= 0)
+    {
+        return false;
+    }
+    $tableName = 'group_buy_order';
+    $oldData = db('group_buy_order')->where(['id' => $groupbuyId])->find();
+    if(!$oldData)
+    {
+        return false;
+    }
+
+    $where = ['id' => $groupbuyId];
+    $data = [];
+
+    if($sell)
+    {
+        // 锁定库存
+        $data[$sold] = (new Query)->raw($sold . ' + ' . (int)$num);
+        if($tableName == 'package')
+        {
+            $where['group_buy_order'] = ['egt', (new Query)->raw($sold . ' + ' . (int)$num)];
+        }
+    }else
+    {
+        //释放库存
+        $data[$sold] = (new Query)->raw($sold . ' -' . (int)$num);
+        // 已卖出数量大于等于退货数量
+        $where[$sold] = ['egt', $num];
+    }
+    $res=db($tableName)->where($where)->update($data);
+    return $res;
 }
 
 /**
