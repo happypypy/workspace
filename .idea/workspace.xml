@@ -61,25 +61,25 @@
         <counts>
           <entry key="html" value="1928" />
           <entry key="js" value="6" />
-          <entry key="php" value="4502" />
+          <entry key="php" value="4510" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="HTML" value="1928" />
           <entry key="JavaScript" value="6" />
-          <entry key="PHP" value="4502" />
+          <entry key="PHP" value="4510" />
         </counts>
       </usages-collector>
     </session>
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/application/home/controller/Index.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="334">
-              <caret line="2821" column="78" selection-start-line="2821" selection-start-column="78" selection-end-line="2821" selection-end-column="78" />
+            <state relative-caret-position="307">
+              <caret line="1291" column="33" selection-start-line="1291" selection-start-column="33" selection-end-line="1291" selection-end-column="33" />
               <folding>
                 <element signature="e#50359#54764#0#PHP" />
                 <element signature="e#58477#67752#0#PHP" />
@@ -115,11 +115,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/public/template/M1/activity/detail.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-3645">
-              <folding>
-                <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#img#0;n#div#0;n#!!top" expanded="true" />
-              </folding>
+            <state relative-caret-position="162">
+              <caret line="138" column="65" lean-forward="true" selection-start-line="138" selection-start-column="65" selection-end-line="138" selection-end-column="65" />
             </state>
           </provider>
         </entry>
@@ -136,8 +133,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/application/common.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-46">
-              <caret line="2245" column="25" selection-start-line="2245" selection-start-column="9" selection-end-line="2245" selection-end-column="25" />
+            <state relative-caret-position="270">
+              <caret line="2232" selection-start-line="2232" selection-end-line="2232" />
               <folding>
                 <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
@@ -154,8 +151,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/application/admin/controller/Api.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="786">
-              <caret line="714" column="62" selection-start-line="714" selection-start-column="62" selection-end-line="714" selection-end-column="62" />
+            <state relative-caret-position="541">
+              <caret line="714" column="55" selection-start-line="714" selection-start-column="55" selection-end-line="714" selection-end-column="55" />
               <folding>
                 <element signature="e#471#497#0#PHP" expanded="true" />
                 <element signature="e#750#1570#0#PHP" />
@@ -179,16 +176,18 @@
                 <element signature="e#21345#21880#0#PHP" />
                 <element signature="e#21887#22032#0#PHP" />
                 <element signature="e#22037#23184#0#PHP" />
+                <element signature="e#25833#27643#0#PHP" />
+                <element signature="e#27729#28765#0#PHP" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/application/home/model/GroupBuyOrder.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="155">
-              <caret line="490" column="41" lean-forward="true" selection-start-line="490" selection-start-column="41" selection-end-line="490" selection-end-column="41" />
+            <state relative-caret-position="479">
+              <caret line="513" column="20" lean-forward="true" selection-start-line="513" selection-start-column="20" selection-end-line="513" selection-end-column="20" />
             </state>
           </provider>
         </entry>
@@ -224,9 +223,9 @@
       <find>signup</find>
       <find>cancel_order()</find>
       <find>detail</find>
-      <find>detail()</find>
-      <find>can</find>
       <find>signup_post()</find>
+      <find>can</find>
+      <find>detail()</find>
     </findStrings>
     <dirStrings>
       <dir>D:\workspace\work\runtime\log\201907</dir>
@@ -269,7 +268,6 @@
         <option value="$PROJECT_DIR$/public/template/M1/node/detail.html" />
         <option value="$PROJECT_DIR$/application/admin/controller/Activity.php" />
         <option value="$PROJECT_DIR$/application/admin/module/activity.php" />
-        <option value="$PROJECT_DIR$/application/home/model/GroupBuyOrder.php" />
         <option value="$PROJECT_DIR$/public/template/M1/assemble/assemble_join.html" />
         <option value="$PROJECT_DIR$/public/template/M1/assemble/assemble_share.html" />
         <option value="$PROJECT_DIR$/public/template/M2/order/signup.html" />
@@ -280,8 +278,9 @@
         <option value="$PROJECT_DIR$/public/template/M7/order/signup.html" />
         <option value="$PROJECT_DIR$/application/admin/controller/Api.php" />
         <option value="$PROJECT_DIR$/public/template/M1/order/signup.html" />
-        <option value="$PROJECT_DIR$/application/common.php" />
+        <option value="$PROJECT_DIR$/application/home/model/GroupBuyOrder.php" />
         <option value="$PROJECT_DIR$/application/home/controller/Index.php" />
+        <option value="$PROJECT_DIR$/application/common.php" />
       </list>
     </option>
   </component>
@@ -298,7 +297,7 @@
       <path value="$PROJECT_DIR$/vendor/composer" />
     </include_path>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="-8" />
     <option name="y" value="-8" />
     <option name="width" value="1038" />
@@ -451,12 +450,12 @@
       <workItem from="1562808316948" duration="27484000" />
       <workItem from="1562892413643" duration="660000" />
       <workItem from="1562894256356" duration="20871000" />
-      <workItem from="1562979868069" duration="21547000" />
+      <workItem from="1562979868069" duration="23404000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="157716000" />
+    <option name="totallyTimeSpent" value="159573000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
@@ -515,7 +514,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="php">
           <url>file://$PROJECT_DIR$/application/home/controller/Index.php</url>
-          <line>2403</line>
+          <line>2404</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
       </breakpoints>
@@ -802,16 +801,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/public/template/M1/activity/detail.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-3645">
-          <folding>
-            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#img#0;n#div#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/public/template/M1/order/signup.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="306">
@@ -826,52 +815,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/application/common.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-46">
-          <caret line="2245" column="25" selection-start-line="2245" selection-start-column="9" selection-end-line="2245" selection-end-column="25" />
-          <folding>
-            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#input#1;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#update_used_status#0;n#!!top" />
-            <element signature="n#isDate#0;n#!!top" />
-            <element signature="n#refund#0;n#!!top" />
-            <element signature="n#write_site_operate_log#0;n#!!top" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/home/controller/Index.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="334">
-          <caret line="2821" column="78" selection-start-line="2821" selection-start-column="78" selection-end-line="2821" selection-end-column="78" />
-          <folding>
-            <element signature="e#50359#54764#0#PHP" />
-            <element signature="e#58477#67752#0#PHP" />
-            <element signature="e#67836#68300#0#PHP" />
-            <element signature="e#68399#69937#0#PHP" />
-            <element signature="e#69995#72102#0#PHP" />
-            <element signature="e#95696#104382#0#PHP" />
-            <element signature="e#104458#118814#0#PHP" />
-            <element signature="e#104550#104642#0#PHP" />
-            <element signature="e#104655#104748#0#PHP" />
-            <element signature="e#104828#107399#0#PHP" />
-            <element signature="e#120099#135309#0#PHP" />
-            <element signature="e#135327#137459#0#PHP" />
-            <element signature="e#137465#140409#0#PHP" />
-            <element signature="e#140415#143085#0#PHP" />
-            <element signature="e#143176#146102#0#PHP" />
-            <element signature="e#146109#149141#0#PHP" />
-            <element signature="e#149147#151978#0#PHP" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/application/admin/controller/Api.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="786">
-          <caret line="714" column="62" selection-start-line="714" selection-start-column="62" selection-end-line="714" selection-end-column="62" />
+        <state relative-caret-position="541">
+          <caret line="714" column="55" selection-start-line="714" selection-start-column="55" selection-end-line="714" selection-end-column="55" />
           <folding>
             <element signature="e#471#497#0#PHP" expanded="true" />
             <element signature="e#750#1570#0#PHP" />
@@ -895,14 +842,65 @@
             <element signature="e#21345#21880#0#PHP" />
             <element signature="e#21887#22032#0#PHP" />
             <element signature="e#22037#23184#0#PHP" />
+            <element signature="e#25833#27643#0#PHP" />
+            <element signature="e#27729#28765#0#PHP" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/application/home/model/GroupBuyOrder.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="155">
-          <caret line="490" column="41" lean-forward="true" selection-start-line="490" selection-start-column="41" selection-end-line="490" selection-end-column="41" />
+        <state relative-caret-position="479">
+          <caret line="513" column="20" lean-forward="true" selection-start-line="513" selection-start-column="20" selection-end-line="513" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/common.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="2232" selection-start-line="2232" selection-end-line="2232" />
+          <folding>
+            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#input#1;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#update_used_status#0;n#!!top" />
+            <element signature="n#isDate#0;n#!!top" />
+            <element signature="n#refund#0;n#!!top" />
+            <element signature="n#write_site_operate_log#0;n#!!top" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/template/M1/activity/detail.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="162">
+          <caret line="138" column="65" lean-forward="true" selection-start-line="138" selection-start-column="65" selection-end-line="138" selection-end-column="65" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/home/controller/Index.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="307">
+          <caret line="1291" column="33" selection-start-line="1291" selection-start-column="33" selection-end-line="1291" selection-end-column="33" />
+          <folding>
+            <element signature="e#50359#54764#0#PHP" />
+            <element signature="e#58477#67752#0#PHP" />
+            <element signature="e#67836#68300#0#PHP" />
+            <element signature="e#68399#69937#0#PHP" />
+            <element signature="e#69995#72102#0#PHP" />
+            <element signature="e#95696#104382#0#PHP" />
+            <element signature="e#104458#118814#0#PHP" />
+            <element signature="e#104550#104642#0#PHP" />
+            <element signature="e#104655#104748#0#PHP" />
+            <element signature="e#104828#107399#0#PHP" />
+            <element signature="e#120099#135309#0#PHP" />
+            <element signature="e#135327#137459#0#PHP" />
+            <element signature="e#137465#140409#0#PHP" />
+            <element signature="e#140415#143085#0#PHP" />
+            <element signature="e#143176#146102#0#PHP" />
+            <element signature="e#146109#149141#0#PHP" />
+            <element signature="e#149147#151978#0#PHP" />
+          </folding>
         </state>
       </provider>
     </entry>
