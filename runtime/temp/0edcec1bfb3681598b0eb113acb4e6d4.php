@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:39:"template/M1/assemble/assemble_list.html";i:1562579042;s:52:"D:\workspace\work\public\template\M1\lib\header.html";i:1561691693;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:39:"template/M1/assemble/assemble_list.html";i:1563349682;s:52:"D:\workspace\work\public\template\M1\lib\header.html";i:1561691693;}*/ ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -65,7 +65,7 @@
         <?php ;} ?>
 
         <div class="pintuan-search">
-            <input class="pintuan-search-in" placeholder="请输入关键字搜索"></input>
+            <input class="pintuan-search-in searchbtn" placeholder="请输入关键字搜索" name="keyword" />
         </div>
 
 
@@ -108,6 +108,14 @@
             loop: true,
             watchOverflow: true,
         });
+    })
+</script>
+<script>
+    $('.pintuan-search').click(function(){
+       obj= window.getComputedStyle(
+            document.querySelector('.pintuan-search'), ':after'
+        )
+        console.log(obj);
     })
 </script>
 </body>

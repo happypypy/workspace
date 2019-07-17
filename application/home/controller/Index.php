@@ -3564,7 +3564,6 @@ class Index extends Base {
         //$where_arr['state']=$state;
 
         $result = db('order')->where($where_arr)->order("id desc")->limit($ipage*$this->PageSize,$this->PageSize)->select();
-
         // 查询拼团订单状态
         $map = [
             0 => '开启拼团未支付',
@@ -3589,6 +3588,11 @@ class Index extends Base {
                 $result[$key]['group_buy_order_state_name'] = $map[$groupBuyOrder['state']];
                 $result[$key]['group_buy_order_state'] = $groupBuyOrder['state'];
 
+                if($result[$key]['state']==11){
+                    $result[$key]['group_buy_order_state_name'] = '拼团失败';
+                    $result[$key]['group_buy_order_state'] = 4;
+                }
+
                 $groupBuy = db('group_buy')->field('allow_refund')->find($groupBuyOrder['group_buy_id']);
                 $result[$key]['isrefund'] = $groupBuy['allow_refund'];
             }
@@ -3602,6 +3606,7 @@ class Index extends Base {
         }
 
         //dump($result);
+
         $this->assign('roottpl','/'.$roottpl);
         $this->assign('sitecode',$sitecode);
         $this->assign('list',$result);
@@ -4304,7 +4309,10 @@ class Index extends Base {
             }
             $usertypename='';
             foreach (explode('|',$content_usertype) as $v){
-                $usertypename=$usertypename.$type[$v].',';
+                if(array_key_exists($v,$type))
+                {
+                    $usertypename=$usertypename.$type[$v].',';
+                }
             }
             $usertypename=rtrim($usertypename,',');
             if(strpos($content_usertype,$usertype) == false){
@@ -5228,7 +5236,7 @@ class Index extends Base {
         //session_destroy();
         $request = Request::instance()->param();
         $page = isset($request['page']) ? intval($request['page']) : 1;
-        $pageSize = isset($request['pageSize']) ? intval($request['pageSize']) : 10;
+        //$pageSize = isset($request['pageSize']) ? intval($request['pageSize']) : 10;
         $sitecode=$request['sitecode'];
         if(empty($sitecode))
         {
@@ -5255,8 +5263,7 @@ class Index extends Base {
         $url = $roottpl . '/assemble/assemble_list.html';
 
         // 获取拼团数据
-        $groupBuys = GroupBuy::getList($idsite, $page, $pageSize);
-
+        $groupBuys = GroupBuy::getList($idsite, $page, 4);
         $this->assign('roottpl','/'.$roottpl);
         $this->assign('idsite',$idsite);
         $this->assign('groupBuys',$groupBuys);

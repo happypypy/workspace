@@ -129,7 +129,7 @@
                                                     <th WIDTH="60">是否关注</th>
                                                     <th WIDTH="100">联系电话</th>
                                                     <th WIDTH="105">地区</th>
-                                                    <th WIDTH="120">首次阅读时间</th>
+                                                    <th WIDTH="105">地址</th>
                                                     <th WIDTH="120">首次阅读时间</th>
                                                     <th WIDTH="120">最后阅读时间</th>
                                                     <th WIDTH="60">阅读次数</th>
@@ -151,7 +151,7 @@
                                                     <td>{$vo['intstate']}</td>
                                                     <td>{$vo['chrtel']}</td>
                                                     <td>{$vo['intcity']}</td>
-                                                    <td>{$vo['chraddress']}</td>
+                                                    <td class="address"  msg="{$vo['chraddress']}">{$vo['chraddress']}</td>
                                                     <td>{$vo['stime']}</td>
                                                     <td>{$vo['etime']}</td>
                                                     <td>{$vo['vcount']}</td>
@@ -163,6 +163,7 @@
                                                         <a style="display: none" href="javascript:alert('开发中...'); ">查看用户</a>
                                                     </td>
                                                 </tr>
+
                                                 {/volist}
                                             </table>
                                             <div class="oa_bottom clearfix">
@@ -188,4 +189,20 @@
 </div>
 
 </body>
+<script>
+
+    $('.address').mouseover(function(){
+        msg=$(this).attr('msg')
+        if(msg !=""){
+            layer.tips("<span style='color:#000000'>"+msg+"</span>", $(this),{tips:  [3, '#fff'],time:0});
+        }else{
+            return false
+        }
+    })
+
+    $('.address').mouseout(function(){
+       layer.closeAll('tips')
+    })
+
+</script>
 </html>

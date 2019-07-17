@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:29:"template/M1/order/signup.html";i:1562997484;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:29:"template/M1/order/signup.html";i:1563177176;}*/ ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -97,6 +97,9 @@
                 {
                     $keyword = $package['keyword1'] . ' ' . $package['keyword2'];
                     $price = '(' . $package['member_price'] . '元)';
+                if($package['package_sum'] == -1){
+                    $package['stock']='已售完';
+                }
                 ?>
                     <div class="pwclass pw" Stock="<?php echo $package['stock']; ?>" price="<?php echo $package['member_price']; ?>"  data="<?php echo $package['package_id']; ?>">
                         <!-- 关键字 -->

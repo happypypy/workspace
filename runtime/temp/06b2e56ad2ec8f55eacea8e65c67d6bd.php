@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:29:"template/M2/order/signup.html";i:1562305879;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:29:"template/M2/order/signup.html";i:1563178000;}*/ ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -95,6 +95,9 @@
                 {
                     $keyword = $package['keyword1'] . ' ' . $package['keyword2'];
                     $price = '(' . $package['member_price'] . '元)';
+                if($package['package_sum'] == -1){
+                $package['stock']='已售完';
+                }
                 ?>
                     <div class="pwclass pw" Stock="<?php echo $package['stock']; ?>" price="<?php echo $package['member_price']; ?>"  data="<?php echo $package['package_id']; ?>">
                         <!-- 关键字 -->
@@ -574,7 +577,7 @@
                                                                         window.location = "/" + data.sitecode + "/detail/" + data.dataID;
                                                                         return false;
                                                                     }});
-                                                            if(data.err_arr){
+                                                            if(data.err_arr.length != 0){
                                                                 layer.confirm(
                                                                     data.err_arr[0]["err"],
                                                                     {

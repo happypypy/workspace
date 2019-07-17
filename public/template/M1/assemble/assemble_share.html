@@ -37,16 +37,21 @@
             </div>
         </div>
         <div class="ass-share-info"  data-end="{$data['expiration']}">
-                <?php if($data['left'] <= 0): ?>
-               <div class="ass-timebox">
+            <?php if($data['state'] == 2 ): ?>
+            <div class="ass-timebox">恭喜您，已成团！</div>
+
+            <?php elseif($data['state'] == 4): ?>
+            <div class="ass-timebox">很遗憾，拼团已解散！</div>
+
+            <?php else : ?>
+
+            <div class="ass-timebox">距离结束拼团还有：
                 <span class="count-down">
-                 <span> 恭喜您，已成团！</span>
-                <?php else: ?>
-                <div class="ass-timebox">距离结束拼团还有：
-            <span class="count-down">
                 <span class="day">0</span> 天 <span class="hour">0</span> 时 <span class="minute">0</span> 分 <span class="sec">0</span> 秒
-                <?php endif; ?>
             </span><!-- <span>拼团已结束</span> --></div>
+
+            <?php endif; ?>
+
             <div class="ass-share-item">
                 <a href="">
                     <div class="pic"><img src="{$data['imgs'][0]['userimg']}" alt=""></div>
@@ -118,7 +123,7 @@
                         var timer = setInterval(times, 1000);   //定时器执行
 
                         function times() {
-                            var nowDate =  Math.round(new Date().getTime() / 1000).toString();
+                            var nowDate =  Math.rofgund(new Date().getTime() / 1000).toString();
                                 endDate = '{$data["expiration"]}';
                                 tms = endDate - nowDate,    //时间差
                                 days = Math.floor(tms / 60 / 60 / 24),

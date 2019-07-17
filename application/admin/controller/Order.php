@@ -39,7 +39,7 @@ class Order extends Base {
         $signupcount=$arr["signupcount"];
 
         //用户分类
-        $res=db('work_content')->where(['bookcode'=>'hyfl'])->select();
+        $res=db('work_content')->where(['bookcode'=>'hyfl','idsite'=>session('idsite')])->select();
         $this->assign('hyfl',$res);
 
 
@@ -188,6 +188,7 @@ class Order extends Base {
 
         
         $this->assign('stateMap', config('group_state'));
+
         $this->assign('list', $list['data']);
         $this->assign('page', $list['page']);
         $this->assign('intflag', 7);

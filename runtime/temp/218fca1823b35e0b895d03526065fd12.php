@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:29:"template/M6/order/signup.html";i:1562222567;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:29:"template/M6/order/signup.html";i:1563178000;}*/ ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -94,6 +94,9 @@
                 {
                     $keyword = $package['keyword1'] . ' ' . $package['keyword2'];
                     $price = '(' . $package['member_price'] . '元)';
+                if($package['package_sum'] == -1){
+                $package['stock']='已售完';
+                }
                 ?>
                     <div class="pwclass pw" Stock="<?php echo $package['stock']; ?>" price="<?php echo $package['member_price']; ?>"  data="<?php echo $package['package_id']; ?>">
                         <!-- 关键字 -->
@@ -409,68 +412,98 @@
                                         }
                                     }
                                 }
-                                function order_confirm(){
+                                function submitedata(){
 
-                                    var pay_name=$("#payname").val();
-                                    var Stock=Number($("#pwStock").val());
-                                    var paynum=Number($("#txtpaynum").val());
-                                    if(pay_name=="")
-                                    {
-                                        layer.alert('请选择套餐！');
-                                        return;
-                                    }
-                                    if(Stock<1)
-                                    {
-                                        layer.alert('该套餐已售完！');
-                                        return;
-                                    }
-                                    if(Stock-paynum<0)
-                                    {
-                                        layer.alert('数量不够，该套餐只剩'+Stock+'！');
-                                        return;
-                                    }
+                                    var data = new FormData(document.getElementById("frm1"));
+                                    layer.load(1, {
+                                        shade: [0.1,'#fff'] //0.1透明度的白色背景
+                                    });
+                                    $.ajax({
+                                            type: 'post',
+                                            url: "/<?php echo $sitecode; ?>/signup_post/<?php echo $id; ?>",
+                                            dataType: 'json',
+                                            data: data,
+                                            contentType: false, //不设置内容类型
+                                            processData: false, //不处理数据
+                                            success: function (data) {
+                                                //关闭继续提交弹窗
+                                                close_confirm()
+                                                layer.closeAll('loading');
 
+                                                //格式化data数据
+                                                data=JSON.parse(data)
+                                                //用户再次提交订单
+                                                //追加元素
+                                                //console.log(data)
+                                                //console.log(data.order_id)
+                                                var htmlappend="<input id='orderid' type=\"hidden\" name=\"order_id\" value=\""+data.order_id+"\">"
+                                                $("#txtpaynum").after(htmlappend)
+                                                if(data.res==1){
+                                                    if(data.ischarge==2 && data.flag==1 && data.price > 0) {
+                                                        jsondata=$.parseJSON(data.data)
+                                                        wx.config({
+                                                            //debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+                                                            appId: data.config["appId"], // 必填，公众号的唯一标识
+                                                            timestamp:data.config["timestamp"] , // 必填，生成签名的时间戳
+                                                            nonceStr: data.config["nonceStr"], // 必填，生成签名的随机串
+                                                            signature:data.config["signature"],// 必填，签名
+                                                            jsApiList: ['chooseWXPay']// 必填，需要使用的JS接口列表
 
+                                                        });
+                                                        wx.ready(function () {
+                                                            wx.chooseWXPay({
+                                                                timestamp: jsondata["timeStamp"], // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
+                                                                nonceStr: jsondata["nonceStr"], // 支付签名随机串，不长于 32 位
+                                                                package: jsondata["package"], // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=\*\*\*）
+                                                                signType: jsondata["signType"], // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
+                                                                paySign: jsondata["paySign"], // 支付签名
+                                                                success: function (res) {
+                                                                    if(data.is_cashed && data.activity_cashed_set && data.activity_cashed_set.cashed_plan_id > 0){
+                                                                        window.location="/"+data.sitecode+"/share/"+data.order_id+"/0"
+                                                                    }else{
+                                                                        window.location="/"+data.sitecode+"/detail/"+data.dataID
+                                                                    }
+                                                                },
 
-                                    $('#datainfo').html('');
-                                    var flag=true;
-                                    $(".data").each(function () {
-                                        var strname= $(this).children(".txt").children(".feildname").val();
-                                        var strvalue= $(this).children(".txt").children(".feild").val();
-                                        var strmust= $(this).children(".txt").children(".feildmust").val();
+                                                            })
 
-                                        var arr= strname.split("∫");
-                                        var datatype=1;
-                                        var dataname=$(this).children(".tit").html();
-                                        if(arr.length>1)
-                                        {
-                                            datatype=arr[1];
+                                                        })
+                                                        flag=IsPC()
+                                                        if(!flag){
+                                                            layer.confirm('您好，请用手机登录微信，进入公众号会员中心完成支付，谢谢！',
+                                                                {
+                                                                    btn: ["关闭"] //按钮)
+                                                                })
+                                                        }
+
+                                                    }else{
+                                                        if(data.flag==2) {
+                                                            layer.confirm(
+                                                                data.errmsg,
+                                                                {
+                                                                    btn:['关闭'],
+                                                                    btn1: function(index, layero){
+                                                                        window.location = "/" + data.sitecode + "/detail/" + data.dataID;
+                                                                        return false;
+                                                                    }});
+                                                            if(data.err_arr.length != 0.){
+                                                                layer.confirm(
+                                                                    data.err_arr[0]["err"],
+                                                                    {
+                                                                        btn:['关闭'],
+                                                                        btn1: function(index, layero){
+                                                                            window.location="/"+data.sitecode+"/againorder/"+data.order_id;
+                                                                            return false;
+                                                                        }});
+                                                            }
+                                                        } else{
+                                                            layer.confirm('报名成功！',{btn:['关闭'],btn1: function(index, layero){ window.location="/"+data.sitecode+"/detail/"+data.dataID}});
+                                                        }
+                                                    }
+                                                }
+                                            }
                                         }
-
-                                        var re=checkdata(strvalue,datatype,strmust)
-                                        if(re.state!=1)
-                                        {
-                                            flag=false;
-                                            layer.confirm(dataname+re.msg,{btn:['关闭']});
-                                            return false;
-                                        }
-                                        if(datatype==7)
-                                        {
-                                            strvalue=$(this).children(".txt").children(".img").prop('outerHTML');
-                                        }
-
-                                        var strm="<div class=\"item flex\">\n" +
-                                            "                <div class=\"tit\">"+dataname+"</div>\n" +
-                                            "                <div class=\"info\">"+strvalue+"</div>\n" +
-                                            "            </div>";
-
-                                        $('#datainfo').html($('#datainfo').html()+strm);
-                                    })
-
-                                    if(flag)
-                                    {
-                                        $(".gray-cover,.order-confirm").show();
-                                    }
+                                    );
                                 }
                                 function close_confirm(){
                                     $(".gray-cover,.order-confirm").hide();

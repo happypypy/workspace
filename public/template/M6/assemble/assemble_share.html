@@ -37,10 +37,21 @@
             </div>
         </div>
         <div class="ass-share-info">
+            <?php if($data['state'] == 2 ): ?>
+            <div class="ass-timebox">恭喜您，已成团！</div>
+
+            <?php elseif($data['state'] == 4): ?>
+            <div class="ass-timebox">很遗憾，拼团已解散！</div>
+
+
+            <?php else : ?>
+
             <div class="ass-timebox">距离结束拼团还有：
-            <span class="count-down">
+                <span class="count-down">
                 <span class="day">0</span> 天 <span class="hour">0</span> 时 <span class="minute">0</span> 分 <span class="sec">0</span> 秒
             </span><!-- <span>拼团已结束</span> --></div>
+
+            <?php endif; ?>
             <div class="ass-share-item">
                 <a href="">
                     <div class="pic"><img src="{$data['imgs'][0]['userimg']}" alt=""></div>

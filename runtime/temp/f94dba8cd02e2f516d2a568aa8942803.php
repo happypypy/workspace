@@ -1,5 +1,5 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:4:{s:32:"template/M7/activity/detail.html";i:1561971916;s:67:"C:\phpStudy\PHPTutorial\WWW\work\public\template\M7\lib\header.html";i:1561691705;s:68:"C:\phpStudy\PHPTutorial\WWW\work\public\template\M7\lib\footer0.html";i:1561691705;s:68:"C:\phpStudy\PHPTutorial\WWW\work\public\template\M7\lib\footer1.html";i:1561691705;}*/ ?>
-<?php $info = $cms->GetActivityInfo($id,'nodeid,intflag,chkdown,chrtitle,chrcontent,chrimg,publishname,dtpublishtime,chksignup,dtstart,dtend,dtsignstime,dtsignetime,intsignnum,minage,maxage,chrrange,ischarge,txtfwtk,chraddressdetail,chrmap,chrmaplng,chrmaplat');
+<?php if (!defined('THINK_PATH')) exit(); /*a:4:{s:32:"template/M7/activity/detail.html";i:1562579042;s:52:"D:\workspace\work\public\template\M7\lib\header.html";i:1561691705;s:53:"D:\workspace\work\public\template\M7\lib\footer0.html";i:1561691705;s:53:"D:\workspace\work\public\template\M7\lib\footer1.html";i:1561691705;}*/ ?>
+<?php $info = $cms->GetActivityInfo($id,'nodeid,intflag,chkdown,chrtitle,chrcontent,chrimg,publishname,dtpublishtime,chksignup,dtstart,dtend,dtsignstime,dtsignetime,intsignnum,minage,maxage,chrrange,ischarge,txtfwtk,chraddressdetail,chrmap,chrmaplng,chrmaplat,usertype');
 if(empty($info))
 {
 header("location:/error.php?msg=".urlencode("没找到相关活动，有疑问请和管理联系！")."&url=".urlencode("/".$sitecode));
@@ -8,6 +8,9 @@ exit();
 elseif(($info["intflag"]!=2 || $info["chkdown"]==1)  && empty($_GET["type"]))
 {
 header("location:/error.php?msg=".urlencode("活动不存在，有疑问请和管理联系！")."&url=".urlencode("/".$sitecode));
+exit();
+}elseif(isset($usertypeflag)){
+header("location:/error.php?msg=".urlencode('你好，该内容只有【'.$usertype.'】用户才可以查看/购买。如有疑问，请联系客服，谢谢！')."&url=".urlencode("/".$sitecode));
 exit();
 }
 ?>
@@ -239,7 +242,10 @@ exit();
 				<input type="button" value="取消" id="close-comment" />
 				<input type="button" onClick="javascript:add_comment1();" value="提交" />
 			</div>
-		</form>
+        </form>
+
+        <!-- 分销 -->
+        <!-- <div class="share-bill-box">分享海报</div> -->
 				<div style="padding: 10px">
 			<div style="font-size: 0.12rem; text-align: center;color: #808080">
 				<div><?php echo $cms->GetConfigVal('webset','webname',$idsite);; ?></div>

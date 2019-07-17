@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:29:"template/M3/order/signup.html";i:1562222196;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:29:"template/M3/order/signup.html";i:1563178000;}*/ ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -93,6 +93,9 @@
                 {
                     $keyword = $package['keyword1'] . ' ' . $package['keyword2'];
                     $price = '(' . $package['member_price'] . '元)';
+                if($package['package_sum'] == -1){
+                $package['stock']='已售完';
+                }
                 ?>
                     <div class="pwclass pw" Stock="<?php echo $package['stock']; ?>" price="<?php echo $package['member_price']; ?>"  data="<?php echo $package['package_id']; ?>">
                         <!-- 关键字 -->
@@ -411,14 +414,15 @@
                                 function order_confirm(){
 
                                     var pay_name=$("#payname").val();
-                                    var Stock=Number($("#pwStock").val());
+                                    // var Stock=Number($("#pwStock").val());
+                                    Number($("#pwStock").val())?Stock=Number($("#pwStock").val()):Stock=$("#pwStock").val()
                                     var paynum=Number($("#txtpaynum").val());
                                     if(pay_name=="")
                                     {
                                         layer.alert('请选择套餐！');
                                         return;
                                     }
-                                    if(Stock<1)
+                                    if(Stock=='已售完')
                                     {
                                         layer.alert('该套餐已售完！');
                                         return;
@@ -496,28 +500,12 @@
                                     }
                                     return flag;
                                 }
-                                function submitedata() {
-                                    //如果是在pc端提示并结束
-                                    // var ua = window.navigator.userAgent.toLowerCase();
-                                    // if (ua.match(/MicroMessenger/i) != 'micromessenger') {
-                                    //     close_confirm()
-                                    //     layer.confirm('请在微信移动客户端中打开',
-                                    //         {
-                                    //             btn: ["关闭"] //按钮)
-                                    //         })
-                                    //     return false;
-                                    // }
-                                    flag=IsPC()
-                                    if(!flag){
-                                        close_confirm()
-                                        layer.confirm('请在微信移动客户端中打开',
-                                            {
-                                                btn: ["关闭"] //按钮)
-                                            })
-                                        return false
-                                    }
-                                    var data = new FormData(document.getElementById("frm1"));
+                                function submitedata(){
 
+                                    var data = new FormData(document.getElementById("frm1"));
+                                    layer.load(1, {
+                                        shade: [0.1,'#fff'] //0.1透明度的白色背景
+                                    });
                                     $.ajax({
                                             type: 'post',
                                             url: "/<?php echo $sitecode; ?>/signup_post/<?php echo $id; ?>",
@@ -528,7 +516,14 @@
                                             success: function (data) {
                                                 //关闭继续提交弹窗
                                                 close_confirm()
+                                                layer.closeAll('loading');
+
+                                                //格式化data数据
                                                 data=JSON.parse(data)
+                                                //用户再次提交订单
+                                                //追加元素
+                                                //console.log(data)
+                                                //console.log(data.order_id)
                                                 var htmlappend="<input id='orderid' type=\"hidden\" name=\"order_id\" value=\""+data.order_id+"\">"
                                                 $("#txtpaynum").after(htmlappend)
                                                 if(data.res==1){
@@ -556,11 +551,18 @@
                                                                     }else{
                                                                         window.location="/"+data.sitecode+"/detail/"+data.dataID
                                                                     }
-                                                                }
+                                                                },
+
                                                             })
 
                                                         })
-
+                                                        flag=IsPC()
+                                                        if(!flag){
+                                                            layer.confirm('您好，请用手机登录微信，进入公众号会员中心完成支付，谢谢！',
+                                                                {
+                                                                    btn: ["关闭"] //按钮)
+                                                                })
+                                                        }
 
                                                     }else{
                                                         if(data.flag==2) {
@@ -572,7 +574,7 @@
                                                                         window.location = "/" + data.sitecode + "/detail/" + data.dataID;
                                                                         return false;
                                                                     }});
-                                                            if(data.err_arr){
+                                                            if(data.err_arr.length != 0){
                                                                 layer.confirm(
                                                                     data.err_arr[0]["err"],
                                                                     {
@@ -591,6 +593,7 @@
                                         }
                                     );
                                 }
+
 
                                 function loadprice() {
 

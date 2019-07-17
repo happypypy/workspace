@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:40:"template/M1/assemble/assemble_share.html";i:1562915707;s:52:"D:\workspace\work\public\template\M1\lib\header.html";i:1561691693;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:40:"template/M1/assemble/assemble_share.html";i:1563268077;s:52:"D:\workspace\work\public\template\M1\lib\header.html";i:1561691693;}*/ ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -59,16 +59,21 @@
             </div>
         </div>
         <div class="ass-share-info"  data-end="<?php echo $data['expiration']; ?>">
-                <?php if($data['left'] <= 0): ?>
-               <div class="ass-timebox">
+            <?php if($data['state'] == 2 ): ?>
+            <div class="ass-timebox">恭喜您，已成团！</div>
+
+            <?php elseif($data['state'] == 4): ?>
+            <div class="ass-timebox">很遗憾，拼团已解散！</div>
+
+            <?php else : ?>
+
+            <div class="ass-timebox">距离结束拼团还有：
                 <span class="count-down">
-                 <span> 恭喜您，已成团！</span>
-                <?php else: ?>
-                <div class="ass-timebox">距离结束拼团还有：
-            <span class="count-down">
                 <span class="day">0</span> 天 <span class="hour">0</span> 时 <span class="minute">0</span> 分 <span class="sec">0</span> 秒
-                <?php endif; ?>
             </span><!-- <span>拼团已结束</span> --></div>
+
+            <?php endif; ?>
+
             <div class="ass-share-item">
                 <a href="">
                     <div class="pic"><img src="<?php echo $data['imgs'][0]['userimg']; ?>" alt=""></div>

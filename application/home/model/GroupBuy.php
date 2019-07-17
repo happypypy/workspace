@@ -54,18 +54,28 @@ class GroupBuy extends Model {
     public static function getList($siteId, $page = 1, $pageSize = 3)
     {
         $time = time();
-        $groupBuys = db('group_buy')->where(
-                [
-                    'site_id' => $siteId,
-                    'state' => 1,
-                    'show_on_homepage' => 1,
-                    'start_at' => ['elt', $time],
-                    'end_at' => ['egt', $time],
-                ]
-            )
+        if($pageSize==3){
+            $where= [
+                'site_id' => $siteId,
+                'state' => 1,
+                'show_on_homepage' => 1,
+                'start_at' => ['elt', $time],
+                'end_at' => ['egt', $time],
+            ];
+        }else{
+            $where=[
+                'site_id' => $siteId,
+                'state' => 1,
+                'start_at' => ['elt', $time],
+                'end_at' => ['egt', $time],
+            ];
+        }
+        $groupBuys = db('group_buy')
+            ->where($where)
             ->page($page, $pageSize)
             // ->fetchSql(true)
             ->select();
+
         foreach ($groupBuys as $key => $groupBuy)
         {
             $package = db('package')->where([
@@ -85,6 +95,8 @@ class GroupBuy extends Model {
                     'chrtitle',
                 ])
                 ->find();
+
+
             $activity['member_price'] = $package['member_price'];
             $activity['activity_id'] = $package['activity_id'];
             $groupBuys[$key] = array_merge($groupBuy, $activity);

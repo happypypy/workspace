@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:82:"D:\workspace\work\public/../application/admin\view\order\group_buy_order_list.html";i:1562662119;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:82:"D:\workspace\work\public/../application/admin\view\order\group_buy_order_list.html";i:1562918462;}*/ ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -218,7 +218,7 @@
                                                     <td title="<?php echo $vo['pachage_name']; ?>"><?php echo $vo['pachage_name']; ?></td>
                                                     <td>所需商品数：<?php echo $vo['group_num']; ?><br/>已售商品数：<?php echo $vo['buy_num']; ?></td>
                                                     <td title="<?php echo $vo['username']; ?>"><?php echo $vo['username']; ?></td>
-                                                    <td><?php echo $vo['group_price']; ?>/<?php echo $vo['buy_num']; ?></td>
+                                                    <td><?php echo $vo['group_price']; ?>/<?php echo $vo['sold']; ?></td>
                                                     <td><?php if(!empty($vo['activated_at'])) echo date('Y-m-d H:i:s', $vo['activated_at']); ?></td>
                                                     <td><?php echo $stateMap[$vo['state']]; ?></td>
                                                     <td>

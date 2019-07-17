@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:32:"template/M2/mine/order_list.html";i:1561971911;s:68:"C:\phpStudy\PHPTutorial\WWW\work\public\template\M2\lib\footer0.html";i:1561691698;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:32:"template/M2/mine/order_list.html";i:1562315896;s:53:"D:\workspace\work\public\template\M2\lib\footer0.html";i:1561691698;}*/ ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -55,7 +55,7 @@
                 <div class="flex">
                     <div class="pic"><img src="<?php echo $vo['chrimg']; ?>" /></div>
                     <div class="txt">
-                        <div class="title"><?php echo $vo['chrtitle']; ?></div>
+                        <div class="title" onclick="javascript:goinfo(<?php echo $vo['dataid']; ?>)"><?php echo $vo['chrtitle']; ?></div>
                         <div class="price"><i class="iconfont price">&#xe620;</i><span>价格：<?php echo $vo['price']; ?>元</span></div>
                         <div class="state"><i class="iconfont laiyuan">&#xe60e;</i>状态：<span><?php echo $order_state[$vo['state']]; ?></span><span style="color: red;">&nbsp;&nbsp;<?php echo $vo['issign']==1?"(已签到)":""; ?></span></div>
                         <!-- <div class="style"><i class="iconfont laiyuan">&#xe60e;</i>方式：<span><?php echo $order_paytype1[$vo['paytype1']]; ?></span></div> -->
@@ -168,6 +168,10 @@
     {
         $("#orderid").val(id);
         $(".comment-form,.cover").show();
+    }
+    function goinfo(id)
+    {
+        window.location="/<?php echo $sitecode; ?>/detail/"+id;
     }
 
     function sava_refund()

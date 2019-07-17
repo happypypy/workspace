@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:69:"D:\workspace\work\public/../application/admin\view\activity\modi.html";i:1562727007;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:69:"D:\workspace\work\public/../application/admin\view\activity\modi.html";i:1563344465;}*/ ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -483,7 +483,7 @@
                                 <td class="oa_cell-right">
                                     <select name="isrefund" id="isrefund" class="form-control" style="width: auto; height: 30px" >
                                         <option value="1" <?php if (1 == $datainfo['isrefund']) {echo "selected";}?> >是</option>
-                                        <option value="0" <?php if (2 == $datainfo['isrefund']) {echo "selected";}?> >否</option>
+                                        <option value="0" <?php if (0 == $datainfo['isrefund']) {echo "selected";}?> >否</option>
                                     </select>
                                 </td>
                             </tr>
@@ -567,7 +567,7 @@
                                     <input style="border:none;text-align:center;display:none;" readonly="true" type="text" class="oa_input-100 share1" value="Ⅲ分销佣金" />
 
                                     <input style="border:none;text-align:center;" readonly="true" type="text" class="oa_input-100" value="有效期(必填)" />
-                                    <input style="border:none;text-align:center;" readonly="true" type="text" class="oa_input-100" value="库存(0为不限)" />
+                                    <input style="border:none;text-align:center;width: 167px;" readonly="true" type="text" class="oa_input-100"  value="库存(0为不限，-1为已售罄)" />
                                 </td>
                             </tr>
                             <?php
@@ -605,7 +605,7 @@
                                             <input name="packages[<?php echo $selcontent_index; ?>][level3_commission_rate]" type="text" class="level3_commission_rate oa_input-100 number hide share1" value="<?php echo $value['level3_commission_rate']; ?>" />
     -->
                                             <input name="packages[<?php echo $selcontent_index; ?>][expire_at]" type="text" class="expire_at oa_input-100" id="seldate<?php echo $selcontent_index; ?>" value="<?php echo $value['expire_at']; ?>"  />
-                                            <input name="packages[<?php echo $selcontent_index; ?>][package_sum]"  type="text" class="package_sum oa_input-100" value="<?php echo $value['package_sum']; ?>"  />
+                                            <input name="packages[<?php echo $selcontent_index; ?>][package_sum]" style="width: 165px;" type="text" class="package_sum oa_input-100" value="<?php echo $value['package_sum']; ?>"  />
                                             <?php if (isset($value['package_id'])): ?>
                                                 <input type="hidden" class="package_id" name="packages[<?php echo $selcontent_index; ?>][package_id]" value="<?php echo $value['package_id']; ?>">
                                             <?php endif;?>
@@ -670,6 +670,7 @@
                                                             <td>
                                                                 <span class="td-left">团购价格</span>
                                                                 <input class="td-right form-control" type="text" name="packages[<?php echo $selcontent_index; ?>][group_buy][<?php echo $groupBuyIndex; ?>][group_buy_price]" value="<?php echo $groupBuy['group_buy_price']; ?>" style="width: 100px;">
+                                                                <span>元</span>
                                                             </td>
                                                         </tr>
                                                         <tr class="hidden">
@@ -1394,6 +1395,7 @@
         <td>
             <span class="td-left">团购价格</span>
             <input class="td-right form-control" type="text" name="packages[package_index][group_buy][group_buy_index][group_buy_price]" value="" style="width: 100px;">
+            <span>元</span>
         </td>
     </tr>
     <tr class="hidden">

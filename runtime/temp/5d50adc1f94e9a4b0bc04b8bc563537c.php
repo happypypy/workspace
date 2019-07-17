@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:4:{s:32:"template/M1/activity/detail.html";i:1562579042;s:52:"D:\workspace\work\public\template\M1\lib\header.html";i:1561691693;s:53:"D:\workspace\work\public\template\M1\lib\footer0.html";i:1561691693;s:53:"D:\workspace\work\public\template\M1\lib\footer1.html";i:1561691693;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:4:{s:32:"template/M1/activity/detail.html";i:1563335094;s:52:"D:\workspace\work\public\template\M1\lib\header.html";i:1561691693;s:53:"D:\workspace\work\public\template\M1\lib\footer0.html";i:1561691693;s:53:"D:\workspace\work\public\template\M1\lib\footer1.html";i:1561691693;}*/ ?>
 
 <?php $info = $cms->GetActivityInfo($id, 'nodeid,intflag,chkdown,chrtitle,chrcontent,chrimg,publishname,dtpublishtime,chksignup,dtstart,dtend,dtsignstime,dtsignetime,intsignnum,minage,maxage,chrrange,ischarge,txtfwtk,chraddressdetail,chrmap,chrmaplng,chrmaplat,usertype');
 if(empty($info))
@@ -141,7 +141,12 @@ elseif(($info["intflag"]!=2 || $info["chkdown"]==1)  && empty($_GET["type"]))
                         <?php foreach($groupBuys as $groupBuy): ?>
                             <div class="act-schedule-item">
                                 <div class="item-in">
-                                    <div class="item-in-t"><?php echo $groupBuy['package_name']; ?></div>
+                                    <div class="item-in-t" style="display: inline-block"><?php echo $groupBuy['package_name']; ?></div>
+                                    <div style="display: inline-block;margin-left: 20px">
+                                        <span style="font-size: 12px"  id="countdown<?php echo $groupBuy['group_buy_id']; ?>"  exp="<?php echo $groupBuy['expiration']; ?>">
+                                             仅剩：<span ><?php echo $groupBuy['expiration']; ?></span>
+                                        </span>
+                                    </div>
                                     <div class="item-in-d">
                                         <div class="item-in-dl">
                                             <div class="item-in-dlt"><?php echo $groupBuy['group_num']; ?>人成团</div>
@@ -525,6 +530,39 @@ elseif(($info["intflag"]!=2 || $info["chkdown"]==1)  && empty($_GET["type"]))
     }
 
     funcReadImgInfo();
+
+    $("#countdown<?php echo $groupBuy['group_buy_id']; ?>").ready(function(){
+      endtime=$(this).attr('exp')
+        leftTimer($(this),endtime)
+        // $(this).children(0).text(endtime)
+    })
+
+
+
+    //倒计时
+    // function leftTimer(obj,date) {
+    //
+    // firstch=obj.children(0)
+    //     clearTimeout(firstch);
+    //     if (date <= 0) date = 0;
+    //     var days = parseInt(date / 1000 / 60 / 60 / 24, 10); //计算剩余的天数
+    //     var hours = parseInt(date / 1000 / 60 / 60 % 24, 10); //计算剩余的小时
+    //     var minutes = parseInt(date / 1000 / 60 % 60, 10);//计算剩余的分钟
+    //     var seconds = parseInt(date / 1000 % 60, 10);//计算剩余的秒数
+    //     days = paddingZero(days);
+    //     hours = paddingZero(hours);
+    //     minutes = paddingZero(minutes);
+    //     seconds = paddingZero(seconds);
+    //     obj.children(0).text(`${days}天 ${hours}:${minutes}:${seconds}`);
+    //
+    //     if (date >= 0) {
+    //         firstch = setTimeout("leftTimer((obj,'${date}'))", 1000);
+    //     }
+    // }
+    // function paddingZero(i) { //将0-9的数字前面加上0，例1变为01
+    //     return i < 10 ? "0" + i : i;
+    // }
+
 </script>
 
 
