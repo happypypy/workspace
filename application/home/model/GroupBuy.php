@@ -51,7 +51,7 @@ class GroupBuy extends Model {
 
 
 
-    public static function getList($siteId, $page = 1, $pageSize = 3)
+    public static function getList($siteId, $page = 1, $pageSize = 3,$keyword='')
     {
         $time = time();
         if($pageSize==3){
@@ -70,11 +70,26 @@ class GroupBuy extends Model {
                 'end_at' => ['egt', $time],
             ];
         }
-        $groupBuys = db('group_buy')
-            ->where($where)
-            ->page($page, $pageSize)
-            // ->fetchSql(true)
-            ->select();
+
+        if($keyword !=''){
+
+            $where1['chrtitle']=['like',"%{$keyword}%"];
+            $activityid=db('activity')->where($where1)->column('idactivity');
+
+            $where2['activity_id']=['in',$activityid];
+            $packageid=db('package')->where($where2)->column('package_id');
+
+            $where3['package_id']=['in',$packageid];
+            $groupBuys=db('group_buy')->where($where3)->page($page, $pageSize)->select();
+
+        }else{
+            $groupBuys = db('group_buy')
+                ->where($where)
+                ->page($page, $pageSize)
+                // ->fetchSql(true)
+                ->select();
+        }
+
 
         foreach ($groupBuys as $key => $groupBuy)
         {
@@ -101,6 +116,7 @@ class GroupBuy extends Model {
             $activity['activity_id'] = $package['activity_id'];
             $groupBuys[$key] = array_merge($groupBuy, $activity);
         }
+//        dump($groupBuys);die;
         return $groupBuys;
     }
 }

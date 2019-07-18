@@ -1,6 +1,6 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:4:{s:32:"template/M1/activity/detail.html";i:1563335094;s:52:"D:\workspace\work\public\template\M1\lib\header.html";i:1561691693;s:53:"D:\workspace\work\public\template\M1\lib\footer0.html";i:1561691693;s:53:"D:\workspace\work\public\template\M1\lib\footer1.html";i:1561691693;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:4:{s:32:"template/M1/activity/detail.html";i:1563415435;s:52:"D:\workspace\work\public\template\M1\lib\header.html";i:1561691693;s:53:"D:\workspace\work\public\template\M1\lib\footer0.html";i:1561691693;s:53:"D:\workspace\work\public\template\M1\lib\footer1.html";i:1561691693;}*/ ?>
 
-<?php $info = $cms->GetActivityInfo($id, 'nodeid,intflag,chkdown,chrtitle,chrcontent,chrimg,publishname,dtpublishtime,chksignup,dtstart,dtend,dtsignstime,dtsignetime,intsignnum,minage,maxage,chrrange,ischarge,txtfwtk,chraddressdetail,chrmap,chrmaplng,chrmaplat,usertype');
+<?php $info = $cms->GetActivityInfo($id, 'nodeid,intflag,chkdown,chrtitle,chrcontent,chrimg,publishname,dtpublishtime,chksignup,dtstart,dtend,dtsignstime,dtsignetime,intsignnum,minage,maxage,chrrange,ischarge,txtfwtk,chraddressdetail,chrmap,chrmaplng,chrmaplat,usertype,is_distribution');
 if(empty($info))
 {
 	header("location:/error.php?msg=".urlencode("没找到相关活动，有疑问请和管理联系！")."&url=".urlencode("/".$sitecode));
@@ -141,12 +141,15 @@ elseif(($info["intflag"]!=2 || $info["chkdown"]==1)  && empty($_GET["type"]))
                         <?php foreach($groupBuys as $groupBuy): ?>
                             <div class="act-schedule-item">
                                 <div class="item-in">
-                                    <div class="item-in-t" style="display: inline-block"><?php echo $groupBuy['package_name']; ?></div>
-                                    <div style="display: inline-block;margin-left: 20px">
-                                        <span style="font-size: 12px"  id="countdown<?php echo $groupBuy['group_buy_id']; ?>"  exp="<?php echo $groupBuy['expiration']; ?>">
-                                             仅剩：<span ><?php echo $groupBuy['expiration']; ?></span>
+
+                                    <div style="color: red; text-align: center">
+                                        <span style="font-size: 12px">
+                                             <span class="count-down" endtime="<?php echo $groupBuy['expiration']; ?>">
+     <span class="day">0</span> 天 <span class="hour">0</span> 时 <span class="minute">0</span> 分 <span class="sec">0</span> 秒
+ </span>
                                         </span>
                                     </div>
+                                    <div class="item-in-t"><?php echo $groupBuy['package_name']; ?></div>
                                     <div class="item-in-d">
                                         <div class="item-in-dl">
                                             <div class="item-in-dlt"><?php echo $groupBuy['group_num']; ?>人成团</div>
@@ -163,6 +166,14 @@ elseif(($info["intflag"]!=2 || $info["chkdown"]==1)  && empty($_GET["type"]))
                         <?php endforeach; foreach($groupBuyOrders as $groupBuyOrder): ?>                        
                             <div class="act-schedule-item join">
                                 <div class="item-in">
+                                    <div style="color: red; text-align: center">
+                                        <span style="font-size: 12px">
+                                             <span class="count-down" endtime="<?php echo $groupBuyOrder['expiration']; ?>">
+     <span class="day">0</span> 天 <span class="hour">0</span> 时 <span class="minute">0</span> 分 <span class="sec">0</span> 秒
+ </span>
+                                        </span>
+                                    </div>
+
                                     <div class="item-in-t">我是<span><?php echo $groupBuyOrder['username']; ?></span>，我购买了<span><?php echo $groupBuyOrder['package_name']; ?></span></div>
                                     <div class="item-in-d">
                                         <div class="item-in-dl">
@@ -252,7 +263,9 @@ elseif(($info["intflag"]!=2 || $info["chkdown"]==1)  && empty($_GET["type"]))
         </form>
 
         <!-- 分销 -->
-        <!-- <div class="share-bill-box">分享海报</div> -->
+        <?php if($info['is_distribution'] && $user_info['spokesman_grade'] != 0): ?>
+         <div class="share-bill-box"><a href="/<?php echo $sitecode; ?>/getactivityimg/<?php echo $id; ?>" style="color: white">分享海报</a></div>
+        <?php endif; ?>
 
 				<div style="padding: 10px">
 			<div style="font-size: 0.12rem; text-align: center;color: #808080">
@@ -322,6 +335,64 @@ elseif(($info["intflag"]!=2 || $info["chkdown"]==1)  && empty($_GET["type"]))
 <script type="text/javascript" src="/static/js/layer/layer.js"></script>
 <script type='text/javascript' src='/static/js/visitrecorde.js?t=<?php echo time() ?>'></script>
 <script language="JavaScript">
+
+    (function ($) {
+        $.fn.extend({
+            countDown: function (options) {
+                var defaults = {
+                        day: '.day',
+                        hour: '.hour',
+                        minute: '.minute',
+                        sec: '.sec'
+                    },
+                    opts = $.extend({}, defaults, options); //对象扩展到opts
+                this.each(function () {     //遍历
+                    var $this = $(this);
+                    times();    //先执行一次，防止刷新时数字都显示为0
+                    var timer = setInterval(times, 1000);   //定时器执行
+
+                    function times() {
+                        var nowDate = Math.round(new Date().getTime() / 1000).toString();
+                        // tms = endDate - nowDate,    //时间差
+                        var tms=$this.attr('endtime')
+                        //console.log(tms)
+                        days = Math.floor(tms / 60 / 60 / 24),
+                            hours = Math.floor(tms / 60 / 60 % 24),
+                            minutes = Math.floor(tms / 60 % 60),
+                            secs = Math.floor(tms % 60);
+
+                        if (tms > 0) {  //如果时间差大于0，显示倒计时
+                            $this.find(opts.day).text(addZero(days));
+                            $this.find(opts.hour).text(addZero(hours));
+                            $this.find(opts.minute).text(addZero(minutes));
+                            $this.find(opts.sec).text(addZero(secs));
+                        } else {    //否则清除定时器，倒计时结束
+                            clearInterval(timer);
+                            $this.html("<span style='color: red;'>很遗憾，已结束</span>")
+                        }
+
+                        $this.attr('endtime',tms-1)
+                    }
+                });
+
+
+                function addZero(t) {  //一位数加0
+                    if (t < 10) {
+                        return t = '0' + t;
+                    } else {
+                        return t;
+                    }
+                }
+                return this; //返回this方便链式调用
+            }
+        });
+        $('.count-down').countDown(); //默认调用方法
+        $('.a2').countDown();
+    })(jQuery)
+
+
+
+
     visitdata(<?php echo $idsite; ?>,<?php echo $id; ?>,'<?php echo $info['chrtitle']; ?>',2);
 
     function add_comment1()
@@ -369,13 +440,15 @@ elseif(($info["intflag"]!=2 || $info["chkdown"]==1)  && empty($_GET["type"]))
         <?php } else if($bmflag==2) { ?>
             layer.confirm('没有关注，请先关注后才能报名',{btn:['关闭']});
         <?php } else  { ?>
-			window.location="/<?php echo $sitecode; ?>/signup/<?php echo $id; ?>";
+			window.location="/<?php echo $sitecode; ?>/signup/<?php echo $id; ?>?share_id=<?php echo $share_id; ?>&a=<?php echo $a; ?>";
 		<?php } ?>
     }
 
     function  forwardedlog(title,desc,link,imgurl,inttype) {
 		var dataid='<?php echo $id; ?>';
-        var data= {'dataid':dataid,"chrtitle":title, "chrdesc":desc, "chrlink": link,"imgurl":imgurl,'datatype':2,'inttype':inttype};
+		var share_id='<?php echo $share_id; ?>';//分享id
+		var a = '<?php echo $a; ?>';//用户二维码id
+        var data= {'dataid':dataid,"chrtitle":title, "chrdesc":desc, "chrlink": link,"imgurl":imgurl,'datatype':2,'inttype':inttype,"share_id":share_id,'a':a};
         $.ajax({
             url:"/<?php echo $sitecode; ?>/forwardedlog",
             data:data,
@@ -399,7 +472,6 @@ elseif(($info["intflag"]!=2 || $info["chkdown"]==1)  && empty($_GET["type"]))
         nonceStr: '<?php echo $signPackage["nonceStr"]; ?>',
         signature: '<?php echo $signPackage["signature"]; ?>',
         jsApiList: ['onMenuShareTimeline','onMenuShareAppMessage','openLocation']
-        jsApiList : [ 'checkJsApi', 'startRecord', 'stopRecord','translateVoice','scanQRCode', 'openCard' ]
     });
     wx.ready(function () {
     		/*
@@ -430,9 +502,10 @@ elseif(($info["intflag"]!=2 || $info["chkdown"]==1)  && empty($_GET["type"]))
             //获取“分享到朋友圈”按钮点击状态及自定义分享内容接口（即将废弃）
             wx.onMenuShareTimeline({
                 title: '<?php echo $info["chrtitle"]; ?>', // 分享标题
-                link: '<?php echo $signPackage["url"]; ?>', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-                imgUrl: 'https://www.tongxiang123.cn<?php echo $info["chrimg"]; ?>', // 分享图标
+                link: '<?php echo $link_url; ?>', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                imgUrl: '<?php echo $link_img; ?>', // 分享图标
                 success: function () {
+                    //分享成功后的回调
                     forwardedlog('<?php echo $info["chrtitle"]; ?>', '', '<?php echo $signPackage["url"]; ?>', '<?php echo $info["chrimg"]; ?>', 2);
                 }
             });
@@ -441,11 +514,12 @@ elseif(($info["intflag"]!=2 || $info["chkdown"]==1)  && empty($_GET["type"]))
             wx.onMenuShareAppMessage({
                 title: '<?php echo $info["chrtitle"]; ?>', // 分享标题
                 desc: '活动时间：<?php echo date("Y-m-d",strtotime($info["dtstart"])); ?>-<?php echo date("Y-m-d",strtotime($info["dtend"])); ?>', // 分享描述
-                link: '<?php echo $signPackage["url"]; ?>', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-                imgUrl: 'https://www.tongxiang123.cn<?php echo $info["chrimg"]; ?>', // 分享图标
+                link: '<?php echo $link_url; ?>', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                imgUrl: '<?php echo $link_img; ?>', // 分享图标
                 type: 'link', // 分享类型,music、video或link，不填默认为link
                 dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
                 success: function () {
+                    //分享成功后的回调
                     forwardedlog('<?php echo $info["chrtitle"]; ?>', '活动时间：<?php echo date("Y-m-d",strtotime($info["dtstart"])); ?>-<?php echo date("Y-m-d",strtotime($info["dtend"])); ?>','<?php echo $signPackage["url"]; ?>','<?php echo $info["chrimg"]; ?>',1);
                 }
             });
@@ -530,38 +604,6 @@ elseif(($info["intflag"]!=2 || $info["chkdown"]==1)  && empty($_GET["type"]))
     }
 
     funcReadImgInfo();
-
-    $("#countdown<?php echo $groupBuy['group_buy_id']; ?>").ready(function(){
-      endtime=$(this).attr('exp')
-        leftTimer($(this),endtime)
-        // $(this).children(0).text(endtime)
-    })
-
-
-
-    //倒计时
-    // function leftTimer(obj,date) {
-    //
-    // firstch=obj.children(0)
-    //     clearTimeout(firstch);
-    //     if (date <= 0) date = 0;
-    //     var days = parseInt(date / 1000 / 60 / 60 / 24, 10); //计算剩余的天数
-    //     var hours = parseInt(date / 1000 / 60 / 60 % 24, 10); //计算剩余的小时
-    //     var minutes = parseInt(date / 1000 / 60 % 60, 10);//计算剩余的分钟
-    //     var seconds = parseInt(date / 1000 % 60, 10);//计算剩余的秒数
-    //     days = paddingZero(days);
-    //     hours = paddingZero(hours);
-    //     minutes = paddingZero(minutes);
-    //     seconds = paddingZero(seconds);
-    //     obj.children(0).text(`${days}天 ${hours}:${minutes}:${seconds}`);
-    //
-    //     if (date >= 0) {
-    //         firstch = setTimeout("leftTimer((obj,'${date}'))", 1000);
-    //     }
-    // }
-    // function paddingZero(i) { //将0-9的数字前面加上0，例1变为01
-    //     return i < 10 ? "0" + i : i;
-    // }
 
 </script>
 

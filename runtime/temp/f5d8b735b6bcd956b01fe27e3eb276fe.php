@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:68:"D:\workspace\work\public/../application/admin\view\order\refund.html";i:1562315962;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:68:"D:\workspace\work\public/../application/admin\view\order\refund.html";i:1563434181;}*/ ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -197,7 +197,7 @@
                 退款信息        </div>
             <div class="oa_edition" style="margin-bottom: 10px">
                 <table width="100%" border="0" cellspacing="1" cellpadding="0" class="oa_edition" style="border-bottom: #e0e0e0 solid 1px">
-                    <?php if(empty($datainfo['group_buy_order_id'])): ?>
+
                         <tr>
                             <td width="150" class="oa_cell-left">退款方式：</td>
                             <td class="oa_cell-right">
@@ -214,10 +214,10 @@
                                 <input id="refundprice" name="refundprice" value="" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" onpaste="this.value=this.value.replace(/[^\d.]/g,'')"  />
                             </td>
                         </tr>
-                    <?php else: ?>
-                        <input type="hidden" id="isrefundpart" name="isrefundpart" value="0">
-                        <input type="hidden" id="refundprice" name="refundprice" value="<?php echo $datainfo['price']; ?>">
-                    <?php endif; ?>
+
+                        <!--<input type="hidden" id="isrefundpart" name="isrefundpart" value="0">-->
+                        <!--<input type="hidden" id="refundprice" name="refundprice" value="<?php echo $datainfo['price']; ?>">-->
+
                     <tr>
                         <td width="150" class="oa_cell-left">备注信息：</td>
                         <td class="oa_cell-right">
@@ -227,9 +227,9 @@
                     <tr>
                         <td colspan="2" style="padding:10px;">
                             <input type="hidden" value="3" name="intflag" id="intflag" />
-                            <?php if(empty($datainfo['group_buy_order_id'])): ?>
+
                                 <input type="button" id="btnRefund" onclick="javascript:refund(0)" value="确认退款">
-                            <?php endif; ?>
+
                             <input type="button" id="btnRefund1" onclick="javascript:refund(1)" value="退款退活动">
                             <input type="button" id="btnRefund2" onclick="javascript:refuse_refund()" value="退款不通过">
                         </td>
@@ -310,8 +310,14 @@
                 }
                 else
                 {
-                    $("#btnRefund").removeAttr("disabled");
-                    layer.msg(msg.msg);
+                    if(msg.msg==58){
+                        $("#btnRefund").removeAttr("disabled");
+                        layer.msg("本地客户端证书有问题")
+                    }else{
+                        $("#btnRefund").removeAttr("disabled");
+                        layer.msg(msg.msg)
+                    }
+
                 }
             }
         });

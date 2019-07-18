@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:67:"D:\workspace\work\public/../application/admin\view\order\index.html";i:1562314390;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:67:"D:\workspace\work\public/../application/admin\view\order\index.html";i:1563412646;}*/ ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -291,7 +291,16 @@
                                                     <td><?php echo $vo['ordersn']; ?></td>
                                                     <td title="<?php echo $vo['chrtitle']; ?>"><?php echo $vo['chrtitle']; ?></td>
                                                     <td title="<?php echo $vo['payname']; ?>"><?php echo $vo['payname']; ?></td>
-                                                    <td><?php echo $vo['source']; ?></td>
+                                                    <td>
+                                                        <!--如果是代言人订单的话,那么就显示代言人的姓名-->
+                                                        <?php if($cms->CheckPurview('spokesman_order','view') && $vo['source'] == '代言人订单'){  ?>
+                                                    <a href="/admin/distribution/spokesman_order/u_chrname/<?php echo $vo['spokesman_user_id3']; ?>"><?php echo $vo['spokesman_name3']; ?></a>
+                                                    <?php }elseif(!$cms->CheckPurview('spokesman_order','view') && $vo['source'] == '代言人订单'){ ?>
+                                                    <?php echo $vo['spokesman_name3']; }else{
+                                                    echo $vo['source'];
+                                                    }
+                                                        ?>
+                                                    </td>
                                                     <td style="color:<?php echo $order_state_color[$vo['state']]; ?>;" title="<?php echo $order_state[$vo['state']]; ?>"><?php echo $order_state[$vo['state']]; ?></td>
                                                     <td><?php echo $vo['paynum']; ?>/<?php echo $vo['price']; ?></td>
                                                     <td title="<?php echo $vo['chrusername']; ?>"><?php echo $vo['chrusername']; ?></td>

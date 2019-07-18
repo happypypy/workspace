@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:29:"template/M1/order/signup.html";i:1563177176;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:29:"template/M1/order/signup.html";i:1563351181;}*/ ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -519,12 +519,14 @@ $(".pwclass").eq(0).click();
                        function submitedata(){
 
                         var data = new FormData(document.getElementById("frm1"));
+                        //分享id
+                        var share_id = '<?php echo $share_id; ?>';
                            layer.load(1, {
                                shade: [0.1,'#fff'] //0.1透明度的白色背景
                            });
                         $.ajax({
                                 type: 'post',
-                                url: "/<?php echo $sitecode; ?>/signup_post/<?php echo $id; ?>",
+                                url: "/<?php echo $sitecode; ?>/signup_post/<?php echo $id; ?>?share_id=<?php echo $share_id; ?>",
                                 dataType: 'json',
                                 data: data,
                                 contentType: false, //不设置内容类型

@@ -36,10 +36,12 @@
 	<a href="/{$sitecode}/signuplist" class="mine-link mine-link-signup">
 		<p>我的报名</p>
 	</a>
+	{if condition="$is_distribution && $userinfo['spokesman_grade'] != 0"}
 	<!-- 分销 -->
-	<!-- <a href="/{$sitecode}/signuplist" class="mine-link mine-link-endorse"> -->
-		<!-- <p>活动代言</p> -->
-	<!-- </a> -->
+	<a href="/{$sitecode}/spokesmanactivitylist" class="mine-link mine-link-endorse">
+		<p>活动代言</p>
+	</a>
+	{/if}
 	
 	{if condition="$isbuy"}
 	<a href="/{$sitecode}/integralrecord" class="mine-link mine-link-score">

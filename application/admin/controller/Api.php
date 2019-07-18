@@ -274,6 +274,33 @@ class Api extends Controller {
                             db('member_integral_record')->where(['siteid'=>$idsite, 'member_id' => $member_id, 'order_id' => $order_id])->setField(['integral' => $new_integral]);
                         }
 
+                        // 如果是全额退款,并且还未结算,那么将用户所得的分销金额减去
+                        if($request['isrefundpart'] == 0 && $datainfo['source'] == '代言人订单' && $datainfo['spokesman_user_id3'] && $datainfo['is_balance'] == 2){
+                            //将用户得到的对应的佣金减掉
+                            if($datainfo['spokesman_user_id3']){
+                                $commission = $datainfo['sell_commission'];
+                                $user_id = $datainfo['spokesman_user_id3'];
+                                //修改代言人的数据
+                                db('member')->where(['idmember'=>$user_id,'idsite'=>$idsite])->setDec(['total_commission'=>$commission,'freeze_commission'=>$commission]);
+                            }
+                            //如果上级代言人有
+                            if($datainfo['spokesman_user_id2']){
+                                $commission = $datainfo['bounty_commission2'];
+                                $user_id = $datainfo['spokesman_user_id2'];
+                                //修改代言人的数据
+                                db('member')->where(['idmember'=>$user_id,'idsite'=>$idsite])->setDec(['total_commission'=>$commission,'freeze_commission'=>$commission]);
+                            }
+                            //如果上上级代言人有
+                            if($datainfo['spokesman_user_id1']){
+                                $commission = $datainfo['bounty_commission1'];
+                                $user_id = $datainfo['spokesman_user_id1'];
+                                //修改代言人的数据
+                                db('member')->where(['idmember'=>$user_id,'idsite'=>$idsite])->setDec(['total_commission'=>$commission,'freeze_commission'=>$commission]);
+                            }
+                            //发送分销退款后的模板消息
+                            template_bm_commission($datainfo["id"],'');
+                        }
+
                     }catch(Exception $e)
                     {
                         Log::error('退款退活动后释放库存失败， [ SQL ] ' . Db::getLastSql());
@@ -288,7 +315,12 @@ class Api extends Controller {
 
                     //发送微信消息
                     template_tg($datainfo["id"]);
+                }else{
+                    //发送微信提醒消息--退款失败
+
                 }
+            }else{
+                echo "签名失败";
             }
         }
 
@@ -934,6 +966,71 @@ class Api extends Controller {
             $query->rollBack();
             Log::error('定时停止拼团失败，info:' . print_r($e, true));
 
+        }
+    }
+
+    /**
+     * 定时任务结算佣金
+     * @throws \think\exception\PDOException
+     */
+    public function balanceSellCommission(){
+        //查询出订单表中代言人订单,已支付,并且未全额退款,还有未结算,过了活动结束时间的代言人订单数据
+        $order_list = db('order')->field('wechatid',true)->where([
+            //有支付过
+            'paytype1'=>1,
+            'is_balance'=>2,//未结算
+            'source'=>'代言人订单',
+            'dtend'=>['<',date('Y-m-d',time())]//活动已结算
+        ])->where('isrefundpart is NULL or isrefundpart = 1')->select();
+        if($order_list){
+            $query = new Query();
+            try {
+                $query->startTrans();
+                foreach ($order_list as $value){
+                    //将该订单获得的佣金的代言人里的冻结金额释放
+                    if($value['sell_commission']){
+                        //先查询出代言人的用户信息
+                        $spokesman_info = db('member')->where(['idmember'=>$value['spokesman_user_id3']])->field('ismanage',true)->find();
+                        //将冻结的金额减下来
+                        $update_spokesman_info['freeze_commission'] = $spokesman_info['freeze_commission'] - $value['sell_commission'];
+                        //将可结算的金额加上去
+                        $update_spokesman_info['can_commission'] = $spokesman_info['can_commission'] + $value['sell_commission'];
+                        db('member')->where(['idmember'=>$value['spokesman_user_id3']])->update($update_spokesman_info);
+                        //修改代言人已获佣金额
+                        db('spokesman_activity')->where(['activity_id'=>$value['dataid'],'spokesman_user_id'=>$value['spokesman_user_id3']])->setInc('get_commission',$value['sell_commission']);
+                    }
+                    //如果上级代言人有奖励金
+                    if($value['bounty_commission2']){
+                        //先查询出上级代言人的用户信息
+                        $spokesman_info2 = db('member')->where(['idmember'=>$value['spokesman_user_id2']])->field('ismanage',true)->find();
+                        //将冻结的金额减下来
+                        $update_spokesman_info2['freeze_commission'] = $spokesman_info2['freeze_commission'] - $value['bounty_commission2'];
+                        //将可结算的金额加上去
+                        $update_spokesman_info2['can_commission'] = $spokesman_info2['can_commission'] + $value['bounty_commission2'];
+                        db('member')->where(['idmember'=>$value['spokesman_user_id2']])->update($update_spokesman_info2);
+                        //修改代言人已获佣金额
+                        db('spokesman_activity')->where(['activity_id'=>$value['dataid'],'spokesman_user_id'=>$value['spokesman_user_id2']])->setInc('get_commission',$value['bounty_commission2']);
+                    }
+                    //如果上上级代言人有奖励金
+                    if($value['bounty_commission1']){
+                        //先查询出上级代言人的用户信息
+                        $spokesman_info1 = db('member')->where(['idmember'=>$value['spokesman_user_id1']])->field('ismanage',true)->find();
+                        //将冻结的金额减下来
+                        $update_spokesman_info1['freeze_commission'] = $spokesman_info1['freeze_commission'] - $value['bounty_commission1'];
+                        //将可结算的金额加上去
+                        $update_spokesman_info1['can_commission'] = $spokesman_info1['can_commission'] + $value['bounty_commission1'];
+                        db('member')->where(['idmember'=>$value['spokesman_user_id1']])->update($update_spokesman_info1);
+                        //修改代言人已获佣金额
+                        db('spokesman_activity')->where(['activity_id'=>$value['dataid'],'spokesman_user_id'=>$value['spokesman_user_id1']])->setInc('get_commission',$value['bounty_commission1']);
+                    }
+                    //将订单变为已结算
+                    db('order')->where(['id'=>$value['id']])->update(['balance_time'=>date('Y-m-d H:i:s',time()),'is_balance'=>1]);
+                }
+                $query->commit();
+            } catch (\Exception $e) {
+                $query->rollBack();
+                Log::error('定时任务执行错误，info:' . print_r($e, true));
+            }
         }
     }
 }

@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:39:"template/M3/assemble/assemble_list.html";i:1562578069;s:52:"D:\workspace\work\public\template\M1\lib\header.html";i:1561691693;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:39:"template/M3/assemble/assemble_list.html";i:1563421879;s:52:"D:\workspace\work\public\template\M1\lib\header.html";i:1561691693;}*/ ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -59,13 +59,16 @@
             </div>
         </div>
         <?php  }else{ ?>
-        <div class="pintuan-img">
+        <div class="pintuan-img pintuan-list-img">
         </div>
         <?php ;} ?>
 
-        <div class="pintuan-search">
-            <input class="pintuan-search-in" placeholder="请输入关键字搜索"></input>
-        </div>
+        <form id="frm">
+            <div class="pintuan-search">
+                <input class="pintuan-search-in" placeholder="请输入关键字搜索" name="keyword" value="<?php echo \think\Session::get('keyword'); ?>">
+                <span class="iconfont">&#xe605;</span>
+            </div>
+        </form>
 
         <div class="news-list activity news-list1">
             <ul id="datalist">
@@ -109,5 +112,52 @@
     })
 </script>
 </body>
+<script>
+    //点击之后，让搜索条件维持，不点击，不维持
+    $('.iconfont').click(function(){
+        $("#frm").submit()
+    })
 
+
+    var winH = $(window).height(); //页面可视区域高度
+
+    var page=2;
+    var scrollHandler = function () {
+        var pageH = $(document).height();
+        var scrollT = $(window).scrollTop(); //滚动条top
+
+        if(pageH-winH-scrollT<1)
+        {
+            LoadData(page)
+            page++;
+        }
+    }
+
+    //定义鼠标滚动事件
+    $(window).scroll(scrollHandler);
+
+    function LoadData(page){
+        $("#dataload").show();
+        $ (window).unbind ('scroll');
+        var keyword=$('.pintuan-search-in').val();
+
+        $.ajax({
+            url: "/<?php echo $sitecode; ?>/group_buy_list" ,
+            data:{"keyword":keyword,"page":page,'ajax':1},
+            success:function(data){
+                if(data==11)
+                {
+                    $("#dataload").hide();
+                    return false
+                }
+
+                $("#dataload").hide();
+                $("#datalist").html($("#datalist").html()+data);
+                $(window).scroll(scrollHandler);
+            }
+        })
+
+
+    }
+</script>
 </html>

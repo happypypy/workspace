@@ -1,0 +1,443 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>活动管理</title>
+    <link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
+    <link href="__PUBLIC__/static/css/page.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="__PUBLIC__/static/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/lhgdialog.js?skin=aero"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/CostomLinkOpenSw.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/tabscommon.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/layer/layer.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/clipboard.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/del-checked.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/js/daterangepicker/daterangepicker-bs3.css" />
+    <script type="text/javascript" src="/static/js/daterangepicker/moment.min.js"></script>
+    <script type="text/javascript" src="/static/js/daterangepicker/daterangepicker.js"></script>
+
+    <script src="/static/js/jquery.searchableSelect.js"></script>
+
+    <script type="text/javascript">
+
+        $(function(){
+            $(document).ready(function() {
+                $('.oa_text-list tr').addClass('odd');
+                $('.oa_text-list tr:even').addClass('even');
+            });
+            $('.oa_text-list tr').hover(
+                function(){
+                    $(this).addClass('oa_mouseover-bg');
+                },
+                function(){
+                    $(this).removeClass('oa_mouseover-bg');
+                }
+            );
+        });
+        function empty() {
+            window.location.reload();
+        }
+        //全选
+        function DoCheck(){
+            if($("#checked").is(':checked')){
+                $(".checked_one").attr("checked", true);
+            }else{
+                $(".checked_one").attr("checked", false);
+            }
+        }
+
+        function del_checked(value,remark) {
+
+            var msg='您确定要删除选定的记录吗？';
+            if(value>0) {
+                msg='您确定要删除“'+remark+'”吗？';
+            }
+
+            layer.confirm(msg, {
+                btn: ['确定','取消'] //按钮
+            }, function(){
+                del_checked1(value);
+            }, function(){
+
+            });
+        }
+
+        function copydata(id)
+        {
+            $.ajax({
+                url:"{:url('activity/copydata')}",
+                data:"id="+id,
+                type:"post",
+                dataType:"json",
+                success:function(msg) {
+                    if (msg == 1) {
+                        layer.alert('复制成功',{icon:1},function(){window.location.reload();});
+                    }
+                    else if(msg==-1){
+                        layer.alert('你没有删除权限', {icon: 5});
+                    }
+                    else
+                    {
+                        layer.alert('删除失败', {icon: 2});
+                        //location.reload();
+                    }
+                }
+            })
+        }
+        //删除选中
+        function del_checked1(value) {
+            var b = $(".checked_one");
+            var s = '';
+            if(value<1)
+            {
+                for (var i = 0; i < b.length; i++) {
+                    if (b[i].checked) {
+                        s += b[i].value + ',';
+                    }
+                }
+                s = s.substr(0, s.length - 1);
+            }
+            else
+            {
+                s=value;
+            }
+
+            $.ajax({
+                url:"{:url('cashed/del')}",
+                data:"id="+s,
+                type:"post",
+                dataType:"json",
+                success:function(msg) {
+                    if (msg == 1) {
+                        layer.alert('删除成功', {icon:1});
+                        $(".checked_one").attr("checked", false);
+                        location.reload();
+                    }
+                    else if(msg==-1){
+                        layer.alert('你没有删除权限', {icon: 5});
+                    }
+                    else
+                    {
+                        layer.alert('删除失败', {icon: 2});
+                        //location.reload();
+                    }
+                }
+            })
+        }
+
+        function show_rqcode(o,id)
+        {
+            var obj=$("#rqcode");
+            obj.html("<img width='150' id='img_rqcode' src='/admin/Qrcode/activityurl/sitecode/{$sitecode}/id/"+id+"' />");
+            var yy=event.clientY-50;
+            if(yy<10) {yy=10};
+
+            $("#rqcode").css("top",yy+"px").css("left",event.clientX-300+"px");
+            obj.show();
+        }
+        function  close_rqcode() {
+            var obj=$("#rqcode");
+            obj.html("");
+            obj.hide();
+        }
+
+        function shearch_check(param) {
+            var st=$("#dtstart").val();
+            var et=$("#dtend").val();
+            var audit_start=$("#audit_start").val();
+            var audit_end=$("#audit_end").val();
+            if(st!="" && et!="")
+            {
+                var start=new Date(st.replace("-", "/").replace("-", "/"));
+                var end=new Date(et.replace("-", "/").replace("-", "/"));
+                if(end<start)
+                {
+                    layer.alert("申请开始时间不能大于结束时间！")
+                     return;
+                }
+            }
+            if(audit_start!="" && audit_end!="")
+            {
+                var utstart=new Date(audit_start.replace("-", "/").replace("-", "/"));
+                var utend=new Date(audit_end.replace("-", "/").replace("-", "/"));
+                if(utend<utstart)
+                {
+                    layer.alert("审批开始时间不能大于结束时间！")
+                    return;
+                }
+            }
+            if(param == 2){
+                $('input[name="export"]').val(10);
+            }
+
+            $("#form1").submit();
+
+        }
+        //导出数据
+        function export_data() {
+            var dtstart=$("#dtstart").val();
+            var dtend=$("#dtend").val();
+            var audit_start=$("#audit_start").val();
+            var audit_end=$("#audit_end").val();
+            var audit_status=$("#audit_status").val();
+            var u_chrname=$('input[name="u_chrname"]').val();
+            var wechat_number=$('input[name="wechat_number"]').val();
+            var u_chrtel=$('input[name="u_chrtel"]').val();
+            var url = "/admin/distribution/balance_record_export?dtstart="+dtstart+"&dtend="+dtend+'&audit_start='+audit_start+'&audit_end='+audit_end+'&audit_status='+audit_status +'&u_chrname='+u_chrname+'&wechat_number='+wechat_number+'&u_chrtel='+u_chrtel+'&export=10';
+            window.open(url,"_blank");
+        }
+        function copycontent(id){
+            var clipboard = new ClipboardJS("."+id);
+            clipboard.on('success', function(e) {
+                alert('复制成功');
+            });
+            clipboard.on('error', function(e) {
+                alert('当前浏览器不支持次功能');
+            });
+        }
+    </script>
+</head>
+<body>
+<div class="oa_wrapper">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr class="oa_wrapper-display">
+            <td class="oa_wrapper-top-arr-left">&nbsp;</td>
+            <td class="oa_wrapper-top-arr-middle"></td>
+            <td class="oa_wrapper-top-arr-right">&nbsp;</td>
+        </tr>
+        <tr>
+            <td class="oa_wrapper-middle-arr-left oa_wrapper-display"></td>
+            <td class="oa_wrapper-middle-arr-middle">
+                <div class="oa_location clearfix"><span class="oa_ico-left"></span>location<span class="oa_ico-right"></span></div>
+                <div class="oa_main clearfix">
+                    <div class="oa_subnav clearfix">
+                        <div class="oa_subnav-tab clearfix">
+                            <ul>
+                                <?php if($cms->CheckPurview('distribution_img_set','set')){ ?>
+                                <li onclick="javascript:window.location='{:url('distribution/index','')}'"><em>海报设置 </em></li>
+                                <?php } if($cms->CheckPurview('spokesman_activity','view')){  ?>
+                                <li onclick="javascript:window.location='{:url('distribution/spokesman_activity','')}'"><em>产品列表 </em></li>
+                                <?php } if($cms->CheckPurview('balance_record','view')){  ?>
+                                <li class="oa_on" onclick="javascript:window.location='{:url('distribution/balance_record','')}'"><em>结算办理 </em></li>
+                                <?php } if($cms->CheckPurview('spokesman_list','view')){  ?>
+                                <li onclick="javascript:window.location='{:url('distribution/spokesman_list','')}'"><em>分销用户管理 </em></li>
+                                <?php } if($cms->CheckPurview('spokesman_activity_detail','view')){  ?>
+                                <li onclick="javascript:window.location='{:url('distribution/spokesman_activity_detail_list','')}'"><em> 活动代言明细  </em></li>
+                                <?php } if($cms->CheckPurview('spokesman_order','view')){  ?>
+                                <li onclick="javascript:window.location='{:url('distribution/spokesman_order','')}'"><em> 代言人订单明细  </em></li>
+                                <?php } ?>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="oa_content-area clearfix">
+                        <div class="oa_content-main">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td valign="top">
+                                        <div class="oa_title clearfix">
+                                            <span class="oa_ico-right"></span>
+                                            <span class="oa_ico-left"></span>
+                                            搜索
+                                        </div>
+                                        <div class="oa_search-area clearfix">
+                                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                <tr>
+                                                    <td>
+                                                        <div class="oa_search-type clearfix">
+                                                            <form action="" method="post" id="form1">
+                                                                <table width="100%" border="0" cellspacing="1" cellpadding="0">
+
+                                                                    <tr>
+                                                                        <td width="100" class="oa_cell-left">申请人：</td>
+                                                                        <td class="oa_cell-right">
+                                                                            <input style="width: 300px;"  type="text" name="u_chrname" value="{$search['u_chrname']}" >
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td width="100" class="oa_cell-left">微信号：</td>
+                                                                        <td class="oa_cell-right">
+                                                                            <input style="width: 300px;"  type="text" name="wechat_number" value="{$search['wechat_number']}" >
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td width="100" class="oa_cell-left">手机号码：</td>
+                                                                        <td class="oa_cell-right">
+                                                                            <input style="width: 300px;"  type="text" name="u_chrtel" value="{$search['u_chrtel']}" >
+                                                                        </td>
+                                                                    </tr>
+
+                                                                    <tr>
+                                                                        <td width="100"   class="oa_cell-left">申请时间：</td>
+                                                                        <td class="oa_cell-right">
+                                                                            <input type="text"  style="width: 80px;"  id="dtstart" name="dtstart" class="form-control"  value="{$search['dtstart']}"> -
+                                                                            <input type="text" style="width: 80px;" id="dtend" name="dtend" class="form-control"  value="{$search['dtend']}">
+                                                                            <script language='JavaScript'>seltime("dtstart","YYYY-MM-DD");seltime("dtend","YYYY-MM-DD");</script>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td width="100"   class="oa_cell-left">审批时间：</td>
+                                                                        <td class="oa_cell-right">
+                                                                            <input type="text"  style="width: 80px;"  id="audit_start" name="audit_start" class="form-control"  value="{$search['audit_start']}"> -
+                                                                            <input type="text" style="width: 80px;" id="audit_end" name="audit_end" class="form-control"  value="{$search['audit_end']}">
+                                                                            <script language='JavaScript'>seltime("audit_start","YYYY-MM-DD");seltime("audit_end","YYYY-MM-DD");</script>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr class="used_status">
+                                                                        <td width="100" class="oa_cell-left">状态：</td>
+                                                                        <td class="oa_cell-right">
+                                                                            <select  name="audit_status" id="audit_status">
+                                                                                <option value="" id="all_used_status">不限状态</option>
+                                                                                <option value="1" <?php if($search['audit_status']== 1){echo "selected";}  ?>>待审批</option>
+                                                                                <option value="5" <?php if($search['audit_status']== 5){echo "selected";} ?>>已审批</option>
+                                                                                <option value="10" <?php if($search['audit_status']== 10){echo "selected";} ?>>审批不通过</option>
+                                                                            </select>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td height="30"></td>
+                                                                        <td class="oa_cell-right">
+                                                                            <input type="hidden" name="export" value="">
+                                                                            <input  name="subSearch" type="button" value="搜索" onclick="javascript:shearch_check(1);" class="oa_search-btn" />
+                                                                            <?php if($cms->CheckPurview('balance_record','export')){  ?>
+                                                                            <a href="javascript:export_data()">
+                                                                                <input  name="subSearch" type="button" value="导出数据"  class="oa_search-btn" />
+                                                                            </a>
+                                                                            <?php } ?>
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </form>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    
+                                        <div class="oa_title clearfix">
+                                            <span class="oa_ico-left"></span>
+                                            结算列表
+                                        </div>
+                                        <div class="oa_text-list">
+                                            <table width="100%" border="0" cellspacing="0" cellpadding="0"  style="table-layout:fixed">
+                                                <tr class="oa_text-list-title">
+                                                    <!--<th width="20" style="text-align:center;"><input id="checked"  onclick="DoCheck();" name="" type="checkbox" value="" /></th>-->
+                                                    <th  WIDTH="80"><span class="oa_arr-text-list-title"></span>申请人</th>
+                                                    <th WIDTH="130"><span class="oa_arr-text-list-title"></span>微信号</th>
+                                                    <th WIDTH="80"><span class="oa_arr-text-list-title"></span>手机号码</th>
+                                                    <th WIDTH="120"><span class="oa_arr-text-list-title"></span>结算金额(元)</th>
+                                                    <th WIDTH="120"><span class="oa_arr-text-list-title"></span>申请时间</th>
+                                                    <th WIDTH="80"><span class="oa_arr-text-list-title"></span>状态</th>
+                                                    <th WIDTH="80"><span class="oa_arr-text-list-title"></span>审批人</th>
+                                                    <th WIDTH="120"><span class="oa_arr-text-list-title"></span>审批时间</th>
+                                                    <th><span class="oa_arr-text-list-title"></span>备注信息</th>
+                                                    <th width="80"><span class="oa_arr-text-list-title"></span>操作</th>
+                                                </tr>
+                                                {volist name="data" id="vo"}
+                                                <tr>
+                                                    <!--<td align="center"><input class="checked_one" type="checkbox" name="id[]" value="{$vo['id']}" /></td>-->
+                                                    <td title="{$vo['u_chrname']}">{$vo['u_chrname']}</td>
+                                                    <td title="{$vo['wechat_number']}">
+                                                        {$vo['wechat_number']}
+                                                    </td>
+                                                    <td>{$vo['u_chrtel']}</td>
+                                                    <td>{$vo['balance_amount']}</td>
+                                                    <td>{$vo['create_time']}</td>
+                                                    <td>
+                                                        <?php if($vo['audit_status'] == 1){
+                                                                echo '<span style="color: red">待审批</span>';
+                                                            }elseif($vo['audit_status'] == 5){  ?>
+                                                        <span style="color: green">已审批</span>
+                                                                <?php
+                                                            }elseif($vo['audit_status'] == 10){
+                                                                echo '审批不通过';
+                                                            }
+                                                        ?>
+                                                    </td>
+                                                    <td>{$vo['audit_account_chrname']}</td>
+                                                    <td>{$vo['audit_time']}</td>
+                                                    <td>{$vo['audit_remark']}</td>
+                                                    <td>
+                                                        <?php if($vo['audit_status'] != 1){ ?>
+                                                        <a href="javascript:CustomOpen('{:url('distribution/modi','id='.$vo['id'].'&action=view','')}','activity','结算申请详情',450,400)">查看详情</a>
+                                                        <?php }elseif($vo['audit_status'] == 1 && $cms->CheckPurview('balance_record','audit')){ ?>
+                                                        <a href="javascript:CustomOpen('{:url('distribution/modi','id='.$vo['id'].'&action=audit','')}','activity','结算申请详情',450,480)">审批</a>
+                                                        <?php } ?>
+                                                    </td>
+                                                </tr>
+                                                {/volist}
+                                            </table>
+                                            <div class="oa_bottom clearfix">
+                                                <div class="clearfix">
+                                                    <!--<div class="oa_op-btn clearfix">-->
+                                                        <!--<input name="" value="删除" onclick="del_checked(0,'');" type="button" class="oa_input-submit" />-->
+                                                    <!--</div>-->
+                                                    <div class="oa_page-controls">
+                                                        <ul>
+                                                            <li>{$page->show()}</li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <div class="oa_bottom-bottom"><em></em></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                            <div class="oa_content-main-bottom"></div>
+                        </div>
+                    </div>
+                </div>
+            </td>
+            <td class="oa_wrapper-middle-arr-right oa_wrapper-display"></td>
+        </tr>
+        <tr class="oa_wrapper-display">
+            <td class="oa_wrapper-bottom-arr-left">&nbsp;</td>
+            <td class="oa_wrapper-bottom-arr-middle"></td>
+            <td class="oa_wrapper-bottom-arr-right">&nbsp;</td>
+        </tr>
+    </table>
+</div>
+
+
+
+<div id="rqcode" style="display: none; height: 160px;width: 160px;background-color: #FFFFFF; border: solid 2px #000000; text-align: center;padding-top: 20px; ;position: absolute;margin-right: 150px" />
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#cashed_type').change(function(){
+            //让其状态列显示
+            if($(this).children('option:selected')){
+                $('#all_used_status').attr('selected',true);
+                $(".used_status").show();
+            }else{
+                $(".used_status").hide();
+            }
+            //让其出现现金券计划或者活动
+            if($(this).children('option:selected') && $('#cashed_type').val() == 1){
+                $('#all_share_plan_id').attr('selected',true);
+                $(".share_plan_id").show();
+                $(".receive_activity_id").hide();
+                $('#all_receive_activity_id').attr('selected',true);
+            }else if($('#cashed_type').val() == 2){
+                $('#all_receive_activity_id').attr('selected',true);
+                $(".receive_activity_id").show();
+                $(".share_plan_id").hide();
+                $('#all_share_plan_id').attr('selected',true);
+            }else{
+                $(".share_plan_id").hide();
+                $(".receive_activity_id").hide();
+            }
+        })
+
+    });
+</script>
+
+<script>
+    $(function () {
+        $('#share_plan_id').searchableSelect();
+    });
+    $(function () {
+        $('#receive_activity_id').searchableSelect();
+    });
+</script>
+</body>
+</html>

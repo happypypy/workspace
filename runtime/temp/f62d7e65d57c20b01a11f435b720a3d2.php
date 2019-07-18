@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:39:"template/M2/assemble/assemble_list.html";i:1561971911;s:67:"C:\phpStudy\PHPTutorial\WWW\work\public\template\M1\lib\header.html";i:1561691693;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:39:"template/M2/assemble/assemble_list.html";i:1563421879;s:52:"D:\workspace\work\public\template\M1\lib\header.html";i:1561691693;}*/ ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -13,6 +13,8 @@
     <script type="text/javascript" src="<?php echo $roottpl; ?>/js/jquery.min.js"></script>
     <script type="text/javascript" src="<?php echo $roottpl; ?>/js/common.js"></script>
     <link rel="stylesheet" type="text/css" href="<?php echo $roottpl; ?>/style/css/common.css">
+    <script type="text/javascript" src="<?php echo $roottpl; ?>/js/swiper.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="<?php echo $roottpl; ?>/style/css/swiper.min.css">
 </head>
 
 <body>
@@ -40,11 +42,33 @@
 	<div class="menu-cover"></div>
     <div class="menu-cover"></div>
     <div class="site-section clearfix bg">
-        <div class="pintuan-img">
+        <!--<div class="pintuan-img">-->
+        <!--</div>-->
+        <?php
+			$result1=$cms->getAD($idsite,51328,3);
+        if($result1){ ?>
+        <div class="banner">
+            <div class="swiper-container swiper1">
+                <div class="swiper-wrapper">
+                    <?php
+        foreach($result1 as $k=>$v){ ?>
+                    <div class="swiper-slide"><a href="<?php echo $v['ad_link']==''?'javascript:;':$v['ad_link']; ?>"><img src="<?php echo $v['ad_code']; ?>"></a></div>
+                    <?php }?>
+                </div>
+                <div class="swiper-pagination"></div>
+            </div>
         </div>
-        <div class="pintuan-search">
-            <input class="pintuan-search-in" placeholder="请输入关键字搜索"></input>
+        <?php  }else{ ?>
+        <div class="pintuan-img pintuan-list-img">
         </div>
+        <?php ;} ?>
+
+        <form id="frm">
+            <div class="pintuan-search">
+                <input class="pintuan-search-in" placeholder="请输入关键字搜索" name="keyword" value="<?php echo \think\Session::get('keyword'); ?>">
+                <span class="iconfont">&#xe605;</span>
+            </div>
+        </form>
 
         <div class="news-list activity news-list1">
             <ul id="datalist">
@@ -54,7 +78,7 @@
                             <div class="pic"><img src="<?php echo $roottpl; ?>/images/bar_03.jpg"></div>
                             <div class="txt">
                                 <div class="title title1"><?php echo $groupBuy['chrtitle']; ?></div>
-                                <div class="site site1"><i class="iconfont location">&#xe601;</i>适合年龄：<span><?php echo $groupBuy['minage']; ?> ~ <?php echo $groupBuy['maxage']; ?></span></div>
+                                <div class="site site1"><i class="iconfont location">&#xe601;</i>适合年龄：<span><?php echo $groupBuy['minage'] == $groupBuy['maxage'] && $groupBuy['maxage'] == 0 ? '不限年龄' : $groupBuy['minage'] . ' ~ ' . $groupBuy['maxage']; ?></span></div>
                                 <div class="time time1"><i class="iconfont clock">&#xe602;</i><span>活动时间：<?php echo date('Y-m-d', $groupBuy['start_at']); ?> ~ <?php echo date('Y-m-d', $groupBuy['end_at']); ?></span></div>
                             </div>
                         </a>
@@ -72,6 +96,68 @@
             </ul>
         </div>
     </div>
+<script>
+    $(function(){
+        //padding-top:
+        var swiper1 = new Swiper('.banner .swiper-container.swiper1', {
+            pagination: {
+                el: '.banner .swiper-pagination',
+            },
+            autoplay: {
+                delay:2000,
+            },
+            loop: true,
+            watchOverflow: true,
+        });
+    })
+</script>
 </body>
+<script>
+    //点击之后，让搜索条件维持，不点击，不维持
+    $('.iconfont').click(function(){
+        $("#frm").submit()
+    })
 
+
+    var winH = $(window).height(); //页面可视区域高度
+
+    var page=2;
+    var scrollHandler = function () {
+        var pageH = $(document).height();
+        var scrollT = $(window).scrollTop(); //滚动条top
+
+        if(pageH-winH-scrollT<1)
+        {
+            LoadData(page)
+            page++;
+        }
+    }
+
+    //定义鼠标滚动事件
+    $(window).scroll(scrollHandler);
+
+    function LoadData(page){
+        $("#dataload").show();
+        $ (window).unbind ('scroll');
+        var keyword=$('.pintuan-search-in').val();
+
+        $.ajax({
+            url: "/<?php echo $sitecode; ?>/group_buy_list" ,
+            data:{"keyword":keyword,"page":page,'ajax':1},
+            success:function(data){
+                if(data==11)
+                {
+                    $("#dataload").hide();
+                    return false
+                }
+
+                $("#dataload").hide();
+                $("#datalist").html($("#datalist").html()+data);
+                $(window).scroll(scrollHandler);
+            }
+        })
+
+
+    }
+</script>
 </html>

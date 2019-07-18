@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:27:"template/M1/mine/index.html";i:1562579042;s:52:"D:\workspace\work\public\template\M4\lib\header.html";i:1561691701;s:53:"D:\workspace\work\public\template\M4\lib\footer0.html";i:1561691701;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:27:"template/M1/mine/index.html";i:1563351181;s:52:"D:\workspace\work\public\template\M4\lib\header.html";i:1561691701;s:53:"D:\workspace\work\public\template\M4\lib\footer0.html";i:1561691701;}*/ ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -58,11 +58,12 @@
 	<a href="/<?php echo $sitecode; ?>/signuplist" class="mine-link mine-link-signup">
 		<p>我的报名</p>
 	</a>
+	<?php if($is_distribution && $userinfo['spokesman_grade'] != 0): ?>
 	<!-- 分销 -->
-	<!-- <a href="/<?php echo $sitecode; ?>/signuplist" class="mine-link mine-link-endorse"> -->
-		<!-- <p>活动代言</p> -->
-	<!-- </a> -->
-	<?php if($isbuy): ?>
+	 <a href="/<?php echo $sitecode; ?>/spokesmanactivitylist" class="mine-link mine-link-endorse">
+		 <p>活动代言</p>
+	 </a>
+	<?php endif; if($isbuy): ?>
 	<a href="/<?php echo $sitecode; ?>/integralrecord" class="mine-link mine-link-score">
 		<p>我的积分</p>
 	</a>

@@ -1,0 +1,22 @@
+
+            <?php if($list){foreach($list as $k=>$vo) {?>
+            <li class="flex">
+                <div class="small-img"><img src="{$vo['userimg']}" alt=""></div>
+                <div class="img-txt">
+                    <div class="info">{$vo['u_chrname']}</div>
+                    <div class="info flex first-icon">
+                        <div class="tit">微信昵称</div>：
+                        <div class="txt">{$vo['nickname']}</div>
+                    </div>
+                    <div class="info flex second-icon">
+                        <div class="tit">真实姓名</div>：
+                        <div class="txt">{$vo['u_chrname']}</div>
+                    </div>
+                    <div class="info flex third-icon">
+                        <div class="tit">绑定时间</div>：
+                        <div class="txt">{$vo['spokesman_time']}</div>
+                    </div>
+                </div>
+            </li>
+            <?php }}else{echo 11;exit;} ?>
+        

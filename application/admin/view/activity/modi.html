@@ -547,24 +547,33 @@
                                     单个身份证累计购买上限，0表示不限（下单表单中必须有身份证类型框）
                                 </td>
                             </tr>
-                            <tr  style="display: none;">
-                                <td width="150" class="oa_cell-left">参与分销：</td>
+                                {if condition="$is_distribution"}
+                            <tr>
+                                <td width="150" class="oa_cell-left">开启分销：</td>
                                 <td class="oa_cell-right">
-                                    <input type="checkbox" name="chkisshare" value="1" <?php if ($datainfo['chkisshare'] == 1) {echo "checked";}?>>勾选后，该活动可参与分销功能，套餐中的分销佣金字段需要填写</input>
+                                    <input type="checkbox" name="is_distribution" id="is_distribution" value="1" onclick="javascript:show_is_distribution()" <?php if($datainfo['is_distribution']==1) { echo "checked"; } ?>><span style="color: red">勾选后，该活动可参与分销功能，套餐中的销售佣金和奖励金字段需要填写</span>
                                 </td>
                             </tr>
+                                <tr <?php if($datainfo['is_distribution']!=1) { echo "style=\"display: none;\""; } ?> id="distribution_img_tr">
+                                    <td width="150" class="oa_cell-left"><span style="color: red">*</span>分销海报图片：</td>
+                                    <td class="oa_cell-right">
+                                        <input name="distribution_img" id="distribution_img" type="text" value="{$datainfo['distribution_img']}" chname="分销海报图片（720x1280）"   class="form-control "  style="width:800px;" />
+                                        <input onclick="uploadimgcut('distribution_img','admin',720,1280);" type="button" value="上传图片"/>
+                                        <input onclick="openimg('distribution_img')" type="button" value="查看图片"/>
+                                    </td>
+                                </tr>
+                                {/if}
                             <tr class="paytypecontent2">
                                 <td width="150" class="oa_cell-left"> </td>
                                 <td>
                                     <input style="border:none;text-align:center;" readonly="true" type="text" class="oa_input-100" value="关键字1(必填)" />
                                     <input style="border:none;text-align:center;" readonly="true" type="text" class="oa_input-100" value="关键字2" />
-                                    <input style="border:none;text-align:center;" readonly="true" type="text" class="oa_input-100" value="市场价" />
+                                    <input style="border:none;text-align:center;width: 60px;" readonly="true" type="text" class="oa_input-100"  value="市场价" />
                                     <input style="border:none;text-align:center;" readonly="true" type="text" class="oa_input-100" value="会员价(单位/元)" />
                                     <input style="border:none;text-align:center;" readonly="true" type="text" class="oa_input-100" value="成本价(单位/元)" />
 
-                                    <input style="border:none;text-align:center;display:none;" readonly="true" type="text" class="oa_input-100 share" value="Ⅰ分销佣金" />
-                                    <input style="border:none;text-align:center;display:none;" readonly="true" type="text" class="oa_input-100 share" value="Ⅱ分销佣金" />
-                                    <input style="border:none;text-align:center;display:none;" readonly="true" type="text" class="oa_input-100 share1" value="Ⅲ分销佣金" />
+                                    <input style="border:none;text-align:center;width: 65px;<?php if($datainfo['is_distribution']!=1 || !$is_distribution) { echo 'display: none;'; } ?>" readonly="true" type="text" id="sell_commission" class="oa_input-100" value="销售佣金" />
+                                    <input style="border:none;text-align:center;width: 65px;<?php if($datainfo['is_distribution']!=1 || !$is_distribution) { echo 'display: none;'; } ?>" readonly="true" type="text" id="bounty_commission" class="oa_input-100" value="奖励金" />
 
                                     <input style="border:none;text-align:center;" readonly="true" type="text" class="oa_input-100" value="有效期(必填)" />
                                     <input style="border:none;text-align:center;width: 167px;" readonly="true" type="text" class="oa_input-100"  value="库存(0为不限，-1为已售罄)" />
@@ -582,9 +591,11 @@
                                         'level1_commission_rate' => 0,
                                         'level2_commission_rate' => 0,
                                         'level3_commission_rate' => 0,
-                                        'expire_at'              => '',
-                                        'package_sum'            => 0,
-                                    ],
+                                        'expire_at' => '',
+                                        'package_sum' => 0,
+                                        'sell_commission' => '',
+                                        'bounty_commission' => '',
+                                    ]
                                 ];
                             }
                             // 遍历套餐
@@ -596,15 +607,14 @@
                                         <!-- <div> -->
                                             <input name="packages[{$selcontent_index}][keyword1]" type="text" class="keyword1 oa_input-100" value="{$value['keyword1']}" />
                                             <input name="packages[{$selcontent_index}][keyword2]" type="text" class="keyword2 oa_input-100"  value="{$value['keyword2']}" />
-                                            <input name="packages[{$selcontent_index}][original_price]" type="text" class="original_price oa_input-100 number" value="{$value['original_price']}" />
+                                            <input name="packages[{$selcontent_index}][original_price]" type="text" class="original_price oa_input-100 number" value="{$value['original_price']}" style="width: 60px;"/>
                                             <input name="packages[{$selcontent_index}][member_price]" type="text" class="member_price oa_input-100 number" value="{$value['member_price']}" />
                                             <input name="packages[{$selcontent_index}][cost_price]" type="text" class="cost_price oa_input-100 number" value="{$value['cost_price']}" />
 
-    <!--                                             <input name="packages[{$selcontent_index}][level1_commission_rate]" type="text" class="level1_commission_rate oa_input-100 number hide share" value="{$value['level1_commission_rate']}" />
-                                            <input name="packages[{$selcontent_index}][level2_commission_rate]" type="text" class="level2_commission_rate oa_input-100 number hide share" value="{$value['level2_commission_rate']}" />
-                                            <input name="packages[{$selcontent_index}][level3_commission_rate]" type="text" class="level3_commission_rate oa_input-100 number hide share1" value="{$value['level3_commission_rate']}" />
-    -->
-                                            <input name="packages[{$selcontent_index}][expire_at]" type="text" class="expire_at oa_input-100" id="seldate{$selcontent_index}" value="{$value['expire_at']}"  />
+                                          <input name="packages[{$selcontent_index}][sell_commission]" type="text" class="sell_commission oa_input-100 number" value="{$value['sell_commission']}" style="width: 65px;<?php if($datainfo['is_distribution']!=1 || !$is_distribution) { echo 'display: none;'; } ?>" />
+                                            <input name="packages[{$selcontent_index}][bounty_commission]" type="text" class="bounty_commission oa_input-100 number" value="{$value['bounty_commission']}" style="width: 65px;<?php if($datainfo['is_distribution']!=1 || !$is_distribution) { echo 'display: none;'; } ?>" />
+
+                                        <input name="packages[{$selcontent_index}][expire_at]" type="text" class="expire_at oa_input-100" id="seldate{$selcontent_index}" value="{$value['expire_at']}"  />
                                             <input name="packages[{$selcontent_index}][package_sum]" style="width: 165px;" type="text" class="package_sum oa_input-100" value="{$value['package_sum']}"  />
                                             <?php if (isset($value['package_id'])): ?>
                                                 <input type="hidden" class="package_id" name="packages[{$selcontent_index}][package_id]" value="{$value['package_id']}">
@@ -930,6 +940,15 @@
                             throw 'error';
                         }
                     }
+
+                    //如果选中开启分销
+                    if($('#is_distribution').is(':checked')){
+                        //海报图片
+                        if($('input[name="distribution_img"]').val() == ''){
+                            alert("请上传分销海报图片");
+                            throw 'error';
+                        }
+                    }
                 }
 
                 // if($("#intsignnum").val() == '')
@@ -946,38 +965,53 @@
                 }
 
 
-
+                var index = 0;
                 $('.paytypecontent2').each(function () {
+                    // console.log($(this).find('.member_price'));
                     var id = $(this).attr('id');
-                    var index = id === undefined ? 1 : id.replace('selcontent_', '') + 1;
+                    // var index = id === undefined ? 1 : id.replace('selcontent_', '') + 1;
+                    var one_price = /^(([1-9]\d{0,6})|0)([.]{1}[0-9]{1})?$/; //支持一位小数金额
+                    if(index != 0) {
+                        //关键字非空
+                        if ($(this).find('.keyword1').eq(0).val() == '') {
+                            alert("套餐" + index + "的关键字1不能为空！");
+                            throw 'error';
+                        }
 
-                    //关键字非空
-                    if($(this).find('.keyword1').eq(0).val() == '')
-                    {
-                        alert("套餐" + index + "的关键字1不能为空！");
-                        throw 'error';
-                    }
+                        //会员价非空
+                        if ($(this).find('.member_price').eq(0).val() == '') {
+                            alert("套餐" + index + "的会员价不能为空！");
+                            throw 'error';
+                        }
+                        // console.log($(this));
+                        // debugger;
+                        //如果选中开启分销
+                        if ($('#is_distribution').is(':checked')) {
+                            //销售佣金
+                            if (!one_price.test($(this).find('.sell_commission').eq(0).val())) {
+                                alert("请设置套餐" + index + "的销售佣金字段的值为整数或一位小数！");
+                                throw 'error';
+                            }
+                            //奖励金
+                            if (!one_price.test($(this).find('.bounty_commission').eq(0).val())) {
+                                alert("请设置套餐" + index + "的奖励金字段的值为整数或一位小数！");
+                                throw 'error';
+                            }
+                        }
 
-                    //会员价非空
-                    if($(this).find('.member_price').eq(0).val() == '')
-                    {
-                        alert("套餐" + index + "的会员价不能为空！");
-                        throw 'error';
-                    }
+                        //有效期非空
+                        if ($(this).find('.expire_at').eq(0).val() == '') {
+                            alert("套餐" + index + "的有效期不能为空！");
+                            throw 'error';
+                        }
 
-                    //有效期非空
-                    if($(this).find('.expire_at').eq(0).val() == '')
-                    {
-                        alert("套餐" + index + "的有效期不能为空！");
-                        throw 'error';
+                        //库存非空
+                        if ($(this).find('.package_sum').eq(0).val() == '') {
+                            alert("套餐" + index + "的库存不能为空！");
+                            throw 'error';
+                        }
                     }
-
-                    //库存非空
-                    if($(this).find('.package_sum').eq(0).val() == '')
-                    {
-                        alert("套餐" + index + "的库存不能为空！");
-                        throw 'error';
-                    }
+                    index = index +1;
                 });
             } catch (e) {
                 return false;
@@ -1226,7 +1260,6 @@
                 group_buy_index = Number($(this).siblings('table').last().attr('index')) + 1;
             }
             var assContent = $("#ass-table").clone().css('display', 'block').attr('index', group_buy_index).removeAttr('id');
-
             assContent.find('.form-control').each(function () {
                 var name = $(this).attr('name').replace('[package_index]', '[' + package_index + ']').replace('[group_buy_index]', '[' + group_buy_index + ']')
                 $(this).attr('name', name);
@@ -1318,6 +1351,27 @@
         else
         {
             $('#set_share_cashed').hide();
+        }
+    }
+    //是否开启分销
+    function show_is_distribution() {
+        //如果选中了的话   让其分销海报和销售奖金和奖励金的选项显示
+        if($('#is_distribution').is(":checked"))
+        {
+            $('#distribution_img_tr').show();
+            $('#sell_commission').show();
+            $('#bounty_commission').show();
+            $('.sell_commission').show();
+            $('.bounty_commission').show();
+        }
+        else
+        {
+            $('#distribution_img_tr').hide();
+            $('#sell_commission').hide();
+            $('#bounty_commission').hide();
+            $('.sell_commission').hide();
+            $('.bounty_commission').hide();
+
         }
     }
 

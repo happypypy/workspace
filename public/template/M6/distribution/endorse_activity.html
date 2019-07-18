@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="viewport"
+    content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <script type="text/javascript" src="{$roottpl}/js/jquery.min.js"></script>
+  <script src="{$roottpl}/js/common.js"></script>
+  <link rel="stylesheet" href="{$roottpl}/style/css/common.css">
+  <title>可代言活动</title>
+</head>
+
+<body>
+{include file="M6/lib/header" /}
+  <div class="menu-cover"></div>
+  <div class="site-section clearfix" id="container">
+    <div class="select-bar">
+      <ul class="select-bar-tab select-bar-tab1 flex">
+        <li onclick="javascript:window.location='/{$sitecode}/endorsedata';">代言数据</li>
+        <li class="on" onclick="javascript:window.location='/{$sitecode}/spokesmanactivitylist';">可代言活动</li>
+        <li  onclick="javascript:window.location='/{$sitecode}/alreadyspokesmanactivitylist';">已代言活动</li>
+        {if condition="$user_info['is_balance'] == 1"}
+        <li onclick="javascript:window.location='/{$sitecode}/balancerecordlist';">佣金结算</li>
+        {/if}
+      </ul>
+    </div>
+    <div class="search-box">
+      <form class="flex" action="" id="form1">
+        <input type="text" id="txtstr" class="text fx1" name="chrtitle" value="{$chrtitle}" placeholder="输入关键字，查找您需要的活动..">
+        <span class="search-icon iconfont" onclick="sub_form()">&#xe635;</span>
+      </form>
+    </div>
+    <div class="endorse-able-data">
+      <ul  id="data">
+        {if condition="!$list"}
+        <li class="empty">暂无可代言活动~</li>
+        {else}
+        <?php foreach($list as $k=>$vo) {?>
+        <li>
+          <a class="flex">
+            <div class="small-img"><img src="{$vo.chrimg_m}" alt=""></div>
+            <div class="img-txt">
+              <div class="info">{$vo.chrtitle}</div>
+              <div class="info flex first-icon">
+                <div class="tit">适合年龄</div>：
+                <?php if($vo['minage']==0 && $vo['maxage']==0 ) { ?>
+                <div class="txt blue">不限</div>
+                <?php } else { ?>
+                <div class="txt blue">{$vo['minage']} ~ {$vo['maxage']}</div>
+                <?php } ?>
+              </div>
+              <div class="info flex second-icon">
+                <div class="tit">活动时间</div>：
+                <div class="txt">{:date('Y-m-d',strtotime($vo['dtstart']))}~{:date('Y-m-d',strtotime($vo.dtend))}</div>
+              </div>
+            </div>
+          </a>
+          <div class="btn-box flex">
+            <input type="button" value="生成海报" onclick="javascript:window.location='/{$sitecode}/getactivityimg/{$vo.idactivity}';">
+            <input type="button" value="前往分享" onclick="javascript:window.location='/{$sitecode}/detail/{$vo.idactivity}';">
+            <input type="button" value="佣金明细" class="emdorse-detailed" onclick="show_endorse_detailed({$vo.idactivity})">
+          </div>
+        </li>
+        <div class="emdorse-detailed-content flex" style="display: none" id="emdorse-detailed-content_{$vo.idactivity}">
+          <div class="box">
+            <div class="title">活动套餐对应的价格及佣金明细</div>
+            <ul>
+              {if condition="!$vo['package']"}
+              <li class="empty">暂无佣金明细~</li>
+              {else}
+              <?php foreach($vo['package'] as $key=>$v) {?>
+              <li>
+                <div class="info"><span>{$v['keyword1']}</span>:<span>￥{$v['member_price']}</span></div>
+                <div class="info">
+                  <span>可获销售佣金</span>:<span>￥{$v['sell_commission']}</span> &nbsp;&nbsp;&nbsp;&nbsp;
+                  <span>奖励金</span>:<span  style="color: red">￥{$v['bounty_commission']}</span>
+                </div>
+              </li>
+              <?php } ?>
+              {/if}
+            </ul>
+            <div class="btn-box">
+              <input type="button" value="我知道了" class="close" onclick="close_endorse_detailed({$vo.idactivity})">
+            </div>
+          </div>
+        </div>
+        <?php } ?>
+        {/if}
+      </ul>
+      <div id="dataload" class="iconfont iconload" style="display: none">&#xe72f;</div>
+    </div>
+  </div>
+  <div class="add-account-box flex">
+    <a class="add-account-btn flex">
+      <span class="iconfont">&#xe65d;</span>
+      <p>代言规则</p>
+    </a>
+  </div>
+  <script type="text/javascript" src="/static/js/layer/layer.js"></script>
+  <script>
+    $('.add-account-btn,.explain').click(function () {
+      var html = '';
+      html += '<ul class="indent-ul">',
+        html += '<li>点击活动“佣金明细”按钮可查看该活动的对外销售价格以及可获得的对应佣金额；</li>',
+        html += '<li>选择要代言的活动，点击“前往代言”进入活动详细页面；</li>',
+        html += '<li>通过活动详细页右上角的分享功能，把活动分享给朋友、群、或者朋友圈；</li>',
+        html += '<li>通过您分享的链接进行报名的，并且在活动结束后未退款，视为有效代言；</li>',
+        html += '<li>通过“我的代言”菜单可查看我代言的活动以及通过我的代言进行报名的订单信息；</li>'
+      html += '<li>当赚取的佣金大于等于1元时，用户可以在“我的结算”中发起结算申请。</li>',
+        html += '</ul>'
+      layer.open({
+        skin: 'my-layer',
+        title: '代言规则',
+        content: html,
+        btn: '我知道了',
+        btnAlign: 'c',
+      })
+    })
+
+    // $('.emdorse-detailed-content').hide(0);
+    // $('.emdorse-detailed').click(function () {
+    //   $('.emdorse-detailed-content').show();
+    // })
+    // $('.btn-box input.close').click(function () {
+    //     $('.emdorse-detailed-content').hide();
+    // })
+    //打开弹窗
+    function show_endorse_detailed(activity_id) {
+        $('#emdorse-detailed-content_'+activity_id).show();
+    }
+    //关闭弹窗
+    function close_endorse_detailed(activity_id) {
+        $('#emdorse-detailed-content_'+activity_id).hide();
+    }
+    function sub_form(){
+        $('#form1').submit();
+    }
+  </script>
+<script>
+    //==============核心代码=============
+    var winH = $(window).height(); //页面可视区域高度
+
+    var ipage = 1;
+    var scrollHandler = function () {
+        var pageH = $(document).height();
+        var scrollT = $(window).scrollTop(); //滚动条top
+
+        if (pageH - winH - scrollT < 1) {
+            LoadData(ipage)
+            ipage++;
+        }
+    }
+    //定义鼠标滚动事件
+    $(window).scroll(scrollHandler);
+    //==============核心代码=============
+
+    function LoadData(ipage) {
+        $("#dataload").show();
+        $(window).unbind('scroll');
+        // var state = $('input[name="states"]').val();
+        $.ajax({
+            url: "/{$sitecode}/spokesmanactivitylist?chrtitle={$chrtitle}",
+            type: 'POST',
+            cache: false,
+            data: { "ipage": ipage, "ajax": 1 },
+            success: function (data) {
+
+                if (data == 11) {
+                    $("#dataload").hide();
+                    // $("#loadmsg").html("已无更多数据");
+                    return;
+                }
+                $("#dataload").hide();
+                $("#data").html($("#data").html() + data);
+                $(window).scroll(scrollHandler);
+            }
+        });
+
+    }
+</script>
+</body>
+
+</html>
