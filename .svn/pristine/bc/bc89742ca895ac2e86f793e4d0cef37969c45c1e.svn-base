@@ -1,0 +1,52 @@
+
+            <?php if($list){foreach($list as $k=>$vo) {?>
+            <li>
+                <a class="flex">
+                    <div class="small-img"><img src="{$vo.chrimg_m}" alt=""></div>
+                    <div class="img-txt">
+                        <div class="info">{$vo.chrtitle}</div>
+                        <div class="info flex first-icon">
+                            <div class="tit">适合年龄</div>：
+                            <?php if($vo['minage']==0 && $vo['maxage']==0 ) { ?>
+                            <div class="txt blue">不限</div>
+                            <?php } else { ?>
+                            <div class="txt blue">{$vo['minage']} ~ {$vo['maxage']}</div>
+                            <?php } ?>
+                        </div>
+                        <div class="info flex second-icon">
+                            <div class="tit">使用时间</div>：
+                            <div class="txt">{:date('Y-m-d',strtotime($vo['dtstart']))}~{:date('Y-m-d',strtotime($vo.dtend))}</div>
+                        </div>
+                    </div>
+                </a>
+                <div class="btn-box flex">
+                    <input type="button" value="生成海报" onclick="javascript:window.location='/{$sitecode}/getactivityimg/{$vo.idactivity}';">
+                    <input type="button" value="前往分享" onclick="javascript:window.location='/{$sitecode}/detail/{$vo.idactivity}';">
+                    <input type="button" value="佣金明细" class="emdorse-detailed" onclick="show_endorse_detailed({$vo.idactivity})">
+                </div>
+            </li>
+            <div class="emdorse-detailed-content flex" style="display: none" id="emdorse-detailed-content_{$vo.idactivity}">
+                <div class="box">
+                    <div class="title">产品套餐对应的价格及佣金明细</div>
+                    <ul>
+                        {if condition="!$vo['package']"}
+                        <li class="empty">暂无佣金明细~</li>
+                        {else}
+                        <?php foreach($vo['package'] as $key=>$v) {?>
+                        <li>
+                            <div class="info"><span>{$v['keyword1']}</span>:<span>￥{$v['member_price']}</span></div>
+                            <div class="info">
+                                <span>可获销售佣金</span>:<span>￥{$v['sell_commission']}</span> &nbsp;&nbsp;&nbsp;&nbsp;
+                                <span>奖励金</span>:<span style="color: red">￥{$v['bounty_commission']}</span>
+                            </div>
+                        </li>
+                        <?php } ?>
+                        {/if}
+                    </ul>
+                    <div class="btn-box">
+                        <input type="button" value="我知道了" class="close" onclick="close_endorse_detailed({$vo.idactivity})">
+                    </div>
+                </div>
+            </div>
+            <?php }}else{echo 11;exit;} ?>
+        

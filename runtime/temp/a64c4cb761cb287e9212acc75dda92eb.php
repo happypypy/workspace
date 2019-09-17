@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:29:"template/M3/order/signup.html";i:1563178000;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:29:"template/M3/order/signup.html";i:1565143826;}*/ ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -142,6 +142,15 @@
             <input style="display: none" id="subdata1" type="submit"  value="提交">
             <input type="button" class="submit" value="提交" style="background: #ff7800;color: #fff;" onclick="order_confirm();"></dd>
     </dl>
+
+
+    <?php if($groupBuyId): ?>
+    <input type="hidden" name="group_buy_id" value="<?php echo $groupBuyId; ?>">
+    <?php endif; if($groupBuyOrderId): ?>
+    <input type="hidden" name="group_buy_order_id" value="<?php echo $groupBuyOrderId; ?>">
+    <?php endif; ?>
+
+
 </form>
 <?php if($activity_cashed): ?>
 <!-- 优惠券列表 -->
@@ -326,7 +335,7 @@
                         var spddprice = $("#spddprice").html();
                         if (spddprice > 0) {
                             if (spddprice <= volumeprice) {
-                                $("#spdiwang").html(0.01);
+                                $("#spdiwang").html(0.00);
                             } else {
                                 $("#spdiwang").html((spddprice - volumeprice).toFixed(2));
                             }
@@ -339,7 +348,7 @@
                             <?php if($activity_cashed): ?>
                             if (spddprice > 0) {
                                 if (spddprice <= volumeprice) {
-                                    $("#spdiwang").html(0.01);
+                                    $("#spdiwang").html(0.00);
                                 } else {
                                     $("#spdiwang").html((spddprice - volumeprice).toFixed(2));
                                 }
@@ -357,7 +366,7 @@
                                 var spddprice = $("#spddprice").html();
                                 if (spddprice > 0) {
                                     if (spddprice <= volumeprice) {
-                                        $("#spdiwang").html(0.01);
+                                        $("#spdiwang").html(0.00);
                                     } else {
                                         $("#spdiwang").html((spddprice - volumeprice).toFixed(2));
                                     }
@@ -370,7 +379,7 @@
                                     var spddprice = $("#spddprice").html();
                                     if (spddprice > 0) {
                                         if (spddprice <= volumeprice) {
-                                            $("#spdiwang").html(0.01);
+                                            $("#spdiwang").html(0.00);
                                         } else {
                                             $("#spdiwang").html((spddprice - volumeprice).toFixed(2));
                                         }
@@ -389,7 +398,7 @@
                                     var spddprice = $("#spddprice").html();
                                     if (spddprice > 0) {
                                         if (spddprice <= volumeprice) {
-                                            $("#spdiwang").html(0.01);
+                                            $("#spdiwang").html(0.00);
                                         } else {
                                             $("#spdiwang").html((spddprice - volumeprice).toFixed(2));
                                         }
@@ -402,7 +411,7 @@
                                         var spddprice = $("#spddprice").html();
                                         if (spddprice > 0) {
                                             if (spddprice <= volumeprice) {
-                                                $("#spdiwang").html(0.01);
+                                                $("#spdiwang").html(0.00);
                                             } else {
                                                 $("#spdiwang").html((spddprice - volumeprice).toFixed(2));
                                             }
@@ -503,12 +512,26 @@
                                 function submitedata(){
 
                                     var data = new FormData(document.getElementById("frm1"));
+                                    //分享id
+                                    var share_id = '<?php echo $share_id; ?>';
                                     layer.load(1, {
                                         shade: [0.1,'#fff'] //0.1透明度的白色背景
                                     });
+                                    //拼团id
+                                    //    console.log($("#groupBuyOrderId").val())
+                                    //    console.log($("#groupjoin").val())
+
+                                    if(($("#groupjoin").val()==1 || $("#groupjoin").val()=='1') && $("#groupBuyOrderId").val() !='undefined'){
+                                        var url="/<?php echo $sitecode; ?>/signup_post/<?php echo $id; ?>?share_id=<?php echo $share_id; ?>&group_buy_order_id="+$("#groupBuyOrderId").val()+"&groupjoin=1"
+                                    }else if( typeof $("#groupBuyOrderId").val() !='undefined'){
+                                        var url="/<?php echo $sitecode; ?>/signup_post/<?php echo $id; ?>?share_id=<?php echo $share_id; ?>&group_buy_order_id="+$("#groupBuyOrderId").val()
+                                    }else{
+                                        var url="/<?php echo $sitecode; ?>/signup_post/<?php echo $id; ?>?share_id=<?php echo $share_id; ?>"
+                                    }
+
                                     $.ajax({
                                             type: 'post',
-                                            url: "/<?php echo $sitecode; ?>/signup_post/<?php echo $id; ?>",
+                                            url: url,
                                             dataType: 'json',
                                             data: data,
                                             contentType: false, //不设置内容类型
@@ -517,16 +540,31 @@
                                                 //关闭继续提交弹窗
                                                 close_confirm()
                                                 layer.closeAll('loading');
-
                                                 //格式化data数据
                                                 data=JSON.parse(data)
+                                                //console.log(data)
                                                 //用户再次提交订单
                                                 //追加元素
-                                                //console.log(data)
-                                                //console.log(data.order_id)
                                                 var htmlappend="<input id='orderid' type=\"hidden\" name=\"order_id\" value=\""+data.order_id+"\">"
                                                 $("#txtpaynum").after(htmlappend)
-                                                if(data.res==1){
+
+
+                                                    //如果有拼团id
+                                                    // console.log(data.group_buy_order_id)
+                                                    if(data.group_buy_order_id !='undefined' && data.group_buy_order_id !=0){
+
+                                                        var formappend="<input id='groupBuyOrderId' type=\"hidden\" name=\"group_buy_order_id\" value=\""+data.group_buy_order_id+"\">"
+
+                                                        $("#frm1").after(formappend)
+
+                                                    }
+                                                    //如果是参团用户
+                                                    if(data.groupjoin==1){
+
+                                                        var formbefore="<input id='groupjoin' type='hidden' name='groupjoin' value=\""+data.groupjoin+"\">"
+                                                        $("#frm1").before(formbefore)
+                                                    }
+
                                                     if(data.ischarge==2 && data.flag==1 && data.price > 0) {
                                                         jsondata=$.parseJSON(data.data)
                                                         wx.config({
@@ -566,30 +604,36 @@
 
                                                     }else{
                                                         if(data.flag==2) {
-                                                            layer.confirm(
-                                                                data.errmsg,
-                                                                {
-                                                                    btn:['关闭'],
-                                                                    btn1: function(index, layero){
-                                                                        window.location = "/" + data.sitecode + "/detail/" + data.dataID;
-                                                                        return false;
-                                                                    }});
-                                                            if(data.err_arr.length != 0){
+                                                            if(typeof(data.errmsg) != "undefined"){
+
+                                                                layer.confirm(
+                                                                    data.errmsg,
+                                                                    {
+                                                                        btn:['关闭'],
+                                                                        //btn1: function(index, layero){
+                                                                        //window.location = "/" + data.sitecode + "/detail/" + data.dataID;
+                                                                        // return false;
+                                                                        //}
+                                                                    });
+                                                            }
+
+                                                            if(typeof(data.err_arr) != "undefined"){
                                                                 layer.confirm(
                                                                     data.err_arr[0]["err"],
                                                                     {
                                                                         btn:['关闭'],
-                                                                        btn1: function(index, layero){
-                                                                            window.location="/"+data.sitecode+"/againorder/"+data.order_id;
-                                                                            return false;
-                                                                        }});
+                                                                        // btn1: function(index, layero){
+                                                                        //     //window.location="/"+data.sitecode+"/againorder/"+data.order_id;
+                                                                        //     return false;
+                                                                        // }
+                                                                    });
                                                             }
                                                         } else{
                                                             layer.confirm('报名成功！',{btn:['关闭'],btn1: function(index, layero){ window.location="/"+data.sitecode+"/detail/"+data.dataID}});
                                                         }
                                                     }
-                                                }
-                                            }
+
+                                            },
                                         }
                                     );
                                 }
@@ -612,7 +656,7 @@
                                     var spddprice = $("#spddprice").html();
                                     if (spddprice > 0) {
                                         if (spddprice <= volumeprice) {
-                                            $("#spdiwang").html(0.01);
+                                            $("#spdiwang").html(0.00);
                                         } else {
                                             $("#spdiwang").html((spddprice - volumeprice).toFixed(2));
                                         }
@@ -781,7 +825,7 @@
         if (obj > 0) {
             if (spddprice > 0) {
                 if (spddprice <= volumeprice) {
-                    $("#spdiwang").html(0.01);
+                    $("#spdiwang").html(0.00);
                 } else {
                     $("#spdiwang").html((spddprice - volumeprice).toFixed(2));
                 }
@@ -804,7 +848,7 @@
         var spddprice = $("#spddprice").html();
         if (spddprice > 0) {
             if (spddprice <= volumeprice) {
-                $("#spdiwang").html(0.01);
+                $("#spdiwang").html(0.00);
             } else {
                 $("#spdiwang").html((spddprice - volumeprice).toFixed(2));
             }

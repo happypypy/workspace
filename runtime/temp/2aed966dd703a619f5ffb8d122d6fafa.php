@@ -1,6 +1,10 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:37:"template/M1/node/ajax_index_list.html";i:1561691696;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:37:"template/M1/node/ajax_index_list.html";i:1563936885;}*/ ?>
 
-<?php  $re = $cms->GetContents($nodeid,[],'idorder DESC,contentid DESC','linkurl,summary,picurl,sys00003,hits,contentid,title,en_title,tc_title',$pageIndex,10);
+<?php
+				$map=[];
+			  if(isset($_POST['keyword']) ) $map['title|summary']=['like','%'.$_POST['keyword'].'%'];
+			  if(isset($_POST['zxbqid']) && $_POST['zxbqid']!=0) $map['fieldspare9']=['like','%'.$_POST['zxbqid'].'%'];
+			  $re=$cms->GetContents($nodeid,$map,'idorder DESC,contentid DESC','linkurl,summary,picurl,sys00003,hits,contentid,title,en_title,tc_title',$ipage,10);
 if($re['data']){
 foreach($re['data'] as $k=>$val){ ?>
 <li>

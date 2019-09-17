@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="viewport"
+    content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <script type="text/javascript" src="{$roottpl}/js/jquery.min.js"></script>
+  <script src="{$roottpl}/js/common.js"></script>
+  <link rel="stylesheet" href="{$roottpl}/style/css/common.css">
+  <script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+  <title>代言海报</title>
+</head>
+
+<body>
+<script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<img src="/{$img}" alt="" width="100%" class="distribution-img">
+<script>
+
+    $(function(){
+        function onBridgeReady() {
+            WeixinJSBridge.call('hideOptionMenu');
+        }
+
+        if (typeof WeixinJSBridge == "undefined") {
+            if (document.addEventListener) {
+                document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+            } else if (document.attachEvent) {
+                document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+                document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+            }
+        } else {
+            onBridgeReady();
+        }
+    });
+
+    // 点击查看大图
+
+    function funcReadImgInfo() {
+
+      var imgs = [];
+
+      var imgObj = $('.distribution-img');//这里改成相应的对象
+      var protocol = window.location.protocol;//协议
+      var host = window.location.host;//主地址
+      var port = window.location.port;//端口
+
+      for (var i = 0; i < imgObj.length; i++) {
+
+        var src = imgObj.eq(i).attr('src');
+
+        src = src.substr(0, 4).toLowerCase() == "http" ? src : protocol + '//' + host + src;
+
+        imgs.push(src);
+
+        imgObj.eq(i).click(function () {
+
+          var nowImgurl = $(this).attr('src');
+
+          WeixinJSBridge.invoke("imagePreview", {
+
+            "urls": imgs,
+
+            "current": nowImgurl
+
+          });
+
+        });
+
+      }
+
+    }
+
+    funcReadImgInfo();
+  </script>
+
+</body>
+
+</html>

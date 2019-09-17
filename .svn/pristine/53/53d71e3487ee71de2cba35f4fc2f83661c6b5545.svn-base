@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title>会员中心</title>
+	<meta name="keywords" content="" />
+	<meta name="description" content="" />
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" />
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta content="telephone=no" name="format-detection">
+	<!-- <link rel="shortcut icon" href="images/favicon.ico" />
+	<link rel="apple-touch-icon-precomposed" href="images/favicon.png" /> -->
+	<link rel="stylesheet" type="text/css" href="{$roottpl}/style/css/swiper.min.css">
+	<link rel="stylesheet" type="text/css" href="{$roottpl}/style/css/common.css">
+	<link rel="stylesheet" type="text/css" href="{$roottpl}/style/css/pc.css">
+
+	<script type="text/javascript" src="{$roottpl}/js/jquery.min.js"></script>
+	<script type="text/javascript" src="{$roottpl}/js/swiper.min.js"></script>
+	<script type="text/javascript" src="{$roottpl}/js/common.js"></script>
+</head>
+<body id="wrapper">
+{include file="M4/lib/header" /}
+<!--site section start-->
+<div class="site-section clearfix" id="container"  style="background: #e7e7e7;">
+	<div class="mine-head">
+		<!-- <img src="style/images/mine_bg.jpg" class="mine-head-bg" /> -->
+		<div class="mine-head-box">
+			<img src="<?php echo empty($userinfo['userimg'])?'/static/images/userimg.jpg': (strtolower(substr($userinfo['userimg'],0,4))=='http'?$userinfo['userimg']:'/'.$userinfo['userimg']) ?>" />
+
+		</div>
+		<div class="mine-head-name">{$userinfo['nickname']}</div>
+		<div class="scorenum-box"><a href="/{$sitecode}/integralrecord" class="scorenum">总积分：{$userinfo.integral}</a></div>
+	</div>
+
+	<a href="/{$sitecode}/signuplist" class="mine-link mine-link-signup">
+		<p>我的报名</p>
+	</a>
+	{if condition="$is_distribution && $userinfo['spokesman_grade'] != 0"}
+	<!-- 分销 -->
+	 <a href="/{$sitecode}/spokesmanactivitylist" class="mine-link mine-link-endorse">
+		 <p>活动代言</p>
+	 </a>
+	{/if}
+	{if condition="$is_integral"}
+	<a href="/{$sitecode}/integralrecord" class="mine-link mine-link-score">
+		<p>我的积分</p>
+	</a>
+	{/if}
+	{if condition="$is_subscribe"}
+	<a href="/{$sitecode}/membercart" class="mine-link mine-link-score">
+		<p>我的会员卡</p>
+	</a>
+	<a href="/{$sitecode}/subscriberecord" class="mine-link mine-link-score">
+		<p>我的预约记录</p>
+	</a>
+	{/if}
+	{if condition="$is_cashed"}
+	<a href="/{$sitecode}/cashedlist/1" class="mine-link mine-link-coupon">
+		<p>我的现金券</p>
+	</a>
+	{/if}
+	<a href="/{$sitecode}/collection" class="mine-link mine-link-collection">
+		<p>我的收藏</p>
+	</a>
+	<a href="/{$sitecode}/comment" class="mine-link mine-link-comment">
+		<p>我的评论</p>
+	</a>
+	<a href="/{$sitecode}/usermodi" class="mine-link mine-link-information">
+		<p>我的资料</p>
+	</a>
+
+	<?php if($ismanage) { ?>
+	<a href="/{$sitecode}/integralexchangemanage/3" class="mine-link mine-link-signupmanage">
+		<p>积分兑换管理</p>
+	</a>
+	<a href="/{$sitecode}/signupmanagelist" class="mine-link mine-link-signupmanage">
+		<p>报名管理</p>
+	</a>
+	<a href="/{$sitecode}/signin" class="mine-link mine-link-signupmanage">
+		<p>用户签到</p>
+	</a>
+	<a href="/{$sitecode}/commentmanage" class="mine-link mine-link-commentmanage">
+		<p>评论管理</p>
+	</a>
+	<?php } ?>
+	{include file="M4/lib/footer0" /}
+</div>
+</body>
+</html>
+
+
+

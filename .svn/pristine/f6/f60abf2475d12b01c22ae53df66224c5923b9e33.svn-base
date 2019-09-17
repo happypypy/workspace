@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+    <title>产品编辑</title>
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="__PUBLIC__/static/css/bootstrap.min.css">
+    <script type="text/javascript" src="__PUBLIC__/static/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/modules/js/jquery.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/modules/js/swiper.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/modules/js/common.js"></script>
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/static/modules/style/css/swiper.min.css">
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/static/modules/style/css/common.css">
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/static/modules/style/css/pc.css">
+    <script type="text/javascript" src="/static/js/layer/layer.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/daterangepicker/moment.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/daterangepicker/daterangepicker.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/del-checked.js"></script>
+    <link rel="stylesheet" href="__PUBLIC__/static/plugins/photoCut/css/cropper.css">
+    <link rel="stylesheet" href="__PUBLIC__/static/plugins/photoCut/css/myCrop.css">
+    <script type="text/javascript" src="__PUBLIC__/static/js/CostomLinkOpenSw.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/lhgdialog.js?skin=aero"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/plugins/mobileUeditor/ueditor.config.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/plugins/mobileUeditor/ueditor.all.js"></script>
+    <style>
+        .activity_checkbox{
+            -webkit-appearance: checkbox;
+        }
+        .paytypecontent2 input{
+            border: 1px solid #ddd;
+            width: 60%;
+        }
+        .btn {
+            display: inline-block;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            border: 1px solid transparent;
+            padding: 0.1rem .1rem;
+            font-size: 0.01rem;
+            line-height: 1.5;
+            border-radius: .25rem;
+            transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+        }
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            z-index: 1000;
+            display: none;
+            float: left;
+            min-width: 0.1rem;
+            padding: .5rem 0;
+            margin: .125rem 0 0;
+            font-size: 0.1rem;
+            color: #212529;
+            text-align: left;
+            list-style: none;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid rgba(0,0,0,.15);
+            border-radius: .25rem;
+        }
+        input{
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+
+<form class="information-list" method="post" id="frm" action="" enctype="multipart/form-data" >
+    <ul>
+        <li><font style="color:#ff7902;">活动管理</font></li>
+        <li class="data">
+            <div class="tit"><font style="color:red">*</font>活动标题：</div>
+            <div class="txt">
+                <input type="text" name="chrtitle" id="chrtitle" value="{$datainfo['chrtitle']}" class="feild" datatype="9" />
+            </div>
+        </li>
+
+        <li class="data">
+            <div class="tit">活动简称：</div>
+            <div class="txt">
+                <input type="text" name="short_title" id="short_title" type="text" value="{$datainfo['short_title']}" class="feild" datatype="9" />
+            </div>
+        </li>
+
+        <li class="data">
+            <div class="tit">简介：</div>
+            <div class="txt">
+                <textarea id="chrsummary" name="chrsummary" is_null="1"   class=" input oa_input-200"  style="">{$datainfo['chrsummary']}</textarea>
+            </div>
+        </li>
+
+        <li class="data">
+            <div class="tit">外链URL：</div>
+            <div class="txt">
+                <input   name="chrurl" id="chrurl" type="text" value="{$datainfo['chrurl']}"  class=" "   chname="外链URL"  />
+            </div>
+        </li>
+
+        <li class="data">
+            <div class="tit">关键字：</div>
+            <div class="txt">
+
+                <input   name="chrkeyword" id="chrkeyword" type="text" value="{$datainfo['chrkeyword']}"  class=" feild "    chname="关键字,多个以逗号分开"  />
+            </div>
+        </li>
+
+        <li class="data">
+            <div class="tit">所属商务：</div>
+            <div class="txt">
+                    <select name="intselmarket" id="intselmarket" class="" style="border: 1px solid #ddd;padding: 5px">
+                        <option value="0:">==请选择==</option>
+                        {volist name="user" id="vo"}
+                        <option value="{$vo.idaccount}:{$vo.chrname}" <?php if ($vo['idaccount'] == $datainfo['intselmarket']) {echo "selected";}?> >{$vo.chrname}</option>
+                        {/volist}
+                    </select>
+            </div>
+        </li>
+
+        <li class="data">
+            <div class="tit"><span style="color:#ff0000">*</span>分类：</div>
+            <div class="txt">
+                <select name="fidtype" id="fidtype" class="" style="border: 1px solid #ddd;padding: 5px">
+                    <option  value="">请选择</option>
+                    {volist name="hdfl" id="vo"}
+                    <option value="{$vo.code}" <?php if ($vo['code'] == $datainfo['fidtype']) {echo "selected";}?> >{$vo.name}</option>
+                    {/volist}
+                </select>
+            </div>
+        </li>
+
+        <li class="data">
+            <div class="tit">省：</div>
+            <div class="txt">
+                <select id="fidprovince" onchange="getChild(this.value,0,'fidcity','/Admin/Api/getRegion');" is_null="1"  name="fidprovince"   class="" style="border: 1px solid #ddd;padding: 5px">
+                    <option  value="">请选择</option>
+                </select>
+                <script language="javascript">
+                    getChild(0,{$datainfo['fidprovince']},'fidprovince','/Admin/Api/getRegion');
+                    <?php if (!empty($datainfo['fidcity']) && $datainfo['fidcity'] != 0) {?>
+                        getChild({$datainfo['fidprovince']},{$datainfo['fidcity']},'fidcity','/Admin/Api/getRegion');
+                    <?php }?>
+                </script>
+            </div>
+        </li>
+
+        <li class="data">
+            <div class="tit">市：</div>
+            <div class="txt">
+                <select id="fidcity" onchange="getChild(this.value,0,'fidarea','/Admin/Api/getRegion');" is_null="1"  name="fidcity"    class="" style="border: 1px solid #ddd;padding: 5px">
+                    <option  value="">请选择</option>
+                </select>
+                <?php if (!empty($datainfo['fidarea']) && $datainfo['fidarea'] != 0) {?>
+                <script language="javascript">
+                    getChild({$datainfo['fidcity']},{$datainfo['fidarea']},'fidarea','/Admin/Api/getRegion');
+                </script>
+                <?php }?>
+            </div>
+        </li>
+
+        <li class="data">
+            <div class="tit">市：</div>
+            <div class="txt">
+                <select id="fidarea"  is_null="1" name="fidarea"   class="" style="border: 1px solid #ddd;padding: 5px">
+                    <option  value="">请选择</option>
+                </select>
+            </div>
+        </li>
+
+        <li class="data">
+            <div class="tit">活动小图片：</div>
+            <div class="txt">
+                <input id="chrimg_m" type="hidden" name="chrimg_m" value="{$datainfo['chrimg_m']}">
+                <section>
+                    <input class="photoBtn chrimg_m" type="button" onclick="document.querySelector('.inputImage.chrimg_m').click()"  value="选择图片">
+                    <!--<input class="inputImage" type="file" accept="image/*" style="display: none;" />-->
+                    <br />
+                    <input class="inputImage chrimg_m" name1="chrimg_m" type="file" accept="image/*" style="display: none;" data-area="&quot;width&quot;: 140, &quot;height&quot;: 140" />
+                    <img class="showImg chrimg_m"/>
+                </section>
+                <span class="openpic" picsrc="{$datainfo['chrimg_m']}">查看图片</span>
+            </div>
+        </li>
+
+        <div class="container containerDiv" style="padding:0;position:fixed;display: none;top: 0;left: 0;z-index: 200;">
+            <div class="imgEdit" style="display: none">
+                <div>
+                    <div class="img-container">
+                        <img src="" alt="Picture" class="image">
+                    </div>
+                </div>
+            </div>
+            <div class="actions">
+                <div class="docs-buttons">
+                    <div class="btn-group btn-group-crop">
+                        <button type="button" class="btn btn-primary imgCutConfirm"  data-method="getCroppedCanvas"
+                                data-option="{ &quot;width&quot;: 320, &quot;height&quot;: 180}">
+                            <span class="docs-tooltip" data-toggle="tooltip" title="">确认</span>
+                        </button>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary" data-method="destroy" title="Destroy">
+                            <span class="docs-tooltip" data-toggle="tooltip">取消</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <li class="data">
+            <div class="tit">活动大图片：</div>
+            <div class="txt">
+                <input id="chrimg" type="hidden" name="chrimg" value="{$datainfo['chrimg']}">
+                <section>
+                    <input class="photoBtn" type="button" onclick="document.querySelector('.inputImage.chrimg').click()" value="选择图片">
+                    <input class="inputImage chrimg" name1="chrimg" type="file" accept="image/*" style="display: none;" data-area="&quot;width&quot;: 300, &quot;height&quot;: 160"/>
+                    <br />
+                    <img class="showImg chrimg"/>
+                </section>
+                <span class="openpic" picsrc="{$datainfo['chrimg']}">查看图片</span>
+            </div>
+        </li>
+
+
+        <li class="data">
+            <div class="tit">产品适用时间：</div>
+            <div class="txt">
+                <input type="text" is_null="0" id="dtstart" name="dtstart"  value="{$datainfo['dtstart']}" style="border: 1px solid #ddd;width: 47%;display: block;float:left">-
+                <script language='JavaScript'>seltime("dtstart","YYYY-MM-DD HH:mm:ss")</script>                               <!-- -->
+                <span style="color: red;display: none;" class="dtbirthday_null">(不能为空)</span>
+                <input type="text" is_null="0" id="dtend" name="dtend"  value="{$datainfo['dtend']}" style="border: 1px solid #ddd;width: 47%;display: block;float:right;">
+                <script language='JavaScript'>seltime("dtend","YYYY-MM-DD HH:mm:ss")</script>                               <!-- -->
+                <span style="color: red;display: none;" class="dtbirthday_null">(不能为空)</span>
+            </div>
+        </li>
+        <li class="data">
+            <div class="tit">是否收费：</div>
+            <div class="txt">
+                <select id="ischarge"  is_null="1" name="ischarge"  style="border: 1px solid #ddd;padding: 5px">
+                    <option value="1" <?php if ($datainfo['ischarge'] != 2) {echo "selected";}?>>免费</option>
+                    <option value="2" <?php if ($datainfo['ischarge'] == 2) {echo "selected";}?> >收费</option>
+                </select>
+            </div>
+        </li>
+
+        <li class="data">
+            <div class="tit">适合对象：</div>
+            <div class="txt">
+                <select id="chrrange"  is_null="1" name="chrrange" style="border: 1px solid #ddd;padding: 5px">
+                    <option value="0">==请选择==</option>
+                    <option value="1" <?php if ($datainfo['chrrange'] == 1) {echo "selected";}?> >家长及儿童</option>
+                    <option value="2" <?php if ($datainfo['chrrange'] == 2) {echo "selected";}?> >仅儿童</option>
+                    <option value="3" <?php if ($datainfo['chrrange'] == 3) {echo "selected";}?> >仅家长</option>
+                </select>
+            </div>
+        </li>
+
+        <li class="data">
+            <div class="tit">适合年龄：</div>
+            <div class="txt">
+                <select  id="minage"  is_null="1" name="minage"    style="border: 1px solid #ddd;width: 47%;display: block;float:left" >
+                    <option value="0">最小年龄</option>
+                    <?php for ($i = 1; $i < 100; $i++) {?>
+                    <option value="{$i}" <?php if ($datainfo['minage'] == $i) {echo "selected";}?> >{$i}</option>
+                    <?php }?>
+                </select>-
+
+                <select  id="maxage"  is_null="1" name="maxage"   style="border: 1px solid #ddd;width: 47%;display: block;float:right;" >
+                    <option value="0">最大年龄</option>
+                    <?php for ($i = 1; $i < 100; $i++) {?>
+                    <option value="{$i}" <?php if ($datainfo['maxage'] == $i) {echo "selected";}?> >{$i}</option>
+                    <?php }?>
+                </select>
+
+            </div>
+        </li>
+
+        <li class="data">
+            <div class="tit">活动详细地点：</div>
+            <div class="txt">
+                <input name="chraddressdetail" id="chraddressdetail" type="text" value="{$datainfo['chraddressdetail']}" readonly="readonly" class=" "  style="border: 1px solid #ddd;" chname="活动详细地点"  />
+                <input name="chrmaplng" id="chrmaplng" type="hidden" value="{$datainfo['chrmaplng']}"     chname="活动详细地点经度"  />
+                <input name="chrmaplat" id="chrmaplat" type="hidden" value="{$datainfo['chrmaplat']}"    chname="活动详细地点纬度"  />
+                <input name="openmap" id="openmap" type="button" value="选择地址"  onclick="sel_address();" />
+            </div>
+        </li>
+        <li class="data">
+            <div class="tit">交通指引：</div>
+            <div class="txt">
+                <textarea id="chrmap" name="chrmap" is_null="1"  class=" input oa_input-200"  style="border: 1px solid #ddd;height:100px"></textarea>
+            </div>
+        </li>
+        <li class="data">
+            <div class="tit">详细内容：</div>
+            <div class="txt">
+<div class="editor" style="display: none">
+    <textarea  class="span12 ckeditor chrcontent" id="chrcontent" is_null="1" name="chrcontent" >{$datainfo['chrcontent']}</textarea>
+</div>
+                <span class="dakai">点击打开编辑器</span>
+                <a href="javascript:previous();">预览</a>
+            </div>
+        </li>
+        <li class="data">
+            <div class="tit">发布时间：</div>
+            <div class="txt">
+                <input type="text" is_null="0" id="dtpublishtime" name="dtpublishtime"  value="{$datainfo['dtpublishtime']}" style="border: 1px solid #ddd;">
+                <script language='JavaScript'>seltime("dtpublishtime","YYYY-MM-DD HH:mm:ss")</script>
+            </div>
+        </li>
+        <li class="data">
+            <div class="tit">阅读权限：</div>
+            <div class="txt">
+                {foreach name='hyfl' item='v'}
+                <input class="activity_checkbox" type="checkbox" name="usertype[]" value="{$v.id}" <?php if (in_array($v['code'], explode(",", trim($datainfo['usertype'], ',')))) {echo "checked";}?>  style="width: 10%;display: block;float:left"/>{$v.name}
+                {/foreach}
+            </div>
+        </li>
+        <li class="data">
+            <div class="tit">活动标签：</div>
+            <div class="txt">
+                {volist name="hdbq" id="vo"}
+                <input type="checkbox" name="chrtags[]" value="{$vo.code}" <?php if (in_array($vo['code'], explode(",", trim($datainfo['chrtags'], ',')))) {echo "checked";}?> style="width: 10%;display: block;float:left" class="activity_checkbox" >{$vo.name}</input>
+                {/volist}
+            </div>
+        </li>
+        <li class="data">
+            <div class="tit">是否置顶：</div>
+            <div class="txt">
+                <input style="width: 10%;display: block;float:left" class="activity_checkbox" type="checkbox" name="chkcontentlev" id="chkcontentlev" value="1" <?php if ($datainfo['chkcontentlev'] == 1) {echo "checked";}?> >置顶</input>
+            </div>
+        </li>
+        <li class="data">
+            <div class="tit">推荐到首页：</div>
+            <div class="txt">
+                <input type="checkbox" name="chkisindex" style="width: 10%;display: block;float:left" class="activity_checkbox" id="chkisindex" value="1" <?php if ($datainfo['chkisindex'] == 1) {echo "checked";}?>>推荐</input>
+            </div>
+        </li>
+        <li class="data">
+            <div class="tit">是否下架：</div>
+            <div class="txt">
+                <input type="checkbox" style="width: 10%;display: block;float:left" class="activity_checkbox" name="chkdown" id="chkdown" value="1" <?php if ($datainfo['chkdown'] == 1) {echo "checked";}?>>下架</input>
+            </div>
+        </li>
+        <li class="data">
+            <div class="tit">服务条款：</div>
+            <div class="txt">
+                <div class="editor" style="display: none">
+                    <textarea  class="span12 ckeditor txtfwtk" id="txtfwtk" is_null="1" name="txtfwtk" >{$datainfo['txtfwtk']}</textarea>
+                </div>
+                <span class="dakai2">点击打开编辑器</span>
+                <a href="javascript:previous2();">预览</a>
+            </div>
+        </li>
+        <li class="data">
+            <div class="tit">开启下单：</div>
+            <div class="txt">
+                <input  id="chkbm" onclick="javascript:isbm();"  type="checkbox" name="chksignup" value="1" style="width: 10%;display: block;float:left" class="activity_checkbox" <?php if ($datainfo['chksignup'] == 1 ) {echo "checked";}?>>在线下单</input>
+            </div>
+        </li>
+
+        <div id="bm">
+
+            <li class="data">
+                <div class="tit">下单时间：</div>
+                <div class="txt">
+                    <div  style="width: 47%;display: block;float:left" class="input-prepend input-group"><span class="add-on input-group-addon"><i class="glyphicon glyphicon-calendar fa fa-calendar"></i></span>
+                        <input type="text" is_null="0" id="dtsignstime" name="dtsignstime"  value="{$datainfo['dtsignstime']}" style="border: 1px solid #ddd;display: block;float:left">-
+                    </div>
+                    <script language='JavaScript'>seltime("dtsignstime","YYYY-MM-DD HH:mm:ss")</script>
+                    <div style="width: 47%;display: block;float:right" class="input-prepend input-group"><span class="add-on input-group-addon"><i class="glyphicon glyphicon-calendar fa fa-calendar"></i></span>
+                        <input type="text" is_null="0" id="dtsignetime" name="dtsignetime"  value="{$datainfo['dtsignetime']}" style="border: 1px solid #ddd;display: block;float:right">
+                    </div>
+                    <script language='JavaScript'>seltime("dtsignetime","YYYY-MM-DD HH:mm:ss")</script>
+                </div>
+            </li>
+
+            <li class="data">
+                <div class="tit">是否可以使用现金券：</div>
+                <div class="txt">
+                    <input type="checkbox" onclick="javascript:show_chkpay()" name="is_use_cashed" id="chkvolume" value="1" style="width: 10%;display: block;float:left" class="activity_checkbox" <?php if ($datainfo['is_use_cashed'] == 1) {echo "checked";}?>>
+                </div>
+            </li>
+
+
+            <li id="set_volume" <?php if ($datainfo['is_use_cashed'] != 1) {echo "style=\"display: none;\"";}?> >
+            <div class="tit"><span style="color:#ff0000">*</span>设置：</div>
+            <div class="txt">
+                <div><span style="padding-left: 12px;color: #333">最大数量：</span><input name="max_use" type="text" value="{$datainfo['max_use']}" style="border: 1px solid #ddd" />(张) <font style="color:red;">&nbsp;&nbsp; 0表示不限制</font></div>
+                <div style="padding-top:5px;"><span style="padding-left: 12px;color: #333">最大金额：</span><input name="max_amount" type="text" value="<?php echo intval($datainfo['max_amount']) ?>"  style="border: 1px solid #ddd"   />(元) <font style="color:red;">&nbsp;&nbsp; 0表示不限制</font> </div>
+            </div>
+            </li>
+
+
+            <li class="data" id="is_can_receive" <?php if ($datainfo['is_use_cashed'] != 1) {echo "style=\"display: none;\"";}?>>
+                <div class="tit">是否可以领取现金券：</div>
+                <div class="txt">
+                    <input type="checkbox" onclick="javascript:show_cash()" name="is_receive_cashed" id="chkcash" value="1"
+                    <?php if ($datainfo['is_receive_cashed'] == 1) {echo "checked";}?> style="width: 10%;display: block;float:left;" class="activity_checkbox">
+                </div>
+            </li>
+
+            <li  class="data" id="set_cash" <?php if ($datainfo['is_receive_cashed'] != 1) {echo "style=\"display: none;\"";}?> >
+                <div  class="tit"><span style="color:#ff0000">*</span>设置：</div>
+                <div class="txt">
+                    <div style="padding-top:5px;"><span style="padding-left: 12px;color: #333">领券金额：</span><input name="activity_cashed_amount" type="text" value="<?php echo intval($datainfo['activity_cashed_amount']) ?>"  class=" "   />(元)  </div>
+                    <div style="padding-top:5px;"><span style="padding-left: 24px;color: #333">有效期：</span><input name="activity_cashed_validity" type="text" value="{$datainfo['activity_cashed_validity']}"  class=" "    />(天)
+                        <div style="padding-top:5px;">可领券用户：
+                        <?php if ($hyfl) {?>
+                        <div>
+                            <span style="padding-left: 12px;color: #333">用户类别：</span>
+                            {volist name="hyfl" id="vo"}
+                            <input type="checkbox" name="receive_activity_cashed_categoryid[]" value="{$vo.code}" <?php if (in_array($vo['code'], explode(",", trim($datainfo['receive_activity_cashed_categoryid'], ',')))) {echo "checked";}?>  class="activity_checkbox activity_checkbox">{$vo.name}</input>
+                            {/volist}
+                        </div>
+                        <?php }?>
+                        <div>
+                            <span style="padding-left: 12px;color: #333">关注状态：</span>
+                            <input name="receive_activity_cashed_intstate_user[]" <?php if (in_array("1", explode(",", trim($datainfo['receive_activity_cashed_intstate_user'], ',')))) {echo "checked";}?> class="activity_checkbox" type="checkbox" value="1"/> 关注
+                            <input name="receive_activity_cashed_intstate_user[]"  class="activity_checkbox" <?php if (in_array("2", explode(",", trim($datainfo['receive_activity_cashed_intstate_user'], ',')))) {echo "checked";}?> type="checkbox" value="2"/> 取消
+                            <input name="receive_activity_cashed_intstate_user[]" class="activity_checkbox" <?php if (in_array("3", explode(",", trim($datainfo['receive_activity_cashed_intstate_user'], ',')))) {echo "checked";}?> type="checkbox" value="3"/> 游客
+                        </div>
+                        <div>
+                            <span style="padding-left: 12px;color: red">注意：默认未设置可领券用户代表所有用户均可领！</span>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
+
+
+            <li class="data">
+                <div class="tit">是否可以分享现金券：</div>
+                <div class="txt">
+                    <input type="checkbox" onclick="javascript:show_is_share_cashed()" name="is_share_cashed" id="is_share_cashed" value="1" style="width: 10%;display: block;float:left" class="activity_checkbox">
+                </div>
+            </li>
+
+
+                <li class="data">
+                    <div class="tit"><span style="color:#ff0000">*</span>设置现金券计划：</div>
+                    <div class="txt">
+                        <select name="cashed_plan_id" id="cashed_plan_id" style="border: 1px solid #ddd;padding: 5px" >
+                            <option value="0">请选择现金券计划</option>
+                            <?php foreach ($cashed_plan as $k => $vo) {?>
+                            <option value="{$vo['id']}" <?php if ($datainfo['cashed_plan_id'] == $vo['id']) {echo "selected";}?>>{$vo['plan_name']}</option>
+                            <?php }?>
+                        </select>
+                    </div>
+                </li>
+
+            <li class="data">
+                <div class="tit">是否需要关注：</div>
+                <div class="txt">
+                    <input type="checkbox" name="chkissubscribe" value="1" style="width: 10%;display: block;float:left" <?php if ($datainfo['chkissubscribe'] == 1) {echo "checked";}?> class="activity_checkbox">勾选此项则需要用户关注公众号后才能下单
+                </div>
+            </li>
+
+            <li class="data">
+                <div class="tit">是否可申请退款：</div>
+                <div class="txt">
+                    <select name="isrefund" id="isrefund" style="border: 1px solid #ddd;padding: 5px"  >
+                        <option value="1" <?php if (1 == $datainfo['isrefund']) {echo "selected";}?> >是</option>
+                        <option value="0" <?php if (0 == $datainfo['isrefund']) {echo "selected";}?> >否</option>
+                    </select>
+                </div>
+            </li>
+
+            <li class="data">
+                <div class="tit"><font style="color:red">*</font>报名模板：</div>
+                <div class="txt">
+                    <select name="selsignfrom" id="selsignfrom" style="border: 1px solid #ddd;padding: 5px">
+                        <option value="0">请选报名模版</option>
+                        <?php foreach ($fromtemp as $k => $vo) {?>
+                        <option value="{$vo['id']}" <?php if ($datainfo['selsignfrom'] == $vo['id']) {echo "selected";}?>>{$vo['title']}</option>
+                        <?php }?>
+                    </select>
+                </div>
+            </li>
+
+            <li class="data">
+                <div class="tit">限制1：</div>
+                <div class="txt">
+                    <input type="checkbox" name="chkismobile" value="1" <?php if ($datainfo['chkismobile'] == 1) {echo "checked";}?> style="width: 10%;display: block;float:left" class="activity_checkbox">勾选此项则需要用户关注公众号后才能下单
+                </div>
+            </li>
+
+            <li class="data">
+                <div class="tit">限制2：</div>
+                <div class="txt">
+                    <input type="checkbox" name="chkisidcard" <?php if ($datainfo['chkisidcard'] == 1) {echo "checked";}?> value="1" style="width: 10%;display: block;float:left" class="activity_checkbox">同一身份证号只能下单一次（下单表单中必须有身份证类型框）
+                </div>
+            </li>
+
+            <li class="data">
+                <div class="tit">限制3：</div>
+                <div class="txt">
+                    <input type="text"  name="intmaxpaynum" id="intmaxpaynum" type="text" value="{$datainfo['intmaxpaynum']}" style="border: 1px solid #ddd;" chname="限制3">单次最大购买数量，0表示不限
+                </div>
+            </li>
+
+            <li class="data">
+                <div class="tit">限制4：</div>
+                <div class="txt">
+                    <input type="text"  name="intmaxmobilepaynum" id="intmaxmobilepaynum" type="text" value="{$datainfo['intmaxmobilepaynum']}" style="border: 1px solid #ddd;" chname="限制4">单个手机号累计购买上限，0表示不限（下单表单中必须有手机类型框）
+                </div>
+            </li>
+
+            <li class="data">
+                <div class="tit">限制5：</div>
+                <div class="txt">
+                    <input type="text"  name="intmaxidcardpaynum" id="intmaxidcardpaynum" type="text" value="{$datainfo['intmaxidcardpaynum']}" style="border: 1px solid #ddd;" chname="限制5">单个身份证累计购买上限，0表示不限（下单表单中必须有身份证类型框）
+                </div>
+            </li>
+
+
+                {if condition="$is_distribution"}
+            <li class="data">
+                <div class="tit">开启分销：</div>
+                <div class="txt">
+                    <input type="checkbox" name="is_distribution" id="is_distribution" value="1" onclick="javascript:show_is_distribution()" style="width: 10%;display: block;float:left" class="activity_checkbox" <?php if($datainfo['is_distribution']==1) { echo "checked"; } ?>/><span style="color: red">勾选后，该活动可参与分销功能，套餐中的销售佣金和奖励金字段需要填写</span>
+                </div>
+            </li>
+
+
+            <li class="data" <?php if($datainfo['is_distribution']!=1) { echo "style=\"display: none;\""; } ?> id="distribution_img_tr">
+                <div class="tit"><span style="color: red">*</span>分销海报图片(720x1280)：</div>
+                <div class="txt">
+                    <input id="distribution_img" type="hidden" name="distribution_img" value="{$datainfo['distribution_img']}">
+                    <section>
+                        <input class="photoBtn" type="button" onclick="document.querySelector('.inputImage.distribution_img').click()" value="选择图片">
+                        <input class="inputImage distribution_img" name1="distribution_img" type="file" accept="image/*" style="display: none;" data-area="&quot;width&quot;: 300, &quot;height&quot;: 600"/>
+                        <br />
+                        <img class="showImg distribution_img"/>
+                    </section>
+                    <span class="openpic" picsrc="{$datainfo['distribution_img']}">查看图片</span>
+                </div>
+            </li>
+                {/if}
+
+            <?php
+                            if (empty($datainfo['selcontent']) || !is_array($datainfo['selcontent'])) {
+                                $datainfo['selcontent'] = [
+                                    [
+                                        'keyword1'               => '',
+                                        'keyword2'               => '',
+                                        'original_price'         => '',
+                                         'member_price'           => '',
+                                         'cost_price'             => '',
+                                         'level1_commission_rate' => 0,
+                                        'level2_commission_rate' => 0,
+                                        'level3_commission_rate' => 0,
+                                        'expire_at' => '',
+                                        'package_sum' => 0,
+                                        'sell_commission' => '',
+                                         'bounty_commission' => '',
+            ]
+            ];
+            }
+            // 遍历套餐
+            foreach ($datainfo['selcontent'] as $selcontent_index => $value):
+            ?>
+            <li class="data paytypecontent2">
+                <div  class="tit" style="vertical-align: top; padding-top:8px;">套餐{$selcontent_index + 1}:</div>
+                <div id="selcontent_{$selcontent_index + 1}" class="txt">
+                    <!-- <div> -->
+                    关键字1（必填） <input name="packages[{$selcontent_index}][keyword1]" type="text" class="keyword1 oa_input-100" value="{$value['keyword1']}"  style="border: 1px solid #ddd;"/>
+                    关键字2<input name="packages[{$selcontent_index}][keyword2]" type="text" class="keyword2 oa_input-100"  value="{$value['keyword2']}"style="border: 1px solid #ddd;" />
+                    市场价<input name="packages[{$selcontent_index}][original_price]" type="text" class="original_price oa_input-100 number" value="{$value['original_price']}" style="width: 60px;border: 1px solid #ddd;" />
+                    会员价(单位/元)<input name="packages[{$selcontent_index}][member_price]" type="text" class="member_price oa_input-100 number" value="{$value['member_price']}" style="border: 1px solid #ddd;" />
+                    成本价(单位/元)<input name="packages[{$selcontent_index}][cost_price]" type="text" class="cost_price oa_input-100 number" value="{$value['cost_price']}" style="border: 1px solid #ddd;" />
+
+                    <span style="<?php if($datainfo['is_distribution']!=1 || !$is_distribution) { echo 'display: none;'; } ?>">销售佣金</span><input name="packages[{$selcontent_index}][sell_commission]" type="text" class="sell_commission oa_input-100 number" value="{$value['sell_commission']}" style="border: 1px solid #ddd;width: 65px;<?php if($datainfo['is_distribution']!=1 || !$is_distribution) { echo 'display: none;'; } ?>"/>
+                    <span style="<?php if($datainfo['is_distribution']!=1 || !$is_distribution) { echo 'display: none;'; } ?>">奖励金</span><input name="packages[{$selcontent_index}][bounty_commission]" type="text" class="bounty_commission oa_input-100 number" value="{$value['bounty_commission']}" style="border: 1px solid #ddd;width: 65px;<?php if($datainfo['is_distribution']!=1 || !$is_distribution) { echo 'display: none;'; } ?>" />
+
+                    有效期(必填)<input name="packages[{$selcontent_index}][expire_at]" type="text" class="expire_at oa_input-100" id="seldate{$selcontent_index}" value="{$value['expire_at']}" style="border: 1px solid #ddd;" />
+                    库存(0为不限，-1为已售罄)<input name="packages[{$selcontent_index}][package_sum]" style="border: 1px solid #ddd;width: 165px;" type="text" class="package_sum oa_input-100" value="{$value['package_sum']}"  style="border: 1px solid #ddd;"/>
+                    <?php if (isset($value['package_id'])): ?>
+                    <input type="hidden" class="package_id" name="packages[{$selcontent_index}][package_id]" value="{$value['package_id']}">
+                    <?php endif;?>
+                    <!-- 未发布状态的活动，允许删除 -->
+                    <!--<input type="button" name="del" value="删除" onclick="delpaytype({$selcontent_index + 1})" style="margin: 0; padding-left: 6px;padding-right:6px;">-->
+                    <?php if(checkedMarketingPackage($idsite, 'group_buy')): ?>
+                    <input type="button" name="addAssemble" index="{$selcontent_index}" value="拼团" >
+                    <?php endif; ?>
+
+                    <?php
+                                            if (isset($value['group_buy'])) {
+                                                foreach ($value['group_buy'] as $groupBuyIndex => $groupBuy){ ?>
+
+                    <table class="ass-table" style="margin-left:20px" index="{$groupBuyIndex}">
+                        <input type="hidden" class="group-buy-id" name="packages[{$selcontent_index}][group_buy][{$groupBuyIndex}][group_buy_id]" value="{$groupBuy['group_buy_id']}"/>
+                        <tr>
+                            <td>
+                                <span class="td-left">拼团方案</span>
+                                <input type="checkbox" name="packages[{$selcontent_index}][group_buy][{$groupBuyIndex}][state]"  class="chooseBtn " <?=$groupBuy['state'] == 1 ? 'checked' : '';?>/>
+                                <label  class="choose-label" style="margin: 0; vertical-align: middle;"></label>
+                                <input class="delete-group-buy td-right" type="button" value="删除" style="margin: 0; float: right; padding-left: 6px;padding-right:6px;"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="td-left">成团商品数量</span>
+                                <input class="td-right" type="text" name="packages[{$selcontent_index}][group_buy][{$groupBuyIndex}][group_num]" value="{$groupBuy['group_num']}" style="width: 100px;">
+                                <span style="color: red">必须大于等于2</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="td-left">拼团活动开始时间</span>
+                                <div class="oa_cell-right" style="display: inline-block; vertical-align: middle;">
+                                    <div style="width:250px" class="input-prepend input-group">
+                                                                        <span class="add-on input-group-addon">
+                                                                            <i class="glyphicon glyphicon-calendar fa fa-calendar">
+                                                                            </i>
+                                                                        </span>
+                                        <input type="text" is_null="0" id="dtsignstime" autocomplete="off" name="packages[{$selcontent_index}][group_buy][{$groupBuyIndex}][start_at]" class=" select-time td-right" value="{$groupBuy['start_at']}">
+                                    </div>
+                                    <span style="color: red;display: none;" class="dtbirthday_null">(不能为空)
+                                                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="td-left">拼团活动结束时间</span>
+                                <div class="oa_cell-right" style="display: inline-block; vertical-align: middle;">
+                                    <div style="width:250px" class="input-prepend input-group td-right">
+                                                                        <span class="add-on input-group-addon">
+                                                                            <i class="glyphicon glyphicon-calendar fa fa-calendar">
+                                                                            </i>
+                                                                        </span>
+                                        <input type="text" autocomplete="off" id="dtsignstime" name="packages[{$selcontent_index}][group_buy][{$groupBuyIndex}][end_at]" class=" select-time" value="{$groupBuy['end_at']}">
+
+                                    </div>
+                                    <span style="color: red;display: none;" class="dtbirthday_null">(不能为空)
+                                                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="td-left">团购价格</span>
+                                <input class="td-right " type="text" name="packages[{$selcontent_index}][group_buy][{$groupBuyIndex}][group_buy_price]" value="{$groupBuy['group_buy_price']}" style="width: 100px;">
+                                <span style="color: #333">元</span>
+                            </td>
+                        </tr>
+                        <tr class="hidden">
+                            <td>
+                                <span class="td-left">是否允许优惠券</span>
+                                <select name="packages[{$selcontent_index}][group_buy][{$groupBuyIndex}][allow_coupon]"  class="td-right" disabled="disabled" style="width: auto; height: 34px">
+                                    <option value="1" <?=$groupBuy['allow_coupon'] == 1 ? 'selected="selected"' : ''?> >是</option>
+                                    <option value="0" <?=$groupBuy['allow_coupon'] == 0 ? 'selected="selected"' : ''?> >否</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="td-left">时间限制类型</span>
+                                <select name="packages[{$selcontent_index}][group_buy][{$groupBuyIndex}][time_limit_type]" class="td-right time-limit-type" style="width: auto; height: 34px">
+                                    <option value="1" <?=$groupBuy['time_limit_type'] == 1 ? 'selected="selected"' : ''?> >开团固定时间后拼团结束</option>
+                                    <option value="2" <?=$groupBuy['time_limit_type'] == 2 ? 'selected="selected"' : ''?> >拼团活动结束时间到，所有拼团活动立刻停止</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr class="time-limit">
+                            <td>
+                                <span class="td-left">组团时间限制</span>
+                                <input class="td-right " autocomplete="off" <?=$groupBuy['time_limit_type'] == 2 ? 'disabled' : '' ?>  name="packages[{$selcontent_index}][group_buy][{$groupBuyIndex}][time_limit]" type="text" value="{$groupBuy['time_limit']}" style="width: 100px;">
+                                <span style="color: #333">小时</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="td-left">是否允许退款</span>
+                                <select name="packages[{$selcontent_index}][group_buy][{$groupBuyIndex}][allow_refund]"  class="td-right" style="width: auto; height: 34px">
+                                    <option value="1" <?=$groupBuy['allow_refund'] == 1 ? 'selected="selected"' : ''?> >是</option>
+                                    <option value="0" <?=$groupBuy['allow_refund'] == 0 ? 'selected="selected"' : ''?> >否</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="td-left">是否在首页显示</span>
+                                <select name="packages[{$selcontent_index}][group_buy][{$groupBuyIndex}][show_on_homepage]"  class="td-right" style="width: auto; height: 34px">
+                                    <option value="1" <?=$groupBuy['show_on_homepage'] == 1 ? 'selected' : ''?>>是</option>
+                                    <option value="0" <?=$groupBuy['show_on_homepage'] == 0 ? 'selected' : ''?>>否</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                                          <?php  }}?>
+            </div>
+        </li>
+            <?php endforeach;?>
+
+        </div>
+
+        <span onclick="javascript:addSel()" id="tradd">增加</span>
+
+
+        <?php if(empty($datainfo['idactivity'])) {?> <?php } else { ?>  <?php } ?>
+        <input type="button" style="display: none" onclick="javascript:checkdata(0);" value="提交">
+
+        <input type="hidden" id="intflag" name="intflag" value="0" />
+        <?php  if(in_array($datainfo['intflag'],array(1,3)) && !empty($datainfo['idactivity'])){ ?>
+        <input type="button" onclick="javascript:checkdata(0);" value="保存">
+        <?php } ?>
+        <?php if(in_array($datainfo['intflag'],array(2,3,6)) || empty($datainfo['idactivity'])){ ?>
+        <input type="button" onclick="javascript:checkdata(1);" value="提交审批">
+        <?php } ?>
+
+        <?php
+                              if($CheckPurview != false){
+        if(in_array($datainfo['intflag'],array(1,2,3,6)) || empty($datainfo['idactivity'])){ ?>
+        <input type="button" onclick="javascript:checkdata(2);" value="直接发布">
+        <?php } ?>
+        <?php if($datainfo['intflag']==1 && !empty($datainfo['idactivity'])) { ?>
+        <input type="button" onclick="javascript:checkdata(3);" value="审批不通过">
+        <?php }} ?>
+        <?php if($datainfo['intflag']==6 || empty($datainfo['idactivity'])){ ?>
+        <input type="button" onclick="javascript:checkdata(6);" value="保存草稿">
+        <?php } ?>
+
+    </ul>
+
+</form>
+<script>
+    var activitypic=''
+    $(".inputImage").click(function(){
+        activitypic = $(this).attr('name1')
+        $(".docs-buttons").addClass(activitypic)
+        myCrop(activitypic)
+    })
+
+    $(".openpic").click(function(){
+        var picsrc=$(this).attr('picsrc')
+        var img = "<img src='" + picsrc + "' />";
+        layer.open({
+            title:"查看图片",
+            content:img
+        })
+    })
+</script>
+<script type="text/javascript">
+    var content1 = $(".chrcontent").val();
+    var content2 = $(".txtfwtk").val();
+    var ue = UE.getEditor('chrcontent', {
+        initialFrameWidth: "375px", //初化宽度
+        initialFrameHeight: "600px", //初化高度
+        focus: false, //初始化时，是否让编辑器获得焦点true或false
+        maximumWords: 99999, removeFormatAttributes: 'class,style,lang,width,height,align,hspace,valign',//允许的最大字符数 'fullscreen',
+        pasteplain:false, //是否默认为纯文本粘贴。false为不使用纯文本粘贴，true为使用纯文本粘贴
+        autoHeightEnabled: true,
+        toolbars: [
+            ['fullscreen',
+                'cleardoc', //清空文档
+                'source', 'undo', 'redo', 'bold','fontsize','emotion', 'insertimage',
+                'italic', //斜体
+                'underline', //下划线
+                'strikethrough', //删除线
+                'subscript', //下标
+                'fontborder', //字符边框
+                'superscript', //上标
+                'formatmatch', //格式刷
+                'justifyleft', //居左对齐
+                'justifyright', //居右对齐
+                'justifycenter', //居中对齐
+                'justifyjustify', //两端对齐
+                'forecolor', //字体颜色
+                'backcolor', //背景色
+                'preview'
+            ]
+        ],
+    });
+    var ue2 = UE.getEditor('txtfwtk', {
+        initialFrameWidth: "375px", //初化宽度
+        initialFrameHeight: "600px", //初化高度
+        focus: false, //初始化时，是否让编辑器获得焦点true或false
+        maximumWords: 99999, removeFormatAttributes: 'class,style,lang,width,height,align,hspace,valign',//允许的最大字符数 'fullscreen',
+        pasteplain:false, //是否默认为纯文本粘贴。false为不使用纯文本粘贴，true为使用纯文本粘贴
+        autoHeightEnabled: true,
+        toolbars: [
+            ['fullscreen',
+                'cleardoc', //清空文档
+                'source', 'undo', 'redo', 'bold','fontsize','emotion',
+                'italic', //斜体
+                'underline', //下划线
+                'strikethrough', //删除线
+                'subscript', //下标
+                'fontborder', //字符边框
+                'superscript', //上标
+                'formatmatch', //格式刷
+                'justifyleft', //居左对齐
+                'justifyright', //居右对齐
+                'justifycenter', //居中对齐
+                'justifyjustify', //两端对齐
+                'forecolor', //字体颜色
+                'backcolor', //背景色
+                'preview'
+            ]
+        ],
+    });
+
+    //预览
+    function previous() {
+        var content = ue.getContent();
+        layer.open({
+            title:"内容预览",
+            type: 1,
+            skin: 'layui-layer-rim', //加上边框
+            area: ['375px', '600px'], //宽高
+            content: content
+        });
+    }
+    function previous2() {
+        var content2 = ue2.getContent();
+        layer.open({
+            title:"内容预览",
+            type: 1,
+            skin: 'layui-layer-rim', //加上边框
+            area: ['375px', '600px'], //宽高
+            content: content2
+        });
+    }
+    ue.addListener("ready", function () {
+        // editor准备好之后才可以使用
+        ue.setContent(content1,false);
+    });
+    ue2.addListener("ready", function () {
+        // editor准备好之后才可以使用
+        ue2.setContent(content2,false);
+    });
+    $(".dakai").click(function(){
+        // console.log("111"+$("textarea[name = 'chrcontent']").val())
+        // console.log('333'+$("#chrcontent").html())
+        layer.open({
+            shade: 0,
+            type: 1,
+            skin: 'layui-layer-rim', //加上边框
+            area: ['95%', '95%'], //宽高
+            content: $(".chrcontent").html(),
+            zIndex:1,
+            cancel:function(){
+                content1 = ue.getContent();
+                $("textarea[name = 'chrcontent']").val(content1)
+                //console.log(content1)
+                //$("textarea[name = 'chrcontent']").val(content1)
+                // ue.setContent(content1)
+                // console.log($("textarea[name = 'chrcontent']").val())
+            }
+        });
+    })
+    $(".dakai2").click(function(){
+        layer.open({
+            shade: 0,
+            type: 1,
+            skin: 'layui-layer-rim', //加上边框
+            area: ['95%', '95%'], //宽高
+            content: $(".txtfwtk").html(),
+            zIndex:1,
+            cancel:function(){
+                content2 = ue2.getContent();
+                $("textarea[name = 'txtfwtk']").val(content2)
+            }
+        });
+    })
+
+</script>
+<script type="text/javascript" src="__PUBLIC__/static/plugins/photoCut/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/plugins/photoCut/js/cropper.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/plugins/photoCut/js/myCrop.js?v=1.0.4"></script>
+<script type="text/javascript">
+    var fileImg = "";
+    $(function () {
+        $(".imgCutConfirm").bind("click", function () {
+            $(".containerDiv").hide();
+            $(".imgEdit").hide();
+            $(".getCroppedCanvasModal").modal("hide");
+        })
+    })
+
+</script>
+<script>
+    function sel_address(){
+        var lng=$("#chrmaplng").val();
+        var lat=$("#chrmaplat").val();
+        CustomOpen("/static/map/test.php?lng="+lng+"&lat="+lat,"sel_address","选择地址",950,680);
+    }
+    function  checkdata(flag) {
+        if(eval($("#maxage").val()) < eval($("#minage").val())){
+            alert("参与最大年龄不能小于最小年龄");
+            return false;
+        }
+
+        if($("#chrtitle").val()=="")
+        {
+            alert("请输入活动标题");
+            return false;
+        }
+        if($("#fidtype").val()=="")
+        {
+            alert("请选择分类");
+            return false;
+        }
+        var  wntx_sync_status = {$datainfo['wntx_sync_status']};
+        // 已上架和待审核和审核失败
+        if((flag == 2 || flag == 1) && (wntx_sync_status  == 4 || wntx_sync_status  == 1 || wntx_sync_status  == 3)){
+            if(!confirm("由于您修改了产品内容，同步到蜗牛童行的产品已下架，请确认产品内容定稿后再次提交同步请求。")){
+                return false;
+            }
+        }
+        if($("#chkbm").is(":checked")) {
+            try {
+                //如果是直接发布的话
+                if(flag == 2 || flag == 1){
+                    var price = /^(([1-9]\d{0,6})|0)([.]{1}[0-9]{1,2})?$/; //金额
+                    var int =  /^[0-9]*$/;//整数
+                    var int_not_zero = /^[1-9]\d{0,8}$/;
+                    //如果选中可以使用现金券
+                    if($('#chkvolume').is(':checked')){
+                        //最大数量
+                        if(!int.test($('input[name="max_use"]').val()) || $('input[name="max_use"]').val() == ''){
+                            alert("请设置以整数为最大数量");
+                            throw 'error';
+                        }
+                        //最大金额
+                        if(!int.test($('input[name="max_amount"]').val())){
+                            alert("请设置以整数为最大金额");
+                            throw 'error';
+                        }
+                    }
+                    //如果选中可以领取现金券
+                    if($('#chkcash').is(':checked')){
+                        //领券金额
+                        if(!int_not_zero.test($('input[name="activity_cashed_amount"]').val())){
+                            alert("请设置以整数为领券金额");
+                            throw 'error';
+                        }
+                        //有效期
+                        if(!int_not_zero.test($('input[name="activity_cashed_validity"]').val()) || $('input[name="activity_cashed_validity"]').val() == ''){
+                            alert("请设置以整数为有效期");
+                            throw 'error';
+                        }
+                    }
+                    //如果可以分享现金券
+                    if($('#is_share_cashed').is(':checked')){
+                        //设置现金券计划
+                        if($('#cashed_plan_id').val() <= 0){
+                            alert("请选择现金券计划");
+                            throw 'error';
+                        }
+                    }
+
+                    //如果选中开启分销
+                    if($('#is_distribution').is(':checked')){
+                        //海报图片
+                        if($('input[name="distribution_img"]').val() == ''){
+                            alert("请上传分销海报图片");
+                            throw 'error';
+                        }
+                    }
+                }
+
+                if($("#selsignfrom").val() == 0)
+                {
+                    alert("请选择报名模板");
+                    throw 'error';
+                }
+                var index = 1;
+                $('.paytypecontent2').each(function () {
+                    // console.log($(this).find('.member_price'));
+                    var id = $(this).attr('id');
+                    // var index = id === undefined ? 1 : id.replace('selcontent_', '') + 1;
+                    var one_price = /^(([1-9]\d{0,6})|0)([.]{1}[0-9]{1})?$/; //支持一位小数金额
+                    if(index != 0) {
+                        //关键字非空
+                        console.log($(this).find('.keyword1').eq(0).val())
+                        if ($(this).find('.keyword1').eq(0).val() == '') {
+                            alert("套餐" + index + "的关键字1不能为空！");
+                            throw 'error';
+                        }
+                        //会员价非空
+                        if ($(this).find('.member_price').eq(0).val() == '') {
+                            alert("套餐" + index + "的会员价不能为空！");
+                            throw 'error';
+                        }
+
+                        //如果选中开启分销
+                        if ($('#is_distribution').is(':checked')) {
+                            //销售佣金
+                            if (!one_price.test($(this).find('.sell_commission').eq(0).val()) || $(this).find('.sell_commission').eq(0).val() == 0) {
+                                alert("请设置套餐" + index + "的销售佣金字段的值为整数或一位小数！");
+                                throw 'error';
+                            }
+                            //奖励金
+                            if (!one_price.test($(this).find('.bounty_commission').eq(0).val()) || $(this).find('.bounty_commission').eq(0).val() == 0) {
+                                alert("请设置套餐" + index + "的奖励金字段的值为整数或一位小数！");
+                                throw 'error';
+                            }
+                        }
+
+                        //有效期非空
+                        if ($(this).find('.expire_at').eq(0).val() == '') {
+                            alert("套餐" + index + "的有效期不能为空！");
+                            throw 'error';
+                        }
+
+                        //库存非空
+                        if ($(this).find('.package_sum').eq(0).val() == '') {
+                            alert("套餐" + index + "的库存不能为空！");
+                            throw 'error';
+                        }
+                    }
+                    index = index +1;
+
+                });
+            } catch (e) {
+                return false;
+            }
+
+        }
+        if(flag>0)
+        {
+            $("#intflag").val(flag);
+        }
+
+        $("#frm").submit();
+    }
+    function isbm() {
+        if($("#chkbm").is(":checked"))
+        {
+            $("#bm").show();
+        }
+        else
+        {
+            $("#bm").hide();
+        }
+    }
+    isbm();
+    function show_chkpay() {
+        if($('#chkvolume').is(":checked"))
+        {
+            $('#set_volume').show();
+            $('#is_can_receive').show();
+        }
+        else
+        {
+            $('input[name="is_receive_cashed"]').prop('checked',false);
+            $('#set_volume').hide();
+            $('#is_can_receive').hide();
+            $('#set_cash').hide();
+
+        }
+    }
+    //是否可以领取现金券
+    function show_cash() {
+        if($('#chkcash').is(":checked"))
+        {
+            $('#set_cash').show();
+        }
+        else
+        {
+            $('#set_cash').hide();
+        }
+    }
+    //是否可以分享现金券
+    function show_is_share_cashed() {
+        if($('#is_share_cashed').is(":checked"))
+        {
+            $('#set_share_cashed').show();
+        }
+        else
+        {
+            $('#set_share_cashed').hide();
+        }
+    }
+
+    //是否开启分销
+    function show_is_distribution() {
+        //如果选中了的话   让其分销海报和销售奖金和奖励金的选项显示
+        if($('#is_distribution').is(":checked"))
+        {
+            $('#distribution_img_tr').show();
+            $('#sell_commission').show();
+            $('#bounty_commission').show();
+            $('.sell_commission').show();
+            $('.bounty_commission').show();
+        }
+        else
+        {
+            $('#distribution_img_tr').hide();
+            $('#sell_commission').hide();
+            $('#bounty_commission').hide();
+            $('.sell_commission').hide();
+            $('.bounty_commission').hide();
+
+        }
+    }
+    var index_sel={$selcontent_index + 2};
+    function addSel(){
+        // console.log(index_sel);
+        var li=$("<li>").attr("class","data paytypecontent2")
+        var tdLeft = $('<div>').addClass('tit').html('套餐' + index_sel).appendTo(li);
+        var tdRight = $('<div>').addClass('txt').attr('id', 'selcontent_' + index_sel).appendTo(li);
+        var input = $("#selcontent_1>input").clone();
+
+        input.each(function () {
+            $(this).val('').attr('name', $(this).attr('name').replace('[0]', '[' + index_sel + ']')).css({'margin-right': '3px'});
+        });
+
+        tdRight.append(input);
+        tdRight.children('.keyword1').before("关键字1(必填)")
+        tdRight.children('.keyword2').before("关键字2")
+        tdRight.children('.original_price').before("市场价")
+        tdRight.children('.member_price').before("会员价(单位/元)")
+        tdRight.children('.cost_price').before("成本价(单位/元)")
+        if (tdRight.children('.sell_commission').css("display") !='none'){
+            tdRight.children('.sell_commission').before("销售佣金")
+            tdRight.children('.bounty_commission').before("奖励金")
+        }
+        tdRight.children('.expire_at').before("有效期(必填)")
+        tdRight.children('.package_sum').before("库存(0为不限，-1为已售罄)")
+        //库存默认为0
+        tdRight.children('.package_sum').eq(0).val(0);
+        // 删除按钮绑定特定参数和方法
+        tdRight.children('input[type=button][name=del]').val('删除').attr('onclick', 'delpaytype(' + index_sel + ');');
+        // 拼团按钮绑定特定参数和方法
+        // 不要问index_sel怎么算的，问就自杀
+        tdRight.children('input[type=button][name=addAssemble]').val('拼团').attr('index', index_sel);
+        //新增套餐删除套餐id字段
+        tdRight.children('.package_id').remove();
+
+        $("#tradd").before(li);
+
+        //为有效期输入框添加选择日期事件
+        selectTime1(tdRight.children('.expire_at').eq(0), "YYYY-MM-DD");
+        index_sel++;
+    }
+
+    function delpaytype(index){
+
+        var obj = $('#selcontent_'+index+'');
+        var packageId = obj.find('.package_id');
+        if(packageId.length === 1)
+        {
+            $.ajax({
+                url: "{:url('activity/deletePackage')}",
+                data: {
+                    package_id: packageId.eq(0).val(),
+                    activity_id: "{$datainfo['idactivity']}"
+                },
+                type: 'post',
+                dataType: 'json',
+                success: function (result) {
+                    if(result.status === 'success')
+                    {
+                        obj.parent().remove();
+                        alert(result.msg);
+                    }else
+                    {
+                        alert(result.msg);
+                    }
+                },
+                error: function () {
+                    alert('删除失败');
+                }
+            });
+        }else if($('.paytypecontent2').length > 1)
+        {
+            obj.parent().remove();
+        }
+    }
+
+    //获取城市
+    function getChild(t,selected,child_id,url1){
+        var parent_id = t;
+        if(!parent_id > 0){
+            //return;
+        }
+        $('#twon').empty().css('display','none');
+        var url = url1+'/level/2/parent_id/'+ parent_id+"/selected/"+selected;
+        $.ajax({
+            type : "GET",
+            url  : url,
+            error: function(request) {
+                alert("服务器繁忙, 请联系管理员!");
+                return;
+            },
+            success: function(v) {
+                v = '<option value="0">请选择</option>'+ v;
+                $('#'+child_id).empty().html(v);
+            }
+        });
+
+    }
+
+    // 添加拼团
+    $(document).on("click", "input[name=addAssemble]",function () {
+        var package_index = $(this).attr('index');
+        var group_buy_index = 0;
+        if($(this).siblings('table').length > 0)
+        {
+            group_buy_index = Number($(this).siblings('table').last().attr('index')) + 1;
+        }
+        var assContent = $("#ass-table").clone().css('display', 'block').attr('index', group_buy_index).removeAttr('id');
+        assContent.find('.td-right').each(function () {
+            var name = $(this).attr('name').replace('[package_index]', '[' + package_index + ']').replace('[group_buy_index]', '[' + group_buy_index + ']')
+            $(this).attr('name', name);
+            if($(this).hasClass('select-time'))
+            {
+                selectTime($(this), "YYYY-MM-DD HH:mm:ss");
+            }
+        });
+        $(this).parent("div").append(assContent);
+    });
+
+    // 拼团时间限制类型
+    $(document).on('change', '.time-limit-type', function () {
+        if($(this).val() == 1)
+        {
+            $(this).parents('tr').siblings('.time-limit').eq(0).find('input').removeAttr('disabled');
+        }else
+        {
+            $(this).parents('tr').siblings('.time-limit').eq(0).find('input').attr('disabled', 'disabled');
+        }
+    });
+
+    // 删除拼团
+
+    $(document).on("click",".delete-group-buy",function () {
+        var groupBuyId = $(this).parents(".ass-table").find('.group-buy-id');
+        //var groupBuyId=$(this).parent().parent().parent().find('.group-buy-id')
+        var belongTable =$(this).parents(".ass-table");
+        //console.log(groupBuyId.val())
+        //询问框
+        layer.confirm('您确定要删除此拼团？', {
+            btn: ['确认','取消'] //按钮
+        }, function(){
+            if(groupBuyId.length == 1 && groupBuyId.val() != 0)
+            {
+                $.ajax({
+                    type:'post',
+                    data: {
+                        'group_buy_id': groupBuyId.val(),
+                        'idsite':"{$idsite}"
+                    },
+                    url: "/{$sitecode}/deleteGroupBuy",
+                    success:function(res)
+                    {
+                        if(res.status === 'success')
+                        {
+                            belongTable.remove();
+                            layer.msg(res.msg, {icon: 1})
+                        }else {
+                            layer.msg(res.msg, {icon: 2})
+                        }
+                    }
+                });
+            }else{
+                belongTable.remove();
+                layer.closeAll()
+            }
+
+        }, function(){
+            return 1;
+        });
+
+    });
+
+
+
+</script>
+
+<table class="ass-table" id="ass-table" style="margin-left:20px; display: none; ">
+    <tr>
+        <td style="width: 766px">
+            <span class="td-left">拼团方案</span>
+            <input type="checkbox" value="true" name="packages[package_index][group_buy][group_buy_index][state]" class="chooseBtn activity_checkbox td-right">
+            <label  class="choose-label" style="margin: 0; vertical-align: middle;"></label>
+            <input class="delete-group-buy" type="button" value="删除" style="margin: 0; float: right; padding-left: 6px;padding-right:6px;">
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <span class="td-left">成团商品数量</span>
+            <input class="td-right activity_checkbox" type="text" name="packages[package_index][group_buy][group_buy_index][group_num]" value="" style="width: 100px;">
+            <span style="color: red">必须大于等于2</span>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <span class="td-left">拼团活动开始时间</span>
+            <div class="oa_cell-right" style="display: inline-block; vertical-align: middle;">
+                <div style="width:250px" class="input-prepend input-group ">
+                    <span class="add-on input-group-addon">
+                        <i class="glyphicon glyphicon-calendar fa fa-calendar">
+                        </i>
+                    </span>
+                    <input type="text" is_null="0" autocomplete="off" name="packages[package_index][group_buy][group_buy_index][start_at]" class="activity_checkbox select-time td-right" value="">
+                </div>
+                <span style="color: red;display: none;" class="dtbirthday_null">(不能为空)
+                </span>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <span class="td-left">拼团活动结束时间</span>
+            <div class="oa_cell-right" style="display: inline-block; vertical-align: middle;">
+                <div style="width:250px" class="input-prepend input-group">
+                    <span class="add-on input-group-addon">
+                        <i class="glyphicon glyphicon-calendar fa fa-calendar">
+                        </i>
+                    </span>
+                    <input type="text" autocomplete="off" name="packages[package_index][group_buy][group_buy_index][end_at]" class="activity_checkbox select-time td-right" value="">
+                </div>
+                <span style="color: red;display: none;" class="dtbirthday_null">(不能为空)
+                </span>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <span class="td-left">团购价格</span>
+            <input class="td-right activity_checkbox" type="text" name="packages[package_index][group_buy][group_buy_index][group_buy_price]" value="" style="width: 100px;">
+            <span style="color: #333">元</span>
+        </td>
+    </tr>
+    <tr class="hidden">
+        <td>
+            <span class="td-left">是否允许优惠券</span>
+            <select name="packages[package_index][group_buy][group_buy_index][allow_coupon]"  class="activity_checkbox" disabled="disabled" style="width: auto; height: 34px">
+                <option value="1" >是</option>
+                <option value="0" >否</option>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <span class="td-left">时间限制类型</span>
+            <select name="packages[package_index][group_buy][group_buy_index][time_limit_type]" class="activity_checkbox time-limit-type td-right" style="width: auto; height: 34px">
+                <option value="1" >开团固定时间后拼团结束</option>
+                <option value="2" >拼团活动结束时间到，所有拼团活动立刻停止</option>
+            </select>
+        </td>
+    </tr>
+    <tr class="time-limit">
+        <td>
+            <span class="td-left">组团时间限制</span>
+            <input class="td-right activity_checkbox" autocomplete="off" name="packages[package_index][group_buy][group_buy_index][time_limit]" type="text" value="" style="width: 100px;">
+            <span style="color: #333">小时</span>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <span class="td-left">是否允许退款</span>
+            <select name="packages[package_index][group_buy][group_buy_index][allow_refund]"  class="activity_checkbox td-right" style="width: auto; height: 34px">
+                <option value="1" >是</option>
+                <option value="0" selected>否</option>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <span class="td-left">是否在首页显示</span>
+            <select name="packages[package_index][group_buy][group_buy_index][show_on_homepage]"  class="activity_checkbox td-right" style="width: auto; height: 34px">
+                <option value="1" >是</option>
+                <option value="0" selected>否</option>
+            </select>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

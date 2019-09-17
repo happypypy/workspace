@@ -1,0 +1,655 @@
+<?php
+/*
+ * @Descripttion: 预约对象模型 
+ * @version: v1.0
+ * @Author: ChenJie
+ * @Date: 2019-07-08 16:27:07
+ * @LastEditors: ChenJie
+ * @LastEditTime: 2019-07-24 10:10:34
+ */
+
+namespace app\admin\module;
+
+use think\Model;
+use think\Page;
+use think\Exception;
+use think\Db;
+
+class Subscribe extends Model{
+    /**
+     * 获取预约对象列表
+     *
+     * @param array $data
+     * @return array
+     * @author Chenjie
+     * @Date 2019-07-08 16:39:08
+     */
+    public function index($param){
+        $map = ['siteid'=>session('idsite')];
+        $object_name = isset($param['object_name']) ? rtrim($param['object_name']) : '';
+        $category_id =  isset($param['category_id']) ? intval($param['category_id']) : 0;
+        $start_time = isset($param['start_time']) ? strtotime($param['start_time']) : '';
+        $end_time = isset($param['end_time']) ? strtotime($param['end_time']." 23:59:59") : '';
+
+        if($object_name){
+            $map['object_name'] = ['like','%'.$object_name.'%'];
+        }
+
+        if($category_id){
+            $map['category_id'] = $category_id;
+        }
+
+        if($start_time && $end_time){
+            $map['start_time'] = ['egt', $start_time];
+            $map['end_time'] = ['elt', $end_time];
+        }
+
+        $total_record = db('subscribe_object')->where($map)->count();
+        $datalist = db('subscribe_object')->where($map)->page($param['p'],PAGE_SIZE)->order('id desc')->select();
+
+        $page = new Page($total_record,PAGE_SIZE);
+
+        return ['page' => $page, 'datalist' => $datalist];
+    }
+    /**
+     * 预约对象新增/编辑
+     *
+     * @return bool|string
+     * @author Chenjie
+     * @Date 2019-07-09 10:28:01
+     */
+    public function object_edit($param){
+        $id = isset($param['id']) ? intval($param['id']) : 0;
+        $advance_day = isset($param['advance_day']) ? intval($param['advance_day']) : 0;  // 提前天数
+        $data = [
+            'object_name' => isset($param['object_name']) ? rtrim($param['object_name']) : '',
+            'category_id' => isset($param['category_id']) ? intval($param['category_id']) : 0,
+            'category_name' => isset($param['category_name']) ? rtrim($param['category_name']) : '',
+            'max_number' => isset($param['max_number']) ? intval($param['max_number']) : 0,
+            'min_number' => isset($param['min_number']) ? intval($param['min_number']) : 0,
+            'advance_day' => $advance_day,
+            'is_auditing' => isset($param['is_auditing']) ? intval($param['is_auditing']) : 0,
+            'start_time' => isset($param['start_time']) ? strtotime($param['start_time']) : 0,
+            'end_time' => isset($param['end_time']) ? strtotime($param['end_time']) : 0,
+            'is_enable' => isset($param['is_enable']) ? intval($param['is_enable']) : 0,
+            'description' => isset($param['description']) ? rtrim($param['description']) : '',
+        ];
+
+        Db::startTrans();
+        try{
+            if($id){
+                // 更新对象信息
+                db('subscribe_object')->where('id',$id)->update($data);
+                // 清空场次信息
+                db('subscribe_session')->where('subscribe_object_id',$id)->delete();
+            }else{
+                $data['siteid'] = session('idsite');
+                $data['create_time'] = time();
+                $id = db('subscribe_object')->insertGetId($data);
+            }
+            // 循环写入场次信息
+            if(isset($param['spec_item'])){
+                foreach($param['spec_item'] as $spec){
+                    $data2 = [
+                        'siteid' => session('idsite'),
+                        'session_key' =>  isset($spec['session_key'][0]) ? $spec['session_key'][0] : '',
+                        'session_name' =>  isset($spec['session_name'][0]) ? $spec['session_name'][0] : '',
+                        'subscribe_object_id' => $id,
+                        'subscribe_object_name' => $data['object_name'],
+                        'start_time' => isset($param['start_time']) ? strtotime($param['start_time'].'+'.$advance_day.'day') : 0,
+                        'end_time' => isset($param['end_time']) ? strtotime($param['end_time']) : 0,
+                        'advance_day' => $advance_day,
+                        'min_number' => isset($spec['min_number'][0]) ? $spec['min_number'][0] : 0,
+                        'max_number' => isset($spec['max_number'][0]) ? $spec['max_number'][0] : 0,
+                        'subscribe_number' => 0,
+                        'week' => isset($spec['week'][0]) ? $spec['week'][0] : '',
+                        'period' => isset($spec['period'][0]) ? $spec['period'][0] : '',
+                        'place' => isset($spec['place'][0]) ? $spec['place'][0] : '',
+                        'is_enable' => isset($spec['is_enable'][0]) ? $spec['is_enable'][0] : 0,
+                        'create_time' => time(),
+                    ];
+                    db('subscribe_session')->insert($data2);
+                }
+            }
+            $session_hash = isset($param['session_hash']) ? trim($param['session_hash']) : '';
+            db('spec_item')->where('session_hash',$session_hash)->setField("subscribe_object_id",$id);
+            Db::commit();
+            $result = true;
+        }catch(Exception $e){
+            $result = $e->getMessage();
+            Db::rollback();
+        }
+        return $result;
+    }
+    
+    /**
+     * 复制预约对象
+     *
+     * @param int $id
+     * @return bool|string
+     * @author Chenjie
+     * @Date 2019-07-22 11:06:46
+     */
+    public function copy_object($id){
+        $subscribe_object = db('subscribe_object')->field('id',true)->where('id',$id)->find();
+        $subscribe_session = (array)db('subscribe_session')->field('id',true)->where('subscribe_object_id',$id)->select();
+        $spec_item = (array)db('spec_item')->field('id',true)->where('subscribe_object_id',$id)->select();
+
+        $result = false;
+        Db::startTrans();
+        try{
+            // 修改对象创建时间
+            $subscribe_object['create_time'] = time();
+            // 复制项目数据
+            $object_id = db('subscribe_object')->insertGetId($subscribe_object);
+            // 修改场次项目ID
+            $subscribe_session = array_field_modify($subscribe_session,[['field'=>'subscribe_object_id','value'=>$object_id],['field'=>'create_time','value'=>time()]]);
+            // 复制场次数据
+            db('subscribe_session')->insertAll($subscribe_session);
+            // 修改规格项目ID
+            $spec_item = array_field_modify($spec_item,['field'=>'subscribe_object_id','value'=>$object_id]);
+            // 复制规格数据
+            db('spec_item')->insertAll($spec_item);
+            $result = true;
+            Db::commit();
+        }catch(Exception $e){
+            $result = $e->getMessage();
+            Db::rollback();
+        }
+        return $result;
+    }
+    /**
+     * 预约对象删除
+     *
+     * @param array $param
+     * @return bool
+     * @author Chenjie
+     * @Date 2019-07-09 12:01:40
+     */
+    public function object_delete($param){
+        $result = false;
+        $id = isset($param['id']) ? $param['id'] : 0;
+        $result = false;
+        try{
+            $ids = explode(',',$id);
+            if(count($ids) > 0){
+                db('subscribe_object')->whereIn('id',$ids)->delete();
+                db('subscribe_session')->whereIn('subscribe_object_id',$ids)->delete();
+                db('spec_item')->whereIn('subscribe_object_id',$ids)->delete();
+            }
+            $result = true;
+        }catch(Exception $e){
+            $result = false;
+        }
+        return $result;
+    }
+    /**
+     * 增加规格
+     *
+     * @param array $param
+     * @return int 规格项ID
+     * @author Chenjie
+     * @Date 2019-07-16 15:15:26
+     */
+    public function addspecitem($param){
+        $data = [
+            'specid' => isset($param['specid']) ? intval($param['specid']) : 0,
+            'column' => isset($param['column']) ? intval($param['column']) : 0,
+            'subscribe_object_id' => isset($param['object_id']) ? $param['object_id'] : 0,
+            'name' => isset($param['name']) ? trim($param['name']) : 0,
+            'siteid' => session('idsite') ?: 0,
+            'session_hash' => isset($param['session_hash']) ? $param['session_hash'] : 0,
+        ];
+        return db('spec_item')->insertGetId($data);
+    }
+    /**
+     * 删除规格项
+     *
+     * @return void
+     * @author Chenjie
+     * @Date 2019-07-23 16:50:59
+     */
+    public function delspecitem($itemid){
+        return db('spec_item')->where('id',$itemid)->delete();
+    }
+    /**
+     * 自动增加周期
+     *
+     * @return bool|int
+     * @author Chenjie
+     * @Date 2019-07-17 11:21:50
+     */
+    public function autoAddwwek($session_hash){
+        $weekArray = ['周一','周二','周三','周四','周五','周六','周日'];
+        foreach($weekArray as $key => $week){
+            $data[] = [
+                'specid' => 2,
+                'column' => $key,
+                'subscribe_object_id' => 0,
+                'name' => $week,
+                'siteid' => session('idsite') ?: 0,
+                'session_hash' => $session_hash
+            ];
+        }
+        return db('spec_item')->insertAll($data);
+    }
+    /**
+     * 获取预约对象分类
+     *
+     * @return bool|array
+     * @author Chenjie
+     * @Date 2019-07-08 16:38:50
+     */
+    public function get_work_content(){
+        return db('work_content')->field('id,name')->where(['idsite'=>session('idsite'),'bookcode'=>'yyfl'])->select();
+    }
+
+    //取规格
+    public function getSpec()
+    {
+        return db('spec')->field('id,name')->select();
+    }
+
+    //取规格项
+    public function getSpecItem($session_hash = 0,$object_id = 0)
+    {
+        $map = ['siteid'=>session('idsite')];
+        if($session_hash){
+            $map['session_hash'] = $session_hash;
+        }else{
+            $map['subscribe_object_id'] = $object_id;
+        }
+
+        $arr=[];
+        $tb= db('spec_item')->where($map)->field('id,specid,name,is_selected')->select();
+        foreach ($tb as $k => $vo)
+        {
+            $arr[$vo['specid']][]=$vo;
+        }
+        return $arr;
+    }
+    /**
+     * 根据ID获取预约对象
+     *
+     * @return array
+     * @author Chenjie
+     * @Date 2019-07-09 11:21:08
+     */
+    public function get_subscribe_object_by_id($id){
+        return db('subscribe_object')->where('id',$id)->find();
+    }
+
+    /**
+     * 会员卡列表
+     *
+     * @return array
+     * @author Chenjie
+     * @Date 2019-07-12 10:24:46
+     */
+    public function member_cart($param){
+        $map = ['siteid'=>session('idsite')];
+        $cart_type = $param['cart_type'];
+        $chrname = $param['chrname'];
+        $mobile = $param['mobile'];
+        $member_cart_no = $param['member_cart_no'];
+        $start_time = $param['start_time'];
+        $end_time = $param['end_time'];
+        $overdue = $param['overdue'];
+        
+        if($cart_type){
+            $map['cart_type'] = $cart_type;
+        }
+        if($chrname){
+            $map['member_nickname'] = ["like","%{$chrname}%"];
+        }
+        if($mobile){
+            $map['mobile'] = $mobile;
+        }
+        if($member_cart_no){
+            $map['member_cart_no'] = $member_cart_no;
+        }
+        if($start_time && $end_time){
+            $map['start_time'] = ['elt',strtotime($end_time." 23:59:59")];
+            $map['end_time'] = ['egt',strtotime($end_time)];
+        }
+
+        if($overdue == 0){
+            $map['end_time'] = ['egt',time()];
+        }else{
+            $map['end_time'] = ['elt',time()];
+        }
+
+        $total_record = db('subscribe_member_cart')->where($map)->count();
+        $datalist = db('subscribe_member_cart')->where($map)->page($param['p'],PAGE_SIZE)->select();
+
+        $page = new Page($total_record,PAGE_SIZE);
+        
+        return ['page'=>$page, 'datalist'=>$datalist];
+    }
+    /**
+     * 获取会员信息
+     *
+     * @return array
+     * @author Chenjie
+     * @Date 2019-07-12 13:47:00
+     */
+    public function member_list($param){
+        $map = ['idsite'=>session('idsite')];
+        $member_id = $param['member_id'];
+        $chrname = $param['chrname'];
+        $nickname = $param['nickname'];
+        $mobile = $param['mobile'];
+
+        if($member_id){
+            $map['idmember'] = $member_id;
+        }
+        if($chrname){
+            $map['chrname'] = $chrname;
+        }
+        if($nickname){
+            $map['nickname'] = $nickname;
+        }
+        if($mobile){
+            $map['chrtel'] = $mobile;
+        }
+
+        $total_record = db('member')->where($map)->count();
+        $datalist = db('member')->where($map)->page($param['p'],PAGE_SIZE)->select();
+
+        $page = new Page($total_record, PAGE_SIZE);
+
+        return ['page' => $page, 'datalist' => $datalist];
+    }
+
+    /**
+     * 允许场次列表
+     *
+     * @return array
+     * @author Chenjie
+     * @Date 2019-07-12 16:03:02
+     */
+    public function session_list($param){
+        $total_record = db('subscribe_session')->count();
+        $datalist = db('subscribe_session')->where(['siteid'=>session('idsite'),'is_enable'=>1])->page($param['p'], PAGE_SIZE)->select();
+
+        $page = new Page($total_record, PAGE_SIZE);
+        return ['page'=>$page, 'datalist'=>$datalist];
+    }
+    /**
+     * 获取场次列表
+     *
+     * @param array $id_list
+     * @return array
+     * @author Chenjie
+     * @Date 2019-07-13 10:16:02
+     */
+    public function related_session_list($session_key_list){
+        $map = [];
+        $object_ids = [];
+        $session_keys = [];
+        foreach($session_key_list as $value){
+            $session_param = explode("-", $value);
+            $object_id = $session_param[0];
+            if(!in_array($object_id,$object_ids)){
+                $object_ids[] = $object_id;
+            }
+
+            $session_key = '';
+            foreach($session_param as $key=>$value){
+                if($key !== 0){
+                    $session_key .= $value. "-";
+                }
+            }
+            $session_key = rtrim($session_key,"-");
+            $session_keys[] = $session_key;
+        }
+        $map = [
+            'subscribe_object_id' => ['in', $object_ids],
+            'session_key' => ['in', $session_keys]
+        ];
+        return db('subscribe_session')->where($map)->select();
+    }
+    /**
+     * 会员卡编辑
+     *
+     * @return bool
+     * @author Chenjie
+     * @Date 2019-07-13 15:19:33
+     */
+    public function member_cart_edit($param){
+        $member_cart_id = isset($param['id']) ? $param['id'] : 0;
+        $session_key_list = !empty($param['session_content']) ? explode(",", $param['session_content']) : [];
+        $data = [
+            'siteid' => session('idsite') ?: 0,
+            'member_cart_no' => isset($param['member_cart_no']) ? $param['member_cart_no'] : '',
+            'member_cart_name' => isset($param['member_cart_name']) ? $param['member_cart_name'] : '',
+            'member_id' => isset($param['member_id']) ? intval($param['member_id']) : 0,
+            'member_nickname' => isset($param['member_nickname']) ? $param['member_nickname'] : '',
+            'mobile' => isset($param['mobile']) ? $param['mobile'] : '',
+            'start_time' => isset($param['start_time']) ? strtotime($param['start_time']) : 0,
+            'end_time' => isset($param['end_time']) ? strtotime($param['end_time']) : 0,
+            'cart_type' => isset($param['cart_type']) ? intval($param['cart_type']) : 0,
+            'available_number' => isset($param['available_number']) ? intval($param['available_number']) : 0,
+            'account_id' => session("AccountID") ?: 0,
+            'chrname' => session("UserName") ?: 0,
+            'ip' => getip(),
+        ];
+
+        Db::startTrans();
+        try{
+            // 修改会员卡数据
+            if($member_cart_id){
+                db('subscribe_member_cart')->where('id',$member_cart_id)->update($data);
+            }
+            // 新增会员卡数据
+            else{
+                $data['create_time'] = time();
+                $member_cart_id = db('subscribe_member_cart')->insertGetId($data);
+            }
+            // 清空可预约场次
+            db('subscribe_allow_session')->where(['member_cart_id'=>$member_cart_id])->delete();
+            // 循环添加可预约场次
+            foreach($session_key_list as $session_key){
+                db('subscribe_allow_session')->insert(['member_cart_id'=>$member_cart_id,'session_key'=>$session_key]);
+            }
+            Db::commit();
+            $resutl = true;
+        }catch(Exception $e){
+            // 错误回滚
+            $resutl = true;
+            Db::rollback();
+        }
+        return $resutl;
+    }
+
+    /**
+     * 根据ID获取会员卡
+     *
+     * @return array
+     * @author Chenjie
+     * @Date 2019-07-15 10:15:51
+     */
+    public function get_member_cart_by_id($id){
+        $member_cart = db('subscribe_member_cart')->where('id', $id)->find();
+        $session_key_list = db('subscribe_allow_session')->where(['member_cart_id' => $member_cart['id']])->column('session_key');
+        $map = [];
+        $object_ids = [];
+        $session_keys = [];
+        foreach($session_key_list as $value){
+            $session_param = explode("-", $value);
+            $object_id = $session_param[0];
+            if(!in_array($object_id,$object_ids)){
+                $object_ids[] = $object_id;
+            }
+
+            $session_key = '';
+            foreach($session_param as $key=>$value){
+                if($key !== 0){
+                    $session_key .= $value. "-";
+                }
+            }
+            $session_key = rtrim($session_key,"-");
+            $session_keys[] = $session_key;
+        }
+        $map = [
+            'subscribe_object_id' => ['in',$object_ids],
+            'session_key' => ['in',$session_keys]
+        ];
+        $allow_session_list = db('subscribe_session')->where($map)->select();
+        $member_cart['allow_session_list'] = $allow_session_list;
+        $member_cart['session_content'] = '\''.implode("','",$session_key_list).'\'';
+        return $member_cart;
+    }
+
+    /**
+     * 会员卡删除
+     *
+     * @param int $id
+     * @return bool
+     * @author Chenjie
+     * @Date 2019-07-15 14:44:01
+     */
+    public function membercartdelete($id){
+        $id_list = explode(',',$id);
+        $bool = false;
+        if(count($id_list) > 0){
+            $bool = db('subscribe_member_cart')->where('id','in',$id_list)->delete();
+        }
+        return $bool;
+    }
+    /**
+     * 预约记录
+     *
+     * @return array
+     * @author Chenjie
+     * @Date 2019-07-15 15:55:14
+     */
+    public function subscriberecord($param){
+        $page = isset($param['p']) ? $param['p'] : 1;
+        $map = ['siteid'=>session('idsite')];
+        
+        // 预约编号
+        $subscribe_no = $param['subscribe_no'];
+        if($subscribe_no){
+            $map['subscribe_no'] = $subscribe_no;
+        }
+
+        // 用户名称
+        $member_nickanme = $param['member_nickanme'];
+        if($member_nickanme){
+            $map['member_nickanme'] = ['like',"%{$member_nickanme}%"];
+        }
+
+        // 预约对象名称
+        $subscribe_object_name = $param['subscribe_object_name'];
+        if($subscribe_object_name){
+            $map['subscribe_object_name'] = ['like',"%{$subscribe_object_name}%"];
+        }
+
+        // 预约场次名称
+        $subscribe_session_name = $param['subscribe_session_name'];
+        if($subscribe_session_name){
+            $map['subscribe_session_name'] = ['like',"%{$subscribe_session_name}%"];
+        }
+
+        // 是否签到
+        $is_signin = $param['is_signin'];
+        if($is_signin != -1){
+            $map['is_signin'] = $is_signin;
+        }
+
+        // 时间范围
+        $start_time = strtotime($param['start_time']);
+        $end_time = strtotime($param['end_time']." 23:59:59");
+        if($start_time && $end_time){
+            $map['create_time'] = ['between',[$start_time,$end_time]];
+        }
+
+        $subscribe_session_name = $param['subscribe_session_name'];
+        if($subscribe_no){
+            $map['subscribe_session_name'] = ['like',"%{$subscribe_session_name}%"];
+        }
+
+        $total_record = db('subscribe_record')
+                            ->where($map)
+                            ->page($page,PAGE_SIZE)
+                            ->count();
+
+        $datalist = db('subscribe_record')
+                        ->where($map)
+                        ->page($page,PAGE_SIZE)
+                        ->select();
+                        
+        $page = new Page($total_record,PAGE_SIZE);
+        return ['page'=>$page, 'datalist'=>$datalist];
+    }
+
+    /**
+     * 根据ID获取会员卡详情
+     *
+     * @param int $id
+     * @return array
+     * @author Chenjie
+     * @Date 2019-07-15 17:09:22
+     */
+    public function membercartdetail($id){
+        return db('subscribe_member_cart')->where('id',$id)->find();
+    }
+    /**
+     * 根据对象ID获取对象详情
+     *
+     * @return array
+     * @author Chenjie
+     * @Date 2019-07-15 17:11:01
+     */
+    public function objectdetail($id){
+        return db('subscribe_object')->where('id',$id)->find(); 
+    }
+    /**
+     * 根据ID获取会员详情
+     *
+     * @param int $id
+     * @return array
+     * @author Chenjie
+     * @Date 2019-07-15 17:12:16
+     */
+    public function memberdetail($id){
+        return db('member')->where('idmember',$id)->find();
+    }
+    /**
+     * 根据ID获取预约记录详情
+     *
+     * @param int $id
+     * @return array
+     * @author Chenjie
+     * @Date 2019-07-15 17:32:47
+     */
+    public function recorddetail($id){
+        return db('subscribe_record')->where('id',$id)->find();
+    }
+    /**
+     * 预约记录签到
+     *
+     * @return array
+     * @author Chenjie
+     * @Date 2019-07-16 09:27:31
+     */
+    public function recordsignin($param){
+        $id = isset($param['id']) ? intval($param['id']) : 1;
+        // 如果已经签到
+        $is_signin = db('subscribe_record')->where('id',$id)->value("is_signin");
+        if($is_signin == 1){
+            return 2;
+        }
+        // 如果未签到则签到
+        $data = [
+            'is_signin' => 1,
+            'signin_member_id' => session('AccountID'),
+            'signin_member_nickname' => session('UserName'),
+            'signin_way' => 3,
+            'signin_remark' => isset($param['signin_remark']) ? $param['signin_remark'] : '',
+            'signin_time' => time(),
+        ];
+        return db('subscribe_record')->where('id',$id)->update($data);
+    }
+}

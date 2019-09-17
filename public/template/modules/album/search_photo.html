@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport"
+        content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+    <title>功能介绍</title>
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+
+    <script type="text/javascript" src="/static/modules/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/static/modules/js/swiper.min.js"></script>
+    <script type="text/javascript" src="/static/modules/js/common.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/modules/style/css/swiper.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/modules/style/css/common.css">
+    <link rel="stylesheet" type="text/css" href="/static/modules/style/css/pc.css">
+    <style>
+        .comment-list {
+            flex-direction: column;
+            background: #e7e7e7;
+        }
+
+        .comment-list ul {
+            width: 99%;
+            position: relative;
+        }
+
+        .comment-list ul li {
+            background: #fff;
+            padding: 1px;
+            transition: 0.25s;
+            overflow: hidden;
+            position: absolute;
+        }
+
+        .comment-list ul li.noword {
+            flex: 0 0 100% ;
+            font-size: 0.14rem;
+            color: #999;
+            background: #e7e7e7;
+            line-height: 0.32rem;
+            padding: 0 0 0 0.1rem;
+            margin-bottom: 0;
+            border-radius: 4px;
+        }
+
+        .comment-list ul li .pic {
+            margin-bottom: 1px;
+        }
+
+        .comment-list ul li .pic>img {
+            width: 100%;
+            height: auto;
+        }
+
+
+        .comment-list ul li .headPic>img {
+            border-radius: 50%;
+            margin-right: 1px;
+        }
+
+
+        .comment-list ul li .info .date {
+            flex-wrap: nowrap;
+            justify-content: space-between;
+        }
+
+        .leftbar {
+            position: fixed;
+            width: 30%;
+            background: #000;
+            opacity: 0.7;
+            height: 100%;
+            top: 0;
+            left: -30%;
+            overflow-y: auto;
+        }
+
+        .leftbar-inner {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding-top: 0.8rem;
+            color: #fff;
+            overflow: hidden;
+        }
+
+        .leftbar-inner>li {
+            font-size: 14px;
+            line-height: 30px;
+        }
+
+        .leftbar-inner>li.on {
+            background: #fff;
+            color: #333;
+        }
+
+        .leftbar-inner>li>a {
+            display: block;
+            width: 100%;
+            color: #fff;
+        }
+        .identify-wrap{
+            padding: 0.1rem;
+            display: flex;
+        }
+        .avatar{
+            width: 0.6rem;
+            height: 0.6rem;
+            border-radius: 50%;
+            border: 2px solid #eee;
+            margin-right: 0.1rem;
+            overflow: hidden;
+        }
+        .avatar>img{
+            width: 0.6rem;
+            height: 0.6rem;
+        }
+        .avatar-txt{
+            font-size: 0.16rem;
+            color: #333;
+            line-height: 0.6rem;
+        }
+        .avatar-tit{
+            font-size: 0.14rem;
+            color: #333;
+            padding-bottom: 0.05rem;
+            padding-left: 0.1rem;
+        }
+    </style>
+
+</head>
+
+<body>
+    {include file="modules/lib/header" /}
+    <div class="site-section clearfix">
+        <div class="where jigou">
+            <p>图片列表</p>
+            <a href="/{$sitecode}" class="iconfont">&#xe617;</a>
+        </div>
+        <div class="identify-wrap">
+            <div class="avatar">
+                <img src="{$face_url}" alt="">
+            </div>
+            <div class="avatar-txt">你认识Ta吗</div>        
+        </div>
+        <div class="avatar-tit">Ta在本次活动中的照片</div>
+        <div class="layui-tab-content" style="padding:0px;">
+
+            <div class="layui-tab-item layui-show">
+                <div class="comment-list flex" style="padding-bottom:20px;background:#e7e7e7;">
+                    <ul>
+                        <?php  if(!$result_data) { ?>
+                        <li class="noword">没有相关的图片</li>
+                        <?php }
+            foreach($result_data as $k=>$val){ ?>
+                        <li>
+                            
+                            <a
+                                href="/{$sitecode}/searchphoto/<?php echo explode('_',$val['group_id'])[1]; ?>/<?php echo explode('_',$val['user_id'])[1]; ?>?key={$k}&face_url={$face_url}">
+                                <div class="pic"><img src="{$val.user_info}"></div>
+                            </a>
+                        </li>
+                        <?php } ?>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--<ul class="common-list" id="dataload" style="display: none">-->
+    <!--<li id="loadmsg" >数据加载中。。。</li>-->
+    <!--</ul>-->
+    {include file="modules/lib/footer0" /}
+</body>
+<script language="JavaScript">
+    $(function () {
+        $(".classify-choose select").change(
+            function () {
+                $("#frm").submit();
+            });
+    });
+    $('.iconfont').click(function () {
+
+        $("#frm").submit();
+
+    })
+</script>
+<script type="text/javascript" src="/static/js/layer/layer.js"></script>
+<script type="text/javascript">
+
+    //==============核心代码=============
+    var winH = $(window).height(); //页面可视区域高度
+
+    var ipage = 2;
+    var scrollHandler = function () {
+        var pageH = $(document).height();
+        var scrollT = $(window).scrollTop(); //滚动条top
+
+        if (pageH - winH - scrollT < 1) {
+            LoadData(ipage)
+            ipage++;
+        }
+    }
+    //定义鼠标滚动事件
+    $(window).scroll(scrollHandler);
+    //==============核心代码=============
+
+    function LoadData(ipage) {
+
+        $("#dataload").show();
+        $(window).unbind('scroll');
+
+        var zxbq = $('select[name=\"zxbqid\"]').val()
+        var keyword = $('.pintuan-search-in').val()
+        $.ajax({
+            url: "/tongxiang/node/1071/" + ipage + "?&ajax=1",
+            type: 'POST',
+            data: { "zxbq": zxbq, 'keyword': keyword },
+            cache: false,
+            success: function (data) {
+
+                if (data == 11) {
+                    $("#dataload").hide();
+                    // $("#loadmsg").html("已无更多数据");
+                    return;
+                }
+                $("#dataload").hide();
+                $("#data").html($("#data").html() + data);
+                $(window).scroll(scrollHandler);
+            }
+        });
+
+    }
+
+    //瀑布流效果
+    //这里有一个坑（已经修复）：
+    //因为是动态加载远程图片，在未加载完全无法获取图片宽高
+    //未加载完全就无法设定每一个item(包裹图片)的top。
+
+    //item的top值：第一行：top为0
+    //            其他行：必须算出图片宽度在item宽度的缩小比例，与获取的图片高度相乘，从而获得item的高度
+    //                   就可以设置每张图片在瀑布流中每块item的top值（每一行中最小的item高度，数组查找）
+    //item的left值：第一行：按照每块item的宽度值*块数
+    //             其他行：与自身上面一块的left值相等
+    function waterFall() {
+        // 1- 确定图片的宽度 - 滚动条宽度
+        pageWidth = $(".comment-list ul").width();//父盒子宽度
+        var columns = 2; //2列
+        var rowSpaces = 1; //每列的间隙
+        var colSpaces = 1; //每行的间隙
+        var itemWidth = parseInt((pageWidth - rowSpaces) / columns); //得到item的宽度
+        $(".comment-list ul li").innerWidth(itemWidth); //设置到item的宽度
+
+        var arr = [];
+
+        $(".comment-list ul li").each(function (i) {
+            var height = $(this).outerHeight();
+
+            var width = $(this).outerWidth();
+
+            var bi = itemWidth / width; //获取缩小的比值
+            var boxheight = parseInt(height * bi) + colSpaces; //图片的高度*比值 = item的高度。boxheight是下个item的top值
+            if (i < columns) {
+                // 2- 确定第一行
+                $(this).css({
+                    top: 0,
+                    left: (itemWidth) * i + rowSpaces * (i + 1)
+                });
+                arr.push(boxheight);
+
+            } else {
+                // 其他行
+                // 3- 找到数组中最小高度  和 它的索引
+                var minHeight = arr[0];
+                var index = 0;
+                for (var j = 0; j < arr.length; j++) {
+                    if (minHeight > arr[j]) {
+                        minHeight = arr[j];
+                        index = j;
+                    }
+                }
+                // 4- 设置下一行的第一个盒子位置
+                // top值就是最小列的高度
+                $(this).css({
+                    top: arr[index],
+                    left: $(".comment-list ul li").eq(index).css("left")
+                });
+
+                // 5- 修改最小列的高度
+                // 最小列的高度 = 当前自己的高度 + 拼接过来的高度
+                arr[index] = arr[index] + boxheight;
+            }
+            $('.comment-list ul').css('minHeight', Math.max.apply(null, arr));
+        });
+    }
+
+
+    //clientWidth 处理兼容性
+    function getClient() {
+        return {
+            width: window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth,
+            height: window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
+        }
+    }
+
+
+
+    // 页面尺寸改变时实时触发
+    window.onresize = function () {
+        //重新定义瀑布流
+        waterFall();
+    };
+
+    //初始化
+    window.onload = function () {
+        //实现瀑布流
+        waterFall();
+    }
+
+
+    //侧边栏选择时间代码
+    var timeNum = 3;//定义无操作后侧边栏几秒后消失
+    var time = 0;
+    var status = 0;
+    var couldRun = true;//防止事件频繁触发
+    $(document).scroll(function () {
+        if (couldRun) {
+            couldRun = false;
+            time = timeNum;
+            $(".leftbar").stop(0).animate({ left: "0" }, 100);
+            if (status == 0) {
+                subtime();
+            }
+            setTimeout(function () {
+                couldRun = true;
+            }, 500);
+        }
+
+    })
+    $('.leftbar').scroll(function () {
+        if (couldRun) {
+            couldRun = false;
+            time = timeNum;
+            if (status == 0) {
+                subtime();
+            }
+            setTimeout(function () {
+                couldRun = true;
+            }, 500);
+        }
+    })
+
+    function subtime() {
+        status = 1;
+        if (time < 0) {
+            status = 0;
+            $(".leftbar").stop(0).animate({ left: "-30%" }, 100);
+            return;
+        }
+        else {
+            time--;
+        }
+
+        setTimeout(() => {
+            subtime();
+        }, 1000);
+    }
+
+    function abc(id) {
+        window.location.href = "#" + id;
+        var T = $(window).scrollTop(); //滚动条top
+        var H = $('header').height();
+        $(window).scrollTop(T - H);
+    }
+
+    $(function () {
+        var click_quick = null;
+        var last_scroll_num = 0;
+        var w_height = $(window).height();
+        var liHeight = $('.leftbar-inner>li.time-option').height();
+        $(window).scroll(function () {
+            var w_top = $(window).scrollTop();
+            $('.comment-list>ul>li[id^=20]').each(function (i) {
+                var flag;
+                if ($(this).offset().top - 140 >= w_top) {
+
+                    flag = click_quick !== null ? click_quick : i - 1;
+                    // 滚动了才会触发清除点击项记录
+                    if (last_scroll_num != w_top && w_top > 0) {
+                        click_quick = null;
+                    }
+
+                    $(".leftbar-inner>li.time-option:eq(" + (flag - 1) + ")").addClass('on').siblings().removeClass('on');
+                    var r = $(".leftbar-inner>li.time-option:eq(" + (flag) + ")").position().top - w_height + 120;
+                    var b = Math.ceil(r / liHeight);
+                    if (r > 0) {
+                        $('.leftbar-inner').stop(0).animate({ 'top': b * -liHeight });
+                    }
+                    last_scroll_num = w_top;
+                    return false;
+                }
+            })
+        })
+        // 点击导航锚点时记录点击项
+        $(".leftbar-inner").on('click', 'li.time-option', function () {
+            click_quick = $(this).index();
+            // 触发一次事件 防止最后几个都在页尾 点击时没有高亮到点击的锚点
+            $(window).triggerHandler('scroll');
+        });
+    })
+</script>
+
+</html>

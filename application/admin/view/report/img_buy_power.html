@@ -1,0 +1,92 @@
+<input type="hidden" id="echart_img_buy_power" value='{$list.echart}'>
+<div style="min-width:1350px;overflow-x:auto;white-space:nowrap;">
+    <div class="oa_text-list clearfix"
+        style="margin-bottom: 40px;border-left: 0;width: 35%; min-width: 580px;border-right: 1px solid grey;padding-right: 60px;float: left">
+        <div id="main_img_buy_power" style="height: 600px;background-color: #cdcdcd "></div>
+    </div>
+    <div class="oa_text-list clearfix"
+        style="margin-bottom: 40px;border-left: 0;width: 40%;min-width: 620px;padding-left: 60px;float: left;">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" style="table-layout:fixed;margin-top: 40px">
+            <tr class="oa_text-list-title">
+                <th width="80"><span class="oa_arr-text-list-title"></span>月份</th>
+                <?php if(isset($list['echart_normal']['img_buy_power'][1]) && !empty($list['echart_normal']['img_buy_power'][1])){
+                                                foreach($list['echart_normal']['img_buy_power'][1] as $key=>$val){
+                        ?>
+                <th><span class="oa_arr-text-list-title"></span>{$val}</th>
+                <?php }} ?>
+                <!--<th><span class="oa_arr-text-list-title"></span>2月</th>-->
+                <!--<th><span class="oa_arr-text-list-title"></span>3月</th>-->
+                <!--<th><span class="oa_arr-text-list-title"></span>4月</th>-->
+                <!--<th><span class="oa_arr-text-list-title"></span>5月</th>-->
+                <!--<th><span class="oa_arr-text-list-title"></span>6月</th>-->
+                <!--<th><span class="oa_arr-text-list-title"></span>7月</th>-->
+                <!--<th><span class="oa_arr-text-list-title"></span>8月</th>-->
+                <!--<th><span class="oa_arr-text-list-title"></span>9月</th>-->
+                <!--<th><span class="oa_arr-text-list-title"></span>10月</th>-->
+                <!--<th><span class="oa_arr-text-list-title"></span>11月</th>-->
+                <!--<th><span class="oa_arr-text-list-title"></span>12月</th>-->
+            </tr>
+            <?php if(isset($list['echart_normal']['img_buy_power'][2][0]) && !empty($list['echart_normal']['img_buy_power'][2][0])){
+    
+                    ?>
+            <!--去年购买人数-->
+            <tr>
+                <td>{$list['echart_normal']['img_buy_power'][0][0]}</td>
+                <?php foreach($list['echart_normal']['img_buy_power'][2][0] as $key=>$val){ ?>
+                <td>
+                    <a
+                        href="javascript:CustomOpen('{:url('report/getUserList','start_time='.$list['last_year_num'][1][$key].'&end_time='.$list['last_year_num'][2][$key].'&origin=buy_power&order_type=num','')}','activity','用户列表',1000,600)">{$val}</a>
+                </td>
+                <?php } ?>
+            </tr>
+            <?php } ?>
+    
+            <!--去年购买数量-->
+            <?php if(isset($list['echart_normal']['img_buy_power'][2][0]) && !empty($list['echart_normal']['img_buy_power'][2][0])){
+    
+                    ?>
+            <tr>
+                <td>{$list['echart_normal']['img_buy_power'][0][1]}</td>
+                <?php foreach($list['echart_normal']['img_buy_power'][2][1] as $key=>$val){ ?>
+                <td>
+                    <a
+                        href="javascript:CustomOpen('/admin/order/index?dtstart={$list['last_year_num'][1][$key]}&dtend={$list['last_year_num'][2][$key]}&intflag=5&origin=report','activity','订单列表',1000,600)">{$val}</a>
+                </td>
+                <?php } ?>
+            </tr>
+            <?php } ?>
+    
+            <!--今年购买人数-->
+            <?php if(isset($list['echart_normal']['img_buy_power'][2][0]) && !empty($list['echart_normal']['img_buy_power'][2][0])){
+    
+                    ?>
+            <tr>
+                <td>{$list['echart_normal']['img_buy_power'][0][2]}</td>
+                <?php foreach($list['echart_normal']['img_buy_power'][2][2] as $key=>$val){ ?>
+                <td>
+                    <a
+                        href="javascript:CustomOpen('{:url('report/getUserList','start_time='.$list['year_num'][1][$key].'&end_time='.$list['year_num'][2][$key].'&origin=buy_power&order_type=num','')}','activity','用户列表',1000,600)">{$val}</a>
+                </td>
+                <?php } ?>
+            </tr>
+            <?php } ?>
+    
+            <!--今年购买数量-->
+            <?php if(isset($list['echart_normal']['img_buy_power'][2][0]) && !empty($list['echart_normal']['img_buy_power'][2][0])){
+    
+                    ?>
+            <tr>
+                <td>{$list['echart_normal']['img_buy_power'][0][3]}</td>
+                <?php foreach($list['echart_normal']['img_buy_power'][2][3] as $key=>$val){ ?>
+                <td>
+                    <a
+                        href="javascript:CustomOpen('/admin/order/index?dtstart={$list['year_num'][1][$key]}&dtend={$list['year_num'][2][$key]}&intflag=5&origin=report','activity','订单列表',1000,600)">{$val}</a>
+                </td>
+                <?php } ?>
+            </tr>
+            <?php } ?>
+        </table>
+    </div>
+</div>
+
+        <div style="clear:both;"></div>

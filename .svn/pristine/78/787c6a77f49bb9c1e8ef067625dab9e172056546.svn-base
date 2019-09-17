@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+    <script src="__PUBLIC__/static/template/pub/js/common.js"></script>
+    <link rel="stylesheet" href="__PUBLIC__/static/template/pub/css/main.css?v={:time()}">
+    <link rel="stylesheet" href="__PUBLIC__/static/template/skin/M1/css/skin.css?v={:time()}">
+  
+    <title>报名列表</title>
+</head>
+
+<body class="flexCol">
+  {include file="modules/lib/header" /}
+  <section class="section">
+
+    <div class="select-bar">
+      <ul class="select-bar-tab flex">
+        <li class="active on">
+          <span>全部报名</span>
+        </li>
+        <li><span>未开始</span></li>
+        <li><span>已结束</span></li>
+      </ul>
+      <div class="select-wrapper">
+        <div class="select-list">
+          <div class="select-item">
+            <ul>
+              <li>全部报名</li>
+              {volist name="$order_state" id="vo" key="key"}
+              <li>{$vo}</li>
+              {/volist}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <form id="frm">
+      <div class="search-bar">
+        <div class="search-bar-inner">
+          <input class="search-bar-input" placeholder="请输入关键字搜索" name="keyword" value="">
+          <span class="iconfont search-bar-span">&#xe61c;</span>
+        </div>
+      </div>
+    </form>
+
+    <div class="common-wrap">
+      <ul id="data" class="common-list">
+        {empty name="list"}
+        <li class="list-item no-data">没找到相关报名信息~</li>
+        {/empty}
+        {volist name="list" id="vo"}
+        <li class="list-item  flex">
+          <div class="list-item-img"><img src="{$vo.chrimg}"></div>
+          <div class="list-item-txt flexCol">
+            <div class="info title fontColor flex">{$vo.chrtitle}</div>
+            <div class="price info flex">
+              <div class="tit">价格</div>：
+              <div class="txt">{$vo.price}</div>
+            </div>
+            <div class="state info flex">
+                <div class="tit">状态</div>：
+                <div class="txt fontColor">{$order_state[$vo['state']]}</div>
+            </div>
+            {if condition="checkedMarketingPackage($idsite, 'group_buy') && !empty($vo.group_buy_order_state_name)"}
+            <div class="state info flex">
+              <div class="tit">状态</div>：
+              <div class="txt fontColor">{$vo.group_buy_order_state_name}</div>
+            </div>
+            {/if}
+            <div class="time info flex">
+              <div class="tit">购买时间</div>：
+              <div class="txt">{$vo.dtcreatetime}</div>
+            </div>
+            <div class="time info flex">
+              <div class="tit">产品使用时间</div>：
+              <div class="txt">{$vo.dtstart}~{$vo.dtend}</div>
+            </div>
+            <div class="btns-right">
+              <input class="several-btn1" type="button" value="订单详情" onclick="location.href='/{$sitecode}/orderdetail/{$vo.id}'">
+              {if condition="$vo.state==4 && $vo.isrefund==1  && $vo.issign!=1"}
+              <input class="several-btn6" type="button" value="申请退款" onclick="refund({$vo.id})">
+              {/if}
+              {if condition="$is_cashed && $vo['state']==4 && $vo['share_plan_id'] > 0"}
+              <input class="several-btn3" type="button" value="分享现金券" onclick="location.href='/{$sitecode}/share/{$vo.id}/0'">
+              {/if}
+              {if condition="$vo['state']==12 && $vo['stock_locked'] ==1"}
+              <input class="several-btn6" type="button" value="取消订单" onclick="cancel_order({$vo.id})" style="display: none">
+              {/if}
+              {if condition="$vo['state']==10 && empty($vo['group_buy_order_state_name'])"}
+              <input class="several-btn5" type="button" value="重新下单" onclick="location.href='/{$sitecode}/againorder/{$vo.id}'" style="display: none">
+              {/if}
+              {if condition="checkedMarketingPackage($idsite, 'group_buy') && !empty($vo['group_buy_order_id']) && $vo['group_buy_order_state'] != 0 && $vo['group_buy_order_state'] != 4"}
+              <input class="several-btn4" type="button" value="拼团情况" onclick="location.href='/{$sitecode}/group_buy_share/{$vo.group_buy_order_id}/{$userid}'" style="display: none">
+              {/if}
+            </div>
+          </div>
+        </li>
+        {/volist}
+      </ul>
+      <div class="load"><span id="dataload" class="iconfont iconload">&#xe618;</span></div>
+    </div>
+  </section>
+  
+  <footer class="footer">
+  </footer>
+
+  <script src="__PUBLIC__/static/template/pub/js/jquery.min.js"></script>
+  <script src="__PUBLIC__/static/template/pub/js/menu.js"></script>
+  <script>
+    //取消订单
+    function cancel_order(id)
+    {
+        $.ajax({
+            url: "/{$sitecode}/cancelorder/"+id,
+            type: 'POST',
+            cache: false,
+            dataType:"json",
+            success : function(data) {
+                alert(data.msg);
+                location.reload();
+            }
+        });
+    }
+
+    //tab栏下拉菜单
+    var optionHtml = $('.select-bar-tab li.active').html();
+    $('.select-bar-tab li').click(function () {
+      var index = $(this).index();
+      if ($(this).hasClass('active')) {
+        $(this).toggleClass('fontColor').addClass('on').siblings().removeClass('on');
+        $('.select-list').stop().slideToggle().children('.select-item').stop().slideToggle();
+      } else {
+        $(this).addClass('on').siblings().removeClass('on');
+        $('.select-bar-tab li.active').removeClass('fontColor on').children('span').html(optionHtml);
+        $('.select-list').stop().slideUp().children('.select-item').stop().slideUp();
+      }
+    })
+
+    $('.select-item li').click(function () {
+      $(this).parents('.select-list,.select-item').slideUp(0);
+      $('.select-bar-tab li.active').removeClass('fontColor').children('span').html($(this).html());
+    })
+
+
+    // 页面滚动
+    //滚动条滚动到指定位置触发下面事件
+    var getDiv_md = $(".select-bar");
+    var offSet = getDiv_md.offset().top + 20;
+    // console.log(offSet);
+    $(window).scroll(function () {
+      if ($(window).scrollTop() > offSet) {
+        $(".select-bar").css({ "position": "fixed", "left": "0px", "top": "0px" });
+        $('header').slideUp(100);
+      } else {
+        $(".select-bar").css({ "position": "", "left": "0px", "top": "" });
+        $('header').slideDown(100);
+      }
+    })
+
+    /* 退款模块显示 */
+    function refund(id) {
+      $("#orderid").val(id);
+      $(".footer-comment-form").show();
+    }
+    
+    /* 上传图片提示 */
+    function getfilename() {
+      var file = $('.fileLabel input[type = "file"]').val();
+      var pos = file.lastIndexOf("\\");
+      var _name = file.substring(pos + 1);
+      $('.fileLabel span').html(_name);
+    }
+
+    //==============核心代码=============
+    var winH = $(window).height(); //页面可视区域高度
+
+    var ipage = 1;
+    var scrollHandler = function () {
+        var pageH = $(document).height();
+        var scrollT = $(window).scrollTop(); //滚动条top
+
+        if (pageH - winH - scrollT < 1) {
+            LoadData(ipage)
+            ipage++;
+        }
+    }
+    //定义鼠标滚动事件
+    $(window).scroll(scrollHandler);
+    //==============核心代码=============
+
+    function LoadData(ipage) {
+        $("#dataload").show();
+        $(window).unbind('scroll');
+        // var state = $('input[name="states"]').val();
+        $.ajax({
+            url: "/{$sitecode}/signuplist/{$state}",
+            type: 'POST',
+            cache: false,
+            data: { "ipage": ipage, "ajax": 1 },
+            success: function (data) {
+
+                if (data == 11) {
+                    $("#dataload").hide();
+                    // $("#loadmsg").html("已无更多数据");
+                    return;
+                }
+                $("#dataload").hide();
+                $("#data").html($("#data").html() + data);
+                $(window).scroll(scrollHandler);
+            }
+        });
+
+    }
+  </script>
+</body>
+
+</html>

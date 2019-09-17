@@ -1,0 +1,490 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: admin
+ * Date: 2017/12/14
+ * Time: 11:26
+ */
+
+namespace app\admin\controller;
+use think\Request;
+use think\Page;
+
+
+class Distribution extends Basesite {
+
+    /**
+     * 海报模板设置
+     * @return mixed
+     * @throws \think\Exception
+     * @throws \think\exception\DbException
+     */
+    public function index(){
+        if($this->CMS->CheckPurview('distribution_img_set')==false){
+            $this->error('无权限');
+        }
+
+        $obj = new \app\admin\module\Distribution(session('idsite'));
+        $data = Request::instance()->param();
+//        echo session("UserName");exit;
+        if (Request::instance()->isPost()) {
+//            var_dump($data);exit;
+            $bool = $obj->distribution_img_set($data);
+            if($bool !== false){
+                $this->success('操作成功');
+            }else{
+                $this->error('操作失败');
+            }
+            exit();
+        }
+        $result = $obj->distribution_img_set($data);
+        $this->assign('datainfo',$result);
+        return $this->fetch();
+    }
+
+    /**
+     * 可代言的产品列表
+     * @return mixed
+     * @throws \think\Exception
+     * @throws \think\exception\DbException
+     */
+    public function spokesman_activity(){
+        if($this->CMS->CheckPurview('spokesman_activity','view')==false){
+            $this->error('无权限');
+        }
+
+        $request = Request::instance()->param();
+        $obj = new \app\admin\module\Distribution(session('idsite'));
+
+        $arr = $obj->spokesman_activity($request);
+
+        $data = $arr['data'];
+        $page = $arr['pager'];
+
+        $this->assign('search',$arr['search']);
+        $this->assign('page',$page);
+        $this->assign('data',$data);
+        $this->assign('sitecode',getSiteCode(session('idsite')));
+        return $this->fetch();
+    }
+
+    /**
+     * 结算办理记录
+     * @return mixed
+     * @throws \think\Exception
+     * @throws \think\exception\DbException
+     */
+    public function balance_record(){
+        if($this->CMS->CheckPurview('balance_record')==false){
+            $this->error('无权限');
+        }
+
+        $request = Request::instance()->param();
+        $obj = new \app\admin\module\Distribution(session('idsite'));
+        $arr = $obj->balance_record($request);
+        $data = $arr['data'];
+        $page = $arr['pager'];
+
+        $this->assign('search',$arr['search']);
+        $this->assign('page',$page);
+        $this->assign('data',$data);
+        $this->assign('sitecode',getSiteCode(session('idsite')));
+        return $this->fetch();
+    }
+
+    /**
+     * 结算办理记录导出
+     */
+    public function balance_record_export()
+    {
+
+        $request = Request::instance()->param();
+        $obj = new \app\admin\module\Distribution(session('idsite'));
+        $arr = $obj->balance_record($request);
+        $list = $arr["data"];
+        $audit_state = array('1'=>'待审批','5'=>'已审批','10'=>'审批不通过');
+        ob_clean();
+
+        //2.加载PHPExcle类库
+        require_once dirname(__FILE__) . '/../../../extend/PHPExcel/PHPExcel.php';
+        //3.实例化PHPExcel类
+        $objPHPExcel = new \PHPExcel();
+        $PHPSheet = $objPHPExcel->getActiveSheet();
+        //5.设置表格头（即excel表格的第一行）
+        $PHPSheet
+            ->setCellValue('A1', '申请人')
+            ->setCellValue('B1', '微信号')
+            ->setCellValue('C1', '手机号码')
+            ->setCellValue('D1', '结算金额（元）')
+            ->setCellValue('E1', '申请时间')
+            ->setCellValue('F1', '状态')
+            ->setCellValue('G1', '审批人')
+            ->setCellValue('H1', '审批时间')
+            ->setCellValue('I1', '备注信息');
+
+        $model = array();
+
+        //设置单元格宽度
+        $objPHPExcel->setActiveSheetIndex(0)->getColumnDimension('A')->setWidth(25);
+        $objPHPExcel->setActiveSheetIndex(0)->getColumnDimension('B')->setWidth(25);
+        $objPHPExcel->setActiveSheetIndex(0)->getColumnDimension('C')->setWidth(25);
+        $objPHPExcel->setActiveSheetIndex(0)->getColumnDimension('D')->setWidth(25);
+        $objPHPExcel->setActiveSheetIndex(0)->getColumnDimension('E')->setWidth(40);
+        $objPHPExcel->setActiveSheetIndex(0)->getColumnDimension('F')->setWidth(25);
+        $objPHPExcel->setActiveSheetIndex(0)->getColumnDimension('H')->setWidth(40);
+        $objPHPExcel->setActiveSheetIndex(0)->getColumnDimension('I')->setWidth(80);
+        for($i=75;$i<85;$i++){
+            $objPHPExcel->setActiveSheetIndex(0)->getColumnDimension(strtoupper(chr($i)))->setWidth(25);
+        }
+//        for($i=0)
+        $len = count($list);
+        for ($i = 0; $i < $len; $i++) {
+            $PHPSheet->setCellValue('A' . ($i + 2), $list[$i]['u_chrname']);//申请人
+            $PHPSheet->setCellValue('B' . ($i + 2), $list[$i]['wechat_number']);//微信号
+            $PHPSheet->setCellValue('C' . ($i + 2), $list[$i]['u_chrtel']);//手机号码
+            $PHPSheet->setCellValue('D' . ($i + 2), $list[$i]['balance_amount']);//结算金额（元）
+            $PHPSheet->setCellValue('E' . ($i + 2), $list[$i]['create_time']);//申请时间
+            $PHPSheet->setCellValue('F' . ($i + 2), $audit_state[$list[$i]['audit_status']]);//状态
+            $PHPSheet->setCellValue('G' . ($i + 2), $list[$i]['audit_account_chrname']);//审批人
+            $PHPSheet->setCellValue('H' . ($i + 2), $list[$i]['audit_time']);//审批时间
+            $PHPSheet->setCellValue('I' . ($i + 2), $list[$i]['audit_remark']);//备注信息
+
+        }
+
+
+        //7.设置保存的Excel表格名称
+
+        //8.设置当前激活的sheet表格名称；
+        $objPHPExcel->getActiveSheet()->setTitle( "结算列表信息");
+
+        //4.激活当前的sheet表
+        $objPHPExcel->setActiveSheetIndex(0);
+        //9.设置浏览器窗口下载表格
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        $filename = urlencode("结算列表信息") . date('ymd', time()) . '.xlsx';
+        header("Content-Disposition: attachment;filename=$filename");
+
+        //生成excel文件
+        $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+        //下载文件在浏览器窗口
+        $objWriter->save('php://output');
+        exit;
+    }
+
+    /**
+     * 审批和查看详情页面处理
+     * @return mixed
+     * @throws \think\Exception
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * @throws \think\exception\PDOException
+     */
+    public function modi(){
+        $obj = new \app\admin\module\Distribution(session('idsite'));
+        $data = Request::instance()->param();
+        if($this->CMS->CheckPurview('balance_record',$data['action'])==false){
+            $this->NoPurview();
+        }
+//        echo session("UserName");exit;
+        if (Request::instance()->isPost()) {
+            $result = $obj->postData($data);
+            if($result['success']){
+                $this->success('操作成功',PUBLIC_URL.'postsuccess.html');
+            }else{
+                $this->error("{$result['message']}");
+            }
+            exit();
+        }
+        $result = $obj->deal($data);
+        $this->assign('datainfo',$result);
+        return $this->fetch();
+    }
+
+    /**
+     * 分销用户管理
+     * @return mixed
+     * @throws \think\Exception
+     * @throws \think\exception\DbException
+     */
+    public function spokesman_list(){
+        if($this->CMS->CheckPurview('spokesman_list')==false){
+            $this->error('无权限');
+        }
+
+        $request = Request::instance()->param();
+//        var_dump($request);
+        $obj = new \app\admin\module\Distribution(session('idsite'));
+        $arr = $obj->spokesman_list($request);
+        $data = $arr['data'];
+        $page = $arr['pager'];
+
+        $this->assign('search',$arr['search']);
+        $this->assign('page',$page);
+        $this->assign('data',$data);
+        $this->assign('u_chrname',$arr['u_chrname']);
+        $this->assign('sitecode',getSiteCode(session('idsite')));
+        return $this->fetch();
+    }
+
+    /**
+     * 分销用户管理导出
+     */
+    public function spokesman_list_export() {
+
+        $request = Request::instance()->param();
+//        var_dump($request);exit;
+        $obj = new \app\admin\module\Distribution(session('idsite'));
+        $arr = $obj->spokesman_list($request);
+        $list = $arr["data"];
+        $leavel = array('无','I','II');
+
+        $order_state = config('order_state');
+        ob_clean();
+
+        //游玩日期	状态	报名人	是否签到	活动名称	订单号	购买套餐	购买数量	总金额	退款金额	支付时间	短信码
+        //2.加载PHPExcle类库
+        require_once dirname(__FILE__) . '/../../../extend/PHPExcel/PHPExcel.php';
+        //3.实例化PHPExcel类
+        $objPHPExcel = new \PHPExcel();
+        $PHPSheet = $objPHPExcel->getActiveSheet();
+        //5.设置表格头（即excel表格的第一行）
+        $PHPSheet
+            ->setCellValue('A1', '代言人编号(ID)')
+            ->setCellValue('B1', '代言人姓名')
+            ->setCellValue('C1', '微信号')
+            ->setCellValue('D1', '微信昵称')
+            ->setCellValue('E1', '手机号码')
+            ->setCellValue('F1', '活动代言总个数')
+            ->setCellValue('G1', '总报名/未付款/已付款/已退款')
+            ->setCellValue('H1', '总佣金(元)')
+            ->setCellValue('I1', '已结算(元)')
+            ->setCellValue('J1', '可结算(元)')
+            ->setCellValue('K1', '加入时间')
+            ->setCellValue('L1', '所属等级')
+            ->setCellValue('M1', '所属上级姓名');
+
+        $model = array();
+
+        //设置单元格宽度
+        $objPHPExcel->setActiveSheetIndex(0)->getColumnDimension('A')->setWidth(25);
+        $objPHPExcel->setActiveSheetIndex(0)->getColumnDimension('B')->setWidth(15);
+        $objPHPExcel->setActiveSheetIndex(0)->getColumnDimension('C')->setWidth(15);
+        $objPHPExcel->setActiveSheetIndex(0)->getColumnDimension('D')->setWidth(20);
+        $objPHPExcel->setActiveSheetIndex(0)->getColumnDimension('E')->setWidth(15);
+        $objPHPExcel->setActiveSheetIndex(0)->getColumnDimension('F')->setWidth(20);
+        $objPHPExcel->setActiveSheetIndex(0)->getColumnDimension('G')->setWidth(30);
+        $objPHPExcel->setActiveSheetIndex(0)->getColumnDimension('H')->setWidth(15);
+        $objPHPExcel->setActiveSheetIndex(0)->getColumnDimension('I')->setWidth(15);
+        $objPHPExcel->setActiveSheetIndex(0)->getColumnDimension('J')->setWidth(15);
+        $objPHPExcel->setActiveSheetIndex(0)->getColumnDimension('K')->setWidth(15);
+        $objPHPExcel->setActiveSheetIndex(0)->getColumnDimension('L')->setWidth(25);
+        for ($i = 75; $i < 85; $i++) {
+            $objPHPExcel->setActiveSheetIndex(0)->getColumnDimension(strtoupper(chr($i)))->setWidth(25);
+        }
+//        for($i=0)
+        $len = count($list);
+        for ($i = 0; $i < $len; $i++) {
+            $PHPSheet->setCellValue('A' . ($i + 2), $list[$i]['idmember']); //代言人编号(ID)
+            $PHPSheet->setCellValue('B' . ($i + 2), $list[$i]['u_chrname']); //代言人姓名
+            $PHPSheet->setCellValue('C' . ($i + 2), $list[$i]['wechat_number']); //微信号
+            $PHPSheet->setCellValue('D' . ($i + 2), $list[$i]['nickname']); //微信昵称
+            $PHPSheet->setCellValue('E' . ($i + 2), $list[$i]['u_chrtel']); //手机号码
+            $PHPSheet->setCellValue('F' . ($i + 2), $list[$i]['spokesman_activity_num']); //活动代言总个数
+            $PHPSheet->setCellValue('G' . ($i + 2), $list[$i]['total'].'/'.$list[$i]['no_pay'].'/'.$list[$i]['spokesman_pay_num'].'/'.$list[$i]['refund']); //总报名/未付款/已付款/已退款
+            $PHPSheet->setCellValue('H' . ($i + 2), $list[$i]['total_commission']); //总佣金(元)
+            $PHPSheet->setCellValue('I' . ($i + 2), $list[$i]['already_commission']); //已结算(元)
+            $PHPSheet->setCellValue('J' . ($i + 2), $list[$i]['can_commission']); //可结算(元)
+            $PHPSheet->setCellValue('K' . ($i + 2), $list[$i]['spokesman_time']); //加入时间
+            $PHPSheet->setCellValue('L' . ($i + 2), $leavel[$list[$i]['spokesman_grade']]); //所属等级
+            $PHPSheet->setCellValue('M' . ($i + 2), $list[$i]['parent_u_chrname']); //所属上级姓名
+        }
+
+        //7.设置保存的Excel表格名称
+
+        //8.设置当前激活的sheet表格名称；
+        $objPHPExcel->getActiveSheet()->setTitle("分销用户信息");
+
+        //4.激活当前的sheet表
+        $objPHPExcel->setActiveSheetIndex(0);
+        //9.设置浏览器窗口下载表格
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        $filename = urlencode("分销用户信息") . date('ymd', time()) . '.xlsx';
+        header("Content-Disposition: attachment;filename=$filename");
+
+        //生成excel文件
+        $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+        //下载文件在浏览器窗口
+        $objWriter->save('php://output');
+        exit;
+    }
+
+    /**
+     * 活动代言明细列表
+     * @return mixed
+     * @throws \think\Exception
+     * @throws \think\exception\DbException
+     */
+    public function spokesman_activity_detail_list(){
+        if($this->CMS->CheckPurview('spokesman_activity_detail')==false){
+            $this->error('无权限');
+        }
+
+        $request = Request::instance()->param();
+        $obj = new \app\admin\module\Distribution(session('idsite'));
+        $arr = $obj->spokesman_activity_detail_list($request);
+        $data = $arr['data'];
+        $page = $arr['pager'];
+
+        $this->assign('search',$arr['search']);
+        $this->assign('page',$page);
+        $this->assign('data',$data);
+        $this->assign('u_chrname',$arr['u_chrname']);
+        $this->assign('sitecode',getSiteCode(session('idsite')));
+        return $this->fetch();
+    }
+
+    /**
+     * 代言人订单明细
+     * @return mixed
+     * @throws \think\Exception
+     * @throws \think\exception\DbException
+     */
+    public function spokesman_order(){
+        if($this->CMS->CheckPurview('spokesman_order')==false){
+            $this->error('无权限');
+        }
+
+        $request = Request::instance()->param();
+        $obj = new \app\admin\module\Distribution(session('idsite'));
+
+        $arr = $obj->spokesman_order($request);
+        $data = $arr['data'];
+        $page = $arr['pager'];
+
+        $this->assign('search',$arr['search']);
+        $this->assign('page',$page);
+        $this->assign('data',$data);
+        $this->assign('order_state',config('order_state'));
+        $this->assign('order_state_color',config('order_state_color'));
+        $this->assign('u_chrname',$arr['u_chrname']);
+        return $this->fetch();
+    }
+
+    /**
+     * 查看订单详情
+     * @return mixed
+     * @throws \think\Exception
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * @throws \think\exception\PDOException
+     */
+    public function spokesman_order_detail(){
+        $obj = new \app\admin\module\Distribution(session('idsite'));
+        $data = Request::instance()->param();
+//        halt($data);
+//        echo session("UserName");exit;
+        $result = $obj->spokesman_order_detail($data);
+//        halt($result);
+        $this->assign('datainfo',$result);
+        $this->assign('order_state',config('order_state'));
+        return $this->fetch();
+    }
+
+    /**
+     * 代言人订单明细导出
+     */
+    public function spokesman_order_export() {
+
+        $request = Request::instance()->param();
+//        var_dump($request);exit;
+        $obj = new \app\admin\module\Distribution(session('idsite'));
+        $arr = $obj->spokesman_order($request);
+        $list = $arr["data"];
+
+        $order_state = config('order_state');
+        ob_clean();
+
+        //游玩日期	状态	报名人	是否签到	活动名称	订单号	购买套餐	购买数量	总金额	退款金额	支付时间	短信码
+        //2.加载PHPExcle类库
+        require_once dirname(__FILE__) . '/../../../extend/PHPExcel/PHPExcel.php';
+        //3.实例化PHPExcel类
+        $objPHPExcel = new \PHPExcel();
+        $PHPSheet = $objPHPExcel->getActiveSheet();
+        //5.设置表格头（即excel表格的第一行）
+        $PHPSheet
+            ->setCellValue('A1', '活动名称')
+            ->setCellValue('B1', '代言人用户ID')
+            ->setCellValue('C1', '代言人姓名')
+            ->setCellValue('D1', '订单号')
+            ->setCellValue('E1', '可获佣金(元)')
+            ->setCellValue('F1', '上级用户ID')
+            ->setCellValue('G1', '上级姓名')
+            ->setCellValue('H1', '上级奖励金(元)')
+            ->setCellValue('I1', '订单是否结算')
+            ->setCellValue('J1', '套餐名称')
+            ->setCellValue('K1', '订单状态')
+            ->setCellValue('L1', '	数量/价格')
+            ->setCellValue('M1', '报名人姓名')
+            ->setCellValue('N1', '报名时间');
+
+        $model = array();
+
+        //设置单元格宽度
+        $objPHPExcel->setActiveSheetIndex(0)->getColumnDimension('A')->setWidth(60);
+        $objPHPExcel->setActiveSheetIndex(0)->getColumnDimension('B')->setWidth(25);
+        $objPHPExcel->setActiveSheetIndex(0)->getColumnDimension('C')->setWidth(15);
+        $objPHPExcel->setActiveSheetIndex(0)->getColumnDimension('D')->setWidth(25);
+        $objPHPExcel->setActiveSheetIndex(0)->getColumnDimension('E')->setWidth(15);
+        $objPHPExcel->setActiveSheetIndex(0)->getColumnDimension('F')->setWidth(25);
+        $objPHPExcel->setActiveSheetIndex(0)->getColumnDimension('G')->setWidth(15);
+        $objPHPExcel->setActiveSheetIndex(0)->getColumnDimension('H')->setWidth(15);
+        $objPHPExcel->setActiveSheetIndex(0)->getColumnDimension('I')->setWidth(15);
+        $objPHPExcel->setActiveSheetIndex(0)->getColumnDimension('J')->setWidth(25);
+        $objPHPExcel->setActiveSheetIndex(0)->getColumnDimension('K')->setWidth(25);
+        $objPHPExcel->setActiveSheetIndex(0)->getColumnDimension('L')->setWidth(15);
+        $objPHPExcel->setActiveSheetIndex(0)->getColumnDimension('M')->setWidth(15);
+        $objPHPExcel->setActiveSheetIndex(0)->getColumnDimension('N')->setWidth(15);
+        for ($i = 75; $i < 85; $i++) {
+            $objPHPExcel->setActiveSheetIndex(0)->getColumnDimension(strtoupper(chr($i)))->setWidth(25);
+        }
+//        for($i=0)
+        $len = count($list);
+        for ($i = 0; $i < $len; $i++) {
+            $PHPSheet->setCellValue('A' . ($i + 2), $list[$i]['chrtitle']); //添加活动名称
+            $PHPSheet->setCellValue('B' . ($i + 2), $list[$i]['spokesman_user_id3']); //添加代言人编号(ID)
+            $PHPSheet->setCellValue('C' . ($i + 2), $list[$i]['spokesman_name3']); //添加代言人姓名
+            $PHPSheet->setCellValue('D' . ($i + 2), $list[$i]['ordersn']); //添加订单号
+            $PHPSheet->setCellValue('E' . ($i + 2), $list[$i]['sell_commission']); //可获佣金(元)
+            $PHPSheet->setCellValue('F' . ($i + 2), $list[$i]['spokesman_user_id2']); //上级用户ID
+            $PHPSheet->setCellValue('G' . ($i + 2), $list[$i]['spokesman_name2']); //上级姓名
+            $PHPSheet->setCellValue('H' . ($i + 2), $list[$i]['bounty_commission2']); //上级奖励金(元)
+            $PHPSheet->setCellValue('I' . ($i + 2), ($list[$i]['is_balance'] == 1 ? "已结算" : "未结算")); //订单是否结算
+            $PHPSheet->setCellValue('J' . ($i + 2), $list[$i]['payname']); //套餐名称
+            $PHPSheet->setCellValue('K' . ($i + 2), $order_state[$list[$i]['state']]); //订单状态
+            $PHPSheet->setCellValue('L' . ($i + 2), $list[$i]['paynum'].'/'.$list[$i]['price']); //数量/价格
+            $PHPSheet->setCellValue('M' . ($i + 2), $list[$i]['chrusername']); //报名人姓名
+            $PHPSheet->setCellValue('N' . ($i + 2), $list[$i]['dtcreatetime']); //报名时间
+        }
+
+        //7.设置保存的Excel表格名称
+
+        //8.设置当前激活的sheet表格名称；
+        $objPHPExcel->getActiveSheet()->setTitle("代言人订单明细");
+
+        //4.激活当前的sheet表
+        $objPHPExcel->setActiveSheetIndex(0);
+        //9.设置浏览器窗口下载表格
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        $filename = urlencode("代言人订单明细") . date('ymd', time()) . '.xlsx';
+        header("Content-Disposition: attachment;filename=$filename");
+
+        //生成excel文件
+        $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+        //下载文件在浏览器窗口
+        $objWriter->save('php://output');
+        exit;
+    }
+
+}

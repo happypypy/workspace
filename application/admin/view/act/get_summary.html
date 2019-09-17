@@ -1,0 +1,79 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>每日总结</title>
+    <link href="/static/css/layout.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/page.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <script type="text/javascript" src="/static/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="/static/js/del-checked.js"></script>
+    <script type="text/javascript" src="/static/js/layer/layer.js"></script>
+    <script type="text/javascript" src="/static/js/ContorlValidator.js"></script>
+    <script type="text/javascript" src="/static/js/CostomLinkOpenSw.js"></script>
+    <link href="/static/js/daterangepicker/daterangepicker-bs3.css" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="/static/js/daterangepicker/moment.min.js"></script>
+    <script type="text/javascript" src="/static/js/daterangepicker/daterangepicker.js"></script>
+    <script type="text/javascript" src="/static/js/lhgdialog.js?skin=aero"></script>
+    <style>
+        .layui-layer.layui-layer-page.layui-layer-rim.layer-anim .layui-layer-content{
+            padding: 10px;
+        }
+        .layui-layer.layui-layer-page.layui-layer-rim.layer-anim *{
+            max-width : 100%!important;
+            box-sizing: border-box;
+        }
+        .layui-layer.layui-layer-page.layui-layer-rim.layer-anim img{
+            height: auto!important;
+        }
+    </style>
+
+
+</head>
+<body>
+<div class="oa_pop">
+    <div class="oa_pop-main">
+        <div style="height: 6px"></div>
+        <div class="oa_title clearfix">
+            <span class="oa_ico-right"></span>
+            <span class="oa_title-btn"></span>
+            <span class="oa_ico-left"></span>
+            每日总结        </div>
+        <div class="oa_edition">
+
+                <table id="tabcontent" width="100%" border="0" cellspacing="1" cellpadding="0" class="oa_edition" style="border-bottom: #e0e0e0 solid 1px">
+                    <tr>
+                        <td width="150"class="oa_cell-left"><span style="color:#ff0000">*</span>标题</td>
+                        <td class="oa_cell-right">{$info.title}</td>
+                    </tr>
+                    <tr>
+                        <td width="160"class="oa_cell-left">发布时间：</td>
+                        <td class="oa_cell-right">
+                           <?php echo date('Y-m-d H:i:s',$info['ctime']); ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="150" class="oa_cell-left">总结内容：</td>
+                        <td class="oa_cell-right">
+                           {$info.content}
+                        </td>
+                    </tr>
+
+                </table>
+            <div style="text-align: center;padding: 4px"><input type="button" id="closediv" value="关闭" style="text-align: center;"/></div>
+        </div>
+        <div style="height: 30px"></div>
+    </div>
+</div>
+<script>
+
+    $("#closediv").click(function(){
+        CloseDiv();
+    })
+</script>
+
+
+</body>
+</html>

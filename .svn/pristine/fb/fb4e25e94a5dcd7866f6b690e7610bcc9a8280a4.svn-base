@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>现金券详情</title>
+    <link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
+    <link href="__PUBLIC__/static/css/page.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="__PUBLIC__/static/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/layer/layer.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/ContorlValidator.js"></script>
+
+</head>
+<body>
+<div class="oa_pop">
+    <div class="oa_pop-main">
+        <div style="height: 6px"></div>
+        <div class="oa_title clearfix">
+            <span class="oa_title-btn"></span>
+            <span class="oa_ico-left"></span>
+            订单详情        </div>
+        <div class="oa_edition" style="margin-bottom: 5px">
+            <table width="100%" border="0" cellspacing="1" cellpadding="0" class="oa_edition" style="border-bottom: #e0e0e0 solid 1px">
+                <tr>
+                    <td width="150" class="oa_cell-left">活动名称：</td>
+                    <td class="oa_cell-right">{$datainfo['chrtitle']}</td>
+                </tr>
+                <tr>
+                    <td width="150" class="oa_cell-left">代言人用户ID：</td>
+                    <td class="oa_cell-right">{$datainfo['spokesman_user_id3']}</td>
+                </tr>
+                <tr>
+                    <td width="150" class="oa_cell-left">代言人姓名：</td>
+                    <td class="oa_cell-right">{$datainfo['spokesman_name3']}
+                    </td>
+                </tr>
+                <tr>
+                    <td width="150" class="oa_cell-left">订单号	：</td>
+                    <td class="oa_cell-right">{$datainfo['ordersn']}
+                    </td>
+                </tr>
+                <tr>
+                    <td width="150" class="oa_cell-left">佣金(元)：</td>
+                    <td class="oa_cell-right">{$datainfo['sell_commission']}</td>
+                </tr>
+                <tr>
+                    <td width="150" class="oa_cell-left">上级用户ID：</td>
+                    <td class="oa_cell-right">{$datainfo['spokesman_user_id2']}</td>
+                </tr>
+                <tr>
+                    <td width="150" class="oa_cell-left">上级姓名：</td>
+                    <td class="oa_cell-right">{$datainfo['spokesman_name2']}
+                    </td>
+                </tr>
+                <tr>
+                    <td width="150" class="oa_cell-left">上级奖励金(元)：</td>
+                    <td class="oa_cell-right">{$datainfo['bounty_commission2']}</td>
+                </tr>
+                <tr>
+                    <td width="150" class="oa_cell-left">是否结算：</td>
+                    <td class="oa_cell-right">{$datainfo['is_balance']==1?'<span style="color: red">已结算</span>':'未结算'}</td>
+                </tr>
+                <tr>
+                    <td width="150" class="oa_cell-left">套餐名称：</td>
+                    <td class="oa_cell-right">{$datainfo.payname}</td>
+                </tr>
+                <tr>
+                    <td width="150" class="oa_cell-left">订单状态：</td>
+                    <td class="oa_cell-right">{$order_state[$datainfo['state']]}</td>
+                </tr>
+                <tr>
+                    <td width="150" class="oa_cell-left">数量/价格：</td>
+                    <td class="oa_cell-right">{$datainfo.paynum}/{$datainfo.price}</td>
+                </tr>
+                <tr>
+                    <td width="150" class="oa_cell-left">报名人姓名：</td>
+                    <td class="oa_cell-right">{$datainfo.chrusername}</td>
+                </tr>
+                <tr>
+                    <td width="150" class="oa_cell-left">报名时间：</td>
+                    <td class="oa_cell-right">{$datainfo['dtcreatetime']}</td>
+                </tr>
+
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    function verify_param() {
+        var audit_status = $('input[name="audit_status"]:checked').val();
+        var audit_remark = $('#audit_remark').val();
+        if(audit_status == undefined){
+            alert('请选择是否通过');
+            return false;
+        }
+        if(audit_status == 10 && audit_remark == ''){
+            alert('当审批不通过时备注信息必填');
+            return false;
+        }
+        return true;
+    }
+</script>
+</body>
+</html>

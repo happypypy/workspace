@@ -1,0 +1,80 @@
+
+var visit_cord_guid='';
+/*
+idsite,站点ID
+id,访问记录ID
+title,访问记录标题
+flag，1文章，2活动
+*/
+function visitdata(sitecode,idsite,id,title,flag) {
+    visit_cord_guid=newGuid();
+    var data= {"idsite":idsite, "id":id, "title": title,'flag':flag,'guid':visit_cord_guid};
+    $.ajax({
+        url:'/'+sitecode+"/addVisitRecord",
+        data:data,
+        type:"post",
+        dataType:"json",
+        success:function(msg) {}
+    })
+    //$(window).on('beforeunload',function(){ closevisit();});
+    setInterval('closevisit()',10000);
+}
+
+function add_comment(idsite,id,title,content,flag) {
+    var data= {"idsite":idsite, "dataid":id, "chrtitle": title,'flag':flag,'content':content};
+    $.ajax({
+        url:"/addcomment",
+        data:data,
+        type:"post",
+        dataType:"json",
+        success:function(msg) {
+            if(msg==1)
+            {
+                // layer.confirm('评论已成功提交！',{btn:['关闭']});
+                $("#content").val('');
+                $(".comment-form,.cover").hide();
+                location.reload();
+            }
+        }
+    })
+}
+
+function add_collection(idsite,id,title,flag) {
+    var data= {"idsite":idsite, "id":id, "title": title,'flag':flag};
+    $.ajax({
+        url:"/addcollection",
+        data:data,
+        type:"post",
+        dataType:"json",
+        success:function(msg) {
+            if(msg==1)
+            {
+                layer.confirm('收藏成功！',{btn:['关闭']});
+            }
+        }
+    })
+}
+
+function closevisit() {
+    var data= {'guid':visit_cord_guid};
+    $.ajax({
+        url:"/addVisitRecorded",
+        async:false,
+        data:data,
+        type:"post",
+        dataType:"json",
+        success:function(msg) {}
+    })
+}
+function newGuid()
+{
+    var guid = "";
+    for (var i = 1; i <= 32; i++){
+        var n = Math.floor(Math.random()*16.0).toString(16);
+        guid +=   n;
+        if((i==8)||(i==12)||(i==16)||(i==20))
+            guid += "-";
+    }
+    return guid;
+}
+

@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:72:"D:\workspace\work\public/../application/admin\view\node\contentlist.html";i:1561691688;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:72:"D:\workspace\work\public/../application/admin\view\node\contentlist.html";i:1564211088;}*/ ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -156,7 +156,7 @@
                             <table width="100%" border="0" cellspacing="0" cellpadding="0">
                                 <tr>
                                     <td valign="top">
-                                        <?php if($modelfield != null): if(is_array($modelfield) || $modelfield instanceof \think\Collection || $modelfield instanceof \think\Paginator): if( count($modelfield)==0 ) : echo "" ;else: foreach($modelfield as $k=>$vl): if($vl['issearch'] == 1): ?>
+
                                         <div class="oa_title clearfix">
                                             <span class="oa_ico-right"></span>
                                             <span class="oa_ico-left"></span>
@@ -173,7 +173,7 @@
                                                                     <tr>
                                                                         <td width="100" class="oa_cell-left"><?php echo $vl['fieldalias']; ?>：</td>
                                                                         <td class="oa_cell-right">
-                                                                            <?php echo getControl($vl); ?>
+                                                                            <?php echo getControl($vl,$search[$vl['fieldname']]); ?>
                                                                         </td>
                                                                     </tr>
                                                                     <?php else: ?>
@@ -183,14 +183,14 @@
                                                                             <input class="chraccount" type="text" name="<?php echo $vl['fieldname']; ?>" value="<?php echo $search[$vl['fieldname']]; ?>" >
                                                                         </td>
                                                                     </tr>
-                                                                    <?php endif; ?>
+                                                                    <?php endif; endif; endforeach; endif; else: echo "" ;endif; ?>
                                                                     <tr>
                                                                         <td height="30"></td>
                                                                         <td class="oa_cell-right">
                                                                             <input type="submit" value="查询" class="oa_search-btn" />
                                                                         </td>
                                                                     </tr>
-                                                                    <?php endif; endforeach; endif; else: echo "" ;endif; ?>
+
                                                                     <tr>
                                                                         <input type="hidden" name="nodeid" value="<?php echo $nodeid; ?>"/>
                                                                     </tr>
@@ -201,7 +201,7 @@
                                                 </tr>
                                             </table>
                                         </div>
-                                        <?php endif; endforeach; endif; else: echo "" ;endif; endif; ?>
+
                                         <div class="oa_title clearfix">
                                             <span class="oa_title-btn">
                                                 <ul>
@@ -236,8 +236,7 @@
                                                     </td>
                                                     <td><?php echo $vo['contentid']; ?></td>
                                                     <?php if(is_array($modelfield) || $modelfield instanceof \think\Collection || $modelfield instanceof \think\Paginator): if( count($modelfield)==0 ) : echo "" ;else: foreach($modelfield as $k=>$vl): if($vl['isdisplayonlist'] == 1): ?>
-
-                                                            <td><?php echo $vo[strtolower($vl['fieldname'])]; ?></td>
+                                                            <td title="<?php echo $vo[strtolower($vl['fieldname'])]; ?>"><?php echo $vo[strtolower($vl['fieldname'])]; ?></td>
                                                         <?php endif; endforeach; endif; else: echo "" ;endif; ?>
                                                     <td>
                                                         <a onmousemove="javascript:show_rqcode(this,'<?php echo $vo['contentid']; ?>')" onmouseout="javascript:close_rqcode()" href="/<?php echo $sitecode; ?>/content/<?php echo $vo['contentid']; ?>" target="_blank">浏览</a>

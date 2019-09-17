@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:66:"D:\workspace\work\public/../application/admin\view\index\main.html";i:1561971916;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:66:"D:\workspace\work\public/../application/admin\view\index\main.html";i:1563948417;}*/ ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head><title>
@@ -1184,7 +1184,7 @@
         </table>
     </div>
 
-    <div style="position:absolute; top:25%; left:40%; width:250px; border:#D8D8D8 solid 3px;  background: url(/static/Images/err_01.gif); height:120px;display:none;" id="divDis">
+    <div style="position:absolute; top:25%; left:40%; width:250px; border:#D8D8D8 solid 3px;  background: url(/static/images/err_01.gif); height:120px;display:none;" id="divDis">
         <table width="100%" height="120" border="0" cellspacing="0" cellpadding="0" align="center">
             <tr>
                 <td width="37%" height="35" align="right"><img src="/static/images/err_08.gif" alt="" /></td>

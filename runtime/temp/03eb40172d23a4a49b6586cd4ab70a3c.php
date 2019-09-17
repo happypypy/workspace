@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:4:{s:32:"template/M6/activity/detail.html";i:1562579041;s:52:"D:\workspace\work\public\template\M6\lib\header.html";i:1561691704;s:53:"D:\workspace\work\public\template\M6\lib\footer0.html";i:1561691704;s:53:"D:\workspace\work\public\template\M6\lib\footer1.html";i:1561691704;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:4:{s:32:"template/M6/activity/detail.html";i:1564818524;s:52:"D:\workspace\work\public\template\M6\lib\header.html";i:1561691704;s:53:"D:\workspace\work\public\template\M6\lib\footer0.html";i:1561691704;s:53:"D:\workspace\work\public\template\M6\lib\footer1.html";i:1561691704;}*/ ?>
 <?php $info = $cms->GetActivityInfo($id,'nodeid,intflag,chkdown,chrtitle,chrcontent,chrimg,publishname,dtpublishtime,chksignup,dtstart,dtend,dtsignstime,dtsignetime,intsignnum,minage,maxage,chrrange,ischarge,txtfwtk,chraddressdetail,chrmap,chrmaplng,chrmaplat,usertype');
 if(empty($info))
 {
@@ -77,7 +77,7 @@ exit();
 					<div class="coupon">
 						<div class="price"><?php echo intval($activity_cashed['activity_cashed_amount']); ?></div>
 						<div class="txt">仅限本活动使用</div>
-						<a href="javascript:void(0);" onclick="getvolume1();" class="btn"></a>
+						<a href="javascript:void(0);" onclick="getvolume1();" class='btn <?php if($user_receive_info): ?>gray<?php endif; ?>' id="receive-id"><?php if($user_receive_info): ?>已领取<?php else: ?>点击领取<?php endif; ?></a>
 					</div>
 				</div>
 				<?php endif; ?>
@@ -91,8 +91,8 @@ exit();
 					<em class="rich_media_meta rich_media_meta_text"><?php echo date('Y-m-d',strtotime($info['dtend'])); ?></em>
 					<br>
 					<em class="rich_media_meta rich_media_meta_text">报名时间：</em>
-					<em class="rich_media_meta rich_media_meta_text"><?php echo date('Y-m-d',strtotime($info['dtsignstime'])); ?> -</em>
-					<em class="rich_media_meta rich_media_meta_text"><?php echo date('Y-m-d',strtotime($info['dtsignetime'])); ?></em>
+					<em class="rich_media_meta rich_media_meta_text"><?php echo date('Y-m-d H:i',strtotime($info['dtsignstime'])); ?> -</em>
+					<em class="rich_media_meta rich_media_meta_text"><?php echo date('Y-m-d H:i',strtotime($info['dtsignetime'])); ?></em>
 					<br>
 					<em class="rich_media_meta rich_media_meta_text">参与方式：</em>
 					<em class="rich_media_meta rich_media_meta_text"><?php echo $info['chrrange']==1?'家长及儿童':($info['chrrange']==2?'仅儿童':'仅家长') ?></em>
@@ -108,8 +108,8 @@ exit();
 					<em class="rich_media_meta rich_media_meta_text"><?php echo $info['maxage']; ?>岁</em>
 					<?php } ?>
 					<br>
-					<em class="rich_media_meta rich_media_meta_text">最大人数：</em>
-					<em class="rich_media_meta rich_media_meta_text"><?php echo $info['intsignnum']; ?>人</em>
+					<em style="display: none" class="rich_media_meta rich_media_meta_text">最大人数：</em>
+					<em style="display: none" class="rich_media_meta rich_media_meta_text"><?php echo $info['intsignnum']; ?>人</em>
 				</div>	
 				<?php if(!empty($info['chrmap']) || !empty($info['txtfwtk'])) { ?>
 				<div class="rich_media_meta_list" style="padding-top: 10px;">
@@ -128,61 +128,77 @@ exit();
                 <?php } ?>
                 
                 <!-- 拼团 -->
-                <?php if(checkedMarketingPackage($idsite, 'group_buy') &&  $groupBuys): ?>
-                    <div class="act-schedule">
-                        <div class="act-schedule-in">
-    <!--                         <div class="act-schedule-tit">一起拼，更优惠</div>
-                            <div class="act-schedule-date">距离结束拼团还有：<span id="surplustime">4天 3小时52分34秒</span></div>
-     -->
-                        <?php foreach($groupBuys as $groupBuy): ?>
-                            <div class="act-schedule-item">
-                                <div class="item-in">
-                                    <div class="item-in-t"><?php echo $groupBuy['package_name']; ?></div>
-                                    <div class="item-in-d">
-                                        <div class="item-in-dl">
-                                            <div class="item-in-dlt"><?php echo $groupBuy['group_num']; ?>人成团</div>
-                                            <div class="item-in-dld">拼团价 <em><?php echo $groupBuy['group_buy_price']; ?></em>元，单购价<del> <?php echo $groupBuy['member_price']; ?> </del>元</div>
-                                        </div>
-                                        <a href="/<?php echo $sitecode; ?>/signup/<?php echo $id; ?>/<?php echo $groupBuy['group_buy_id']; ?>">
-                                            <div class="item-in-dr">
-                                                <button>我要开团</button>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        <?php endforeach; foreach($groupBuyOrders as $groupBuyOrder): ?>                        
-                            <div class="act-schedule-item join">
-                                <div class="item-in">
-                                    <div class="item-in-t">我是<span><?php echo $groupBuyOrder['username']; ?></span>，我购买了<span><?php echo $groupBuyOrder['package_name']; ?></span></div>
-                                    <div class="item-in-d">
-                                        <div class="item-in-dl">
-                                            <img class="user" src="<?php echo $groupBuyOrder['userimg']; ?>" alt="">
-                                            目前还差<span><?php echo $groupBuyOrder['left_num']; ?></span>人,赶快加入吧！
-                                        </div>
-                                        <a href="/<?php echo $sitecode; ?>/signup/<?php echo $id; ?>/<?php echo $groupBuyOrder['group_buy_id']; ?>/<?php echo $groupBuyOrder['group_buy_order_id']; ?>">
-                                            <div class="item-in-dr">
-                                                <button>我要参团</button>
-                                            </div>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        <?php endforeach; ?>
-                            <div class="amount-box">
-                                <div class="fl">已成团数量：<span><?php echo $completeGroupNum; ?></span></div>
-                                <div class="amount-box-img fr" style="display: none">
-                                    <img class="user" src="/static/images/userimg.jpg" alt="">
-                                    <img class="user" src="/static/images/userimg.jpg" alt="">
-                                    <span>...</span>
-                                </div>
-                            </div>
-                            <div class="act-schedule-info">玩法：开团-邀请好友-成功/不成功-到期自动退款</div>
-                        </div>
-                    
-                    
-                    </div>
-                <?php endif; ?>
+				<?php if(checkedMarketingPackage($idsite, 'group_buy') &&  $groupBuys): ?>
+				<div class="act-schedule">
+					<div class="act-schedule-in">
+						<!--                         <div class="act-schedule-tit">一起拼，更优惠</div>
+                                                <div class="act-schedule-date">距离结束拼团还有：<span id="surplustime">4天 3小时52分34秒</span></div>
+                         -->
+						<?php foreach($groupBuys as $groupBuy): ?>
+						<div class="act-schedule-item">
+							<div class="item-in">
+
+								<div style="color: red; text-align: center">
+                                        <span style="font-size: 12px">
+                                             <span class="count-down" endtime="<?php echo $groupBuy['expiration']; ?>" group="start<?php echo $groupBuy['group_buy_id']; ?>">
+     <span class="day">0</span> 天 <span class="hour">0</span> 时 <span class="minute">0</span> 分 <span class="sec">0</span> 秒
+ </span>
+                                        </span>
+								</div>
+								<div class="item-in-t"><?php echo $groupBuy['package_name']; ?></div>
+								<div class="item-in-d">
+									<div class="item-in-dl">
+										<div class="item-in-dlt"><?php echo $groupBuy['group_num']; ?>人成团</div>
+										<div class="item-in-dld">拼团价 <em><?php echo $groupBuy['group_buy_price']; ?></em>元，单购价<del> <?php echo $groupBuy['member_price']; ?> </del>元</div>
+									</div>
+									<a href="/<?php echo $sitecode; ?>/signup/<?php echo $id; ?>/<?php echo $groupBuy['group_buy_id']; ?>?share_id=<?php echo $share_id; ?>&a=<?php echo $a; ?>" class="start<?php echo $groupBuy['group_buy_id']; ?>">
+										<div class="item-in-dr">
+											<button>我要开团</button>
+										</div>
+									</a>
+								</div>
+							</div>
+						</div>
+						<?php endforeach; foreach($groupBuyOrders as $groupBuyOrder): ?>
+						<div class="act-schedule-item join">
+							<div class="item-in">
+								<div style="color: red; text-align: center">
+                                        <span style="font-size: 12px">
+                                             <span class="count-down" endtime="<?php echo $groupBuyOrder['expiration']; ?>" group="join<?php echo $groupBuyOrder['group_buy_order_id']; ?>">
+     <span class="day">0</span> 天 <span class="hour">0</span> 时 <span class="minute">0</span> 分 <span class="sec">0</span> 秒
+ </span>
+                                        </span>
+								</div>
+
+								<div class="item-in-t">我是<span><?php echo $groupBuyOrder['username']; ?></span>，我购买了<span><?php echo $groupBuyOrder['package_name']; ?></span></div>
+								<div class="item-in-d">
+									<div class="item-in-dl">
+										<img class="user" src="<?php echo $groupBuyOrder['userimg']; ?>" alt="">
+										目前还差<span><?php echo $groupBuyOrder['left_num']; ?></span>人,赶快加入吧！
+									</div>
+									<a href="/<?php echo $sitecode; ?>/signup/<?php echo $id; ?>/<?php echo $groupBuyOrder['group_buy_id']; ?>/<?php echo $groupBuyOrder['group_buy_order_id']; ?>?share_id=<?php echo $share_id; ?>&a=<?php echo $a; ?>" class="join<?php echo $groupBuyOrder['group_buy_order_id']; ?>">
+										<div class="item-in-dr">
+											<button>我要参团</button>
+										</div>
+									</a>
+								</div>
+							</div>
+						</div>
+						<?php endforeach; ?>
+						<div class="amount-box">
+							<div class="fl">已成团数量：<span><?php echo $completeGroupNum; ?></span></div>
+							<div class="amount-box-img fr" style="display: none">
+								<img class="user" src="/static/images/userimg.jpg" alt="">
+								<img class="user" src="/static/images/userimg.jpg" alt="">
+								<span>...</span>
+							</div>
+						</div>
+						<div class="act-schedule-info">玩法：开团-邀请好友-成功/不成功-到期自动退款</div>
+					</div>
+
+
+				</div>
+				<?php endif; ?>
                 
                 
                 <div class="docs-pictures clearfix">
@@ -313,6 +329,66 @@ exit();
 <script type="text/javascript" src="/static/js/layer/layer.js"></script>
 <script type='text/javascript' src='/static/js/visitrecorde.js'></script>
 <script language="JavaScript">
+
+    (function ($) {
+        $.fn.extend({
+            countDown: function (options) {
+                var defaults = {
+                        day: '.day',
+                        hour: '.hour',
+                        minute: '.minute',
+                        sec: '.sec'
+                    },
+                    opts = $.extend({}, defaults, options); //对象扩展到opts
+                this.each(function () {     //遍历
+                    var $this = $(this);
+                    times();    //先执行一次，防止刷新时数字都显示为0
+                    var timer = setInterval(times, 1000);   //定时器执行
+
+                    function times() {
+                        var nowDate = Math.round(new Date().getTime() / 1000).toString();
+                        // tms = endDate - nowDate,    //时间差
+                        var tms=$this.attr('endtime')
+                        //console.log(tms)
+                        days = Math.floor(tms / 60 / 60 / 24),
+                            hours = Math.floor(tms / 60 / 60 % 24),
+                            minutes = Math.floor(tms / 60 % 60),
+                            secs = Math.floor(tms % 60);
+
+                        if (tms > 0) {  //如果时间差大于0，显示倒计时
+                            $this.find(opts.day).text(addZero(days));
+                            $this.find(opts.hour).text(addZero(hours));
+                            $this.find(opts.minute).text(addZero(minutes));
+                            $this.find(opts.sec).text(addZero(secs));
+                        } else {    //否则清除定时器，倒计时结束
+                            clearInterval(timer);
+                            button=$this.attr('group')
+                            $("."+button).children().children('button').css('background',"#ccc")
+                            $("."+button).click(function(){
+                                return false
+                            })
+                            $this.html("<span style='color: red;'>很遗憾，已结束</span>")
+                        }
+
+                        $this.attr('endtime',tms-1)
+                    }
+                });
+
+
+                function addZero(t) {  //一位数加0
+                    if (t < 10) {
+                        return t = '0' + t;
+                    } else {
+                        return t;
+                    }
+                }
+                return this; //返回this方便链式调用
+            }
+        });
+        $('.count-down').countDown(); //默认调用方法
+        $('.a2').countDown();
+    })(jQuery)
+
     visitdata(<?php echo $idsite; ?>,<?php echo $id; ?>,'<?php echo $info['chrtitle']; ?>',2);
     function add_comment1()
 	{
@@ -467,6 +543,9 @@ exit();
             dataType: 'json',
             success: function (result) {
                 layer.alert(result.message)//提示
+                if(result.success){
+                    $('#receive-id').addClass('gray').html('已领取');
+                }
             },
             error: function () {
                 alert('删除失败');

@@ -1,0 +1,16 @@
+{volist name="$subscribe_session" id="vo"}
+<li>
+    <div class="flex">
+        <div class="txt">
+            <div class="title">预约对像名称：{$vo.subscribe_object_name}</div>
+            <div class="price">场次名称：<span>{$vo.session_name}</span></div>
+            <div class="state">最小人数：<span>{$vo.min_number}</span></div>
+            <div class="state">最大人数：<span>{$vo.max_number}</span></div>
+            <div class="state">已约人数：<span>{$vo.subscribe_number}</span></div>
+            <div class="btn">
+                <a href="javascript:subscribe({$member_cart_id},{$vo.id})" style="background: #d98bb3;">预约</a>
+            </div>
+        </div>
+    </div>
+</li>
+{/volist}

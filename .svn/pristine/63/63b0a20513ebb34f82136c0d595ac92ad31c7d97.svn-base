@@ -1,0 +1,705 @@
+<?php
+/*
+ * @Descripttion: 预约对象
+ * @version: v1.0
+ * @Author: ChenJie
+ * @Date: 2019-07-08 14:08:58
+ * @LastEditors: ChenJie
+ * @LastEditTime: 2019-08-14 13:58:58
+ */
+
+namespace app\admin\controller;
+
+use app\admin\module\Subscribe as subscribeModel;
+use think\Exception;
+use think\Request;
+
+class Subscribe extends Basesite
+{
+  /**
+   * 预约对象列表
+   *
+   * @return void
+   * @author Chenjie
+   * @Date 2019-07-08 14:11:10
+   */
+  public function index()
+  {
+    if ($this->CMS->CheckPurview('subscribeobject') == false) {
+      $this->error('无权限');
+    }
+    $param = input('param.');
+    $param['object_name'] = isset($param['object_name']) ? rtrim($param['object_name']) : '';
+    $param['category_id'] = isset($param['category_id']) ? $param['category_id'] : '';
+    $param['start_time'] = isset($param['start_time']) ? $param['start_time'] : '';
+    $param['end_time'] = isset($param['end_time']) ? $param['end_time'] : '';
+    $param['p'] = isset($param['p']) ? intval($param['p']) : 0;
+
+    $subscribeModel = new subscribeModel;
+    // 获取分类
+    $subscribe_object_category = $subscribeModel->get_work_content();
+    // 获取数据列表
+    $result = $subscribeModel->index($param);
+
+
+    $this->assign("param", $param);
+    $this->assign("subscribe_object_category", $subscribe_object_category);
+    $this->assign("page", $result['page']);
+    $this->assign("datalist", $result['datalist']);
+    return $this->fetch();
+  }
+
+  /**
+   * 计算多个集合的笛卡尔积
+   * @param  Array $sets 集合数组
+   * @return Array
+   */
+  function CartesianProduct($sets)
+  {
+
+    // 保存结果
+    $result = array();
+    // 循环遍历集合数据
+
+    $count = count($sets);
+    if ($count == 1) {
+      foreach ($sets as $vo) {
+        foreach ($vo as $v) {
+          $result[][] = $v;
+        }
+      }
+      return $result;
+    }
+    for ($i = 0; $i < $count - 1; $i++) {
+      // 初始化
+      if ($i == 0) {
+        $result = $sets[$i];
+      }
+
+      // 保存临时数据
+      $tmp = array();
+
+      // 结果与下一个集合计算笛卡尔积
+      foreach ($result as $res) {
+        $tmp1 = [];
+        if (is_array($res))
+          $tmp1 = $res;
+        else
+          $tmp1[] = $res;
+
+        foreach ($sets[$i + 1] as $set) {
+          $tmp2 = $tmp1;
+          $tmp2[] = $set;
+          $tmp[] = $tmp2;
+          // $tmp[] = $res.','.$set;
+        }
+      }
+
+      // 将笛卡尔积写入结果
+      $result = $tmp;
+    }
+
+    return $result;
+  }
+  /**
+   * 获取 规格的 笛卡尔积
+   * @param $goods_id 商品 id
+   * @param $spec_arr 笛卡尔积
+   * @return string 返回表格字符串
+   */
+  public function getspecinput()
+  {
+    $param = Request::instance()->param();
+    $spec_arr = isset($param['spec_arr']) ? json_decode($param['spec_arr']) : [];  // 数据集合
+    $object_id = isset($param['object_id']) ? intval($param['object_id']) : 0;
+    $session_hash = isset($param['session_hash']) ? $param['session_hash'] : 0;
+
+    // 查询规则
+    $spec_list = db('spec')->field('id,name')->select();
+
+    $arr_spec = [];      // 表头规格数据
+    $arr_spec_item = []; // 表内容数据
+
+    if ($object_id) {
+      db('spec_item')->whereIn('subscribe_object_id', $object_id)->setField("is_selected", 0);
+    } else {
+      db('spec_item')->whereIn('session_hash', $session_hash)->setField("is_selected", 0);
+    }
+    foreach ($spec_arr as $key => $value) {
+      // 循环增加表头数据
+      $arr_spec[] = $spec_list[$key - 1]['name'];
+      $arr_spec_item[] = $value;
+      db('spec_item')->whereIn('id', $value)->setField("is_selected", 1);
+    }
+    // 计算笛卡尔积集合
+    $arr_spec_item = $this->CartesianProduct($arr_spec_item);
+
+    // 查询规则里面, 具体数据
+    if ($object_id) {
+      $spec_item_list = db('spec_item')->field('id,name,specid,column')->where('subscribe_object_id', $object_id)->select(); //规格项
+    } else {
+      $spec_item_list = db('spec_item')->field('id,name,specid,column')->where('session_hash', $session_hash)->select(); //规格项
+    }
+
+    $specItem = [];
+    foreach ($spec_item_list as $vo) {
+      $specItem[$vo['id']] = $vo['name'];
+      $specItem['column' . $vo['id']] = $vo['column'];
+      $specItem['specid' . $vo['id']] = $vo['specid'];
+    }
+    $str = "<table class='table table-bordered' id='spec_input_tab' style='margin:10px 0;width:500px;'>";
+    $str .= "<tr>";
+
+    // 显示第一行的数据
+    foreach ($arr_spec as $key => $value) {
+      $str .= " <td><b>{$value}</b></td>";
+    }
+
+    if (count($arr_spec_item) > 0) {
+      $str .= "<td><b>最小人数</b></td>
+                    <td><b>最大人数</b></td>
+                    <td><b>是否启用</b></td>
+                    </tr>";
+    }
+
+    // 显示第二行开始
+    foreach ($arr_spec_item as $k => $vo) {
+      $session_key = '';
+      $str .= "<tr>";
+
+      // 生成场次key
+      if (count($vo) == 1) {
+        $session_key .= $specItem['column' . $vo[0]];
+      } else if (count($vo) == 2) {
+        $session_key .= $specItem['column' . $vo[0]] . '-' . $specItem['column' . $vo[1]];
+      } else if (count($vo) == 3) {
+        $session_key .= $specItem['column' . $vo[0]] . '-' . $specItem['column' . $vo[1]] . "-" . $specItem['column' . $vo[2]];
+      }
+      $session_input = '<input type="hidden" name="spec_item[' . $k . '][session_key][]" value="' . $session_key . '" />';
+
+      foreach ($vo as $k1 => $v) {
+        $specid = $specItem['specid' . $v];
+        $hidden_input = '';
+        if ($specid == 1) {
+          $hidden_input = '<input type="hidden" name="spec_item[' . $k . '][place][]" value="' . $specItem[$v] . '" />';
+        } else if ($specid == 2) {
+          $hidden_input = '<input type="hidden" name="spec_item[' . $k . '][week][]" value="' . $specItem[$v] . '" />';
+        } else if ($specid == 3) {
+          $hidden_input = '<input type="hidden" name="spec_item[' . $k . '][period][]" value="' . $specItem[$v] . '" />';
+        }
+        $str .= "<td>" . $session_input . $hidden_input . $specItem[$v] . "</td>";
+      }
+
+      $subscribe_session = [];
+      if ($object_id) {
+        $subscribe_session = db('subscribe_session')->where('subscribe_object_id', $object_id)->select();
+      }
+      if ($subscribe_session && isset($subscribe_session[$k])) {
+        $yes_selected = $subscribe_session[$k]['is_enable'] == 1 ? 'checked' : '';
+        $no_selected = $subscribe_session[$k]['is_enable'] == 0 ? 'checked' : '';
+        $str .= '<td><input type="text" name="spec_item[' . $k . '][min_number][]" style="width:50px;" value="' . $subscribe_session[$k]['min_number'] . '" /></td>';
+        $str .= '<td><input type="text" name="spec_item[' . $k . '][max_number][]" style="width:50px;" value="' . $subscribe_session[$k]['max_number'] . '" /></td>';
+        $str .= '<td><input type="radio" name="spec_item[' . $k . '][is_enable][]" style="margin:0" value="1" ' . $yes_selected . ' />是&nbsp;&nbsp;<input type="radio" name="spec_item[' . $k . '][is_enable][]" style="margin:0" value="0" ' . $no_selected . ' />否</td>';
+      } else {
+        $str .= '<td><input type="text" name="spec_item[' . $k . '][min_number][]" style="width:50px;" value="0" /></td>';
+        $str .= '<td><input type="text" name="spec_item[' . $k . '][max_number][]" style="width:50px;" value="0" /></td>';
+        $str .= '<td><input type="radio" name="spec_item[' . $k . '][is_enable][]" style="margin:0" value="1" />是&nbsp;&nbsp;<input type="radio" name="spec_item[' . $k . '][is_enable][]" style="margin:0" value="0" checked />否</td>';
+      }
+      $str .= "</tr>";
+    }
+    $str .= "</table>";
+    return $str;
+  }
+  /**
+   * 增加规格项
+   *
+   * @return void
+   * @author Chenjie
+   * @Date 2019-07-16 15:10:59
+   */
+  public function addspecitem()
+  {
+    $param = input('post.');
+    $subscribeModel = new subscribeModel;
+    $item_id = $subscribeModel->addspecitem($param);
+    return $item_id;
+  }
+  /**
+   * 删除规格项
+   *
+   * @return void
+   * @author Chenjie
+   * @Date 2019-07-23 16:50:01
+   */
+  public function delspecitem()
+  {
+    $item_id = input('post.item_id');
+    $subscribeModel = new subscribeModel;
+    $result = $subscribeModel->delspecitem($item_id);
+    return $result;
+  }
+  /**
+   * 修改规格项
+   *
+   * @return bool
+   * @author Chenjie
+   * @Date 2019-07-29 16:40:17
+   */
+  public function editspecitem()
+  {
+    $postData = input('post.');
+    $subscribeModel = new subscribeModel;
+    $result = $subscribeModel->editspecitem($postData);
+    return $result;
+  }
+  /**
+   * 预约对象新增/编辑
+   *
+   * @return void
+   * @author Chenjie
+   * @Date 2019-07-08 14:11:21
+   */
+  public function objectedit()
+  {
+    $idsite = session('idsite');
+    $param = input('param.');
+    $param['category_id'] = isset($param['category_id']) ? $param['category_id'] : '';
+    $id = isset($param['id']) ? intval($param['id']) : 0;
+    $action = isset($param['action']) ? intval($param['action']) : 0;
+
+    $subscribeModel = new subscribeModel;
+
+    if (request()->isPost()) {
+      try {
+        if ($this->CMS->CheckPurview('subscribeobject', $action) == false) {
+          $this->error('无权限');
+        }
+        $subscribeModel->object_edit($param);
+        $this->success('操作成功', PUBLIC_URL . 'postsuccess.html');
+      } catch (Exception $e) {
+        $this->error('操作失败');
+      }
+    }
+
+    $session_hash = '';
+    if ($id <= 0) {
+      // 获取场次hash
+      while (true) {
+        $session_hash = md5(time() . rand(100000, 999999));
+        $spec_item_count = db('spec_item')->where('session_hash', $session_hash)->count();
+        if ($spec_item_count == 0) {
+          break;
+        }
+      }
+      // 自动增加周期
+      $subscribeModel->autoAddwwek($session_hash);
+    }
+
+    // 获取规格
+    $Spec = $subscribeModel->getSpec();
+    // 获取规格项
+    $SpecItem = $subscribeModel->getSpecItem($session_hash, $id);
+
+    // 获取分类
+    $subscribe_object_category = $subscribeModel->get_work_content();
+    // 获取对象详情
+    $datainfo = $subscribeModel->get_subscribe_object_by_id($id);
+
+    $this->assign("siteid", $idsite);
+    $this->assign("Spec", $Spec);
+    $this->assign("SpecItem", $SpecItem);
+    $this->assign("param", $param);
+    $this->assign("subscribe_object_category", $subscribe_object_category);
+    $this->assign("datainfo", $datainfo);
+    $this->assign("session_hash", $session_hash);
+    return $this->fetch();
+  }
+  /**
+   * 复制预约对象
+   *
+   * @return void
+   * @author Chenjie
+   * @Date 2019-07-19 17:05:59
+   */
+  public function copyobject()
+  {
+    if ($this->CMS->CheckPurview('subscribeobject', 'copy') == false) {
+      $this->error('无权限');
+    }
+    $id = input('param.id', 'intval');
+    $subscribeModel = new subscribeModel;
+    $result = $subscribeModel->copy_object($id);
+    if ($result) {
+      return 1;
+    } else {
+      return $result;
+    }
+  }
+  /**
+   * 预约对象删除
+   *
+   * @return void
+   * @author Chenjie
+   * @Date 2019-07-08 14:11:33
+   */
+  public function objectdelete()
+  {
+    if ($this->CMS->CheckPurview('subscribeobject', 'del') == false) {
+      $this->error('无权限');
+    }
+    $param = input('param.');
+    $subscribeModel = new subscribeModel;
+    $bool = $subscribeModel->object_delete($param);
+    if ($bool) {
+      return 1;
+    } else {
+      return 2;
+    }
+  }
+  /**
+   * 预约会员卡列表
+   *
+   * @return void
+   * @author Chenjie
+   * @Date 2019-07-09 15:04:16
+   */
+  public function membercart()
+  {
+    $param = input('param.');
+    $param['p'] = isset($param['p']) ? intval($param['p']) : 1;
+    $param['cart_type'] = isset($param['cart_type']) ? $param['cart_type'] : '';
+    $param['chrname'] = isset($param['chrname']) ? $param['chrname'] : '';
+    $param['mobile'] = isset($param['mobile']) ? $param['mobile'] : '';
+    $param['member_cart_no'] = isset($param['member_cart_no']) ? $param['member_cart_no'] : '';
+    $param['start_time'] = isset($param['start_time']) ? $param['start_time'] : '';
+    $param['end_time'] = isset($param['end_time']) ? $param['end_time'] : '';
+    $param['overdue'] = isset($param['overdue']) ? intval($param['overdue']) : 0;
+
+    $resource_chrcode = $param['overdue'] == 0 ? 'usemembercart' : 'overduemembercart';
+    if ($this->CMS->CheckPurview($resource_chrcode) == false) {
+      $this->error('无权限');
+    }
+
+    $member_cart_type = config("member_cart_type");
+
+    $subscribeModel = new subscribeModel;
+    $result = $subscribeModel->member_cart($param);
+
+    $this->assign("resource_chrcode", $resource_chrcode);
+    $this->assign("param", $param);
+    $this->assign("page", $result['page']);
+    $this->assign("datalist", $result['datalist']);
+    $this->assign("member_cart_type", $member_cart_type);
+    return $this->fetch();
+  }
+  /**
+   * 预约会员卡新增/编辑
+   *
+   * @return void
+   * @author Chenjie
+   * @Date 2019-07-09 15:04:52
+   */
+  public function membercartedit()
+  {
+    $param = input('param.');
+    $id = isset($param['id']) ? $param['id'] : 0;
+    $param['cart_type'] = isset($param['cart_type']) ? $param['cart_type'] : '';
+    $param['member_id'] = isset($param['member_id']) ? $param['member_id'] : '';
+    $param['member_nickname'] = isset($param['member_nickname']) ? $param['member_nickname'] : '';
+    $siteid = session("idsite");
+
+
+    $subscribeModel = new subscribeModel;
+    if (request()->isPost()) {
+      $resource_chrcode = $param['overdue'] == 0 ? 'usemembercart' : 'overduemembercart';
+      $action = isset($param['action']) ? $param['action'] : '';
+      if ($this->CMS->CheckPurview($resource_chrcode, $action) == false) {
+        $this->error('无权限');
+      }
+      try {
+        $subscribeModel->member_cart_edit($param);
+        $this->success('操作成功', PUBLIC_URL . 'postsuccess.html');
+      } catch (Exception $e) {
+        $this->error('操作失败');
+      }
+    }
+
+    // 会员卡类型
+    $member_cart_type = config("member_cart_type");
+    // 会员卡信息
+    $datainfo = [];
+    if ($id) {
+      $datainfo = $subscribeModel->get_member_cart_by_id($id);
+    }
+    // 生成会员卡号
+    $member_cart_no = 0;
+    while (true) {
+        $member_cart_no = mt_rand(1000000000,9999999999);
+        $ordersn_count = db('subscribe_member_cart')->where("member_cart_no = '$member_cart_no'")->count();
+        if ($ordersn_count == 0)
+            break;
+    }
+    
+
+    $this->assign("param", $param);
+    $this->assign("siteid", $siteid);
+    $this->assign('member_cart_no',$member_cart_no);
+    $this->assign("member_cart_type", $member_cart_type);
+    $this->assign("datainfo", $datainfo);
+    return $this->fetch();
+  }
+  /**
+   * 选择会员
+   *
+   * @return void
+   * @author Chenjie
+   * @Date 2019-07-12 11:31:31
+   */
+  public function selectmember()
+  {
+    $param = input('param.');
+    $param['p'] = isset($param['p']) ? intval($param['p']) : 1;
+    $param['member_id'] = isset($param['member_id']) ? $param['member_id'] : '';
+    $param['chrname'] = isset($param['chrname']) ? rtrim($param['chrname']) : '';
+    $param['nickname'] = isset($param['nickname']) ? rtrim($param['nickname']) : '';
+    $param['mobile'] = isset($param['mobile']) ? rtrim($param['mobile']) : '';
+
+    $subscribeModel = new subscribeModel;
+    $result = $subscribeModel->member_list($param);
+
+    $this->assign("param", $param);
+    $this->assign("page", $result['page']);
+    $this->assign("datalist", $result['datalist']);
+    return $this->fetch();
+  }
+  /**
+   * 选择允许场次
+   *
+   * @return void
+   * @author Chenjie
+   * @Date 2019-07-12 11:32:51
+   */
+  public function selectallowsession()
+  {
+    $param = input('param.');
+    $param['action'] = isset($param['action']) ? $param['action'] : '';
+    $param['object_name'] = isset($param['object_name']) ? $param['object_name'] : '';
+    $param['place'] = isset($param['place']) ? $param['place'] : '';
+    $param['week'] = isset($param['week']) ? $param['week'] : '';
+    $param['period'] = isset($param['period']) ? $param['period'] : '';
+    $param['id'] = isset($param['id']) ? $param['id'] : [];
+    $param['p'] = isset($param['p']) ? intval($param['p']) : 1;
+    $form_hash = isset($param['form_hash']) ? $param['form_hash'] : '';
+    if (empty($form_hash) && $param['p'] <= 1) {
+      $form_hash = time() . rand(100000, 999999);
+      cache('form_hash', $form_hash);
+    }
+    if ($param['p'] > 1) {
+      $form_hash = cache('form_hash');
+    }
+
+    $session_id_list = cache($form_hash) ? cache($form_hash) : [];
+    $param_session_id = isset($param['session_id']) ? $param['session_id'] : [];
+    if ($param['action'] !== 'del') {
+      if (!is_array($param_session_id)) {
+        $param_session_id = explode(",", $param_session_id);
+      }
+      if ($param_session_id) {
+        foreach ($param_session_id as $session_id) {
+          if (!in_array($session_id, $session_id_list)) {
+            array_push($session_id_list, $session_id);
+          }
+        }
+        cache($form_hash, $session_id_list);
+      }
+    } else {
+      if ($param_session_id) {
+        foreach ($param_session_id as $session_id) {
+          $index = array_search($session_id, $session_id_list);
+          unset($session_id_list[$index]);
+        }
+        cache($form_hash, $session_id_list);
+      }
+    }
+
+    $subscribeModel = new subscribeModel;
+    // 获取场次列表
+    $result = $subscribeModel->session_list($param);
+    // 获取选中的场次
+    $selected_session_id_list = cache($form_hash) ? cache($form_hash) : [];
+    $datalist2 = [];
+    if ($selected_session_id_list) {
+      $datalist2 = $subscribeModel->related_session_list($selected_session_id_list);
+    }
+
+    $this->assign("selected_session_id_list", $selected_session_id_list);
+    $this->assign('form_hash', $form_hash);
+    $this->assign("param", $param);
+    $this->assign("page", $result['page']);
+    $this->assign("datalist", $result['datalist']);
+    $this->assign("datalist2", $datalist2);
+    return $this->fetch();
+  }
+  /**
+   * 获取允许场次
+   *
+   * @return void
+   * @author Chenjie
+   * @Date 2019-07-13 15:54:59
+   */
+  public function getallowsession()
+  {
+    $param = input('param.');
+    $form_hash = isset($param['form_hash']) ? $param['form_hash'] : '';
+    $session_key_list = cache($form_hash) ? cache($form_hash) : [];
+    // $session_key_list = isset($param['session_key']) ? explode(",",$param['session_key']) : [$param['session_key']];
+
+    // 获取允许场次列表
+    $datalist = [];
+    if ($session_key_list) {
+      $subscribeModel = new subscribeModel;
+      $datalist = $subscribeModel->related_session_list($session_key_list);
+    }
+    return ['session_key' => implode(",", $session_key_list), 'datalist' => $datalist];
+  }
+  /**
+   * 会员卡删除
+   *
+   * @return void
+   * @author Chenjie
+   * @Date 2019-07-15 14:43:40
+   */
+  public function membercartdelete()
+  {
+    $overdue = input('param.overdue');
+    $id_list = input('param.id');
+
+    $resource_chrcode = $overdue == 0 ? 'usemembercart' : 'overduemembercart';
+    if ($this->CMS->CheckPurview($resource_chrcode, 'del') == false) {
+      $this->error('无权限');
+    }
+
+    $subscribeModel = new subscribeModel();
+    $bool = $subscribeModel->membercartdelete($id_list);
+    if ($bool) {
+      return 1;
+    } else {
+      return 2;
+    }
+  }
+  /**
+   * 预约记录
+   *
+   * @return void
+   * @author Chenjie
+   * @Date 2019-07-15 15:14:22
+   */
+  public function subscriberecord()
+  {
+    if ($this->CMS->CheckPurview('subscriberecord') == false) {
+      $this->error('无权限');
+    }
+
+    $param = input('param.');
+    $param['p'] = isset($param['p']) ? intval($param['p']) : 1;
+    $param['subscribe_no'] = isset($param['subscribe_no']) ? rtrim($param['subscribe_no']) : '';
+    $param['member_nickanme'] = isset($param['member_nickanme']) ? rtrim($param['member_nickanme']) : '';
+    $param['subscribe_object_name'] = isset($param['subscribe_object_name']) ? rtrim($param['subscribe_object_name']) : '';
+    $param['is_signin'] = isset($param['is_signin']) ? intval($param['is_signin']) : -1;
+    $param['start_time'] = isset($param['start_time']) ? rtrim($param['start_time']) : '';
+    $param['end_time'] = isset($param['end_time']) ? rtrim($param['end_time']) : '';
+
+    $subscribeModel = new subscribeModel();
+    $result = $subscribeModel->subscriberecord($param);
+
+    $this->assign("param", $param);
+    $this->assign("page", $result['page']);
+    $this->assign("datalist", $result['datalist']);
+    return $this->fetch();
+  }
+  /**
+   * 会员卡详情
+   *
+   * @return void
+   * @author Chenjie
+   * @Date 2019-07-15 16:41:37
+   */
+  public function membercartdetail()
+  {
+    $id = input('param.id');
+    $subscribeModel = new subscribeModel();
+    $datainfo = $subscribeModel->membercartdetail($id);
+    $this->assign("datainfo", $datainfo);
+    return $this->fetch();
+  }
+  /**
+   * 预约对象详情
+   *
+   * @return void
+   * @author Chenjie
+   * @Date 2019-07-15 16:41:37
+   */
+  public function objectdetail()
+  {
+    $id = input('param.id');
+    $subscribeModel = new subscribeModel();
+    $datainfo = $subscribeModel->objectdetail($id);
+    $this->assign("datainfo", $datainfo);
+    return $this->fetch();
+  }
+  /**
+   * 用户详情
+   *
+   * @return void
+   * @author Chenjie
+   * @Date 2019-07-15 16:58:27
+   */
+  public function memberdetail()
+  {
+    $id = input('param.id');
+    $subscribeModel = new subscribeModel();
+    $datainfo = $subscribeModel->memberdetail($id);
+    $this->assign("datainfo", $datainfo);
+    return $this->fetch();
+  }
+  /**
+   * 预约记录详情
+   *
+   * @return void
+   * @author Chenjie
+   * @Date 2019-07-15 17:24:11
+   */
+  public function recorddetail()
+  {
+    if ($this->CMS->CheckPurview('subscriberecord', 'detail') == false) {
+      $this->error('无权限');
+    }
+    $id = input('param.id');
+    $subscribeModel = new subscribeModel();
+    $datainfo = $subscribeModel->recorddetail($id);
+    $this->assign("datainfo", $datainfo);
+    return $this->fetch();
+  }
+  /**
+   * 预约记录签到
+   *
+   * @return void
+   * @author Chenjie
+   * @Date 2019-07-16 09:23:31
+   */
+  public function recordsignin()
+  {
+    if ($this->CMS->CheckPurview('subscriberecord', 'signin') == false) {
+      $this->error('无权限');
+    }
+    $param = input('param.');
+    $subscribeModel = new subscribeModel();
+
+    $result = $subscribeModel->recordsignin($param);
+    if ($result) {
+      return $result;
+    } else {
+      return 0;
+    }
+  }
+}

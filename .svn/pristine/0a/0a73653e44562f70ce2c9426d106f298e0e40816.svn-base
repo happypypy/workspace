@@ -1,0 +1,22 @@
+<?php  if(!$result_data) {echo 11; exit; ?>
+
+<?php }
+			foreach($result_data as $k=>$val){ ?>
+<li>
+    <div style="float:left"> <input name="activity[]" type="checkbox"  value="" class="activity_checkbox"/></div>
+    <a href="<?php echo (empty($val['chrurl'])?'/'.$sitecode.'/detail/'.$val['idactivity']:$val['chrurl']) ?>" style="">
+        <img src="{$val['chrimg_m']}">
+        <div class="word" >
+            <div class="tit">
+                {if condition="$val['is_receive_cashed'] == 1 && $is_cashed"}<span class="iconfont coupon-link">&#xe624;</span>{/if}{$val['chrtitle']}</div>
+        </div>
+    </a>
+    <div style="right:5px;float:right">
+        <button >发布</button>
+        <a href="/{sitecode}activitymanagemodi"> <button type="button">编辑</button> </a>
+        <button type="button">复制</button>
+        <?php  if($intflag=="3" || $val['intflag'] == 6) {  ?> <button type="button">分享</button> <button type="button">提交审核</button> <?php } ?>
+
+    </div>
+</li>
+<?php } ?>

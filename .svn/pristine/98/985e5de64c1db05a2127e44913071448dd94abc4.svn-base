@@ -1,0 +1,231 @@
+@charset "utf-8";
+
+/* CSS Document */
+html{
+    -ms-text-size-adjust:100%;
+    -webkit-text-size-adjust:100%;
+    font-size:100px;
+}
+body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,img,ins,kbd,q,s,samp,small,strike,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,article,aside,canvas,details,embed,figure,figcaption,footer,header,hgroup,menu,nav,output,ruby,section,summary,time,mark,audio,video{
+    padding:0;
+    margin:0;
+    border:0;
+    vertical-align:baseline;
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+h1,h2,h3,h4,h5,h6{
+    font-weight:normal;
+}
+body{
+    min-width: 320px;
+    font-size: 16px;
+    text-rendering: optimizeLegibility;
+    font-family: -apple-system-font,"Helvetica Neue","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+}
+table{
+    margin:auto;
+    text-align:left;
+    border-collapse:collapse;
+    border-spacing:0;
+}
+ol,ul{
+    list-style:none;
+    list-style-type:none;
+}
+a img,img{
+    vertical-align:middle;
+    border:none;
+}
+
+/* a style */
+a{
+    text-decoration: none;
+    -webkit-tap-highlight-color: rgba(0,0,0,0); 
+}
+a:visited{
+    text-decoration: none;
+    outline: none;
+}
+a:hover{
+    text-decoration: none;
+    outline: none;
+}
+a:active{
+    outline: none;
+}
+a:focus{
+    outline: none;
+}
+
+/* form style */
+input,textarea,select,button{
+    vertical-align: middle;
+    outline: none;
+    background: inherit;
+    appearance: none;
+    -webkit-appearance: none;  
+    -moz-appearance: none;
+    -ms-appearance: none;
+    -o-appearance: none;
+    padding: 0;
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+label{
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+
+/* clearfix style */
+.clear{
+    clear:both;
+    height:0;
+    visibility:hidden;
+    overflow:hidden;
+}
+.clearfix:after{
+    display: block;
+    clear: both;
+    height: 0;
+    content: "\20";
+    visibility: hidden;
+    overflow: hidden;
+}
+.clearfix{
+    display: block;
+    *zoom: 1;
+}
+.ovh{
+    overflow: hidden;
+}
+*html .clearfix{
+    height: 1%;
+}
+.fl{
+	float: left;
+}
+.fr{
+	float: right;
+}
+.flex{
+    display: -webkit-flex;
+    display: -webkit-box;
+    display: -moz-flex;
+    display: -ms-flex;
+    display: -o-flex;
+    display: flex;
+}
+.flex-middle{
+    -webkit-box-pack: center;
+    -moz-box-pack: center;
+    -ms-flex-align:center;/* IE 10 */
+    -webkit-align-items: center;
+    -moz-align-items: center;
+    align-items: center;
+}
+.flex-center{
+    -webkit-box-align: center;
+    -moz-box-align: center;
+    -ms-flex-pack:center;  
+    -webkit-justify-content: center;
+    -moz-justify-content: center;
+    justify-content: center;
+}
+.fx1{
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    -moz-flex: 1;
+    -ms-flex: 1;
+    -o-flex: 1;
+    flex: 1;
+}
+.space-between{
+    -webkit-justify-content: space-between;
+    justify-content: space-between;
+}
+
+@font-face {font-family: 'iconfont';
+    src: url('iconfont.eot'); /* IE9*/
+    src: url('iconfont.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+    url('iconfont.woff') format('woff'), /* chrome、firefox */
+    url('iconfont.ttf') format('truetype'), /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/
+    url('iconfont.svg#iconfont') format('svg'); /* iOS 4.1- */
+}
+.iconfont{
+    font-family:"iconfont" !important;
+    font-style:normal;
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-stroke-width: 0.001rem;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+
+
+body,
+html{
+	height: 100%;
+}
+body{
+	background: #eeefef;
+}
+.content{
+	position:relative;
+	min-width: 320px;
+	margin: 0 auto;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	min-height: 100%;
+	padding: 0.2rem;
+}
+.logo img{
+	width: 40%;
+	display: block;
+	margin: 0 auto;
+}
+.txt{
+	margin-top: 0.2rem;
+	font-size: 0.13rem;
+	line-height: 1.6;
+}
+.txt p{
+	text-indent: 2em;
+	color: #333;
+}
+.form{
+	margin-top: 0.18rem;
+}
+.form .text{
+	background: #d4dbde;
+	color: #fff;
+	text-align: center;
+	border: none;
+	height: 0.36rem;
+	margin-bottom: 0.08rem;
+	width: 100%;	
+	font-size: 0.14rem;
+}
+.form .text::-webkit-input-placeholder { 
+	color: #fff;
+}
+.form .yzm{
+	height: 0.36rem;
+	margin-left: 0.1rem;
+}
+.form .submit{
+	border: 1px solid #008cd6;
+	color: #fff;
+	background: transparent;
+	display: block;
+	margin: 0 auto;
+	width: 1rem;
+	height: 0.36rem;
+	border-radius: 3px;
+	color: #008cd6;
+	margin-top: 0.2rem;
+	font-size: 0.14rem;
+}
+
+/* 4.25reg修改 */
+.form .text1{
+    background: #008cd6;
+    box-shadow: 0 0 .05rem rgba(0,0,0,.34)
+}

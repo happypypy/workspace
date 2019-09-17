@@ -1,0 +1,33 @@
+<footer>
+    <div class="footer">
+        <ul>
+            <li>
+                <a href="/{$sitecode}">
+                    <span><i class="iconfont home">&#xe682;</i></span>
+                    <p>主页</p>
+                </a>
+
+            </li>
+
+
+            <li>
+                <a href="javascript:;" id="show-comment">
+                    <span><i class="iconfont message">&#xe608;</i></span>
+                    <p>评论</p>
+                </a>
+            </li>
+
+        </ul>
+    </div>
+</footer>
+
+<script type="text/javascript">
+    $(function(){
+        $("#show-comment").on("click",function(){
+            $(".comment-form,.cover").show();
+        })
+        $("#close-comment").on("click",function(){
+            $(".comment-form,.cover").hide();
+        })
+    })
+</script>

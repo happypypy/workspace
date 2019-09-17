@@ -1,0 +1,30 @@
+<?php if(!empty($stu_list)){ ?>
+{volist name="stu_list" id="vo"}
+<tr>
+    <td align="center"><input class="checked_one" type="checkbox" name="id[]" value="oZS4v1aiMfreRinDgG-uWZFEDpnk" /></td>
+    <td>{$vo.name}</td>
+    <td><?php  if(!empty($vo['age']) && is_numeric($vo['age'])){
+                                                     $age=(int)round((int)(time()-$vo['age'])/60/60/24/365);
+                                                     if($age<0){
+                                                     $age=0;
+                                                     }
+                                                     echo $age;
+                                                     } ?>
+    </td>
+    <td>{$vo.sex}</td>
+    <td>{$vo.idcard}</td>
+    <td>{$vo.phone}</td>
+    <td>
+        {volist name="vo['parents']" id= "voo"}
+        {$voo.name} {$voo.phone}<br/>
+        {/volist}
+    </td>
+    <td>
+
+        <a href="{:url('act/comment_stu','&sid='.$vo['id'])}?aid={$vo['id_activities']}" target="_blank">评价管理 </a>
+        <a href="javascript:CustomOpen('{:url('act/hand_addstu','&sid='.$vo['id'])}','xy','学员详情',700,470)">修改 </a>
+        <a class="del" sid="{$vo.id}" href="javascript:;">删除</a>
+    </td>
+</tr>
+{/volist}
+<?php } ?>

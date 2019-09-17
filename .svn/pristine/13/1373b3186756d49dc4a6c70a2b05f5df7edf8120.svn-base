@@ -1,0 +1,804 @@
+<?php
+/**
+ * 天络CMS
+ * ============================================================================
+ * 版权所有 2017-2027 深圳天络科技有限公司，并保留所有权利。
+ * 网站地址: http://www.chinasky.net
+ * ----------------------------------------------------------------------------
+ * 这不是一个自由软件！您只能在不用于商业目的的前提下对程序代码进行修改和使用 .
+ * 不允许对程序代码以任何形式任何目的的再发布。
+ * ============================================================================
+ * Author: huangshixin
+ * Date:2018-06-17 */
+namespace app\admin\module;
+
+use think\db;
+use think\db\Query;
+use think\Exception;
+use think\Model;
+use think\Page;
+use think\wx\Utils\HttpCurl;
+
+class act extends Model
+{
+    protected $siteid = 0;
+    public function __construct($idStie)
+    {
+        $this->siteid = $idStie;
+        parent::__construct();
+    }
+
+    public function add_comment_stu($data)
+    {
+        $tmpData=[];
+        if(!isset($data['cid'])){
+            $tmpData['id_stu']=$data['sid'];
+            $tmpData['id_activities']=$data['aid'];
+            $tmpData['id_site']=$this->siteid;
+        }
+        $tmpData['title']=$data['title'];
+        $tmpData['content']=$data['content'];
+        $tmpData['commentatorid']=session('AccountID');
+        $tmpData['commentator']=session('UserName');
+        $tmpData['comment_time']=strtotime($data['comment_time']);
+
+        try{
+        if(key_exists('cid',$data) && $data['cid']>0) {
+            $where=[];
+            $where['id_site']=$this->siteid;
+            $where['id']=$data['cid'];
+            $tmp=db('activities_stu_comment')->where($where)->update($tmpData);
+        }
+        else
+        {
+            $tmp=db('activities_stu_comment')->insert($tmpData);
+        }
+        }catch (\Exception $e){
+
+            return ['state'=>'fail','msg'=>$e->getMessage()];
+        }
+            return ['state'=>'success','msg'=>'操作成功'];
+
+    }
+
+    public function add_teacher($data)
+    {
+        $tmpData=[];
+        if(!isset($data['tid'])){
+            $tmpData['id_activities']=$data['aid'];
+            $tmpData['id_site']=$this->siteid;
+        }
+        $tmpData['name']=$data['name1'];
+        $tmpData['position']=$data['position'];
+        $tmpData['phone']=$data['phone'];
+        $tmpData['pic']=$data['pic'];
+        $tmpData['order']=$data['order'];
+        $tmpData['url']=$data['url'];
+        $tmpData['qrcode']=$data['qrcode'];
+
+        try{
+            if(key_exists('tid',$data) && $data['tid']>0) {
+                $where=[];
+                $where['id_site']=$this->siteid;
+                $where['id']=$data['tid'];
+                $tmp=db('activities_teacher')->where($where)->update($tmpData);
+            }
+            else
+            {
+                $tmp=db('activities_teacher')->insert($tmpData);
+            }
+        }catch (\Exception $e){
+
+            return ['state'=>'fail','msg'=>$e->getMessage()];
+        }
+        return ['state'=>'success','msg'=>'操作成功'];
+
+    }
+
+    public function add_summary($data)
+    {
+        $tmpData=[];
+        if(!isset($data['suid'])){
+            $tmpData['id_activities']=$data['aid'];
+            $tmpData['id_site']=$this->siteid;
+            $tmpData['id_manage']=session('AccountID');
+            $tmpData['summary_user']=session('UserName');
+
+        }
+
+        $tmpData['title']=$data['title'];
+        $tmpData['content']=$data['content'];
+        $tmpData['ctime']=strtotime(trim($data['ctime']));
+
+        try{
+            if(key_exists('suid',$data) && $data['suid']>0) {
+                $where=[];
+                $where['id_site']=$this->siteid;
+                $where['id']=$data['suid'];
+                $tmp=db('activities_day_summary')->where($where)->update($tmpData);
+            }
+            else
+            {
+                $tmp=db('activities_day_summary')->insert($tmpData);
+            }
+        }catch (\Exception $e){
+            return ['state'=>'fail','msg'=>$e->getMessage()];
+        }
+        return ['state'=>'success','msg'=>'操作成功'];
+
+    }
+
+    public  function get_summary($data)
+    {
+        $result=[];
+        $result['suid']=0;
+        if(!isset($data['suid'])){
+            $result['id_activities']=$data['aid'];
+            $result['id_site']=$this->siteid;
+            $result['ctime']=date("Y-m-d H:i:s",time());
+        }
+        $result['title']='';
+        $result['content']='';
+        if(key_exists('suid',$data) && $data['suid']>0)
+        {
+            $where=[];
+            $where['id_site']=$this->siteid;
+            $where['id']=$data['suid'];
+            $tmp=db('activities_day_summary')->where($where)->find();
+            if($tmp)
+                $result=$tmp;
+        }
+        //dump($result);
+        return $result;
+    }
+
+    public  function get_teacher($data)
+    {
+        $result=[];
+        $result['tid']=0;
+        if(!isset($data['tid'])){
+            $tmpData['id_activities']=$data['aid'];
+            $tmpData['id_site']=$this->siteid;
+        }
+
+        $result['name']='';
+        $result['position']='';
+        $result['phone']='';
+        $result['pic']='';
+        $result['order']='';
+        $result['url']='';
+        $result['qrcode']='';
+
+        if(key_exists('tid',$data) && $data['tid']>0)
+        {
+            $where=[];
+            $where['id_site']=$this->siteid;
+            $where['id']=$data['tid'];
+            $tmp=db('activities_teacher')->where($where)->find();
+            if($tmp)
+                $result=$tmp;
+        }
+        //dump($result);
+        return $result;
+    }
+    public  function get_comment_stu($data)
+    {
+        $result=[];
+        $result['cid']=0;
+        if(!isset($data['cid'])){
+            $result['id_stu']='';
+            $result['id_activities']=$data['aid'];
+            $result['id_site']=$this->siteid;
+        }
+
+        $result['title']='';
+        $result['content']='';
+        $result['commentatorid']=0;
+        $result['commentator']='';
+        $result['comment_time']=time();
+
+        if(key_exists('cid',$data) && $data['cid']>0)
+        {
+            $where=[];
+            $where['id_site']=$this->siteid;
+            $where['id']=$data['cid'];
+            $tmp=db('activities_stu_comment')->where($where)->find();
+            if($tmp)
+                $result=$tmp;
+        }
+        //dump($result);
+        return $result;
+    }
+    //列表
+    public function index($request)
+    {
+        $Search_str = '';
+        $Search_arr = array();
+        $search = array();
+        $Search_arr1 = array();
+
+        $search['chrtitle'] = empty($request['chrtitle']) ? "" : $request['chrtitle'];
+        $search['fidtype'] = empty($request['fidtype']) ? "" : $request['fidtype'];
+        $search['dtstart'] = empty($request['dtstart']) ? "" : $request['dtstart'];
+        $search['dtend'] = empty($request['dtend']) ? "" : $request['dtend'];
+        $search['dtpublishtime_s'] = empty($request['dtpublishtime_s']) ? "" : $request['dtpublishtime_s'];
+        $search['dtpublishtime_e'] = empty($request['dtpublishtime_e']) ? "" : $request['dtpublishtime_e'];
+        $search['chrtags'] = empty($request['chrtags']) ? [] : $request['chrtags'];
+        $search['ischarge'] = empty($request['ischarge']) ? "" : $request['ischarge'];
+
+        if (isset($request['chkcontentlev']) && is_numeric($request['chkcontentlev'])) {
+            $search['chkcontentlev'] = $request["chkcontentlev"];
+            $Search_arr1['chkcontentlev'] = $search['chkcontentlev'];
+        } else {
+            $search['chkcontentlev'] = "";
+        }
+        if (isset($request['chkisindex']) && is_numeric($request['chkisindex'])) {
+            $search['chkisindex'] = $request["chkisindex"];
+            $Search_arr1['chkisindex'] = $search['chkisindex'];
+        } else {
+            $search['chkisindex'] = "";
+        }
+
+        if ($search['chrtitle'] != '') {
+            $Search_arr1['chrtitle'] = array('like', '%' . $search['chrtitle'] . '%');
+        }
+
+        if ($search['fidtype'] != '') {
+            $Search_arr1['fidtype'] = $search['fidtype'];
+        }
+        if ($search['ischarge'] != '') {
+            $Search_arr1['ischarge'] = $search['ischarge'];
+        }
+
+        if (!empty($search['chrtags'])) {
+            $tmp = "";
+            foreach ($search['chrtags'] as $k => $vo) {
+                $tmp = $tmp . " chrtags like '%," . $vo . ",%' or";
+            }
+            $tmp = trim($tmp, "or");
+            if ($tmp != "") {
+                $Search_str = $Search_str . " (" . $tmp . ") and ";
+            }
+            //$Search_arr1['chrtags']=array('in',implode(',', $search['chrtags']));
+
+        }
+        $Search_arr1['siteid'] = $this->siteid;
+        if ($request['intflag'] == 5) {
+            $Search_arr1['dtstart'] = array(array('gt', date("Y-m-d", strtotime("1 day"))), array('lt', date("Y-m-d", strtotime("8 day"))));
+            $Search_arr1['intflag'] = 2;
+        } else {
+            $Search_arr1['intflag'] = $request['intflag'];
+        }
+
+        // print_r($Search_str);
+        if ($search['dtstart'] != '' && $search['dtend'] != '') {
+            $Search_str = $Search_str . "((dtstart > '" . $search['dtstart'] . "' and dtstart <'" . $search['dtend'] . ' 23:59:59' . "') or  (dtend >'" . $search['dtstart'] . "' and dtend <'" . $search['dtend'] . ' 23:59:59' . "')  or (dtstart > '" . $search['dtstart'] . "' and dtend <'" . $search['dtend'] . ' 23:59:59' . "') or (dtstart < '" . $search['dtstart'] . "' and dtend >'" . $search['dtend'] . ' 23:59:59' . "')) and ";
+            //  $Search_arr['dtstart']=$search['dtstart'];
+            //  $Search_arr['dtend']=$search['dtend'] ." 23:59:59" ;
+        }
+        if ($search['dtpublishtime_s'] != '' && $search['dtpublishtime_e'] != '') {
+            $Search_str = $Search_str . ' dtpublishtime > :dtpublishtime_s and dtpublishtime <:dtpublishtime_e and ';
+            $Search_arr['dtpublishtime_s'] = $search['dtpublishtime_s'];
+            $Search_arr['dtpublishtime_e'] = $search['dtpublishtime_e'] . " 23:59:59";
+        }
+        $Search_str = rtrim($Search_str, ' and ');
+
+        if ($Search_str == '') {
+            $count = db('activity')->where($Search_arr1)->count();
+        } else {
+            $count = db('activity')->where($Search_arr1)->where($Search_str, $Search_arr)->count();
+        }
+
+        $page = new Page($count, PAGE_SIZE);
+        if ($Search_str == '') {
+            $data = db('activity')->where($Search_arr1)->order('idactivity desc')->limit($page->firstRow . ',' . $page->pageSize)->select();
+        } else {
+            $data = db('activity')->where($Search_arr1)->where($Search_str, $Search_arr)->order('idactivity desc')->limit($page->firstRow . ',' . $page->pageSize)->select();
+        }
+
+//        dump(DB::table('activity')->getLastSql());
+        foreach ($data as &$value) {
+            $selcontent = $value["selcontent"];
+            $arr = explode("☆", $selcontent);
+            $min_price = $max_price = 0;
+            if (isset($arr[3])) {
+                $arr1 = explode("∮", $arr[3]);
+                foreach ($arr1 as $key => $v) {
+                    if ($key == 0) {
+                        $min_price = $v;
+                    }
+                    if ($min_price > $v) {
+                        $min_price = $v;
+                    }
+                    if ($max_price < $v) {
+                        $max_price = $v;
+                    }
+                }
+            }
+            $value["min_price"] = $min_price;
+            $value["max_price"] = $max_price;
+        }
+
+        $acount[5] = db('activity')->where(array('siteid' => $this->siteid, 'intflag' => 2 ))->where("dtstart>'" . date("Y-m-d", strtotime("1 day")) . "' and dtstart<'" . date("Y-m-d", strtotime("8 day")) . "'")->count();
+        $acount[2] = db('activity')->where(array('siteid' => $this->siteid, 'intflag' => 2))->count();
+        $arr = array();
+        $arr['search'] = $search;
+        $arr['pager'] = $page;
+        $arr['data'] = $data;
+        $arr['acount'] = $acount;
+
+        return $arr;
+    }
+    public function PostData($data){
+        $tmpArr = array();
+        if(!empty($data['title'])){
+            $tmpArr['title']=trim($data['title']);
+        }else{
+            $error['msg']='请输入活动标题！';
+            $error['flag']=2;//错误
+            return $error;
+        }
+        if(!empty($data['leader'])){
+            $tmpArr['leader']=trim($data['leader']);
+            $tmpArr['id_leader']=0;
+
+        }else{
+            $error['msg']='请输入活动负责人！';
+            $error['flag']=2;//错误
+            return $error;
+        }
+        if(isset($data['stime']) && !empty($data['stime'])){
+            $tmpArr['start_time']=strtotime($data['stime']);
+        }
+        if(isset($data['etime']) && !empty($data['etime'])){
+            $tmpArr['end_time']=strtotime($data['etime']);
+        }
+        if(isset($data['state']) && !empty($data['state'])){
+            $tmpArr['state']=trim($data['state']);
+        }
+        if(!empty($data['stime']) && !empty($data['etime']) &&  strtotime($data['stime']) >= strtotime($data['etime'])){
+            $error['msg']='开始日期必须小于结束日期！';
+            $error['flag']=2;//错误
+            return $error;
+        }
+        if(isset($data['pic'])){
+            $tmpArr['pic']=trim($data['pic']);
+        }
+        $tmpArr['id_site']=$this->siteid;
+
+        if(isset($data['actid'])){
+            $res=db('activities')->where(['id'=>$data['actid'],'id_site'=>$this->siteid])->update($tmpArr);
+        }else{
+            $res=db('activities')->insert($tmpArr);
+        }
+        if($res){
+            $error['flag']=1;
+            return $error;
+        }
+    }
+
+    public function signupindex($request){
+        $idactivity = $request['id'];
+        $whereArr = array('dataid' => $idactivity, 'idsite' => session('idsite'));
+
+        $search = array("issign" => "", "payname" => "", "dtstart" => "", "dtend" => "", "state" => "");
+
+        foreach ($search as $key => &$v) {
+            if (isset($request[$key])) {
+                $v = $request[$key];
+            }
+        }
+
+        if (isset($request["issign"]) && is_numeric($request["issign"])) {
+            if ((int) $request["issign"] > 0) {
+                $whereArr["issign"] = 1;
+            } else {
+                $whereArr["issign"] = array('EXP', Db::raw('IS NULL'));
+            }
+        }
+
+        if (isset($request["payname"]) && !empty($request["payname"])) {
+            $whereArr["payname"] = array('like', '%' . $request["payname"] . '%');
+        }
+
+        if (isset($request["state"]) && (int) $request["state"] > 0) {
+            $whereArr["state"] = (int) $request["state"];
+        }
+
+        if (isset($request['dtstart']) && $request['dtstart'] != '' && isset($request['dtend']) && $request['dtend'] != '') {
+            $whereArr['dtcreatetime'] = array(array('>', $request['dtstart']), array('<', $request['dtend'] . " 23:59:59"), "and");
+        }
+
+        $count = db('order')->where($whereArr)->count();
+
+        $pagesize = 2000; //PAGE_SIZE;
+        $page = new Page($count, $pagesize);
+        //
+        $data = db('order')->where($whereArr)->limit($page->firstRow . ',' . $page->pageSize)->order('id asc')->select();
+
+        $arr = array();
+        $arr['pager'] = $page;
+        $arr['data'] = $data;
+        $arr['search'] = $search;
+        return $arr;
+    }
+
+    public function addstu($data){
+       //dump($data);
+        $tmp_id=[];
+        if(empty($data['actid']))
+            return ['status' => 'fail', 'msg' => '请选择活动'];
+        if(empty($data['selsignfrom']))
+            return ['status' => 'fail', 'msg' => '没有可导入的报名模板'];
+        if($data['name']==0) {
+            return ['status' => 'fail', 'msg' => '请选择学员姓名'];
+        }else{
+            $tmp_id['name']=$data['name'];
+        }
+
+        if(!empty($data['age'])){
+            $tmp_id['age']=$data['age'];
+        }
+        if(!empty($data['sex'])){
+            $tmp_id['sex']=$data['sex'];
+        }
+        if(!empty($data['idcard'])){
+            $tmp_id['idcard']=$data['idcard'];
+        }
+        if(!empty($data['phone'])){
+            $tmp_id['phone']=$data['phone'];
+        }
+
+       // dump($tmp_id);
+        $res=db('signup_template_sub')->where(['id'=>['in',$tmp_id]])->field('id,title')->select();
+
+        $tmp_arr=[];
+        foreach ($res as $v){
+            $tmp_arr[$v['id']]=$v['title'];
+        }
+       //dump($tmp_arr);
+//
+        $frmdata=[];
+        foreach ($data['id'] as $kk=> $v){
+            $user_info=db('order')->where(['ordersn'=>$v]) ->field('fiduser,txtfield,txtdata,dtcreatetime')->find();
+            //dump($user_info);
+            $row2= explode("☆", $user_info['txtfield']);
+            $row1= explode("☆", $user_info['txtdata']);
+
+            //dump($row1);
+            foreach($row1 as $k=>$vo) {
+                $arr = explode("∫", $row2[$k]);
+                $datatype = 1;
+                $datafield = $arr[0];
+                if($datatype==7)
+                {
+                    $frmdata[$kk][$datafield]='<img src="'.$vo.'" style="border: 0px;height: 50px;padding: 1px;"  />';
+                }
+                else
+                {
+                    $frmdata[$kk][$datafield]=$vo;
+                }
+                $frmdata[$kk]['dtcreatetime']=$user_info['dtcreatetime'];
+            }
+        }
+
+        //dump($frmdata);
+        //处理得到的数据
+        $student_info=[];
+        try{
+        foreach ( $frmdata as $k=>$v) {
+            if(!key_exists("",$v)){
+                if(key_exists("{$tmp_arr[(int)$tmp_id['name']]}",$v)){
+                $student_info[$k]['name']=$v["{$tmp_arr[(int)$tmp_id['name']]}"];
+                if(strlen($student_info[$k]['name']) >= 85){
+                    $student_info[$k]['name']=mb_substr($student_info[$k]['name'], 0 , 85);
+                }
+                }
+                if(!empty($data['age']) && key_exists("{$tmp_arr[(int)$tmp_id['age']]}",$v)){
+                    //黄总说年龄只判断是否为数字的，不用判断是否为日期，如果时日期则插入数据库
+                    if(is_numeric($v["{$tmp_arr[(int)$tmp_id['age']]}"]) && (int)$v["{$tmp_arr[(int)$tmp_id['age']]}"] <=100 && (int)$v["{$tmp_arr[(int)$tmp_id['age']]}"] >=0){
+                        //根据创建订单时间以及年龄，算出出生日期，写入
+                        $year=$v['dtcreatetime']-$v["{$tmp_arr[(int)$tmp_id['age']]}"];
+                        $dtcreatetime=strtotime($v['dtcreatetime']);
+                        $md=date('m-d',$dtcreatetime);
+                        $stu_age=$year.'-'.$md;
+                        $student_info[$k]['age']=strtotime($stu_age);
+                    }else{
+                        $student_info[$k]['age']='';
+                    }
+
+                }else{
+                    $student_info[$k]['age']='';
+                }
+                if(!empty($data['sex']) && key_exists("{$tmp_arr[(int)$tmp_id['sex']]}",$v)){
+                    $student_info[$k]['sex']=$v["{$tmp_arr[(int)$tmp_id['sex']]}"];
+                    if(strlen($student_info[$k]['sex']) >= 33){
+                        $student_info[$k]['sex']=mb_substr($student_info[$k]['sex'], 0 , 33);
+                    }
+                }else{
+                    $student_info[$k]['sex']='';
+                }
+                if(!empty($data['idcard']) && key_exists("{$tmp_arr[(int)$tmp_id['idcard']]}",$v)){
+                    $student_info[$k]['idcard']=$v["{$tmp_arr[(int)$tmp_id['idcard']]}"];
+                    if(strlen($student_info[$k]['idcard']) >= 85){
+                        $student_info[$k]['idcard']=mb_substr($student_info[$k]['idcard'], 0 , 85);
+                    }
+                }else{
+                    $student_info[$k]['idcard']='';
+                }
+                if(!empty($data['phone']) && key_exists("{$tmp_arr[(int)$tmp_id['phone']]}",$v)){
+                    $student_info[$k]['phone']=$v["{$tmp_arr[(int)$tmp_id['phone']]}"];
+                    if(strlen($student_info[$k]['phone']) >= 85){
+                        $student_info[$k]['phone']=mb_substr($student_info[$k]['phone'], 0 , 85);
+                    }
+                }else{
+                    $student_info[$k]['phone']='';
+                }
+                $student_info[$k]['id_site']=$this->siteid;
+                $student_info[$k]['id_activities']=$data['actid'];
+            }
+        }
+       // dump($student_info);
+        if(empty($student_info)){
+            return ['status' => 'fail', 'msg' => '没有可导入的数据'];
+        }else{
+            db('activities_student')->insertAll($student_info);
+        }
+        }catch (\Exception $e){
+            \think\Log::info('sql：' .Db::table('')->getLastSql());
+            \think\Log::error($e->getMessage());
+            \think\Log::error($e->getData());
+            return ['status' => 'fail', 'msg' => $e->getMessage()];
+        }
+        return ['status' => 'success', 'msg' => '操作成功'];
+    }
+
+
+    public  function hand_addstu($data){
+        $tmp_arr=[];
+        $tmp_arr['id_site']=$this->siteid;
+        if(empty($data['name'])){
+            return ['state'=>'fail','msg'=>'请输入学员姓名'];
+        }else{
+            $tmp_arr['name']=trim($data['name']);
+        }
+        if(!empty($data['age'])){
+            $is_date=strtotime(trim($data['age']))?strtotime(trim($data['age'])):false;
+            if($is_date){
+                $tmp_arr['age']=$is_date;
+            }else{
+                return ['state'=>'fail','msg'=>'请输入格式为yyyy-mm-dd的日期'];
+            }
+        }else{
+            $tmp_arr['age']='';
+        }
+
+        if(key_exists('parentoid',$data))
+        {
+            $openids=$data['parentoid'];
+            $names=$data['parentname'];
+            $phones=$data['parentphone'];
+            $icount=0;
+            foreach ($openids as $index=>$vo)
+            {
+                $icount=$index+1;
+                $openid=$openids[$index];
+                $nema1=$names[$index];
+                $phone=$phones[$index];
+
+                $tmp_arr['parent'.$icount."_openid"]=$openid;
+                $tmp_arr['parent'.$icount.'_name']=$nema1;
+                $tmp_arr['parent'.$icount.'_phone']=$phone;
+            }
+            for ($i=$icount+1;$i<=3;$i++)
+            {
+                $tmp_arr['parent'.$i."_openid"]="";
+                $tmp_arr['parent'.$i.'_name']="";
+                $tmp_arr['parent'.$i.'_phone']="";
+            }
+        }
+
+        if(!empty($data['sex'])){
+            if($data['sex']==1){
+                $tmp_arr['sex']='男';
+            }elseif($data['sex']==2){
+                $tmp_arr['sex']='女';
+            }elseif($data['sex']==3){
+                $tmp_arr['sex']='未知';
+            }else{
+                return ['state'=>'fail','msg'=>'学员性别参数错误'];
+            }
+        }
+        if(!empty($data['phone'])){
+            $check =  '/^0?1[3|4|5|6|7|8][0-9]\d{8}$/';
+            if (preg_match($check, trim($data['phone']))) {
+                $tmp_arr['phone']=$data['phone'];
+            }else{
+                return ['state'=>'fail','msg'=>'学员号码格式错误'];
+            }
+        }else{
+            $tmp_arr['phone']='';
+        }
+        if(!empty($data['idcard'])){
+            $tmp_arr['idcard']=trim($data['idcard']);
+        }else{
+            $tmp_arr['idcard']='';
+
+        }
+
+        if(!empty($data['actid'])){
+            $tmp_arr['id_activities']=$data['actid'];
+        }
+        try{
+            if(isset($data['sid'])){
+                //修改
+                $res=db('activities_student')->where(['id'=>$data['sid']])->update($tmp_arr);
+            }else{
+                //增加
+                $tmp_arr['id_activities']=$data['actid'];
+                $res=db('activities_student')->insert($tmp_arr);
+            }
+        }catch (\Exception $e){
+            return ['state' => 'fail', 'msg' => $e->getMessage()];
+        }
+
+        return ['state' => 'success', 'msg' => '操作成功'];
+
+    }
+
+
+    public function visitlist($data)
+    {
+        $result3 = [];
+        $openid = "";
+        $dataid = $data['suid'];
+        $result1 = [];
+        $result = db('visit_record')->field('openid,MIN(stime) as stime,MAX(stime) as etime,SUM(differtime)as differtime,COUNT(*) as vcount, source')->where(array('aid' => $dataid, 'flag' => 3))->group('openid')->select();
+        foreach ($result as $k => $vo) {
+            if (empty($vo['openid'])) {
+                continue;
+            }
+            if (!empty($data['readn']) && $data['readn'] > 0 && $data['readn'] >= $vo['vcount']) {
+                continue;
+            }
+            if (!empty($data['readl']) && $data['readl'] > 0 && $data['readl'] >= $vo['differtime']) {
+                continue;
+            }
+
+            $result1[$vo['openid']] = $vo;
+            $openid = $openid . ",'" . $vo['openid'] . "'";
+        }
+        $openid = trim($openid, ",");
+
+        if ($openid == "") {
+            return [];
+        }
+
+        $where = " openid in (" . $openid . ")";
+        if (!empty($data['isfollow']) && $data['isfollow'] == 1) {
+            $where = $where . " and intstate=1 ";
+        }
+        if (!empty($data['istel']) && $data['istel'] == 1) {
+            $where = $where . " and length(chrtel)>3 ";
+        }
+
+        $where1 = "level=2";
+        if (!empty($data['regionkey'])) {
+            $where1 = $where1 . " and name like '%" . trim($data['regionkey']) . "%' ";
+        }
+
+        $sityList = db("region")->where($where1)->select();
+        $sityArr = [];
+        $sityids = '';
+        foreach ($sityList as $k => $vo) {
+            $sityArr[$vo['id']] = $vo['name'];
+            if (!empty($data['regionkey'])) {
+                $sityids = $sityids . "," . $vo['id'];
+            }
+        }
+        $sityids = trim($sityids, ",");
+
+        if (!empty($sityids)) {
+            $where = $where . " and intcity in (" . $sityids . ")";
+        } elseif (!empty($data['regionkey'])) {
+            return [];
+        }
+
+        $arruser = [];
+        $orderlist = db("order")->field('fiduser,sum(paynum) as vcount ')->where(array('dataid' => $dataid))->group('fiduser')->select();
+        foreach ($orderlist as $k => $vo) {
+            $arruser[$vo['fiduser']] = $vo['vcount'];
+        }
+
+        $result2 = db("member")->where($where)->select();
+
+        if ($result2) {
+            foreach ($result2 as $k => $vo) {
+
+                $forward1 = 0;
+                $forward2 = 0;
+                $result_g = db('forwarded_log')->where(array('userid' => $vo['idmember'], 'datatype' => 2, 'dataid' => $dataid))->select(); //转发数
+                if ($result_g) {
+                    foreach ($result_g as $x => $vx) {
+                        if ($vx['inttype'] == 1) {
+                            $forward1 = $forward1 + 1;
+                        } else if ($vx['inttype'] == 2) {
+                            $forward2 = $forward2 + 1;
+                        }
+                    }
+                }
+                if ($vo['openid'] == '') {
+                    unset($result2[$k]);
+                    continue;
+                }
+
+                $result2[$k]['stime'] = empty($result1[$vo['openid']]['stime']) ? "" : date("Y-m-d H:i:s", $result1[$vo['openid']]['stime']);
+                $result2[$k]['etime'] = empty($result1[$vo['openid']]['etime']) ? "" : date("Y-m-d H:i:s", $result1[$vo['openid']]['etime']);
+                $result2[$k]['differtime'] = fromatetime($result1[$vo['openid']]['differtime']);
+                $result2[$k]['vcount'] = $result1[$vo['openid']]['vcount'];
+                $result2[$k]['source'] = $result1[$vo['openid']]['source'];
+                $result2[$k]['intstate'] = $vo['intstate'] == 1 ? "已关注" : "未关注";
+                $result2[$k]['collection'] = db('collection')->where(array('userid' => $vo['idmember'], 'flag' => 2, 'dataid' => $dataid))->count();
+                $result2[$k]['forward'] = $forward1 . "/" . $forward2;
+                $result2[$k]['intcity'] = array_key_exists($vo['intcity'], $sityArr) ? $sityArr[$vo['intcity']] : '-';
+                $result2[$k]['paynum'] = array_key_exists($vo['idmember'], $arruser) ? $arruser[$vo['idmember']] : '-';
+
+
+            }
+        }
+        return $result2;
+    }
+
+
+    public function commentlist($data){
+        if(array_key_exists('p',$data) == false){
+            $data['p'] = '1';
+        }
+        $search=[];
+        $search['username']="";
+        $search['content']="";
+        $search['stime']="";
+        $search['etime']="";
+        $where="idsite=".session('idsite');
+        $where=$where." and flag=3";
+        if(!empty($data['username']))
+        {
+            $search['username']=$data['username'];
+            $where=$where." and username like '%".$data['username']."%'";
+        }
+        if(!empty($data['content']))
+        {
+            $search['content']=$data['content'];
+            $where=$where." and content like '%".$data['content']."%'";
+        }
+        if(!empty($data['stime']) && !empty($data['etime']))
+        {
+            $search['stime']=$data['stime'];
+            $search['etime']=$data['etime'];
+            $where=$where." and ( createtime > ".strtotime($data['stime'])." and createtime <".strtotime($data['etime']."23:59:59").")";
+        }
+;        //echo $where;
+        $count = db('comment')->where($where)->count();
+        $page = new Page($count,PAGE_SIZE);
+        $comment_list = db('comment')->where($where)->limit($page->firstRow.','.$page->pageSize)->select();
+
+        $result = [];
+        $result['search'] = $search;
+        $result['comment_list'] = $comment_list;
+        $result['page'] = $page;
+        $result['idsite'] = session('idsite');
+        return $result;
+    }
+
+
+    public function getUser()
+    {
+        return db('account')->where(array('siteid' => $this->siteid, 'intflag' => 1))->order('idaccount asc,intsn asc')->select();
+
+    }
+
+    public function getDic($code)
+    {
+        return db('work_content')->where(array('idsite' => $this->siteid, 'bookcode' => $code))->field('id,name,code')->order('order')->select();
+    }
+}

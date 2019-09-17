@@ -1,0 +1,337 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>报名管理</title>
+    <link href="/static/css/layout.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/page.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="/static/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="/static/js/lhgdialog.js?skin=aero"></script>
+    <script type="text/javascript" src="/static/js/CostomLinkOpenSw.js"></script>
+    <script type="text/javascript" src="/static/js/tabscommon.js"></script>
+    <script type="text/javascript" src="/static/js/layer/layer.js"></script>
+    <script type="text/javascript" src="/static/js/del-checked.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/js/daterangepicker/daterangepicker-bs3.css" />
+    <script type="text/javascript" src="/static/js/daterangepicker/moment.min.js"></script>
+    <script type="text/javascript" src="/static/js/daterangepicker/daterangepicker.js"></script>
+
+    <script type="text/javascript">
+        $(function(){
+            $(document).ready(function() {
+                $('.oa_text-list tr').addClass('odd');
+                $('.oa_text-list tr:even').addClass('even');
+            });
+            $('.oa_text-list tr').hover(
+                function(){
+                    $(this).addClass('oa_mouseover-bg');
+                },
+                function(){
+                    $(this).removeClass('oa_mouseover-bg');
+                }
+            );
+        });
+        function empty() {
+            window.location.reload();
+        }
+        //全选
+        function DoCheck(){
+            if($("#checked").is(':checked')){
+                $(".checked_one").attr("checked", true);
+            }else{
+                $(".checked_one").attr("checked", false);
+            }
+        }
+
+        function del_checked(value,remark) {
+
+            var msg='您确定要删除选定的记录吗？';
+            if(value>0) {
+                msg='您确定要删除“'+remark+'”吗？';
+            }
+
+            layer.confirm(msg, {
+                btn: ['确定','取消'] //按钮
+            }, function(){
+                del_checked1(value);
+            }, function(){
+
+            });
+        }
+
+        //删除选中
+        function del_checked1(value) {
+            var b = $(".checked_one");
+            var s = '';
+            if(value<1)
+            {
+                for (var i = 0; i < b.length; i++) {
+                    if (b[i].checked) {
+                        s += b[i].value + ',';
+                    }
+                }
+                s = s.substr(0, s.length - 1);
+            }
+            else
+            {
+                s=value;
+            }
+
+            $.ajax({
+                url:"{:url('act/del_acts')}",
+                data:"id="+s,
+                type:"post",
+                dataType:"json",
+                success:function(msg) {
+                    if (msg == 1) {
+                        layer.msg('删除成功', {icon:1,time: 1500});
+
+                        // location.reload();
+                        window.setTimeout(function(){
+                            location.reload();
+                        },1500)
+                    }
+                    else if(msg==-1){
+                        layer.msg('你没有删除权限', {icon: 5});
+                    }
+                    else
+                    {
+                        layer.msg('删除失败', {icon: 2});
+                        //location.reload();
+                    }
+                }
+            })
+        }
+    </script>
+</head>
+<body>
+<div class="oa_wrapper">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr class="oa_wrapper-display">
+            <td class="oa_wrapper-top-arr-left">&nbsp;</td>
+            <td class="oa_wrapper-top-arr-middle"></td>
+            <td class="oa_wrapper-top-arr-right">&nbsp;</td>
+        </tr>
+        <tr>
+            <td class="oa_wrapper-middle-arr-left oa_wrapper-display"></td>
+            <td class="oa_wrapper-middle-arr-middle">
+                <div class="oa_location clearfix"><span class="oa_ico-left"></span>location<span class="oa_ico-right"></span></div>
+                <div class="oa_main clearfix">
+                    <!--这里是跟数据分析的统计数字跳转公用,所以加此判断-->
+                    <div class="oa_subnav clearfix">
+                    </div>
+                    <div class="oa_content-area clearfix">
+                        <div class="oa_content-main">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td valign="top">
+                                        <div class="oa_title clearfix">
+                                            <span class="oa_ico-right"></span>
+                                            <span class="oa_ico-left"></span>
+                                            查询
+                                        </div>
+                                        <div class="oa_search-area clearfix">
+                                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                <tr>
+                                                    <td>
+                                                        <div class="oa_search-type clearfix">
+                                                            <form action="" method="post" id="form1" onsubmit="return check()">
+                                                                <table width="100%" border="0" cellspacing="1" cellpadding="0">
+                                                                    <tr>
+                                                                        <td width="100" class="oa_cell-left">活动名称：</td>
+                                                                        <td class="oa_cell-right">
+                                                                            <input  type="text" name="title" value="{$title}" >
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td width="100" class="oa_cell-left">活动状态：</td>
+                                                                        <td class="oa_cell-right">
+                                                                            <select name="state">
+                                                                                <option value="3" <?php if($state==3) echo "selected"?>>所有</option>
+                                                                                <option value="1" <?php if($state==1) echo "selected"?>>进行中</option>
+                                                                                <option value="0" <?php if($state==0) echo "selected"?>>已过期</option>
+                                                                                <option value="2" <?php if($state==2) echo "selected"?>>未开始</option>
+                                                                            </select>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td width="100" class="oa_cell-left">负责人：</td>
+                                                                        <td class="oa_cell-right">
+                                                                            <select  name="leader" id="leader">
+                                                                                <option value="" id="all_receive_activity_id">请选择负责人</option>
+                                                                                {volist name="leader_list" id="vo"}
+                                                                                <option value="{$vo['idmember']}" <?php if($vo['idmember']==$leader) echo "selected"?>>{$vo['nickname']}</option>
+                                                                            {/volist}
+                                                                            </select>
+
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td width="100" class="oa_cell-left">活动日期：</td>
+                                                                        <td class="oa_cell-right">
+                                                                            <input type="text"   style="width: 80px;"  autocomplete="off" id="dtstart" name="stime" class="form-control"  value="{$stime}"> -
+                                                                            <input type="text" style="width: 80px;"  autocomplete="off" id="dtend" name="etime" class="form-control"  value="{$etime}">
+                                                                            <script language='JavaScript'>seltime("dtstart","YYYY-MM-DD");seltime("dtend","YYYY-MM-DD");</script>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td height="30"></td>
+                                                                        <td class="oa_cell-right"><input  name="" type="submit" value="查询" class="oa_search-btn" /></td>
+                                                                    </tr>
+                                                                </table>
+                                                            </form>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <div class="oa_title clearfix">
+                                            <span class="oa_title-btn">
+												<ul>
+												  <li class="oa_selected">
+													<a href="javascript:CustomOpen('{:url('act/edit','','')}', 'addhd','增加活动', 700,360)">增加活动</a>
+												  </li>
+												</ul>
+                                            </span>
+                                            <span class="oa_ico-left">
+											</span>活动管理</div>
+                                        <div class="oa_text-list">
+                                            <table width="100%" border="0" cellspacing="0" cellpadding="0" style="table-layout:fixed">
+                                                <tr class="oa_text-list-title">
+                                                    <th width="20" style="text-align:center;"><input id="checked"  onclick="DoCheck();" name="" type="checkbox" value="" /></th>
+                                                    <th><span class="oa_arr-text-list-title"></span>活动名称</th>
+                                                    <th width="150"><span class="oa_arr-text-list-title"></span>活动日期范围</th>
+                                                    <th width="100"><span class="oa_arr-text-list-title"></span>负责人</th>
+                                                    <th WIDTH="100"><span class="oa_arr-text-list-title"></span>学员数量</th>
+                                                    <th width="100"><span class="oa_arr-text-list-title"></span>操作</th>
+                                                </tr>
+                                                {volist name='act_list' id='vo'}
+                                                <tr>
+                                                    <td align="center"><input class="checked_one" type="checkbox" name="id[]" value="{$vo['id']}" /></td>
+                                                    <td>{$vo['title']}</td>
+                                                    <td><?php if(!empty($vo['start_time'])){ echo date('Y-m-d',$vo['start_time']);}?> - <?php if(!empty($vo['end_time'])){echo date('Y-m-d',$vo['end_time']);} ?> </td>
+                                                    <td>{$vo.leader}</td>
+                                                    <td>{$vo.stu_num}</td>
+                                                    <td>
+                                                        <a href="{:url('act/act_info','&actid='.$vo.id,'')}" target="_blank">管理 </a>
+
+                                                        <a href="javascript:CustomOpen('{:url('act/edit','&actid='.$vo.id,'')}','order','活动详情',700,360)">修改 </a>
+                                                        <a aid="{$vo.id}" href="javascript:;" class="del">删除</a>
+                                                    </td>
+                                                </tr>
+                                                {/volist}
+
+                                            </table>
+                                            <div class="oa_bottom clearfix">
+                                                <div class="clearfix">
+                                                    <div class="oa_op-btn clearfix">
+                                                        <input  name="" value="删除" onclick="del_checked(0,'');" type="button" class="oa_input-submit" />
+                                                    </div>
+                                                    <div class="oa_page-controls">
+                                                        <ul>
+                                                            <li>{$page->show()}
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <div class="oa_bottom-bottom"><em></em></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                            <div class="oa_content-main-bottom"></div>
+                        </div>
+                    </div>
+                </div>
+            </td>
+            <td class="oa_wrapper-middle-arr-right oa_wrapper-display"></td>
+        </tr>
+        <tr class="oa_wrapper-display">
+            <td class="oa_wrapper-bottom-arr-left">&nbsp;</td>
+            <td class="oa_wrapper-bottom-arr-middle"></td>
+            <td class="oa_wrapper-bottom-arr-right">&nbsp;</td>
+        </tr>
+    </table>
+</div>
+
+
+<script type="text/javascript">
+    function check() {
+        var starttime = $('#dtstart').val();
+        var endtime = $('#dtend').val();
+        var start = new Date(starttime.replace("-", "/").replace("-", "/"));
+        var end = new Date(endtime.replace("-", "/").replace("-", "/"));
+        if (end < start) {
+            layer.alert("开始时间不能大于结束时间！");
+            return false;
+        }
+        return true;
+    }
+
+    function send_sms_msg(userid) {
+        userids=userid;
+        CustomOpen('/admin/activity/send_sms_msg.html','activity','短信发送',700,400);
+    }
+</script>
+<script src="/static/js/jquery.searchableSelect.js"></script>
+<script>
+    //删除
+    $('.del').click(function(){
+        var obj=$(this)
+        var aid = obj.attr('aid')
+        layer.confirm('您确定要删除该活动吗？', {
+            btn: ['确定','取消'] //按钮
+        }, function(){
+            $.ajax({
+                    url:"{:url('act/del')}",
+                    data:"id="+aid,
+                    success:function(res){
+                        layer.closeAll()
+                        if(res==1){
+                            layer.msg('删除成功')
+                            obj.parent().parent().remove()
+                        }else if(res==2){
+                            layer.msg('删除失败')
+                        }else if(res==3){
+                            layer.msg('无权限删除')
+                        }
+                    }
+                }
+            )
+        }, function(){
+            return ;
+        });
+    })
+    function delact(id){
+        var aid = id
+        var obj=$(this)
+        console.log(obj)
+        layer.confirm('您确定要删除该活动吗？', {
+            btn: ['确定','取消'] //按钮
+        }, function(){
+            $.ajax({
+                url:"{:url('act/del')}",
+                data:"id="+aid,
+                success:function($res){
+                    if($res==1){
+                        layer.closeAll()
+                        console.log(obj)
+                        obj.parent().parent().remove()
+                    }
+                }
+            }
+            )
+        }, function(){
+            return ;
+        });
+    }
+    $(function () {
+        $('#u_chrname').searchableSelect();
+    });
+
+</script>
+
+</body>
+</html>

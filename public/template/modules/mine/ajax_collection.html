@@ -1,0 +1,12 @@
+
+            <?php if($collection){foreach($collection as $k=>$vo) {?>
+            <li id="data_{$vo['id']}">
+                <div class="txt">
+                    <div class="title" onclick="javascript:loadurl('{$vo['dataid']}','{$vo['flag']}')">{$vo['chrtitle']}</div>
+                    <div class="style">收藏时间：<span>{$vo['createtime']|date="Y-m-d H:i:s",###}</span></div>
+                    <div class="style">所属类别：<span><?php echo $vo['flag']=="2"?"产品":"文章" ?></span></div>
+                    <a href="javascript:;" onclick="javascript:del('{$vo['id']}');" class="del">删除</a>
+                </div>
+            </li>
+            <?php }}else{echo 11;exit;} ?>
+        

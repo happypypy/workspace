@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:48:"D:\workspace\work\thinkphp\tpl\dispatch_jump.tpl";i:1562315964;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:48:"D:\workspace\work\thinkphp\tpl\dispatch_jump.tpl";i:1567561553;}*/ ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -29,7 +29,7 @@
   <tr>
     <td align="center" bgcolor="#CCCCCC">
     	<p>Copyright©2017-2027<em><a class="copyright" href="http://www.tpshop.cn/">童享云</a></em></p>
-		<p><em class="copyright"><a class="copyright" href="http://www.tpshop.cn/">埼玮教育科支</a></em></p>
+		<p><em class="copyright"><a class="copyright" href="http://www.tpshop.cn/">琦玮教育科技</a></em></p>
     </td>
     
   </tr>

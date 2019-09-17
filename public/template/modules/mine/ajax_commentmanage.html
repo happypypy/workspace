@@ -1,0 +1,28 @@
+
+            <?php if($list){foreach($list as $k=>$vo) {?>
+            <li id="data_{$vo['id']}">
+                <div class="txt">
+                    <div class="title">{$vo['chrtitle']}</div>
+                    <div class="style"><i class="iconfont laiyuan">&#xe66a;</i>评论内容：<span>{$vo['content']}</span></div>
+                    <div class="time"><i class="iconfont clock">&#xe602;</i><span>评论时间：{$vo['createtime']|date="Y-m-d H:i:s",### }</span></div>
+                    <?php if($vo['intstate']==4) {?>
+                    <div class="style"><i class="iconfont laiyuan">&#xe66a;</i>回复内容：<span>{$vo['recontent']}</span></div>
+                    <div class="time"><i class="iconfont clock">&#xe602;</i><span>回复时间：{$vo['retime']|date="Y-m-d H:i:s",###}</span></div>
+                    <?php } ?>
+                    <div class="btn">
+                        <input type="hidden" id="id" value="{$vo['id']}" >
+                        <?php if($vo['intstate']==2) { ?>
+                        <a href="javascript:;" onclick="javascript:re('{$vo['id']}')" style="float: right;color: #FFF;background-color:#aa5500">回复</a>
+                        <?php } ?>
+                        <?php if($vo['show']==1) { ?>
+                        <a href="javascript:;" onclick="javascript:re('{$vo['id']}')" style="float: right;background-color:#aa5500">屏蔽</a>
+                        <?php }else{ ?>
+                        <a href="javascript:;" onclick="javascript:re('{$vo['id']}')" style="float: right;background-color:#aa5500">显示</a>
+                        <?php } ?>
+                        <a href="javascript:;" onclick="javascript:del('{$vo['id']}')" style="float: right;">删除</a>
+
+                    </div>
+                </div>
+            </li>
+            <?php }}else{echo 11;exit;} ?>
+        

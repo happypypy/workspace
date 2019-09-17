@@ -1,0 +1,547 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>用户增减报表</title>
+    <link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
+    <link href="__PUBLIC__/static/css/page.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="__PUBLIC__/static/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/lhgdialog.js?skin=aero"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/CostomLinkOpenSw.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/tabscommon.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/del-checked.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/layer/layer.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/js/daterangepicker/daterangepicker-bs3.css" />
+    <script type="text/javascript" src="/static/js/daterangepicker/moment.min.js"></script>
+    <script type="text/javascript" src="/static/js/daterangepicker/daterangepicker.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/echarts/echarts.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/echarts/echartsFunction.js"></script>
+    <script type="text/javascript">
+
+    </script>
+</head>
+<body>
+
+<div class="oa_wrapper">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr class="oa_wrapper-display">
+            <td class="oa_wrapper-top-arr-left">&nbsp;</td>
+            <td class="oa_wrapper-top-arr-middle"></td>
+            <td class="oa_wrapper-top-arr-right">&nbsp;</td>
+        </tr>
+        <tr>
+            <td class="oa_wrapper-middle-arr-left oa_wrapper-display"></td>
+            <td class="oa_wrapper-middle-arr-middle">
+                <div class="oa_location clearfix"><span class="oa_ico-left"></span>location<span class="oa_ico-right"></span></div>
+                <div class="oa_main clearfix">
+                    <div class="oa_subnav clearfix">
+                        <div class="oa_subnav-tab clearfix">
+                            <ul>
+                                <?php if($cms->CheckPurview('manage','index')){ ?>
+                                <li onclick="javascript:window.location='{:url('report/index','')}'"><em>用户增减报表</em></li>
+                                <?php } ?>
+                                <?php if($cms->CheckPurview('manage','attribute')){ ?>
+                                <li class="oa_on" onclick="javascript:window.location='{:url('report/user_attribute','')}'"><em>用户属性分析</em></li>
+                                <?php } ?>
+                                <?php if($cms->CheckPurview('manage','buy_user')){ ?>
+                                <li onclick="javascript:window.location='{:url('report/buy_user','')}'"><em>购买用户分析</em></li>
+                                <?php } ?>
+                                <?php if($cms->CheckPurview('manage','order')){ ?>
+                                <li onclick="javascript:window.location='{:url('report/order','')}'"><em>订单报表</em></li>
+                                <?php } ?>
+                                <?php if($cms->CheckPurview('manage','activity')){ ?>
+                                <li onclick="javascript:window.location='{:url('report/activity','')}'"><em>活动报表</em></li>
+                                <?php } ?>
+                                <!--<li onclick="javascript:window.location='{:url('weixinreplay/follow','')}'"><em>用户跟踪报表</em></li>-->
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="oa_search-area clearfix">
+
+                        <div class="oa_title clearfix">
+                            <span class="oa_ico-right"></span>
+                            <span class="oa_ico-left"></span>
+                            搜索
+                        </div>
+                        <div class="oa_search-area clearfix">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td>
+                                        <div class="oa_search-type clearfix">
+                                            <form action="" method="post" id="form1">
+                                                <table width="100%" border="0" cellspacing="1" cellpadding="0">
+                                                    <tr>
+                                                        <td width="150" class="oa_cell-left">关注状态：</td>
+                                                        <td class="oa_cell-right">
+                                                            <select  name="intstate" id="intstate">
+                                                                <option value="">请选择</option>
+                                                                <option value="1" {if condition="$list.search.intstate == 1"}selected{/if}>关注</option>
+                                                                <option value="2" {if condition="$list.search.intstate == 2"}selected{/if}>取消</option>
+                                                                <option value="3" {if condition="$list.search.intstate == 3"}selected{/if}>游客</option>
+                                                            </select>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td width="100" class="oa_cell-left">查询范围：</td>
+                                                        <td class="oa_cell-right">
+                                                            <input type="text"  style="width: 80px;"  id="begintime" name="begintime" class="form-control" autocomplete="off"  value="{$list.search.begintime}"> -
+                                                            <input type="text" style="width: 80px;" id="endtime" name="endtime" class="form-control"  autocomplete="off" value="{$list.search.endtime}">
+                                                            <script language='JavaScript'>seltime("begintime","YYYY-MM-DD");seltime("endtime","YYYY-MM-DD");</script>
+
+                                                            <input  name="subSearch" type="button" value="搜索"  class="oa_search-btn" onclick="javascript:shearch_check();"/>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <!--性別-->
+                    <div style="min-width:1350px;overflow-x:auto;white-space:nowrap;">
+                        <div class="oa_text-list clearfix"
+                            style="margin-bottom: 40px;border-left: 0;width: 35%;min-width: 580px;border-right: 1px solid grey;padding-right: 60px;float: left">
+                            <div id="main" style="height: 400px; "></div>
+                        </div>
+                        <div class="oa_text-list clearfix"
+                            style="margin-bottom: 40px;border-left: 0;width: 40%;min-width: 620px;padding-left: 60px;float: left">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0" style="table-layout:fixed;margin-top: 40px">
+                                <tr class="oa_text-list-title">
+                                    <th><span class="oa_arr-text-list-title"></span>性别</th>
+                                    <th><span class="oa_arr-text-list-title"></span>用户数</th>
+                                    <th><span class="oa_arr-text-list-title"></span>占比</th>
+                                </tr>
+                                <tr>
+                                    <td>男</td>
+                                    <td><?php if(isset($list['echart_normal']['sex'])){ ?>
+                                        <a
+                                            href="javascript:CustomOpen('{:url('report/getUserList','start_time='.$list['search']['begintime'].'&end_time='.$list['search']['endtime'].'&intstate='.$list['search']['intstate'].'&intsex=1&origin=attribute','')}','activity','用户列表',1000,600)">{$list['echart_normal']['sex'][2][0][0]}</a>
+                                        <?php }else{echo 0;} ?>
+                                    </td>
+                                    <td>
+                                        <?php if(isset($list['sex_rate'])){
+                                                              echo  $list['sex_rate'][0].'%';
+                                                            }else{echo 0;}
+                                                        ?>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>女</td>
+                                    <td>
+                                        <?php if(isset($list['echart_normal']['sex'])){ ?>
+                                        <a
+                                            href="javascript:CustomOpen('{:url('report/getUserList','start_time='.$list['search']['begintime'].'&end_time='.$list['search']['endtime'].'&intstate='.$list['search']['intstate'].'&intsex=2&origin=attribute','')}','activity','用户列表',1000,600)">{$list['echart_normal']['sex'][2][0][1]}</a>
+                                        <?php }else{echo 0;} ?>
+                                    <td><?php if(isset($list['sex_rate'])){
+                                                              echo  $list['sex_rate'][1].'%';
+                                                            }else{echo 0;}
+                                                        ?>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>未知</td>
+                                    <td> <?php if(isset($list['echart_normal']['sex'])){ ?>
+                                        <a
+                                            href="javascript:CustomOpen('{:url('report/getUserList','start_time='.$list['search']['begintime'].'&end_time='.$list['search']['endtime'].'&intstate='.$list['search']['intstate'].'&intsex=3&origin=attribute','')}','activity','用户列表',1000,600)">{$list['echart_normal']['sex'][2][0][2]}</a>
+                                        <?php }else{echo 0;} ?>
+                                    </td>
+                                    <td><?php if(isset($list['sex_rate'])){
+                                                              echo  $list['sex_rate'][2].'%';
+                                                            }else{echo 0;}?></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <!--省份-->
+                    <div style="min-width:1350px;overflow-x:auto;white-space:nowrap;">
+                        <div class="oa_text-list clearfix"
+                            style="margin-bottom: 40px;border-left: 0;width: 35%;min-width: 580px;border-right: 1px solid grey;padding-right: 60px;float: left">
+                            <div id="main_province" style="height: 400px; "></div>
+                        </div>
+                        <div class="oa_text-list clearfix"
+                            style="margin-bottom: 40px;border-left: 0;width: 40%;min-width: 620px;padding-left: 60px;float: left">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0" style="table-layout:fixed;margin-top: 40px">
+                                <tr class="oa_text-list-title">
+                                    <th><span class="oa_arr-text-list-title"></span>地域</th>
+                                    <th><span class="oa_arr-text-list-title"></span>用户数</th>
+                                    <th><span class="oa_arr-text-list-title"></span>占比</th>
+                                </tr>
+                                <!--如果存在地区信息-->
+                                <?php if(isset($list['echart_normal']['region']) && !empty($list['echart_normal']['region'])){
+                                                            foreach($list['echart_normal']['region'][1] as $key=>$val){
+                                                     ?>
+                                <tr>
+                                    <td>{$val}</td>
+                                    <td>
+                                        <?php if(isset($list['echart_normal']['sex'])){ ?>
+                                        <a
+                                            href="javascript:CustomOpen('{:url('report/getUserList','start_time='.$list['search']['begintime'].'&end_time='.$list['search']['endtime'].'&intstate='.$list['search']['intstate'].'&intprovince='.$list['region_id_arr'][$key].'&origin=attribute','')}','activity','用户列表',1000,600)">{$list['echart_normal']['region'][2][0][$key]}</a>
+                                        <?php }else{echo 0;} ?>
+                        
+                                    </td>
+                                    <td>
+                                        <?php
+                                                            if($list['age_count'] > 0){
+                                                            echo  round($list['echart_normal']['region'][2][0][$key]/$list['region_count'],4) * 100;
+                                                            }else{
+                                                                echo 0;
+                                                            }
+                                                        ?>%
+                                    </td>
+                                </tr>
+                                <?php }} ?>
+                            </table>
+                        </div>
+                    </div>
+                    <div style="clear:both;"></div>
+
+                    <!--查询省份-->
+                    <div class="oa_search-area clearfix">
+
+                        <div class="oa_title clearfix">
+                            <span class="oa_ico-right"></span>
+                            <span class="oa_ico-left"></span>
+                            搜索
+                        </div>
+                        <div class="oa_search-area clearfix">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td>
+                                        <div class="oa_search-type clearfix">
+                                                <table width="100%" border="0" cellspacing="1" cellpadding="0">
+
+                                                    <tr>
+                                                        <td width="100" class="oa_cell-left">查询省份：</td>
+                                                        <td class="oa_cell-right">
+                                                            <select title="查询省份" name="province_id" id="province">
+                                                                {if condition="$list.province"}
+                                                                    {foreach $list.province as $vo}
+                                                                <option value="{$vo.intprovince}">{$vo.name}</option>
+                                                                    {/foreach}
+                                                                {/if}
+                                                            </select>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div style="min-width:1350px;overflow-x:auto;white-space:nowrap;">
+                        <div class="oa_text-list clearfix"
+                            style="margin-bottom: 40px;border-left: 0;width: 35%;min-width: 580px;border-right: 1px solid grey;padding-right: 60px;float: left">
+                            <div id="main_city" style="height: 400px; "></div>
+                        </div>
+                        <div class="oa_text-list clearfix"
+                            style="margin-bottom: 40px;border-left: 0;width: 40%;min-width: 620px;padding-left: 60px;float: left">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0" style="table-layout:fixed;margin-top: 40px">
+                                <tr class="oa_text-list-title" id="will_add">
+                                    <th><span class="oa_arr-text-list-title"></span>地域</th>
+                                    <th><span class="oa_arr-text-list-title"></span>用户数</th>
+                                    <th><span class="oa_arr-text-list-title"></span>占比</th>
+                                </tr>
+                                <!--如果存在地区信息-->
+                                <?php if(isset($list['city_result']['echart_normal']['region']) && !empty($list['city_result']['echart_normal']['region'])){
+                                                            foreach($list['city_result']['echart_normal']['region'][1] as $key=>$val){
+                                                    ?>
+                                <tr>
+                                    <td>{$val}</td>
+                                    <td>
+                        
+                                        <?php if(isset($list['echart_normal']['sex'])){ ?>
+                                        <a
+                                            href="javascript:CustomOpen('{:url('report/getUserList','start_time='.$list['search']['begintime'].'&end_time='.$list['search']['endtime'].'&intstate='.$list['search']['intstate'].'&intprovince='.$list['search']['province_id'].'&intcity='.$list['city_result']['region_id_arr'][$key].'&origin=attribute','')}','activity','用户列表',1000,600)">{$list['city_result']['echart_normal']['region'][2][0][$key]}</a>
+                                        <?php }else{echo 0;} ?>
+                                    </td>
+                                    <td>
+                                        <?php
+                                                            if($list['age_count'] > 0){
+                                                            echo  round($list['city_result']['echart_normal']['region'][2][0][$key]/$list['city_result']['region_count'],4) * 100;
+                                                            }else{
+                                                                echo 0;
+                                                            }
+                                                        ?>%
+                                    </td>
+                                </tr>
+                                <?php }} ?>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div style="clear:both;"></div>
+
+                    <!--孩子的年龄-->
+                    <div style="min-width:1350px;overflow-x:auto;white-space:nowrap;">
+                        <div class="oa_text-list clearfix"
+                            style="margin-bottom: 40px;border-left: 0;width: 35%;min-width: 580px;border-right: 1px solid grey;padding-right: 60px;float: left">
+                            <div id="main_age" style="height: 400px; "></div>
+                        </div>
+                        <div class="oa_text-list clearfix"
+                            style="margin-bottom: 40px;border-left: 0;width: 40%;min-width: 620px;padding-left: 60px;float: left">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0" style="table-layout:fixed;margin-top: 40px">
+                                <tr class="oa_text-list-title">
+                                    <th><span class="oa_arr-text-list-title"></span>年龄</th>
+                                    <th><span class="oa_arr-text-list-title"></span>数量</th>
+                                    <th><span class="oa_arr-text-list-title"></span>占比</th>
+                                </tr>
+                                <!--如果存在孩子信息-->
+                                <?php if(isset($list['echart_normal']['age']) && !empty($list['echart_normal']['age'])){
+                                                            foreach($list['echart_normal']['age'][1] as $key=>$val){
+                                                    ?>
+                                <tr>
+                                    <td>{$val}</td>
+                                    <td>
+                                        <a
+                                            href="javascript:CustomOpen('{:url('report/getUserList','start_time='.$list['search']['begintime'].'&end_time='.$list['search']['endtime'].'&intstate='.$list['search']['intstate'].'&age_str='.$val.'&origin=attribute','')}','activity','用户列表',1000,600)">{$list['echart_normal']['age'][2][0][$key]}</a>
+                                    </td>
+                                    <td>
+                                        <?php
+                                                            if($list['age_count'] > 0){
+                                                                echo  round($list['echart_normal']['age'][2][0][$key]/$list['age_count'],4) * 100;
+                                                            }else{
+                                                                echo 0;
+                                                            }
+                                                        ?>%
+                                    </td>
+                                </tr>
+                                <?php }} ?>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div style="clear:both;"></div>
+                    <div class="oa_content-main-bottom"></div>
+
+                </div>
+            </td>
+            <td class="oa_wrapper-middle-arr-right oa_wrapper-display"></td>
+        </tr>
+        <tr class="oa_wrapper-display">
+            <td class="oa_wrapper-bottom-arr-left">&nbsp;</td>
+            <td class="oa_wrapper-bottom-arr-middle"></td>
+            <td class="oa_wrapper-bottom-arr-right">&nbsp;</td>
+        </tr>
+    </table>
+</div>
+<script type="text/javascript">
+
+    $(document).ready(function(){
+        //获取到选中的省份
+        var province_name = $('#province').children('option:selected').text();
+        var begintime = $("#begintime").val();
+        var endtime = $("#endtime").val();
+        var intstate = $("#intstate").val();
+        var intstate_name = $('#intstate').children('option:selected').text();
+        var subtext = '查询范围：'+ begintime+ '～'+ endtime;
+        //如果存在关注状态
+        if(intstate){
+            subtext += '； 用户状态：'+intstate_name;
+        }
+
+        //初始化获取性别的分布图
+        get_echarts('sex','性别分布','main',subtext);
+        //初始化获取省份的分布图
+        get_echarts('region','省级分布','main_province',subtext);
+        //初始化获得孩子年龄的分布图
+        get_echarts('age','孩子年龄分布','main_age',subtext);
+
+        if(province_name){
+            subtext += '；'+province_name;
+        }
+        //初始化获得第一个省下面的数据的环形图表
+        get_one_province_echarts('region','地级分布','main_city',subtext);
+        $('#province').change(function(){
+            var subtext = '查询范围：'+ begintime+ '～'+ endtime;
+            var province_id = $(this).children('option:selected').val();
+            //获取到选中的省份
+            var province_name = $('#province').children('option:selected').text();
+            //删除所有列的城市
+            $('#will_add').nextAll().remove();
+            $.ajax({
+                url:"{:url('report/get_city_attribute')}",
+                data:{"province_id":province_id,"begintime":begintime,"endtime":endtime,"intstate":intstate},
+                type:"post",
+                dataType:"json",
+                success:function(msg) {
+                    if(msg.echart != ''){
+                        debugger;
+                        //将封装好的图表数据赋值
+                        var echart = JSON.parse(msg.echart);
+                        //取点击传过来的类型值
+                        var arrData = echart['region'];
+                        //如果存在关注状态
+                        if(intstate){
+                            subtext += '； 用户状态：'+intstate_name;
+                        }
+                        if(province_name){
+                            subtext += '；'+province_name;
+                        }
+                        showPie1('main_city', arrData, '地级分布',subtext);
+                        var add_html = '';
+                        //循环
+                        for(var i=0;i<msg.echart_normal.region[1].length;i++){
+                            //如果总数大于0
+                            if(msg.region_count > 0){
+                               var rate =  ((msg.echart_normal.region[2][0][i]/msg.region_count)*100).toFixed(2);
+                            }else{
+                                rate = 0;
+                            }
+                            var default_html = msg.search.begintime
+                                +"/end_time/"+msg.search.endtime
+                                +"/intprovince/"+msg.search.province_id
+                                +"/intcity/"+msg.region_id_arr[i]
+                                +"/origin/attribute";
+                            if(msg.search.intstate){
+                                default_html += "/intstate/"+msg.search.intstate;
+                            }
+                            //封装要追加数据
+                            add_html += "<tr><td>"+msg.echart_normal.region[1][i]+"</td>"
+                                +"<td>"+"<a href=\"javascript:CustomOpen('/admin/report/getUserList/start_time/"+
+                                default_html
+                                +"','activity','用户列表',1000,600)\">"+msg.echart_normal.region[2][0][i]+"</a></td>"
+                                +"<td>"+ rate +"%</td></tr>";
+                        }
+                        //在表头后面追加元素
+                        $('#will_add').after(add_html);
+                    }
+                }
+            })
+            // alert(province_id);
+        })
+    });
+
+    function empty() {
+        window.location.reload();
+    }
+
+
+    function export_data(id,p) {
+        var time_range = $("#time_range").val();
+        var begintime = $("#begintime").val();
+        var endtime = $("#endtime").val();
+        var url = "/admin/report/member_report/time_range/"+time_range+"/begintime/"+begintime+'/endtime/'+endtime;
+        window.open(url,"_blank");
+    }
+
+    /**
+     * 获得数据的环形图表
+     */
+    function get_echarts(type,strtitle,code,subtext) {
+        //将封装好的图表数据赋值
+        var echart = {$list.echart};
+        //取点击传过来的类型值
+        var arrData = echart[type];
+        //如果是孩子的年龄
+        if(type == 'age') {
+            showPie(code, arrData, strtitle,subtext);
+        }else{
+            showPie1(code, arrData, strtitle,subtext);
+        }
+    }
+    /**
+     * 初始化获得第一个省下面的数据的环形图表
+     */
+    function get_one_province_echarts(type,strtitle,code,subtext) {
+        //将封装好的图表数据赋值
+        var echart = {$list.city_result.echart};
+        //取点击传过来的类型值
+        var arrData = echart[type];
+        showPie1(code, arrData, strtitle,subtext);
+    }
+    //搜索
+    function shearch_check() {
+        var st = $("#begintime").val();
+        var et = $("#endtime").val();
+        if (st != "" && et != "") {
+            var start = new Date(st.replace("-", "/").replace("-", "/"));
+            var end = new Date(et.replace("-", "/").replace("-", "/"));
+            var now = new Date();
+            var yesterday = now.setTime(now.getTime()-24*60*60*1000);
+            // alert(now);
+            if (end < start) {
+                layer.alert("查询范围开始时间不能大于结束时间！")
+                return;
+            }
+            if (start >= yesterday || end >= yesterday ) {
+                layer.alert("查询范围时间不能大于昨天的时间！");
+                return;
+            }
+        }
+        // if(!checkTime()){
+        //     return false;
+        // };
+        $("#form1").submit();
+    }
+
+    /**
+     * 限制查询跨度在两个月之内
+     * @returns {boolean}
+     */
+    function checkTime(){
+        var begintime = $("#begintime").val();
+        var endtime = $("#endtime").val();
+        if(!endtime){
+            return true;
+        }
+
+        var time1 = new Date(begintime).getTime();
+        var time2 = new Date(endtime).getTime();
+        if(begintime==''){
+            layer.alert("开始时间不能为空！")
+            return false;
+        }
+        if(endtime==''){
+            layer.alert("结束时间不能为空");
+            return false;
+        }
+        if(time1 > time2){
+            layer.alert("开始时间不能大于结束时间");
+            return false;
+        }
+
+        //判断时间跨度是否大于2个月
+        var arr1 = begintime.split('-');
+        var arr2 = endtime.split('-');
+        arr1[1] = parseInt(arr1[1]);
+        arr1[2] = parseInt(arr1[2]);
+        arr2[1] = parseInt(arr2[1]);
+        arr2[2] = parseInt(arr2[2]);
+        var flag = true;
+        //同年
+        if(arr1[0] == arr2[0]){
+            if(arr2[1]-arr1[1] > 2){ //月间隔超过2个月
+                flag = false;
+            }else if(arr2[1]-arr1[1] == 2){ //月相隔2个月，比较日
+                if(arr2[2] > arr1[2]){ //结束日期的日大于开始日期的日
+                    flag = false;
+                }
+            }
+        }else{ //不同年
+            if(arr2[0] - arr1[0] > 1){
+                flag = false;
+            }else if(arr2[0] - arr1[0] == 1){
+                if(arr1[1] < 10){ //开始年的月份小于10时，不需要跨年
+                    flag = false;
+                }else if(arr1[1]+2-arr2[1] < 12){ //月相隔大于2个月
+                    flag = false;
+                }else if(arr1[1]+2-arr2[1] == 12){ //月相隔2个月，比较日
+                    if(arr2[2] > arr1[2]){ //结束日期的日大于开始日期的日
+                        flag = false;
+                    }
+                }
+            }
+        }
+        if(!flag){
+            layer.alert("时间跨度不得超过2个月！");
+            return false;
+        }
+        return true;
+    }
+</script>
+</body>
+</html>

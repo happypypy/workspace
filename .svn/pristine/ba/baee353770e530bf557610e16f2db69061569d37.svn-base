@@ -1,0 +1,55 @@
+<input type="hidden" name="dump_page" value="{$list.search.p}">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0" style="table-layout:fixed">
+        <tr class="oa_text-list-title">
+            <th  WIDTH="80"><span class="oa_arr-text-list-title"></span>排名</th>
+            <th  WIDTH="80"><span class="oa_arr-text-list-title"></span>用户ID</th>
+            <th  WIDTH="135"><span class="oa_arr-text-list-title"></span>用户昵称</th>
+            <th WIDTH="135"><span class="oa_arr-text-list-title"></span>购买次数</th>
+            <th WIDTH="60"><span class="oa_arr-text-list-title"></span>购买数量</th>
+            <th  WIDTH="70"><span class="oa_arr-text-list-title"></span>订单总额</th>
+            <th  WIDTH="100"><span class="oa_arr-text-list-title"></span>单笔最高金额</th>
+            <th width="130"><span class="oa_arr-text-list-title"></span>操作</th>
+        </tr>
+        {volist name="list.list" id="vo"}
+        <tr>
+            <td>{$vo['ranking']}</td>
+            <td>{$vo['idmember']}</td>
+            <td title="{$vo['nickname']}">
+                {$vo['nickname']}
+            </td>
+            <td>
+                <a href="javascript:CustomOpen('/admin/order/index?dtstart={$list['search']['begintime']}&dtend={$list['search']['endtime']}&intflag=5&fiduser={$vo['idmember']}&origin=report&state={$list['search']['state']}','activity','订单列表',1000,600)">{$vo['num']}</a>
+            </td>
+            <td>
+                <a href="javascript:CustomOpen('/admin/order/index?dtstart={$list['search']['begintime']}&dtend={$list['search']['endtime']}&intflag=5&fiduser={$vo['idmember']}&origin=report&state={$list['search']['state']}','activity','订单列表',1000,600)">{$vo['pay_num']}</a>
+            </td>
+            <td>{$vo['total']}</td>
+            <td>{$vo['max_price']}</td>
+            <td >
+                <a href="javascript:CustomOpen('{:url('admin/member/deal','idmember='.$vo['idmember'].'&action=view','')}', 'memberview','查看用户信息', 800, 560)">查看</a>
+                <a href="javascript:CustomOpen('{:url('admin/member/followupdeal','memberid='.$vo['idmember'].'&action=add','')}', 'memberview','新建访谈记录', 600, 350)">新建访谈记录</a>
+                <?php if($cms->CheckPurview('membermanage','manage')){ ?>
+                <!--<br/>-->
+                <a href="javascript:CustomOpen('{:url('admin/member/memberdeal','idmember='.$vo['idmember'].'&action=edit','')}', 'member','用户信息修改', 700, 700)">修改</a>
+                <a href="javascript:;" onclick="javascript:setmanage('{$vo['idmember']}','{$vo['nickname']}','{$vo['ismanage']==1?0:1}')">{$vo['ismanage']==1?"取消管理":"设为管理"}</a>
+                <br>
+                <a href="javascript:send_msg('{$vo['openid']}');">发送消息</a>
+                <a href="javascript:CustomOpen('{:url('admin/member/membergiving','idmember='.$vo['idmember'],'')}', 'member','赠送积分', 460, 350)">赠送积分</a>
+                <?php if($is_cashed && $cms->CheckPurview('membermanage',' give_cashed ')){ ?>
+                <!--<br/>-->
+                <a href="javascript:CustomOpen('{:url('admin/member/give_cashed','idmember='.$vo['idmember'],'')}', 'member','赠送现金券', 460, 400)">赠送现金券</a>
+                <?php }} ?>
+            </td>
+        </tr>
+        {/volist}
+    </table>
+    <div class="oa_bottom clearfix">
+        <div class="clearfix">
+            <div class="oa_page-controls">
+                <ul><li>{$page->show_ajax()}</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="oa_bottom-bottom"><em></em></div>
+    </div>

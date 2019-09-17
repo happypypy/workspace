@@ -1,0 +1,104 @@
+<!--
+ * @Descripttion: 
+ * @version: 
+ * @Author: ChenJie
+ * @Date: 2019-08-14 14:12:01
+ * @LastEditors: ChenJie
+ * @LastEditTime: 2019-08-14 15:18:30
+ -->
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+<title>预约信息</title>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+
+<script type="text/javascript" src="__PUBLIC__/static/modules/js/jquery.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/modules/js/swiper.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/modules/js/common.js"></script>
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/static/modules/style/css/swiper.min.css">
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/static/modules/style/css/common.css">
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/static/modules/style/css/pc.css">
+</head>
+<body style="background: #e7e7e7;">
+
+<form class="information-list">
+    <ul>
+        <li>
+            <div class="head">项目信息</div>
+        </li>
+        <li>
+            <div class="tit">分类名称：</div>
+            <div class="txt">
+                <div class="info">
+                    <span class="name">{$datainfo.category_name}</span>
+                </div>
+            </div>
+        </li>
+        <li>
+            <div class="tit">项目名称：</div>
+            <div class="txt">
+                <div class="info">{$datainfo.object_name}</div>
+            </div>
+        </li>
+        <li>
+            <div class="tit">项目描述：</div>
+            <div class="txt">
+                <div class="info">{$datainfo.description}</div>
+            </div>
+        </li>
+        <li>
+            <div class="tit">提前天数：</div>
+            <div class="txt">
+                <div class="info">{$datainfo.advance_day}</div>
+            </div>
+        </li>
+        <li>
+            <div class="tit">开始时间：</div>
+            <div class="txt">
+                <div class="info">{$datainfo.start_time|date="Y-m-d H:i:s",###}</div>
+            </div>
+        </li>
+        <li>
+            <div class="tit">结束时间：</div>
+            <div class="txt">
+                <div class="info">{$datainfo.end_time|date="Y-m-d H:i:s",###}</div>
+            </div>
+        </li>
+        <li>
+            <div class="tit">创建时间：</div>
+            <div class="txt">
+                <div class="info">{$datainfo.create_time|date="Y-m-d H:i:s",###}</div>
+            </div>
+        </li>
+    </ul>
+    <div class="comment-submit">
+        <input type="button" value="返回" onClick="javascript:history.go(-1)" id="close-refund" />
+    </div>
+    {include file="modules/lib/footer0" /}
+</form>
+
+<div class="footer">
+    <ul>
+        <li>
+            <a href="/{$sitecode}">
+                <span><i class="iconfont home">&#xe617;</i></span>
+                <p>主页</p>
+            </a>
+        </li>
+        <li class="on">
+            <a href="/{$sitecode}/mine">
+                <span><i class="iconfont head">&#xe606;</i></span>
+                <p>我的</p>
+            </a>
+        </li>
+    </ul>
+</div>
+</body>
+</html>

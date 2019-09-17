@@ -1,0 +1,792 @@
+<?php
+namespace  think;
+
+use app\common\model\Stock;
+
+class Cms {
+
+    /**
+     * 根据节点id 获取该节点下的内容 (不获取孙子节点的内容,无分页)
+     * @param $node_id
+     * @param array $where
+     * @param string $show_field
+     * @param string $order_by
+     * @param int $get_num
+     * @return false|null|\PDOStatement|string|Collection
+     */
+
+    public  function  GetNodeContents($node_id,$where = [],$show_field = '',$order_by = '',$get_num = 5){
+        if(empty($node_id)){
+            return null;
+        }
+
+        if(!empty($where)){
+            $map = $where;
+        }
+        $map['nodeid'] = $node_id;
+        $map['status'] = 2;
+
+        if(empty($order_by))
+        {
+            $order_by="idorder desc,contentid desc";
+        }
+
+
+        if(empty($show_field)){
+            $result = db('content')->where($map)->order($order_by)->limit($get_num)->select();
+        }else{
+            $result = db('content')->where($map)->order($order_by)->limit($get_num)->field($show_field)->select();
+        }
+        return $result;
+    }
+
+    /**
+     * @param $node_id
+     * @param array $where
+     * @param string $show_field
+     * @param string $order_by
+     * @param int $get_num
+     * @return false|null|\PDOStatement|string|Collection
+     */
+
+    public  function  GetActivity($siteid,$where = [],$order_by = 'chkcontentlev desc,dtpublishtime desc,idactivity asc',$show_field = '',$get_num = 10){
+        if(empty($siteid)){
+            return null;
+        }
+
+        if(empty($order_by))
+            $order_by= 'chkcontentlev desc,contentlevtime desc,dtpublishtime desc,idactivity asc';
+
+        if(!empty($where)){
+            $map = $where;
+        }
+        $map['chkdown']=array('neq',1);
+        $map['siteid'] = $siteid;
+        $map['intflag'] = 2;
+        $map['dtsignetime']=array('>',date('Y-m-d H:i:s',time()));
+        if(empty($show_field)){
+            $result = db('activity')->alias('a')->join('activity_cashed_card_set s','a.idactivity=s.activity_id','left')->where($map)->order($order_by)->limit($get_num)->select();
+        }else{
+            $result = db('activity')->alias('a')->join('activity_cashed_card_set s','a.idactivity=s.activity_id','left')->where($map)->order($order_by)->limit($get_num)->field($show_field)->select();
+        }
+        return $result;
+    }
+    public  function  GetActivityed($siteid,$where = [],$order_by = 'chkcontentlev desc,idactivity asc',$show_field = '',$get_num = 10){
+        if(empty($siteid)){
+            return null;
+        }
+
+        if(!empty($where)){
+            $map = $where;
+        }
+        $map['siteid'] = $siteid;
+        $map['intflag'] = 2;
+        $map['dtsignetime']=array('<',date('Y-m-d H:i:s',time()));
+
+        if(empty($show_field)){
+            $result = db('activity')->where($map)->order($order_by)->limit($get_num)->select();
+        }else{
+            $result = db('activity')->where($map)->order($order_by)->limit($get_num)->field($show_field)->select();
+        }
+        return $result;
+    }
+    public  function  GetWaiter($siteid){
+        if(empty($siteid)){
+            return null;
+        }
+
+       $map['idsite'] = $siteid;
+
+       $result = db('waiter')->where($map)->order('id asc')->select();
+        return $result;
+    }
+
+    public  function  GetComment($siteid,$dataid=0,$show_field = '',$order_by = 'id asc',$get_num = 100){
+        if(empty($siteid)){
+            return null;
+        }
+
+        if(!empty($where)){
+            $map = $where;
+        }
+        $map['idsite'] = $siteid;
+        $map['show'] = 1;
+        if($dataid>0)
+        {
+            $map['dataid'] = $dataid;
+        }
+
+        if(empty($show_field)){
+            $result = db('comment')->where($map)->order($order_by)->limit($get_num)->select();
+        }else{
+            $result = db('comment')->where($map)->order($order_by)->limit($get_num)->field($show_field)->select();
+        }
+        return $result;
+    }
+
+    /**
+     * 根据内容id 获取内容详情
+     * @param $cid: 内容id
+     * @param string $show_field: 需要查找的字段
+     * @return array|false|null|\PDOStatement|string|Model
+     */
+    public  function GetActivityInfo($id,$show_field = '', $groupBuyId = '', $groupBuyorderId = ''){
+        if(empty($id)){
+            return null;
+        }
+        $where['idactivity'] = ['eq',$id];
+        if(!empty($show_field)){
+            //获取活动库存
+            $show_field .= ', sold, ischarge';
+            $content_info = db('activity')->where($where)->field($show_field)->find();
+        }else{
+            $content_info = db('activity')->where($where)->find();
+        }
+
+
+        if(!empty($content_info))
+        {
+            if(isset($content_info['dtsignetime']))
+            {
+                //$content_info['dtsignetime'] = date('Y-m-d', strtotime($content_info['dtsignetime']) + 24 * 60 * 60);
+            }
+
+            $now = time();
+            if(!empty($groupBuyId))
+            {
+                $package = [];
+                if(!empty($groupBuyorderId))
+                {
+                    $groupBuyOrder = db('group_buy_order')
+                        ->where(
+                            [
+                                'group_buy_order_id' => $groupBuyorderId
+                            ]
+                        )
+                        ->find();
+//                    $where = 'state = 1
+//                        and start_at <= :now1
+//                        and group_buy_id = :group_buy_id
+//                        and (
+//
+//                                and end_at >= :now2
+//
+//                        )';
+                    $now=time();
+                    $map['state']=1;
+                    $map['start_at']=['<=',$now];
+                    $map['group_buy_id']=$groupBuyId;
+                    $map['end_at']=['>=',$now];
+
+                    $groupBuy = db('group_buy')
+                        ->where($map)
+                        ->find();
+
+                    if($groupBuy)
+                    {
+                        $package = db('package')
+                                ->where(
+                                    [
+                                        'package_id' => $groupBuy['package_id']
+                                    ]
+                                )
+                                ->find();
+                        $package['original_price'] = $package['member_price'];
+                        $package['member_price'] = $groupBuy['group_buy_price'];
+                        $package['stock'] = $groupBuyOrder['group_num'] - $groupBuyOrder['sold'];
+                    }
+
+                }else
+                {
+                    $groupBuy = db('group_buy')
+                        ->where(
+                            [
+                                'group_buy_id' => $groupBuyId,
+                                'state' => 1,
+                                'start_at' => ['elt', $now],
+                                'end_at' => ['egt', $now],
+                            ]
+                        )
+                        ->find();
+
+                    if($groupBuy)
+                    {
+                        $package = db('package')
+                            ->where(
+                                [
+                                    'package_id' => $groupBuy['package_id']
+                                ]
+                            )
+                            ->find();
+                        $package['stock'] = Stock::getStock($package);
+                        $package['original_price'] = $package['member_price'];
+                        $package['member_price'] = $groupBuy['group_buy_price'];
+                    }
+                }
+
+                if(!empty($package))
+                {
+                    if($package['stock'] <= 0)
+                    {
+                        $package['stock'] = '已售完';
+                    }elseif(is_infinite($package['stock']))
+                    {
+                        $package['stock'] = '不限';
+                    }else
+                    {
+                        $package['stock'] = $package['stock'];
+                    }
+                    $content_info['selcontent'] = [];
+                    $content_info['selcontent'][0] = $package;
+                }
+
+
+            }else
+            {
+                $content_info['selcontent'] = db('package')
+                    ->where(
+                        [
+                            'activity_id' => $id,
+                            'expire_at' => ['egt', strtotime('-1 day')],
+                            'state' => 1,
+                        ]
+                    )
+                    // ->fetchSql(true)
+                    ->select();
+                foreach ($content_info['selcontent'] as $key => $value)
+                {
+                    $stock = Stock::getStock($value);
+                    if($stock <= 0)
+                    {
+                        $content_info['selcontent'][$key]['stock'] = '已售完';
+                    }elseif(is_infinite($stock))
+                    {
+                        $content_info['selcontent'][$key]['stock'] = '不限';
+                    }else
+                    {
+                        $content_info['selcontent'][$key]['stock'] = $stock;
+                    }
+
+                    //免费
+                    if($content_info['ischarge'] == 1)
+                    {
+                        $content_info['selcontent'][$key]['original_price'] = $content_info['selcontent'][$key]['member_price'] = 0;
+                    }
+                }
+            }
+        }
+Log::info('获取套餐，结果:' . print_r($content_info, true));
+        return $content_info;
+    }
+    public function getNodeName($nodeid)
+    {
+        if(empty($nodeid))
+            return "";
+
+        $info = db('node')->where(array('nodeid'=>$nodeid))->field('nodename')->find();
+        if($info)
+        {
+            return $info['nodename'];
+        }
+        return "";
+    }
+    public  function GetSignupTemp($id,$show_field = ''){
+        if(empty($id)){
+            return null;
+        }
+        $where['id'] = ['eq',$id];
+        if(!empty($show_field)){
+            $content_info = db('signup_template')->where($where)->field($show_field)->find();
+        }else{
+            $content_info = db('signup_template')->where($where)->find();
+        }
+        return $content_info;
+    }
+    public  function GetSignupTempSub($pid,$show_field = ''){
+        if(empty($pid)){
+            return null;
+        }
+        $where['pid'] = ['eq',$pid];
+        if(!empty($show_field)){
+            $content_info = db('signup_template_sub')->where($where)->field($show_field)->order("sn asc,id asc")->select();
+        }else{
+            $content_info = db('signup_template_sub')->where($where)->order("sn asc,id asc")->select();
+        }
+        return $content_info;
+    }
+    public  function GetSignupTempSub1($pid,$show_field = ''){
+        if(empty($pid)){
+            return null;
+        }
+        $where['pid'] = ['eq',$pid];
+        if(!empty($show_field)){
+            $content_info = db('signup_template_sub1')->where($where)->field($show_field)->order("sn asc,id asc")->select();
+        }else{
+            $content_info = db('signup_template_sub1')->where($where)->order("sn asc,id asc")->select();
+        }
+        return $content_info;
+    }
+    public  function  GetContentsIndex($siteid){
+        $map['siteid'] = $siteid;
+        $map['status'] =array('gt',0);
+        $map['fieldnum1'] = -1;
+        $result = db('content')->where($map)->order('sys00003 desc,contentid desc')->limit(20)->select();
+        return $result;
+    }
+    /**
+     * 根据节点id 获取该节点下的内容 (不获取孙子节点的内容,带分页)
+     * @param $node_id
+     * @param array $where
+     * @param string $orderBy
+     * @param string $field
+     * @param int $pageIndex
+     * @param int $pageSize
+     * @return array|null
+     */
+
+
+
+    public function  GetContents($node_id,$where = [],$orderBy="idorder asc",$field = '',$pageIndex=1,$pageSize=5){
+        if(empty($node_id)){
+            return null;
+        }
+        /*!empty($where)?$map = $where :$map = [];
+        $map['nodeid'] = $node_id;
+        $order_by=!empty($orderBy) ? $orderBy  : "idorder asc";*/
+
+        $arrdata=array();
+
+        $where['nodeid']=$node_id;
+        $where['status'] =array('gt',0);
+
+        $orderby=!empty($orderBy) ? $orderBy  : "idorder asc";  //排序条件
+        $cmsorder=$orderby;
+        $ipage=!empty($pageIndex) ? $pageIndex  :1;   //当前页码
+        $pageSize=!empty($pageSize) ? $pageSize  :5;   //每页多少条
+        $result=db('content');
+        $offset = ($ipage - 1) * $pageSize;
+        if(!empty($field)){
+            $list = $result->where($where)->limit($offset,$pageSize)->order($cmsorder)->field($field)->select();
+        }else{
+            $list = $result->where($where)->limit($offset,$pageSize)->order($cmsorder)->select();
+        }
+
+        $coreCount=$result->where($where)->count();
+        //获取动态地址
+        foreach ($list as $key=>$value){
+            //$url= get_static_url($content_id);
+            //$list[$key]['url'] = url('/content/'.$value['contentid'].$url);
+            $list[$key]['url'] = url('/content/'.$value['contentid']);
+        }
+        $arrdata["data"]=$list;
+        $arrdata["page"]['pagesize']=$pageSize;
+        $arrdata["page"]['count']=$coreCount;
+        $arrdata["page"]['ipage']=$ipage;
+        $arrdata["page"]['pagecount']=ceil($coreCount/$pageSize);
+        return $arrdata;
+    }
+
+    /**
+     * 获取节点下的所有内容（包括孙子下的内容,带分页）
+     * @param $node_id
+     * @param null $where
+     * @param null $order_by
+     * @param string $field_list
+     * @param int $num
+     * @return array
+     */
+    public function GetNodeAllContents($node_id,$where = null,$order_by = null,$field_list = '',$num = 1000 ,$page_index = 1 ,$page_size = 5){
+        $map = $where;
+        $map['parentid'] = $node_id;
+        $node_info = db('node')->where('nodeid='.$node_id)->field('arrchildid')->find();
+        $arr = explode(',',$node_info['arrchildid']);
+
+        for($i=0;$i<count($arr);$i++){
+            $content_list[] = db('content')->where('nodeid='.$arr[$i])->select();
+        }
+
+        $data = [];
+        if(!empty($content_list)){
+            foreach ($content_list as $key=>$value){
+                foreach ($value as $k=>$v){
+                    $data[] = $v;
+                }
+            }
+        }
+        $new_data = array_slice($data,0,2);
+        //var_dump($new_data);
+        return $new_data;
+    }
+
+    /**
+     * 根据内容id 获取内容详情
+     * @param $content_id: 内容id
+     * @param string $show_field: 需要查找的字段
+     * @return array|false|null|\PDOStatement|string|Model
+     */
+    public  function GetContentInfo($content_id,$show_field = ''){
+        if(empty($content_id)){
+            return null;
+        }
+        $where['contentid'] =$content_id;
+
+        if(!empty($show_field)){
+            $content_info = db('content')->where($where)->field($show_field)->find();
+        }else{
+            $content_info = db('content')->where($where)->find();
+        }
+        if($content_info)
+        {
+            $node_info = db('node')->where('nodeid='.$content_info['nodeid'])->field('option')->find();
+            $content_info['option'] = $node_info['option'];
+        }
+
+        return $content_info;
+    }
+
+    /**
+     * 获取所有的节点
+     * @param array $where
+     * @param $field_show
+     * @param string $order
+     * @param int $num
+     * @return false|\PDOStatement|string|Collection
+     */
+    public  function  GetAllNodes($where = ['showonmenu'=>1],$order="idorder asc",$field_show = '',$num = 5,$idsite) {
+        $node_list = db('node')->where('idsite='.$idsite)->where($where)->order($order)->limit($num)->field($field_show)->select();
+        foreach ($node_list as $key=>$value){
+            //判断该栏目是否是单页栏目
+            if($value['isonepage'] == 1 && $value['nodetype']!=2){  //是,跳转到该栏目的第一篇内容
+                $content_info = db('content')->where('nodeid='.$value['nodeid'] ." and siteid=".$idsite)->order('contentid')->find();
+                if($content_info)
+                {
+                    $node_list[$key]['url'] = '/content/'.$content_info['contentid'];
+                }
+                else
+                {
+                    $node_list[$key]['url'] = '#';
+                }
+
+            }else{
+                if($value['nodetype']==2)
+                {
+                    $node_list[$key]['url'] = '/activity/'.$value['nodeid'];
+                }
+                else
+                {
+                    $node_list[$key]['url'] = '/node/'.$value['nodeid'];
+                }
+            }
+            if(!empty($value['linkurl']))
+            {
+                $node_list[$key]['url'] = $value['linkurl'];
+            }
+
+            if(empty($value['nodepicurl']))
+            {
+                $node_list[$key]['nodepicurl']=PUBLIC_URL."template/".GetConfigVal('weboption','rootdir',$idsite)."/images/icon_".($key+1).".jpg";
+            }
+            elseif(is_numeric($value['nodepicurl']))
+            {
+                $node_list[$key]['nodepicurl']=PUBLIC_URL."template/".GetConfigVal('weboption','rootdir',$idsite)."/images/icon_".trim($value['nodepicurl']).".jpg";
+            }
+
+        }
+        return $node_list;
+    }
+
+    /**
+     * 获取某个节点的子节点 （不会获取孙子,无分页）
+     * @param $node_id
+     * @param array $where
+     * @param string $order_by
+     * @param string $field_show
+     * @param int $num
+     * @return false|null|\PDOStatement|string|Collection
+     */
+    public function GetNodeChild($node_id,$where = [],$order_by = 'idorder asc',$field_show = '',$num = 5){
+        if(empty($node_id)){
+            return null;
+        }
+        $map = $where;
+        $map['parentid'] = $node_id;
+        //获取子节点
+        if(empty($field_show)){
+            $result = db('node')->where($map)->order($order_by)->limit($num)->select();
+        }else{
+            $result = db('node')->where($map)->order($order_by)->limit($num)->field($field_show)->select();
+        }
+        return $result;
+    }
+
+    /**
+     * 获取某个节点的所有的子节点(不会获取孙子,带分页)
+     * @param $node_id
+     * @param array $where
+     * @param string $order_by
+     * @param string $field
+     * @param int $page_index
+     * @param int $page_size
+     * @return array
+     */
+    public function  GetNodeAllChild($node_id,$where = [],$order_by = "idorder asc",$field = '',$page_index = 1,$page_size = 5){
+        $map['parentid'] = $node_id;
+        if(!empty($where)){
+            $map = $where;
+        }
+        empty($order_by) ? $order_by = 'idorder asc' : $order_by = null;//排序条件
+        empty($field) ? $field_show = '*': $field_show = $field;        //显示的字段
+        empty($page_index) ? $page_index = 1 : $page_index;             //当前页
+        empty($page_size) ? $page_size = 5 : $page_size;                //每页显示的条数
+        $offset = ($page_index - 1) * $page_size;
+        $list = db('node')->where($map)->limit($offset,$page_size)->order($order_by)->field($field_show)->select();
+        $count = db('node')->where($map)->count();
+        //获取动态地址
+        foreach ($list as $key=>$value){
+            //$url= get_static_url($content_id);
+            //$list[$key]['url'] = url('/content/'.$value['contentid'].$url);
+            $list[$key]['url'] = url('/node/'.$value['nodeid']);
+        }
+        $arr_data["data"]=$list;
+        $arr_data["page"]['pagesize']=$page_size;
+        $arr_data["page"]['count']=$count;
+        $arr_data["page"]['ipage']=$page_index;
+        $arr_data["page"]['pagecount']=ceil($count/$page_size);
+        return $arr_data;
+    }
+
+    /**
+     * @param int $parent_id
+     * @param int $mun
+     * @return array
+     */
+    function GetAllChildNode($parent_id=0,$mun = 100) {
+        $arr=array();
+        $wh='';
+        $db_menu = db('node');
+        if($parent_id>-1) {
+            $wh.='parentid ='.$parent_id;
+        }
+
+        $menu=$db_menu->where($wh)->limit($mun)->select();
+
+        if($menu){
+            foreach($menu as $row){
+                if($parent_id>-1) {
+                    $row["nodelist"]=getMenu($row['nodeid']);   //调用公共方法
+                }
+                $arr[]=$row;
+            }
+        }
+
+        return $arr;
+    }
+
+
+    /**
+     * 获取菜单配置项的值
+     * $menucode 菜单代号
+     * $rulecode　配置项名（健名）
+     */
+    public function GetConfigVal($menucode,$fieldname,$idsite){
+        $arr = [];
+        if(cache('config'.$idsite)){
+            $arr = cache('config'.$idsite);
+        }else{
+            $menu_list = db('config_menu')->where('idsite='.$idsite.' or idsite=0')->select();
+            $rule_list = db('config_rule')->where('idsite='.$idsite)->select();
+            foreach ($menu_list as $key=>$value){
+                foreach ($rule_list as $ke=>$val){
+                    if($value['id'] == $val['idmenu']){
+                        $arr[$value['chrcode']][$val['fieldname']] = $val['defaultval'];
+                    }
+                }
+            }
+            //存入缓存 所有菜单和配置项的值
+            cache('config'.$idsite,$arr);
+        }
+        $data = '';
+        foreach ($arr as $key=>$value){
+            if($key == $menucode){
+                $data = $value[$fieldname];
+            }
+        }
+        return $data;
+
+    }
+
+    /**
+     * @param $content_id
+     * @return string /**
+     * $content_id 当前的内容id
+     * 获取静态地址
+     */
+    public function get_static_url($content_id){
+        $content_info = db('content')->where('contentid='.$content_id)->find();
+        $node_info = db('node')->where('nodeid='.$content_info['nodeid'])->find();
+        $arr = explode(',',$node_info['parentpath']);
+        array_splice($arr,0,1);
+        array_pop($arr); //删除数组最后一个元素
+
+        //对数组进行排序
+        for($j=0;$j<count($arr);$j++){
+            for($k=0;$k<count($arr)-1;$k++){
+                if($arr[$k] > $arr[$k+1]){
+                    $temp = $arr[$k+1];
+                    $arr[$k+1] = $arr[$k];
+                    $arr[$k] = $temp;
+                }
+            }
+        }
+        //获得内容所有的父节点
+        $new_array = [];
+        for($i=0;$i<count($arr);$i++){
+            $node = db('node')->where('nodeid='.intval($arr[$i]))->find();
+            $new_array[] = $node;
+        }
+        //获取静态url
+        $url = '';
+        foreach ($new_array as $key=>$value){
+            $url .= $value['nodedir'].'/';
+        }
+        $val = $this->GetConfigVal('weboption','contentrule');
+        $url = $url.$val;
+        //var_dump($url);
+        return $url;
+    }
+
+
+    /**
+     * 获取内容导航信息
+     * @param $content_id
+     * @return string /**
+     * $content_id 当前的内容id
+     */
+    public function get_navigation($content_id){
+        $content_info = db('content')->where('contentid='.$content_id)->find();
+        $node_info = db('node')->where('nodeid='.$content_info['nodeid'])->find();
+
+        $arr = explode(',',$node_info['parentpath']);
+        array_splice($arr,0,1);
+        array_pop($arr);
+        $url = [];
+        if(!empty($arr)){
+            //对数组进行排序
+            for($j=0;$j<count($arr);$j++){
+                for($k=0;$k<count($arr)-1;$k++){
+                    if($arr[$k] > $arr[$k+1]){
+                        $temp = $arr[$k+1];
+                        $arr[$k+1] = $arr[$k];
+                        $arr[$k] = $temp;
+                    }
+                }
+            }
+            //获得内容所有的父节点
+            $new_array = [];
+            $map['showonpath'] = 1;
+            for($i=0;$i<count($arr);$i++){
+                $map['nodeid'] = intval($arr[$i]);
+                $node = db('node')->where($map)->find();
+                $new_array[] = $node;
+            }
+            foreach ($new_array as $k=>$val){
+                if(empty($val)){
+                    array_splice($new_array,$k,1);
+                }
+            }
+
+            foreach ($new_array as $key=>$value){
+                $url[] = $value['nodename'];
+            }
+        }else{
+
+            if($node_info['showonpath'] == 1){
+                $url[] = $node_info['nodename'];
+            }
+        }
+        return $url;
+    }
+
+    /**
+     * 获取节点导航信息
+     * @param $node_id
+     * @return array
+     */
+    public function node_navigation($node_id){
+        $node_info = db('node')->where('nodeid='.$node_id)->find();
+        $arr = explode(',',$node_info['parentpath']);
+        array_splice($arr,0,1);
+        array_pop($arr);
+        $url = [];
+        if(!empty($arr)){
+            //对数组进行排序
+            for($j=0;$j<count($arr);$j++){
+                for($k=0;$k<count($arr)-1;$k++){
+                    if($arr[$k] > $arr[$k+1]){
+                        $temp = $arr[$k+1];
+                        $arr[$k+1] = $arr[$k];
+                        $arr[$k] = $temp;
+                    }
+                }
+            }
+            //获得内容所有的父节点
+            $new_array = [];
+            $map['showonpath'] = 1;
+            for($i=0;$i<count($arr);$i++){
+                $map['nodeid'] = intval($arr[$i]);
+                $node = db('node')->where($map)->find();
+                $new_array[] = $node;
+            }
+            foreach ($new_array as $k=>$val){
+                if(empty($val)){
+                    array_splice($new_array,$k,1);
+                }
+            }
+
+            foreach ($new_array as $key=>$value){
+                $url[] = $value['nodename'];
+            }
+        }else{
+            if($node_info['showonpath'] == 1){
+                $url[] = $node_info['nodename'];
+            }
+        }
+        return $url;
+    }
+
+
+    public   function  GetPages($ipage="1",$pagesize="1"){
+        $arrdata=array();
+        $pid=1;
+
+        $ipage=!empty($ipage) ? $ipage  :1;   //当前页
+        $pagesize=!empty($pagesize) ? $pagesize  :1;   //当前页多少条
+        $result=db('content');
+        $offset = ($ipage - 1) * $pagesize;
+        $list = $result->where('nodeid='.$pid)->limit($offset,$pagesize)->select();
+        $coreCount=$result->where('nodeid='.$pid)->count();
+        $arrdata["data"]=$list;
+        $arrdata["page"]['pagesize']=$pagesize;
+        $arrdata["page"]['count']=$coreCount;
+        $arrdata["page"]['ipage']=$ipage;
+        $arrdata["page"]['pagecount']=ceil($coreCount/$pagesize);
+        return $arrdata;
+    }
+
+    public  function  getAD($idsite,$pid,$num=1)
+    {
+        $ads = db('ad')->where([
+            'idsite' => $idsite,
+            'enabled' => 1,
+            'pid' => $pid,
+            'start_time' => ['<=', date("Y-m-d")],
+            'end_time' => ['>=', date("Y-m-d")],
+        ])
+        ->order('orderby asc')
+        ->limit($num)
+        ->select();
+        
+        return $num == 1 ? $ads[0] : $ads;
+    }
+
+}

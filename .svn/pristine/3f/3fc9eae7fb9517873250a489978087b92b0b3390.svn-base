@@ -1,0 +1,200 @@
+<form id="frm1" class="information-list" method="post">
+  <ul>
+    <li>
+      <div class="head">基本信息</div>
+    </li>
+    <li>
+      <div class="tit">报名对象：</div>
+      <div class="txt">
+        <div class="info">
+          <span class="name"
+            onClick="javascript:window.location='/{$sitecode}/detail/{$orderinfo['dataid']}'">{$orderinfo['chrtitle']}</span>
+        </div>
+      </div>
+    </li>
+    <li>
+      <div class="tit">使用时间：</div>
+      <div class="txt">
+        <div class="info">{$orderinfo['dtstart']} 至 {$orderinfo['dtend']}</div>
+      </div>
+    </li>
+    <li>
+      <div class="tit">订单号：</div>
+      <div class="txt">
+        <div class="info">{$orderinfo['ordersn']}</div>
+      </div>
+    </li>
+    <li>
+      <div class="tit">套餐：</div>
+      <div class="txt">
+        <div class="info">{$orderinfo['payname']} × {$orderinfo['paynum']}</div>
+      </div>
+    </li>
+    <li>
+      <div class="tit">总金额：</div>
+      <div class="txt">
+        <div class="info">{$orderinfo['price']}(元)</div>
+      </div>
+    </li>
+    <li>
+      <div class="tit">方式：</div>
+      <div class="txt">
+        <div class="info">{$order_paytype1[$orderinfo['paytype1']]}</div>
+      </div>
+    </li>
+    <li>
+      <div class="tit">状态：</div>
+      <div class="txt">
+        <div class="info">{$order_state[$orderinfo['state']]} </div>
+      </div>
+    </li>
+    <li>
+      <div class="head">报名详情</div>
+    </li>
+    <?php foreach($frmdata as $k=>$vo) { ?>
+
+    <li>
+      <div class="tit">{$k}：</div>
+      <div class="txt">
+        <div class="info">{$vo}</div>
+      </div>
+    </li>
+    <?php } ?>
+    <?php if(!empty($frmdatasub)) { ?>
+    <li>
+      <div class="head">更多报名信息</div>
+    </li>
+    <?php foreach($frmdatasub as $k1=>$vo1) { ?>
+    <?php foreach($vo1 as $k=>$vo) { ?>
+    <li>
+      <div class="tit">{$k}{$k1+1}：</div>
+      <div class="txt">
+        <div class="info">{$vo}</div>
+      </div>
+    </li>
+    <?php }}} ?>
+
+    <?php if(!empty($orderinfo['refundsn']) || !empty($orderinfo['refundremark'])) { ?>
+    <li>
+      <div class="head">退款记录</div>
+    </li>
+    <li>
+      <div class="tit">退款的单号：</div>
+      <div class="txt">
+        <div class="info">{$orderinfo['refundsn']?$orderinfo['refundsn']:"<span style='color: red'>申请中</span>"}</div>
+      </div>
+    </li>
+    <?php if(!empty($orderinfo['dtwxrefundtime'])){ ?>
+    <li>
+      <div class="tit">退款时间：</div>
+      <div class="txt">
+        <div class="info">{$orderinfo['dtwxrefundtime']}</div>
+      </div>
+    </li>
+    <?php } if(!empty($orderinfo['refundprice'])){ ?>
+    <li>
+      <div class="tit">退款金额：</div>
+      <div class="txt">
+        <div class="info">{$orderinfo['refundprice']}</div>
+      </div>
+    </li>
+    <?php } if(!empty($orderinfo['refundremark'])){ ?>
+    <li>
+      <div class="tit">退款原因：</div>
+      <div class="txt">
+        <div class="info">{$orderinfo['refundremark']}</div>
+      </div>
+    </li>
+    <?php } if(!empty($orderinfo['refundpic'])){ ?>
+    <li>
+      <div class="tit">图片：</div>
+      <div class="txt">
+        <img src="{$orderinfo['refundpic']}" height="60">
+      </div>
+    </li>
+    <?php } ?>
+    <?php if(!empty($orderinfo['refundsn2'])  || !empty($orderinfo['refundmsg2'])) { ?>
+    <li>
+      <div class="tit">退款的单号2：</div>
+      <div class="txt">
+        <div class="info">{$orderinfo['refundsn2']?$orderinfo['refundsn2']:"<span style='color: red'>申请中</span>"}</div>
+      </div>
+    </li>
+    <?php if(!empty($orderinfo['dtwxrefundtime2'])){ ?>
+    <li>
+      <div class="tit">退款时间2：</div>
+      <div class="txt">
+        <div class="info">{$orderinfo['dtwxrefundtime2']}</div>
+      </div>
+    </li>
+    <?php } if(!empty($orderinfo['refundprice2'])){ ?>
+    <li>
+      <div class="tit">退款金额2：</div>
+      <div class="txt">
+        <div class="info">{$orderinfo['refundprice2']}</div>
+      </div>
+    </li>
+    <?php } if(!empty($orderinfo['refundmsg2'])){ ?>
+    <li>
+      <div class="tit">退款原因2：</div>
+      <div class="txt">
+        <div class="info">{$orderinfo['refundmsg2']}</div>
+      </div>
+    </li>
+    <?php }}} ?>
+    <?php if($orderinfo["issign"]==1) { ?>
+    <li>
+      <div class="txt">
+        <div class="info">已签到，签到时间：{$orderinfo['dtsigntime']}</div>
+      </div>
+    </li>
+    <?php } ?>
+  </ul>
+
+  <div class="comment-submit">
+    <input type="hidden" name="flag" value="1">
+    <input type="hidden" name="operation" value="signin">
+    <input type="hidden" name="checkcode" value="{$checkcode}">
+    <input type="hidden" name="signintype" value="{$signintype}">
+    <input type="hidden" name="url" value="{$url}">
+    <input type="button" value="返回" onClick="return_search();" id="close-refund" />
+    {if condition="$orderinfo.issign == 0"}
+    <input type="button" id="signin" onclick="javascript:activity_signin();" value="签到" />
+    {/if}
+  </div>
+</form>
+
+<script type="text/javascript">
+  function activity_signin() {
+    var issign = '{$orderinfo["issign"]}';
+    var checkcode = '{$checkcode}';
+    var signintype = '{$signintype}';
+    var url = '{$url}';
+    if (issign == 1) {
+      layer.alert('已签到，不能重复签到', { icon: 2 });
+    } else {
+      $.ajax({
+        url: '/{$sitecode}/signinloaddata',
+        type: 'POST',
+        cache: false,
+        data: new FormData($('#frm1')[0]),
+        processData: false,
+        contentType: false,
+        dataType: "json",
+        success: function (data) {
+          if (data.state == 1) {
+            $('#signin').remove();
+            layer.alert('签到成功', { icon: 1 });
+            if (checkcode) {
+              loaddata2(checkcode, signintype);
+            } else {
+              loaddata(url);
+            }
+          } else {
+            layer.alert(data.msg, { icon: 2 });
+          }
+        }
+      });
+    }
+  }
+</script>

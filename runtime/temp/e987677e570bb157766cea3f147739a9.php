@@ -1,9 +1,9 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:70:"D:\workspace\work\public/../application/admin\view\node\visitlist.html";i:1563341178;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:70:"D:\workspace\work\public/../application/admin\view\node\visitlist.html";i:1565322263;}*/ ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>活动管理</title>
+    <title>内容访问数据</title>
     <link href="/static/css/layout.css" rel="stylesheet" type="text/css" />
     <link href="/static/css/page.css" rel="stylesheet" type="text/css" />
     <script type="text/javascript" src="/static/js/jquery-3.2.1.min.js"></script>
@@ -119,25 +119,25 @@
                                         </div>
                                         <div class="oa_title clearfix">
                                             <span class="oa_ico-left"></span>
-                                            活动访问数据
+                                            资讯访问数据
                                         </div>
                                         <div class="oa_text-list">
                                             <table width="100%" border="0" cellspacing="0" cellpadding="0"  style="table-layout:fixed">
                                                 <tr class="oa_text-list-title">
                                                     <th width="20" style="text-align:center;"><input id="checked"  onclick="DoCheck();" name="" type="checkbox" value="" /></th>
-                                                    <th>户用名称</th>
+                                                    <th WIDTH="100">户用名称</th>
                                                     <th WIDTH="100">微信昵称</th>
                                                     <th WIDTH="60">是否关注</th>
                                                     <th WIDTH="100">联系电话</th>
                                                     <th WIDTH="105">地区</th>
-                                                    <th WIDTH="105">地址</th>
-                                                    <th WIDTH="120">首次阅读时间</th>
-                                                    <th WIDTH="120">最后阅读时间</th>
+                                                    <th>地址</th>
+                                                    <th WIDTH="125">首次阅读时间</th>
+                                                    <th WIDTH="125">最后阅读时间</th>
                                                     <th WIDTH="60">阅读次数</th>
                                                     <th WIDTH="70">阅读时长</th>
                                                     <th WIDTH="60">是否收藏</th>
                                                     <th WIDTH="60">文章转发</th>
-                                                    <th width="100"><span class="oa_arr-text-list-title"></span>操作</th>
+                                                    <th width="50"><span class="oa_arr-text-list-title"></span>操作</th>
                                                 </tr>
                                                 <?php if(empty($data)) { ?>
                                                 <tr>
@@ -151,7 +151,7 @@
                                                     <td><?php echo $vo['intstate']; ?></td>
                                                     <td><?php echo $vo['chrtel']; ?></td>
                                                     <td><?php echo $vo['intcity']; ?></td>
-                                                    <td class="address"  msg="<?php echo $vo['chraddress']; ?>"><?php echo $vo['chraddress']; ?></td>
+                                                    <td  title="<?php echo $vo['chraddress']; ?>"><?php echo $vo['chraddress']; ?></td>
                                                     <td><?php echo $vo['stime']; ?></td>
                                                     <td><?php echo $vo['etime']; ?></td>
                                                     <td><?php echo $vo['vcount']; ?></td>

@@ -1,0 +1,324 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>短信批量发送</title>
+    <link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
+    <link href="__PUBLIC__/static/css/page.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="/static/js/daterangepicker/daterangepicker-bs3.css" />
+    <!-- <script type="text/javascript" src="__PUBLIC__/static/js/jquery-3.2.1.min.js"></script> -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/lhgdialog.js?skin=aero"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/CostomLinkOpenSw.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/tabscommon.js"></script>
+    <script type="text/javascript" src="/static/js/daterangepicker/moment.min.js"></script>
+    <script type="text/javascript" src="/static/js/daterangepicker/daterangepicker.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/del-checked.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/layer/layer.js"></script>
+    
+
+
+
+    <!-- bootstrap 4.x is supported. You can also use the bootstrap css 3.3.x versions -->
+    <link rel="stylesheet" href="__PUBLIC__/static/assets1/css/bootstrap.min.css">
+    <link href="__PUBLIC__/static/css/fileinput/fileinput.min.css" media="all" rel="stylesheet" type="text/css" />
+    <!-- if using RTL (Right-To-Left) orientation, load the RTL CSS file after fileinput.css by uncommenting below -->
+    <!-- link href="__PUBLIC__/static/css/fileinput-rtl.min.css" media="all" rel="stylesheet" type="text/css" /-->
+    <!-- piexif.min.js is needed for auto orienting image files OR when restoring exif data in resized images and when you 
+        wish to resize images before upload. This must be loaded before fileinput.min.js -->
+    <script src="__PUBLIC__/static/js/fileinput/plugins/piexif.min.js" type="text/javascript"></script>
+    <!-- sortable.min.js is only needed if you wish to sort / rearrange files in initial preview. 
+        This must be loaded before fileinput.min.js -->
+    <script src="__PUBLIC__/static/js/fileinput/plugins/sortable.min.js" type="text/javascript"></script>
+    <!-- purify.min.js is only needed if you wish to purify HTML content in your preview for 
+        HTML files. This must be loaded before fileinput.min.js -->
+    <script src="__PUBLIC__/static/js/fileinput/plugins/purify.min.js" type="text/javascript"></script>
+    <!-- popper.min.js below is needed if you use bootstrap 4.x. You can also use the bootstrap js 
+       3.3.x versions without popper.min.js. -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script> -->
+    <!-- bootstrap.min.js below is needed if you wish to zoom and preview file content in a detail modal
+        dialog. bootstrap 4.x is supported. You can also use the bootstrap js 3.3.x versions. -->
+    <script src="__PUBLIC__/static/assets1/js/bootstrap.min.js" type="text/javascript"></script>
+    <!-- the main fileinput plugin file -->
+    <script src="__PUBLIC__/static/js/fileinput/fileinput.min.js"></script>
+    <!-- optionally if you need a theme like font awesome theme you can include it as mentioned below -->
+    <!-- <script src="__PUBLIC__/static/themes/fa/theme.js"></script> -->
+    <!-- optionally if you need translation for your language then include  locale file as mentioned below -->
+    <script src="__PUBLIC__/static/js/fileinput/locales/zh.js"></script>
+
+
+
+
+</head>
+<body>
+
+<div class="oa_wrapper">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr class="oa_wrapper-display">
+            <td class="oa_wrapper-top-arr-left">&nbsp;</td>
+            <td class="oa_wrapper-top-arr-middle"></td>
+            <td class="oa_wrapper-top-arr-right">&nbsp;</td>
+        </tr>
+        <tr>
+            <td class="oa_wrapper-middle-arr-left oa_wrapper-display"></td>
+            <td class="oa_wrapper-middle-arr-middle">
+                <div class="oa_location clearfix"><span class="oa_ico-left"></span>location<span class="oa_ico-right"></span></div>
+                <div class="oa_main clearfix">
+                    <div class="oa_title clearfix">
+                        <span class="oa_ico-left"></span>
+                        短信批量发送
+                    </div>
+                    <div class="oa_search-area clearfix">
+                        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                            <tr>
+                                <td>
+                                    <div class="oa_search-type clearfix">
+                                        <form action="" enctype="multipart/form-data" method="post" onsubmit="return check()">
+                                            <br/>
+                                            <table width="100%" border="0" cellspacing="1" cellpadding="0" class="oa_edition" style="padding-left: 15px;">
+                                                <tr class="oa_text-list-title">
+                                                    <td style="font-weight:bold;" colspan="2">
+                                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;账号签名：<span id="account_sign" style="color: dodgerblue;">【{$sm_info["sms_sign"]}】</span>每条短信最长<?= config('msg_config')['text_len']; ?>个字（包含账号签名），每次最多发送<span id="max_text_len"><?=config('msg_config')['max_text_len']; ?></span>个字（超过自动裁剪），<br/><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;当前计费字数为<span id="current_input_num"> </span>个字，分<span id="text_num">1</span>条短信发送
+                                                    </td>
+                                                </tr>
+                                                <tr class="oa_text-list-title" style="margin-bottom: 10px">
+                                                    <td style="font-weight:bold" colspan="2">
+                                                        <br/>
+                                                        <div style="margin-bottom: 10px">
+                                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;短信剩余发送条数：{$sm_info["sms_num"]}
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="oa_cell-left">定时发送<input id="timing" type="checkbox" style="margin: 3px 3px 3px 4px "></td>
+                                                    <td class="oa_cell-right">
+                                                        <input type="text" style="width: 140px;" autocomplete="off" id="send_time" disabled="disabled" name="send_time" class="form-control" />
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td class="oa_cell-left">模板名称：</td>
+                                                    <td class="oa_cell-right">
+                                                        <select id="template-type">
+                                                            <option value="" hidden="true" ></option>
+                                                            {volist name="templates" id="vo"}
+                                                            <option value="{$vo.id}">{$vo.name}</option>
+                                                            {/volist}
+                                                        </select>
+
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td class="oa_cell-left">
+                                                        短信内容：
+                                                    </td>
+                                                    <td class="oa_cell-right">
+                                                        <label>
+                                                            <textarea id="content" rows="10" style="width: 450px;" cols="1" name="content"></textarea>
+                                                        </label>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="oa_cell-left">
+                                                        手机号码：
+                                                    </td>
+                                                    <td class="oa_cell-right" style="padding-right: 100px;box-sizing: border-box">
+                                                        <!-- <input type="hidden" name="filename" id="filename"> -->
+                                                        {if condition="strlen($mobile_list) <= 11"}
+                                                        <input type="text" style="width: 450px;" name="mobile" id="mobile" value="{$mobile_list}" />
+                                                        {else /}
+                                                        <textarea id="mobile" rows="3" style="width: 450px;" cols="1" name="mobile">{$mobile_list}</textarea>
+                                                        {/if}
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>&nbsp;</td>
+                                                </tr>
+
+
+                                            </table>
+                                            <div class="oa_bottom clearfix">
+                                                <div class="clearfix">
+                                                    <div class="clearfix" style="padding-left: 20%; padding-top: 1rem; padding-bottom: 1rem;">
+                                                        <input value="发送" type="submit" class="oa_input-submit" />
+                                                    </div>
+                                                </div>
+                                                <div class="oa_bottom-bottom"><em></em></div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                                        <!--<div class="oa_pop-main">-->
+                                            <!--<div class="oa_edition">-->
+                                                <!---->
+                                            <!--</div>-->
+                                            <!--<div class="oa_content-main-bottom"></div>-->
+                                        <!--</div>-->
+                </div>
+                <div class="oa_content-main-bottom"></div>
+            </td>
+            <td class="oa_wrapper-middle-arr-right oa_wrapper-display"></td>
+        </tr>
+        <tr class="oa_wrapper-display">
+            <td class="oa_wrapper-bottom-arr-left">&nbsp;</td>
+            <td class="oa_wrapper-bottom-arr-middle"></td>
+            <td class="oa_wrapper-bottom-arr-right">&nbsp;</td>
+        </tr>
+    </table>
+</div>
+<script type="text/javascript">
+    // seltime("send_time","", '2019-04-13 16:50');
+
+    function check() {
+        if ($("#content").val() == "") {
+            layer.msg('短信内容不能为空！');
+            return false;
+        }
+
+        if ($("#mobile").val() == "") {
+            layer.msg('手机号码不能为空！');
+            return false;
+        }
+
+        return true;
+    }
+
+    $(document).ready(function () {
+
+
+        $("#upload-file").fileinput({
+            // uploadUrl: "{:url('sms/uploadExcel')}",
+            showUpload: true,
+            showRemove: false,
+            multiple : false,
+            dropZoneEnabled : false,
+            required: true,
+            allowedFileExtensions: ['xls', 'xlsx'],
+            language : 'zh',
+            maxFileSize : 1024,
+            showPreview : false,
+            showUpload : false,
+            initialPreviewAsData: true,
+            overwriteInitial: false,
+            // maxFileCount: 1,
+
+
+        });
+
+        // .on('fileuploaderror', function(event, data, msg) {
+        //     console.log('File Upload Error', data);
+        // }).on('filebatchuploadcomplete', function(event, preview, config, tags, extraData) {
+        //     console.log('File Batch Uploaded', preview, config, tags, extraData);
+        // });
+
+        $("#submit").click(function () {
+            $("#upload-file").fileinput('upload');
+        });
+
+
+        $('#send_time').daterangepicker(
+            {
+                format:"YYYY-MM-DD HH:mm",
+                singleDatePicker: true,
+                showDropdowns: true,
+                minDate: getNow(),
+                maxDate: '2030-01-01',
+                // startDate: '',
+                timePicker : true, //是否显示小时和分钟
+                timePickerIncrement:1,//time选择递增数
+                timePicker12Hour : false, //是否使用12小时制来显示时间
+
+                locale : {
+                    applyLabel : '确定',
+                    cancelLabel : '取消',
+                    fromLabel : '起始时间',
+                    toLabel : '结束时间',
+                    customRangeLabel : '自定义',
+                    daysOfWeek : [ '日', '一', '二', '三', '四', '五', '六' ],
+                    monthNames : [ '一月', '二月', '三月', '四月', '五月', '六月','七月', '八月', '九月', '十月', '十一月', '十二月' ],
+                    firstDay : 1
+                }
+            }
+        );
+        
+        function choose()
+        {
+            if($('#timing').prop('checked'))
+            {
+                $('#send_time').removeAttr('disabled').show();
+            }else
+            {
+                $('#send_time').attr('disabled', 'disabled').hide();
+            }
+        }
+
+        choose();
+
+        $("#timing").change(function () {
+            choose();
+            // $("#send_time").prop('disabled', !$(this).prop('checked'));
+        });
+
+        //账号签名
+        sign = $("#account_sign").text();
+        //每条短信字数
+        textLen = "<?=config('msg_config')['text_len']; ?>";
+        //每次发送短信最大字数
+        maxTextLen = "<?=config('msg_config')['max_text_len']; ?>";
+        //每次发送最大短信数
+        // maxTextNum = Math.ceil(maxTextLen / textLen);
+        //获取当前输入框字数
+        $("#current_input_num").text($("#content").val().length + sign.length);
+
+        $("#content").keyup(function() {
+            var len = $(this).val().length;
+
+            //计费字数(短信内容加上账号签名)
+            var countLen = len + sign.length;
+            if (countLen > maxTextLen)
+            {
+                countLen = maxTextLen;
+                $(this).val($(this).val().substring(0, maxTextLen - sign.length));
+            }
+            //当前短信条数
+            var textNum = Math.ceil(countLen / textLen);
+
+            $("#text_num").text(textNum);
+            $("#current_input_num").text(countLen);
+
+        });
+
+        $("#template-type").change(function(){
+            $.ajax({
+                url : "{:url('sms/sms_template')}",
+                contentType : 'json',
+                dataType : 'json',
+                data : {
+                    id : $(this).val()
+                },
+                success : function (result) {
+                    $("#content").val(result.name + result.content);
+                    var countLen = $("#content").val().length + sign.length;
+                    $("#current_input_num").text(countLen);
+                    //当前短信条数
+                    var textNum = Math.ceil(countLen / textLen);
+
+                    $("#text_num").text(textNum);
+                },
+                error : function (result) {
+                    
+                }
+            });
+        })
+    });
+
+    
+
+</script>
+</body>
+</html>

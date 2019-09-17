@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:68:"D:\workspace\work\public/../application/admin\view\member\index.html";i:1562385340;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:68:"D:\workspace\work\public/../application/admin\view\member\index.html";i:1564818673;}*/ ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -155,7 +155,7 @@
                             <ul>
                                 <li class="oa_on"><em>用户管理</em></li>
                                 <li onclick="javascript:window.location='<?php echo url('member/followup',''); ?>'" ><em>访谈记录</em></li>
-                                <li onclick="javascript:window.location='<?php echo url('member/qrcode_manage',''); ?>'" ><em>二维码管理</em></li>
+                                <li onclick="javascript:window.location='<?php echo url('member/history_member',''); ?>'"><em>导入用户</em></li>
                             </ul>
                         </div>
                     </div>
@@ -197,19 +197,6 @@
                                                                         <td class="oa_cell-left">昵称：</td>
                                                                         <td class="oa_cell-right">
                                                                             <input id="nickname" type="text" name="nickname" value="<?php echo $search['nickname']; ?>" >
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td class="oa_cell-left">二维码：</td>
-                                                                        <td class="oa_cell-right" id="select_qrcode">
-                                                                            <?php if($search['qr_scene_str']): ?>
-                                                                            <input type="hidden" name="qrcode_name" value="<?php echo $search['qrcode_name']; ?>" />
-                                                                            <input type="hidden" name="qr_scene_str" value="<?php echo $search['qr_scene_str']; ?>" />
-                                                                            <span><?php echo $search['qrcode_name']; ?></span>&nbsp;
-                                                                            <a href="javascript:CustomOpen('<?php echo url('admin/member/qrcode_select','',''); ?>', 'qrcode_select','重新选择', 500, 285)" style="color:red;">[重新选择]</a>
-                                                                            <?php else: ?>
-                                                                            <a href="javascript:CustomOpen('<?php echo url('admin/member/qrcode_select','',''); ?>', 'qrcode_select','选择二维码', 500, 285)">选择二维码</a>
-                                                                            <?php endif; ?>
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -442,7 +429,7 @@
                                                         <a href="javascript:CustomOpen('<?php echo url('admin/member/followupdeal','memberid='.$vo['idmember'].'&action=add',''); ?>', 'memberview','新建访谈记录', 600, 350)">新建访谈记录</a>
                                                         <?php if($cms->CheckPurview('membermanage','manage')){ ?>
                                                         <br/>
-                                                        <a href="javascript:CustomOpen('<?php echo url('admin/member/memberdeal','idmember='.$vo['idmember'].'&action=edit',''); ?>', 'member','用户信息修改', 460, 460)">修改</a>
+                                                        <a href="javascript:CustomOpen('<?php echo url('admin/member/memberdeal','idmember='.$vo['idmember'].'&action=edit',''); ?>', 'member','用户信息修改', 700, 700)">修改</a>
                                                         <a href="javascript:;" onclick="javascript:setmanage('<?php echo $vo['idmember']; ?>','<?php echo $vo['nickname']; ?>','<?php echo $vo['ismanage']==1?0:1; ?>')"><?php echo $vo['ismanage']==1?"取消管理":"设为管理"; ?></a>
                                                         <a href="javascript:send_msg('<?php echo $vo['openid']; ?>');">发送消息</a>
                                                         <a href="javascript:CustomOpen('<?php echo url('admin/member/membergiving','idmember='.$vo['idmember'],''); ?>', 'member','赠送积分', 460, 350)">赠送积分</a>

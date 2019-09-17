@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:29:"template/M1/order/signup.html";i:1563351181;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:29:"template/M1/order/signup.html";i:1565598534;}*/ ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -93,7 +93,7 @@
         <li>
             <div class="txt">
                 <?php
-                if($re1['selcontent']) foreach($re1['selcontent'] as $i => $package)
+             if($re1['selcontent']) foreach($re1['selcontent'] as $i => $package)
                 {
                     $keyword = $package['keyword1'] . ' ' . $package['keyword2'];
                     $price = '(' . $package['member_price'] . '元)';
@@ -146,14 +146,15 @@
 
 
         <dd>
+            <input type="hidden" name="group_buy_id" value="<?php echo $groupBuyId; ?>">
+            <input type="hidden" name="group_buy_order_id" value="<?php echo $groupBuyOrderId; ?>">
             <input style="display: none" id="subdata1" type="submit"  value="提交">
             <input type="button" class="submit" value="提交" style="background: #ff7800;color: #fff;" onclick="order_confirm();"></dd>
     </dl>
-    <?php if($groupBuyId): ?>
-        <input type="hidden" name="group_buy_id" value="<?php echo $groupBuyId; ?>">
-    <?php endif; if($groupBuyOrderId): ?>
-        <input type="hidden" name="group_buy_order_id" value="<?php echo $groupBuyOrderId; ?>">
-    <?php endif; ?>
+
+
+
+
 </form>
 <?php if($activity_cashed): ?>
 <!-- 优惠券列表 -->
@@ -338,7 +339,7 @@
                     var spddprice = $("#spddprice").html();
                     if (spddprice > 0) {
                         if (spddprice <= volumeprice) {
-                            $("#spdiwang").html(0.01);
+                            $("#spdiwang").html(0.00);
                         } else {
                             $("#spdiwang").html((spddprice - volumeprice).toFixed(2));
                         }
@@ -351,7 +352,7 @@
                         <?php if($activity_cashed): ?>
                     if (spddprice > 0) {
                         if (spddprice <= volumeprice) {
-                            $("#spdiwang").html(0.01);
+                            $("#spdiwang").html(0.00);
                         } else {
                             $("#spdiwang").html((spddprice - volumeprice).toFixed(2));
                         }
@@ -369,7 +370,7 @@
                     var spddprice = $("#spddprice").html();
                     if (spddprice > 0) {
                         if (spddprice <= volumeprice) {
-                            $("#spdiwang").html(0.01);
+                            $("#spdiwang").html(0.00);
                         } else {
                             $("#spdiwang").html((spddprice - volumeprice).toFixed(2));
                         }
@@ -382,7 +383,7 @@
                     var spddprice = $("#spddprice").html();
                     if (spddprice > 0) {
                         if (spddprice <= volumeprice) {
-                            $("#spdiwang").html(0.01);
+                            $("#spdiwang").html(0.00);
                         } else {
                             $("#spdiwang").html((spddprice - volumeprice).toFixed(2));
                         }
@@ -401,7 +402,7 @@
                 var spddprice = $("#spddprice").html();
                 if (spddprice > 0) {
                     if (spddprice <= volumeprice) {
-                        $("#spdiwang").html(0.01);
+                        $("#spdiwang").html(0.00);
                     } else {
                         $("#spdiwang").html((spddprice - volumeprice).toFixed(2));
                     }
@@ -414,7 +415,7 @@
                 var spddprice = $("#spddprice").html();
                 if (spddprice > 0) {
                     if (spddprice <= volumeprice) {
-                        $("#spdiwang").html(0.01);
+                        $("#spdiwang").html(0.00);
                     } else {
                         $("#spdiwang").html((spddprice - volumeprice).toFixed(2));
                     }
@@ -521,12 +522,24 @@ $(".pwclass").eq(0).click();
                         var data = new FormData(document.getElementById("frm1"));
                         //分享id
                         var share_id = '<?php echo $share_id; ?>';
-                           layer.load(1, {
-                               shade: [0.1,'#fff'] //0.1透明度的白色背景
-                           });
+                           //layer.load(1, {
+                             //  shade: [0.1,'#fff'] //0.1透明度的白色背景
+                          // });
+                        //拼团id
+                        //    console.log($("#groupBuyOrderId").val())
+                        //    console.log($("#groupjoin").val())
+
+                           if(($("#groupjoin").val()==1 || $("#groupjoin").val()=='1') && $("#groupBuyOrderId").val() !='undefined'){
+                           var url="/<?php echo $sitecode; ?>/signup_post/<?php echo $id; ?>?share_id=<?php echo $share_id; ?>&group_buy_order_id="+$("#groupBuyOrderId").val()+"&groupjoin=1"
+                       }else if( typeof $("#groupBuyOrderId").val() !='undefined'){
+                               var url="/<?php echo $sitecode; ?>/signup_post/<?php echo $id; ?>?share_id=<?php echo $share_id; ?>&group_buy_order_id="+$("#groupBuyOrderId").val()
+                       }else{
+                               var url="/<?php echo $sitecode; ?>/signup_post/<?php echo $id; ?>?share_id=<?php echo $share_id; ?>"
+                       }
+
                         $.ajax({
                                 type: 'post',
-                                url: "/<?php echo $sitecode; ?>/signup_post/<?php echo $id; ?>?share_id=<?php echo $share_id; ?>",
+                                url: url,
                                 dataType: 'json',
                                 data: data,
                                 contentType: false, //不设置内容类型
@@ -534,76 +547,99 @@ $(".pwclass").eq(0).click();
                                 success: function (data) {
                                     //关闭继续提交弹窗
                                     close_confirm()
-                                    layer.closeAll('loading');
+                                    //layer.closeAll('loading');
                                     //格式化data数据
                                     data=JSON.parse(data)
+                                     console.log(data)
                                     //用户再次提交订单
                                         //追加元素
                                     var htmlappend="<input id='orderid' type=\"hidden\" name=\"order_id\" value=\""+data.order_id+"\">"
                                     $("#txtpaynum").after(htmlappend)
-                                    if(data.res==1){
-                                        if(data.ischarge==2 && data.flag==1 && data.price > 0) {
-                                            jsondata=$.parseJSON(data.data)
-                                            wx.config({
-                                                //debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-                                                appId: data.config["appId"], // 必填，公众号的唯一标识
-                                                timestamp:data.config["timestamp"] , // 必填，生成签名的时间戳
-                                                nonceStr: data.config["nonceStr"], // 必填，生成签名的随机串
-                                                signature:data.config["signature"],// 必填，签名
-                                                jsApiList: ['chooseWXPay']// 必填，需要使用的JS接口列表
 
-                                            });
-                                            wx.ready(function () {
-                                                wx.chooseWXPay({
-                                                    timestamp: jsondata["timeStamp"], // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
-                                                    nonceStr: jsondata["nonceStr"], // 支付签名随机串，不长于 32 位
-                                                    package: jsondata["package"], // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=\*\*\*）
-                                                    signType: jsondata["signType"], // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
-                                                    paySign: jsondata["paySign"], // 支付签名
-                                                    success: function (res) {
-                                                        if(data.is_cashed && data.activity_cashed_set && data.activity_cashed_set.cashed_plan_id > 0){
-                                                            window.location="/"+data.sitecode+"/share/"+data.order_id+"/0"
-                                                        }else{
-                                                            window.location="/"+data.sitecode+"/detail/"+data.dataID
-                                                        }
-                                                    },
+                                    //如果有拼团id
+                                   // console.log(data.group_buy_order_id)
+                                    if(data.group_buy_order_id !='undefined' && data.group_buy_order_id !=0){
 
-                                                })
+                                        var formappend="<input id='groupBuyOrderId' type=\"hidden\" name=\"group_buy_order_id\" value=\""+data.group_buy_order_id+"\">"
+
+                                        $("#frm1").after(formappend)
+
+                                    }
+                                    //如果是参团用户
+                                    if(data.groupjoin==1){
+
+                                        var formbefore="<input id='groupjoin' type='hidden' name='groupjoin' value=\""+data.groupjoin+"\">"
+                                        $("#frm1").before(formbefore)
+                                     }
+                                    if(data.ischarge==2 && data.flag==1 && data.price > 0) {
+                                        jsondata=$.parseJSON(data.data)
+                                        wx.config({
+                                            //debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+                                            appId: data.config["appId"], // 必填，公众号的唯一标识
+                                            timestamp:data.config["timestamp"] , // 必填，生成签名的时间戳
+                                            nonceStr: data.config["nonceStr"], // 必填，生成签名的随机串
+                                            signature:data.config["signature"],// 必填，签名
+                                            jsApiList: ['chooseWXPay']// 必填，需要使用的JS接口列表
+
+                                        });
+                                        wx.ready(function () {
+                                            wx.chooseWXPay({
+                                                timestamp: jsondata["timeStamp"], // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
+                                                nonceStr: jsondata["nonceStr"], // 支付签名随机串，不长于 32 位
+                                                package: jsondata["package"], // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=\*\*\*）
+                                                signType: jsondata["signType"], // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
+                                                paySign: jsondata["paySign"], // 支付签名
+                                                success: function (res) {
+                                                    if(data.is_cashed && data.activity_cashed_set && data.activity_cashed_set.cashed_plan_id > 0){
+                                                        window.location="/"+data.sitecode+"/share/"+data.order_id+"/0"
+                                                    }else{
+                                                        window.location="/"+data.sitecode+"/detail/"+data.dataID
+                                                    }
+                                                },
 
                                             })
-                                            flag=IsPC()
-                                            if(!flag){
-                                                            layer.confirm('您好，请用手机登录微信，进入公众号会员中心完成支付，谢谢！',
-                                                                {
-                                                                    btn: ["关闭"] //按钮)
-                                                                })
-                                                    }
 
-                                        }else{
-                                            if(data.flag==2) {
+                                        })
+                                        flag=IsPC()
+                                        if(!flag){
+                                                        layer.confirm('您好，请用手机登录微信，进入公众号会员中心完成支付，谢谢！',
+                                                            {
+                                                                btn: ["关闭"] //按钮)
+                                                            })
+                                                }
+
+                                    }else{
+                                        if(data.flag==2) {
+
+                                            if(typeof(data.errmsg) != "undefined"){
+
                                                 layer.confirm(
                                                     data.errmsg,
                                                     {
                                                         btn:['关闭'],
-                                                        btn1: function(index, layero){
-                                                            window.location = "/" + data.sitecode + "/detail/" + data.dataID;
-                                                            return false;
-                                                        }});
-                                                if(data.err_arr.length != 0){
-                                                    layer.confirm(
-                                                        data.err_arr[0]["err"],
-                                                        {
-                                                            btn:['关闭'],
-                                                            btn1: function(index, layero){
-                                                                window.location="/"+data.sitecode+"/againorder/"+data.order_id;
-                                                                return false;
-                                                            }});
-                                                }
-                                            } else{
-                                                layer.confirm('报名成功！',{btn:['关闭'],btn1: function(index, layero){ window.location="/"+data.sitecode+"/detail/"+data.dataID}});
+                                                        //btn1: function(index, layero){
+                                                            //window.location = "/" + data.sitecode + "/detail/" + data.dataID;
+                                                           // return false;
+                                                        //}
+                                                    });
                                             }
+
+                                            if(typeof(data.err_arr) != "undefined"){
+                                                layer.confirm(
+                                                    data.err_arr[0]["err"],
+                                                    {
+                                                        btn:['关闭'],
+                                                        // btn1: function(index, layero){
+                                                        //     //window.location="/"+data.sitecode+"/againorder/"+data.order_id;
+                                                        //     return false;
+                                                        // }
+                                                    });
+                                            }
+                                        } else{
+                                            layer.confirm('报名成功！',{btn:['关闭'],btn1: function(index, layero){ window.location="/"+data.sitecode+"/detail/"+data.dataID}});
                                         }
                                     }
+
                                 },
                             }
                         );
@@ -626,7 +662,7 @@ function loadprice() {
     var spddprice = $("#spddprice").html();
     if (spddprice > 0) {
         if (spddprice <= volumeprice) {
-            $("#spdiwang").html(0.01);
+            $("#spdiwang").html(0.00);
         } else {
             $("#spdiwang").html((spddprice - volumeprice).toFixed(2));
         }
@@ -795,7 +831,7 @@ function  checkdata(datavalue,datatype,ismust) {
         if (obj > 0) {
             if (spddprice > 0) {
                 if (spddprice <= volumeprice) {
-                    $("#spdiwang").html(0.01);
+                    $("#spdiwang").html(0.00);
                 } else {
                     $("#spdiwang").html((spddprice - volumeprice).toFixed(2));
                 }
@@ -818,7 +854,7 @@ function  checkdata(datavalue,datatype,ismust) {
         var spddprice = $("#spddprice").html();
         if (spddprice > 0) {
             if (spddprice <= volumeprice) {
-                $("#spdiwang").html(0.01);
+                $("#spdiwang").html(0.00);
             } else {
                 $("#spdiwang").html((spddprice - volumeprice).toFixed(2));
             }

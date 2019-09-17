@@ -1,0 +1,156 @@
+<form id="frm1" class="information-list" method="post">
+    <ul>
+        <li>
+            <div class="head">预约信息</div>
+        </li>
+        <li>
+            <div class="tit">预约编号：</div>
+            <div class="txt">
+                <div class="info">
+                    <span class="name">{$subscriberecord['subscribe_no']}</span>
+                </div>
+            </div>
+        </li>
+        <li>
+            <div class="tit">会员卡名称：</div>
+            <div class="txt">
+                <div class="info">{$subscriberecord['member_cart_name']}</div>
+            </div>
+        </li>
+        <li>
+            <div class="tit">用户名称：</div>
+            <div class="txt">
+                <div class="info">{$subscriberecord['member_nickanme']}</div>
+            </div>
+        </li>
+        <li>
+            <div class="tit">项目名称：</div>
+            <div class="txt">
+                <div class="info">{$subscriberecord['subscribe_object_name']}</div>
+            </div>
+        </li>
+        <li>
+            <div class="tit">预约次数：</div>
+            <div class="txt">
+                <div class="info">{$subscriberecord['subscribe_number']}</div>
+            </div>
+        </li>
+        {notempty name="$subscriberecord['week']"}
+        <li>
+            <div class="tit">周期：</div>
+            <div class="txt">
+                <div class="info">{$subscriberecord['week']}</div>
+            </div>
+        </li>
+        {/notempty}
+        {notempty name="$subscriberecord['period']"}
+        <li>
+            <div class="tit">时间段：</div>
+            <div class="txt">
+                <div class="info">{$subscriberecord['period']}</div>
+            </div>
+        </li>
+        {/notempty}
+        {notempty name="$subscriberecord['place']"}
+        <li>
+            <div class="tit">地点：</div>
+            <div class="txt">
+                <div class="info">{$subscriberecord['place']}</div>
+            </div>
+        </li>
+        {/notempty}
+        <li>
+            <div class="tit">预约时间：</div>
+            <div class="txt">
+                <div class="info">{$subscriberecord['subscribe_time']|date="Y-m-d",###}</div>
+            </div>
+        </li>
+        <li>
+            <div class="tit">下单时间：</div>
+            <div class="txt">
+                <div class="info">{$subscriberecord['create_time']|date="Y-m-d H:i:s",###}</div>
+            </div>
+        </li>
+        <li>
+            <div class="head">签到信息</div>
+        </li>
+        {notempty name="$subscriberecord['signin_member_nickname']"}
+        <li>
+            <div class="tit">签到用户昵称：</div>
+            <div class="txt">
+                <div class="info">{$subscriberecord['signin_member_nickname']}</div>
+            </div>
+        </li>
+        {/notempty}
+        <li>
+            <div class="tit">签到方式：</div>
+            <div class="txt">
+                <div class="info">
+                    {if condition="$subscriberecord['signin_way'] == 1"}
+                    扫码签到
+                    {elseif condition="$subscriberecord['signin_way'] == 2"}
+                    输码签到
+                    {elseif condition="$subscriberecord['signin_way'] == 3"}
+                    电脑签到
+                    {else}
+                    暂未签到
+                    {/if}
+                </div>
+            </div>
+        </li>
+        <li>
+            <div class="tit">
+                签到时间：
+            </div>
+            <div class="txt"><div class="info">{notempty name="$subscriberecord['signin_time']"}{$subscriberecord['signin_time']|date="Y-m-d H:i:s",###}{/notempty}</div></div>
+        </li>
+    </ul>
+
+    <div class="comment-submit">
+        <input type="hidden" name="flag"  value="1">
+        <input type="hidden" name="operation" value="subscribe">
+        <input type="hidden" name="checkcode" value="{$checkcode}">
+        <input type="hidden" name="signintype" value="{$signintype}">
+        <input type="hidden" name="url"  value="{$url}">
+        <input type="button" value="返回" onClick="return_search();" id="close-refund" />
+        {if condition="$subscriberecord['signin_way'] == 0"}
+        <input type="button" id="signin"  onclick="javascript:subscribe_signin();" value="签到" />
+        {/if}
+    </div>
+</form>
+
+<script type="text/javascript">
+    function subscribe_signin()
+    {
+        var issign = '{$subscriberecord["is_signin"]}';
+        var checkcode = '{$checkcode}';
+        var signintype = '{$signintype}';
+        var url = '{$url}';
+        if(issign == 1){
+            layer.alert('已签到，不能重复签到',{icon:2});
+        }else{
+            $.ajax({
+                url: '/{$sitecode}/signinloaddata',
+                type: 'POST',
+                cache: false,
+                data: new FormData($('#frm1')[0]),
+                processData: false,
+                contentType: false,
+                dataType:"json",
+                success : function(data) {
+                    if (data.state == 1) {
+                        $('#signin').remove();
+                        layer.alert('签到成功',{icon:1});
+                        if(checkcode){
+                            loaddata2(checkcode,signintype);
+                        }else{
+                            loaddata(url);
+                        }
+                    } else {
+                        layer.alert(data.msg,{icon:2});
+                    }
+                }
+            });
+        }
+    }
+    </script>

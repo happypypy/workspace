@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:78:"D:\workspace\work\public/../application/admin\view\uploadify\uploadimgcut.html";i:1561691685;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:78:"D:\workspace\work\public/../application/admin\view\uploadify\uploadimgcut.html";i:1567662503;}*/ ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -130,7 +130,6 @@
             if($(window.parent.document).find("#<?php echo $info['input']; ?>").attr("imgtype")=="small"){
                  filepath = "<?php echo $info['filepath_small']; ?>";
             }
-
             $(window.parent.document).find("#<?php echo $info['input']; ?>").val(filepath);
             $(window.parent.document).find("#<?php echo $info['input']; ?>_big").val("<?php echo $info['filepath_big']; ?>");
             CloseDiv();
@@ -177,7 +176,7 @@
                 isCrop: true,
                 /* 图片上传完成之后的回调，无论是否成功上传 */
                 onComplete: function(data) {
-                    alert(data);
+                    //alert(data);
                     //console.log(data);
                     //console.log('upload complete!');
                 }

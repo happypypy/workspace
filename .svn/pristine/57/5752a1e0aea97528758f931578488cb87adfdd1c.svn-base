@@ -1,0 +1,485 @@
+<?php
+/**
+ * 天络CMS
+ * ============================================================================
+ * 版权所有 2017-2027 深圳天络科技有限公司，并保留所有权利。
+ * 网站地址: http://www.chinasky.net
+ * ----------------------------------------------------------------------------
+ * 这不是一个自由软件！您只能在不用于商业目的的前提下对程序代码进行修改和使用 .
+ * 不允许对程序代码以任何形式任何目的的再发布。
+ * ============================================================================
+ * Author: huangshixin
+ * Date:2018-06-17 */
+namespace app\admin\module;
+
+use think\db;
+use think\db\Query;
+use think\Exception;
+use think\face\AipFace;
+use think\Model;
+use think\Page;
+use think\wx\Utils\HttpCurl;
+
+class Album extends Model
+{
+
+    protected $siteid = 0;
+    protected $face_api;//人脸接口
+    public function __construct($idStie)
+    {
+        $this->siteid = $idStie;
+        $this->face_api = new AipFace(APP_ID, API_KEY, SECRET_KEY);//实例化这个类
+        parent::__construct();
+    }
+
+    //列表
+    public function index($request)
+    {
+        $search = array();
+        $Search_arr1 = array();
+
+        $search['album_name'] = empty($request['album_name']) ? "" : $request['album_name'];
+        $search['state'] = empty($request['state']) ? "" : $request['state'];
+        $search['dtstart'] = empty($request['dtstart']) ? "" : $request['dtstart'];
+        $search['dtend'] = empty($request['dtend']) ? "" : $request['dtend'];
+
+        $Search_arr1['site_id'] = $this->siteid;
+        $Search_arr1['activity_id'] = 0;//筛选出没有关联活动的条件
+
+        //相册名称
+        if($search['album_name']!='')
+        {
+            $Search_arr1['album_name']= array('like','%'.$search['album_name'].'%');
+        }
+        //相册状态
+        if($search['state']!='')
+        {
+            $Search_arr1['state']= array('=',$search['state']);
+        }
+        //校验开始时间
+        if(!empty($search['dtstart']) && empty($search['dtend'])){
+            if(\DateTime::createFromFormat('Y-m-d',$search['dtstart'])){
+                $Search_arr1['create_time']= array('>=',$search['dtstart']);
+            }
+        }
+        //校验结束时间
+        if(!empty($search['dtend']) && (\DateTime::createFromFormat('Y-m-d',$search['dtend'])) && empty($search['dtstart'])){
+            $Search_arr1['create_time']= ['<=',$search['dtend'].' 23:59:59'];
+        }
+
+        if(!empty($search['dtend']) && (\DateTime::createFromFormat('Y-m-d',$search['dtend'])) && !empty($search['dtstart']) && \DateTime::createFromFormat('Y-m-d',$search['dtstart'])){
+            $Search_arr1['create_time']= [['>=',$search['dtstart']],['<=',$search['dtend'].' 23:59:59']];
+        }
+
+        //查询条数
+        $count = db('album')->where($Search_arr1)->count();
+        $page = new Page($count, PAGE_SIZE);
+        $data = db('album')->where($Search_arr1)->order('create_time desc,id desc')->limit($page->firstRow . ',' . $page->pageSize)->select();
+
+        $arr = array();
+        $arr['search'] = $search;
+        $arr['pager'] = $page;
+        $arr['data'] = $data;
+
+        return $arr;
+    }
+
+    /**
+     * 增改查页面处理
+     * @param $data
+     * @return array|false|\PDOStatement|string|Model
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function deal($data){
+        //如果有id的话
+        if(array_key_exists('id',$data)){
+            $result = db('album')->where(['site_id'=>$this->siteid,'id'=>$data['id']])->find();
+        }else{
+            $result = [
+                'id'=>'',
+                'create_time' => '',
+                'update_time' =>'',
+                'album_name'=>'',
+                'album_desc'=>'',
+                'album_cover_url'=>'',
+                'site_id'=>$this->siteid,
+                'activity_id'=>'',
+                'price_max1'=>'',
+                'state'=>'',
+            ];
+        }
+//        var_dump($result);exit;
+        if(!empty($data['action']))
+            $result['action'] = $data['action'];
+        return $result;
+    }
+
+    /**
+     * 执行添加和修改
+     * @param $data
+     * @return array
+     * @throws Exception
+     * @throws \think\exception\PDOException
+     */
+    public function postData($data){
+        //名称
+        $add_data['album_name'] = isset($data['album_name']) && !empty($data['album_name'])?trim($data['album_name']):'';
+        //描述
+        $add_data['album_desc'] = isset($data['album_desc']) ?trim($data['album_desc']):'';
+        //是否启用
+        $add_data['state'] = isset($data['state']) && !empty($data['state'])?intval($data['state']) :'';
+        //相册封面
+        $add_data['album_cover_url'] = isset($data['album_cover_url']) && !empty($data['album_cover_url'])?trim($data['album_cover_url']) :'';
+        $bool = false;
+        $message = '';
+        if($data['action'] == 'add'){
+            $add_data['create_time'] = date('Y-m-d H:i:s',time());
+            $add_data['update_time'] = date('Y-m-d H:i:s',time());
+            $add_data['account_id'] = session('AccountID');
+            $add_data['account_name'] = session('UserName');
+            $add_data['site_id'] = session('idsite');
+            //执行数据的插入
+            $id = db('album')->insertGetId($add_data);
+            if($id){
+                //生成的组id为站点id和相册id合成
+                $group_id = session('idsite').'_'.$id;
+                //创建人脸库管理中的组
+                $face_result = $this->face_api->groupAdd($group_id);
+                //判断调用接口是否成功
+                if($face_result['error_code'] == 0){
+                    $bool = true;
+                }else{
+                    $message = $face_result['error_chinese_msg'];//中文的错误信息
+                }
+            }
+        }else{
+            //修改
+            if($data['id'] > 0){
+                $add_data['update_time'] = date('Y-m-d H:i:s',time());
+                //执行数据的修改
+                $bool = db('album')->where(['id'=>$data['id'],'site_id'=>session('idsite')])->update($add_data);
+            }
+        }
+        return ['success'=>$bool,'message'=>$message];
+    }
+
+    /**
+     *  删除相册
+     * @param $data
+     * @return array
+     * @throws Exception
+     * @throws \think\exception\DbException
+     * @throws \think\exception\PDOException
+     * @throws db\exception\DataNotFoundException
+     * @throws db\exception\ModelNotFoundException
+     */
+    public function del($data){
+        //先判断该相册下面是否含有图片
+        $photo_list = db('album_photo')->where(['album_id'=>$data['id'],'site_id'=>session('idsite')])->select();
+        $bool = false;
+        $message = '';
+        //如果没有图片的话,再进行删除相册
+        if(!$photo_list){
+            //先查询出相册的信息
+            $album_info = db('album')->where(['id'=>$data['id'],'site_id'=>session('idsite')])->find();
+            if($album_info){
+                //删除相册
+                db('album')->where(['id'=>$data['id'],'site_id'=>session('idsite')])->delete();
+                //刪除相册图片
+                unlink(trim($album_info['album_cover_url'],'/'));//原图
+                unlink(trim(substr($album_info['album_cover_url'],0,strrpos($album_info['album_cover_url'],'.')).'_big'.strstr($album_info['album_cover_url'],'.'),'/'));
+                unlink(trim(substr($album_info['album_cover_url'],0,strrpos($album_info['album_cover_url'],'.')).'_small'.strstr($album_info['album_cover_url'],'.'),'/'));
+                //要删除的组id
+                $group_id = session('idsite').'_'.$data['id'];
+                //删除人脸库管理中的组
+                $face_result = $this->face_api->groupDelete($group_id);
+                //判断调用接口是否成功
+                if($face_result['error_code'] == 0){
+                    $bool = true;
+                }else{
+                    $bool = false;
+                    $message = $face_result['error_chinese_msg'];//中文的错误信息
+                }
+            }
+        }else{
+            $message = '该相册下含有图片，暂无法删除';
+        }
+        return ['success'=>$bool,'message'=>$message];
+    }
+
+    /**
+     * 图片列表
+     * @param $request
+     * @return array
+     * @throws Exception
+     * @throws \think\exception\DbException
+     */
+    public function photo_list($request)
+    {
+        $search = array();
+        $Search_arr1 = array();
+
+        $search['account_name'] = empty($request['account_name']) ? "" : $request['account_name'];
+        $search['dtstart'] = empty($request['dtstart']) ? "" : $request['dtstart'];
+        $search['dtend'] = empty($request['dtend']) ? "" : $request['dtend'];
+
+        $Search_arr1['site_id'] = $this->siteid;
+        $Search_arr1['album_id'] = $request['album_id'];//相册id
+        $Search_arr1['is_delete'] = 0;//未刪除
+
+        //上传图片姓名
+        if($search['account_name']!='')
+        {
+            $Search_arr1['account_name']= array('like','%'.$search['account_name'].'%');
+        }
+        //校验开始时间
+        if(!empty($search['dtstart']) && empty($search['dtend'])){
+            if(\DateTime::createFromFormat('Y-m-d',$search['dtstart'])){
+                $Search_arr1['create_time']= array('>=',$search['dtstart']);
+            }
+        }
+        //校验结束时间
+        if(!empty($search['dtend']) && (\DateTime::createFromFormat('Y-m-d',$search['dtend'])) && empty($search['dtstart'])){
+            $Search_arr1['create_time']= ['<=',$search['dtend'].' 23:59:59'];
+        }
+
+        if(!empty($search['dtend']) && (\DateTime::createFromFormat('Y-m-d',$search['dtend'])) && !empty($search['dtstart']) && \DateTime::createFromFormat('Y-m-d',$search['dtstart'])){
+            $Search_arr1['create_time']= [['>=',$search['dtstart']],['<=',$search['dtend'].' 23:59:59']];
+        }
+
+        //查询条数
+        $count = db('album_photo')->where($Search_arr1)->count();
+        $page = new Page($count, PAGE_SIZE);
+        $data = db('album_photo')->where($Search_arr1)->order('create_time desc,id desc')->limit($page->firstRow . ',' . $page->pageSize)->select();
+
+        $arr = array();
+        $arr['search'] = $search;
+        $arr['pager'] = $page;
+        $arr['data'] = $data;
+
+        return $arr;
+    }
+
+    /**
+     * 执行添加图片的逻辑
+     * @param $data
+     * @return int|string
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
+     */
+    public function postAddPhoto($data){
+        //封装执行插入图片表的数据
+        $add_data['create_time'] = date('Y-m-d H:i:s',time());
+        $add_data['album_id'] = $data['album_id'];
+        $add_data['account_id'] = session('AccountID');
+        $add_data['account_name'] = session('UserName');
+        $add_data['site_id'] = session('idsite');
+        $add_data['min_face_url'] = $data['min_face_url'];//小图路径
+        $add_data['face_url'] = $data['face_url'];//原图路径
+        //执行数据的插入，并且返回插入的数据id
+        $id = db('album_photo')->insertGetId($add_data);
+        //如果执行成功
+        if($id){
+            //将图片转换为base64
+            $base64_img = $this->face_api->imgToBase64(trim($data['face_url'],'/'));
+            //先进行人脸检测，看图片是否具有人脸
+            $result_detect = $this->face_api->detect($base64_img,imageType,['max_face_num'=>10]);
+            //判断调用接口是否成功
+            if($result_detect['error_code'] == 0){
+                $detect_face_url = '';//默认的存数据库的裁剪人脸路径
+                //进行裁剪检测出来的人脸
+                for ($i=0;$i<$result_detect['result']['face_num'];$i++)
+                {
+                    //判断人脸置信度
+                    if($result_detect['result']['face_list'][$i]['face_probability'] >= 0.8){
+                        $filepath='public/uploads/'.session('idsite').'/'.'cut_photo'.'/'.date('Y').'/'.date('m-d').'/';
+                        $tmpPath=$filepath.$result_detect['result']['face_list'][$i]['face_token'].".jpg";
+                        $detect_face_url .= '/'.$tmpPath.',';
+                        $x=$result_detect['result']['face_list'][$i]['location']['left'];
+                        $y=$result_detect['result']['face_list'][$i]['location']['top'];
+                        $w=$result_detect['result']['face_list'][$i]['location']['width'];
+                        $h=$result_detect['result']['face_list'][$i]['location']['height'];
+                        //进行裁剪头像
+                        $tmp_x = $x-60;
+                        $tmp_y = $y-200;
+                        $tmp_w = $w+200;
+                        $tmp_h = $h+200;
+                        if($tmp_x < 0)  $tmp_x = 0;
+                        if($tmp_y < 0)  $tmp_y = 0;
+                        /* 获取原图像尺寸信息 */
+                        $img_info = getimagesize(trim($data['face_url'],'/'));
+                        $source_w=$img_info[0];
+                        $source_h=$img_info[1];
+                        if($tmp_w > $source_w) $tmp_w = $source_w;
+                        if($tmp_h > $source_h) $tmp_h = $source_h;
+
+                        $this->face_api->image_cut(trim($data['face_url'],'/'),$tmpPath,$tmp_x,$tmp_y,$tmp_w,$tmp_h);
+                    }
+                }
+                //如果有人脸
+                if($detect_face_url){
+                    //进行修改该图片的裁剪人脸路径
+                    $update = db('album_photo')->where(['id'=>$id,'site_id'=>session('idsite')])->update(['detect_face_url'=>trim($detect_face_url,',')]);//把最后一个逗号去掉
+                    //进行人脸注册
+                    if($update){
+                        //要将图片添加到的组id
+                        $group_id = session('idsite').'_'.$data['album_id'];
+                        //要将图片添加到的uid
+                        $uid = session('idsite').'_'.$id;
+                        //删除人脸库管理中的组，，//注意，此刻人脸注册传过去的路径是人脸小图的路径，因为便于人脸搜索后在列表直接展示小图
+                        $face_result = $this->face_api->addUser($base64_img,imageType,$group_id,$uid,['user_info'=>$data['min_face_url']]);
+                        //判断调用接口是否成功
+                        if($face_result['error_code'] == 0){
+                            //将人脸注册后返回的图片标志存数据库
+                            db('album_photo')->where(['id'=>$id,'site_id'=>session('idsite')])->update(['face_token'=>$face_result['result']['face_token']]);
+                        }
+                    }
+                }
+            }
+        }
+        return $id;
+    }
+
+    /**
+     * 暂时假删除图片
+     * @param $data
+     * @return int
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
+     */
+    public function false_del_photo($data){
+        $bool = false;
+        //将id分割为数组
+        $id = explode(',',$data['id']);
+        //循环删除
+        for ($i=0;$i<count($id);$i++){
+            //先查询出该图片的信息
+            $photo_info = db('album_photo')->where(['id'=>$id[$i],'site_id'=>session('idsite')])->find();
+            //如果查找到了图片
+            if($photo_info){
+                //将数据的是否删除暂时改为删除
+                $bool = db('album_photo')->where(['id'=>$id[$i],'site_id'=>session('idsite')])->update(['is_delete'=>1]);
+            }
+        }
+        return $bool;
+    }
+
+    /**
+     * 删除图片(其实目的就是真正删除人脸库中的图片)
+     * @param $data
+     * @return int
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
+     */
+    public function del_photo($data){
+        $bool = false;
+        //将id分割为数组
+        $id = explode(',',$data['id']);
+        //循环删除
+        for ($i=0;$i<count($id);$i++){
+            //先查询出该图片的信息
+            $photo_info = db('album_photo')->where(['id'=>$id[$i],'site_id'=>session('idsite')])->find();
+            //如果查找到了图片
+            if($photo_info){
+                //将数据的是否删除暂时改为删除
+                $bool = db('album_photo')->where(['id'=>$id[$i],'site_id'=>session('idsite')])->delete();
+                if($bool){
+                    //如果删除数据成功，那么把图片也删除掉
+                    unlink(trim($photo_info['min_face_url'],'/'));//去掉数据库中图片路径的/
+                    unlink(trim($photo_info['face_url'],'/'));
+                    //查询该图片是否有评论记录
+                    $album_comment_info = db('album_comment')->where(['photo_id'=>$id[$i],'site_id'=>session('idsite')])->select();
+                    //如果有评论的话，将图片评论删除
+                    if($album_comment_info) $bool = db('album_comment')->where(['photo_id'=>$id[$i],'site_id'=>session('idsite')])->delete();
+                    //判断图片数据中是否有检测人脸后裁剪人脸的值
+                    if($photo_info['detect_face_url']){
+                        $detect_face_url_arr = explode(',',$photo_info['detect_face_url']);
+                        foreach ($detect_face_url_arr as $k => $v){
+                            //如果存在图片进行删除
+                            if(file_exists(trim($v,'/'))){
+                                unlink(trim($v,'/'));//删除图片
+                            }
+                        }
+                        //调用百度删除人脸的接口,要将图片添加到的组id
+                        $group_id = session('idsite').'_'.$photo_info['album_id'];
+                        //要将图片删除的uid
+                        $uid = session('idsite').'_'.$id[$i];
+                        //删除人脸库中的图片
+                        $this->face_api->faceDelete($uid,$group_id,$photo_info['face_token']);
+                    }
+                }
+            }
+        }
+        return $bool;
+    }
+
+    /**
+     * 图片评论列表列表
+     * @param $request
+     * @return array
+     * @throws Exception
+     * @throws \think\exception\DbException
+     */
+    public function comment_list($request)
+    {
+        $search = array();
+        $Search_arr1 = array();
+
+        $search['photo_id'] = empty($request['photo_id']) ? "" : $request['photo_id'];
+        $search['album_id'] = empty($request['album_id']) ? "" : $request['album_id'];
+        $search['user_nickname'] = empty($request['user_nickname']) ? "" : $request['user_nickname'];
+        $search['content'] = empty($request['content']) ? "" : $request['content'];
+        $search['dtstart'] = empty($request['dtstart']) ? "" : $request['dtstart'];
+        $search['dtend'] = empty($request['dtend']) ? "" : $request['dtend'];
+
+        $Search_arr1['site_id'] = $this->siteid;
+        //评论人
+        if(!empty($search['user_nickname']))
+        {
+            $Search_arr1['user_nickname'] = array('like','%'.$search['user_nickname'].'%');
+        }
+        if(!empty($search['content']))
+        {
+            $Search_arr1['content'] = array('like','%'.$search['content'].'%');
+        }
+        //图片id
+        if(!empty($search['photo_id']))
+        {
+            $Search_arr1['photo_id'] = $search['photo_id'];
+        }
+        //相册id
+        if(!empty($search['album_id']))
+        {
+            $Search_arr1['album_id'] = $search['album_id'];
+        }
+        //校验开始时间
+        if(!empty($search['dtstart']) && empty($search['dtend'])){
+            if(\DateTime::createFromFormat('Y-m-d',$search['dtstart'])){
+                $Search_arr1['create_time']= array('>=',$search['dtstart']);
+            }
+        }
+        //校验结束时间
+        if(!empty($search['dtend']) && (\DateTime::createFromFormat('Y-m-d',$search['dtend'])) && empty($search['dtstart'])){
+            $Search_arr1['create_time']= ['<=',$search['dtend'].' 23:59:59'];
+        }
+
+        if(!empty($search['dtend']) && (\DateTime::createFromFormat('Y-m-d',$search['dtend'])) && !empty($search['dtstart']) && \DateTime::createFromFormat('Y-m-d',$search['dtstart'])){
+            $Search_arr1['create_time']= [['>=',$search['dtstart']],['<=',$search['dtend'].' 23:59:59']];
+        }
+
+        //查询条数
+        $count = db('album_comment')->where($Search_arr1)->count();
+        $page = new Page($count, PAGE_SIZE);
+        $data = db('album_comment')->where($Search_arr1)->order('create_time desc,id desc')->limit($page->firstRow . ',' . $page->pageSize)->select();
+
+        $arr = array();
+        $arr['search'] = $search;
+        $arr['pager'] = $page;
+        $arr['data'] = $data;
+
+        return $arr;
+    }
+
+}

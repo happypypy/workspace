@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+<title>积分兑换详情</title>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+
+<script type="text/javascript" src="__PUBLIC__/static/modules/js/jquery.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/modules/js/swiper.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/modules/js/common.js"></script>
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/static/modules/style/css/swiper.min.css">
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/static/modules/style/css/common.css">
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/static/modules/style/css/pc.css">
+</head>
+<body style="background: #e7e7e7;">
+
+<form class="information-list">
+    <ul>
+        <li>
+            <div class="head">兑换信息</div>
+        </li>
+        <li>
+            <div class="tit">订单号：</div>
+            <div class="txt">
+                <div class="info">{$datainfo['order_no']}</div>
+            </div>
+        </li>
+        <li>
+            <div class="tit">头像：</div>
+            <div class="txt">
+                <div class="info">
+                    <span class="name"><img id='img_userimg' src='{$datainfo['userimg']}' width="50" height="50" /></span>
+                </div>
+            </div>
+        </li>
+        <li>
+            <div class="tit">昵称：</div>
+            <div class="txt">
+                <div class="info">{$datainfo['nickname']}</div>
+            </div>
+        </li>
+        <li>
+            <div class="tit">商品名称：</div>
+            <div class="txt">
+                <div class="info">{$datainfo['goods_name']}</div>
+            </div>
+        </li>
+        <li>
+            <div class="tit">商品缩略图：</div>
+            <div class="txt">
+                <div class="info"><img id='img_goods_thumb' src='{$datainfo['goods_thumb']}' width="50" height="50" /></div>
+            </div>
+        </li>
+        <li>
+            <div class="tit">兑换商品数量：</div>
+            <div class="txt">
+                <div class="info">{$datainfo['exchange_number']}</div>
+            </div>
+        </li>
+        <li>
+            <div class="tit">所花费积分数量：</div>
+            <div class="txt">
+                <div class="info">{$datainfo['integral']}</div>
+            </div>
+        </li>
+        <li>
+            <div class="tit">订单状态：</div>
+            <div class="txt">
+                <div class="info">
+                    {if condition="$datainfo['order_status'] == 0"}
+                    待处理
+                    {elseif condition="$datainfo['order_status'] == 1"}
+                    已处理
+                    {elseif condition="$datainfo['order_status'] == 2"}
+                    已取消
+                    {/if}
+                </div>
+            </div>
+        </li>
+        <li>
+            <div class="tit">兑换时间：</div>
+            <div class="txt">
+                <div class="info">{$datainfo['create_time']|date="Y-m-d",###}</div>
+            </div>
+        </li>
+        <li>
+            <div class="head">收货信息</div>
+        </li>
+        <li>
+            <div class="tit">收货人姓名：</div>
+            <div class="txt">
+                <div class="info">{$datainfo['consignee_name']}</div>
+            </div>
+        </li>
+        <li>
+            <div class="tit">收货人电话：</div>
+            <div class="txt">
+                <div class="info">{$datainfo['consignee_phone']}</div>
+            </div>
+        </li>
+        {if condition="$datainfo['is_virtual'] == 0"}
+        <li>
+            <div class="tit">收货人地址：</div>
+            <div class="txt">
+                <div class="info">{$datainfo['consignee_address']}</div>
+            </div>
+        </li>
+        {if condition="$datainfo['courier_company'] && $datainfo['courier_number']"}
+        <li>
+            <div class="tit">快递公司：</div>
+            <div class="txt">
+                <div class="info">{$datainfo['courier_company']}</div>
+            </div>
+        </li>
+        <li>
+            <div class="tit">快递单号：</div>
+            <div class="txt">
+                <div class="info">{$datainfo['courier_number']}</div>
+            </div>
+        </li>
+        {/if}
+        {else /}
+            <li style="display: block; text-align: center;color:red;">虚拟商品无物流信息</li>
+        {/if}
+    </ul>
+    {include file="modules/lib/footer0" /}
+</form>
+
+<div class="footer">
+    <ul>
+        <li>
+            <a href="/{$sitecode}">
+                <span><i class="iconfont home">&#xe617;</i></span>
+                <p>主页</p>
+            </a>
+        </li>
+        <li class="on">
+            <a href="/{$sitecode}/mine">
+                <span><i class="iconfont head">&#xe606;</i></span>
+                <p>我的</p>
+            </a>
+        </li>
+    </ul>
+</div>
+</body>
+</html>

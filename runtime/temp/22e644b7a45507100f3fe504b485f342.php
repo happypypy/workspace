@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:67:"D:\workspace\work\public/../application/admin\view\order\index.html";i:1563412646;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:67:"D:\workspace\work\public/../application/admin\view\order\index.html";i:1567413298;}*/ ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -113,6 +113,8 @@
             <td class="oa_wrapper-middle-arr-middle">
                 <div class="oa_location clearfix"><span class="oa_ico-left"></span>location<span class="oa_ico-right"></span></div>
                 <div class="oa_main clearfix">
+                    <!--这里是跟数据分析的统计数字跳转公用,所以加此判断-->
+                    <?php if(!$search['origin']): ?>
                     <div class="oa_subnav clearfix">
 
                         <div class="oa_subnav-tab clearfix">
@@ -122,12 +124,13 @@
                                 <li <?php echo $intflag==4?'class="oa_on"':''; ?> onclick="javascript:window.location='<?php echo url('order/index','&intflag=4'); ?>'"><em>已取消的报名</em></li>
                                 <li <?php echo $intflag==5?'class="oa_on"':''; ?> onclick="javascript:window.location='<?php echo url('order/index','&intflag=5'); ?>'"><em>所有报名 </em></li>
                                 <li <?php echo $intflag==6?'class="oa_on"':''; ?> onclick="javascript:window.location='<?php echo url('order/index','&intflag=6'); ?>'"><em>退款的报名<span style="color: red">(<?php echo $refundcount; ?>)</span></em></li>
-                                <li <?php echo $intflag==1?'class="oa_on"':''; ?> onclick="javascript:window.location='<?php echo url('order/index','&intflag=1'); ?>'"><em>待下单的报名<span style="color: red">(<?php echo $signupcount; ?>)</span></em></li>
+                                <li <?php echo $intflag==1?'class="oa_on"':''; ?> onclick="javascript:window.location='<?php echo url('order/index','&intflag=1'); ?>'"><em>待支付的报名<span style="color: red">(<?php echo $signupcount; ?>)</span></em></li>
                                 <li <?php echo $intflag==7?'class="oa_on"':''; ?> onclick="javascript:window.location='<?php echo url('order/groupBuyOrderList'); ?>'"><em>拼团订单</em></li>
                             </ul>
                         </div>
 
                     </div>
+                    <?php endif; ?>
                     <div class="oa_content-area clearfix">
                         <div class="oa_content-main">
                             <table width="100%" border="0" cellspacing="0" cellpadding="0">
@@ -158,9 +161,9 @@
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
-                                                                        <td width="100" class="oa_cell-left">活动名称：</td>
+                                                                        <td width="100" class="oa_cell-left">产品名称：</td>
                                                                         <td class="oa_cell-right">
-                                                                            <input  type="text" name="chrtitle" value="<?php echo $search['chrtitle']; ?>" placeholder="活动或者课程名称" >
+                                                                            <input  type="text" name="chrtitle" value="<?php echo $search['chrtitle']; ?>" placeholder="产品或者课程名称" >
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -189,6 +192,7 @@
                                                                                 <option value="13" <?php if($search['state']==13) { echo "selected"; } ?>>已部分退款，终止服务</option>
                                                                                 <option value="11" <?php if($search['state']==11) { echo "selected"; } ?>>已退款，终止服务</option>
                                                                                 <option value="10" <?php if($search['state']==10) { echo "selected"; } ?>>终止服务</option>
+                                                                                <option value="14" <?php if($search['state']==14) { echo "selected"; } ?>>退款失败</option>
                                                                             </select>
 
                                                                         </td>
@@ -204,6 +208,7 @@
                                                                                 <option value="7" <?php if($search['state']==7) { echo "selected"; } ?>>已报名，已退款</option>
                                                                                 <option value="8" <?php if($search['state']==8) { echo "selected"; } ?>>已报名，退款不通过</option>
                                                                                 <option value="11" <?php if($search['state']==11) { echo "selected"; } ?>>已取消，已退款</option>
+                                                                                <option value="14" <?php if($search['state']==14) { echo "selected"; } ?>>退款失败</option>
                                                                            </select>
                                                                         </td>
                                                                     </tr>
@@ -272,7 +277,7 @@
                                                     <th width="20" style="text-align:center;"><input id="checked"  onclick="DoCheck();" name="" type="checkbox" value="" /></th>
 
                                                     <th WIDTH="135"><span class="oa_arr-text-list-title"></span>订单号</th>
-                                                    <th><span class="oa_arr-text-list-title"></span>活动名称</th>
+                                                    <th><span class="oa_arr-text-list-title"></span>产品名称</th>
                                                     <th width="100"><span class="oa_arr-text-list-title"></span>套餐名称</th>
                                                     <th WIDTH="80"><span class="oa_arr-text-list-title"></span>订单来源</th>
                                                     <th width="100"><span class="oa_arr-text-list-title"></span>订单状态</th>
@@ -324,7 +329,7 @@
                                                 <?php endforeach; endif; else: echo "" ;endif; ?>
 
                                             </table>
-                                            <?php if(($intflag == '2')): ?>
+                                            <?php if(($intflag == '5' && !empty($data) )): ?>
                                             <div style="position:absolute;margin-top: 18px;margin-left: 12px;">
                                             <button   id="settype"	type="button"  >批量设置用户类型</button>
 

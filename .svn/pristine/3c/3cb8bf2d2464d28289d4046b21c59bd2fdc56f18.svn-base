@@ -1,0 +1,190 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>活动订单报表</title>
+    <link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
+    <link href="__PUBLIC__/static/css/page.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="__PUBLIC__/static/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/lhgdialog.js?skin=aero"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/CostomLinkOpenSw.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/tabscommon.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/del-checked.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/layer/layer.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/js/daterangepicker/daterangepicker-bs3.css" />
+    <script type="text/javascript" src="/static/js/daterangepicker/moment.min.js"></script>
+    <script type="text/javascript" src="/static/js/daterangepicker/daterangepicker.js"></script>
+    <script type="text/javascript">
+
+    </script>
+</head>
+<body>
+
+<div class="oa_wrapper">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr class="oa_wrapper-display">
+            <td class="oa_wrapper-top-arr-left">&nbsp;</td>
+            <td class="oa_wrapper-top-arr-middle"></td>
+            <td class="oa_wrapper-top-arr-right">&nbsp;</td>
+        </tr>
+        <tr>
+            <td class="oa_wrapper-middle-arr-left oa_wrapper-display"></td>
+            <td class="oa_wrapper-middle-arr-middle">
+                <div class="oa_location clearfix"><span class="oa_ico-left"></span>location<span class="oa_ico-right"></span></div>
+                <div class="oa_main clearfix">
+                    <div class="oa_subnav clearfix">
+                        <div class="oa_subnav-tab clearfix">
+                            <ul>
+                                <?php if($cms->CheckPurview('manage','index')){ ?>
+                                <li onclick="javascript:window.location='{:url('report/index','')}'"><em>用户增减报表</em></li>
+                                <?php } ?>
+                                <?php if($cms->CheckPurview('manage','attribute')){ ?>
+                                <li onclick="javascript:window.location='{:url('report/user_attribute','')}'"><em>用户属性分析</em></li>
+                                <?php } ?>
+                                <?php if($cms->CheckPurview('manage','buy_user')){ ?>
+                                <li onclick="javascript:window.location='{:url('report/buy_user','')}'"><em>购买用户分析</em></li>
+                                <?php } ?>
+                                <?php if($cms->CheckPurview('manage','order')){ ?>
+                                <li class="oa_on" onclick="javascript:window.location='{:url('report/order','')}'"><em>订单报表</em></li>
+                                <?php } ?>
+                                <?php if($cms->CheckPurview('manage','activity')){ ?>
+                                <li onclick="javascript:window.location='{:url('report/activity','')}'"><em>活动报表</em></li>
+                                <?php } ?>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="oa_search-area clearfix">
+
+                        <div class="oa_title clearfix">
+                        <span class="oa_title-btn">
+                                                        <a href="javascript:export_data();" style="padding: 25px">导出数据</a>
+                          </span>
+                            <span class="oa_ico-right"></span>
+                            <span class="oa_ico-left"></span>
+                            搜索
+                        </div>
+                        <div class="oa_search-area clearfix">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td>
+                                        <div class="oa_search-type clearfix">
+                                            <form action="" method="post" id="form1">
+                                                <table width="100%" border="0" cellspacing="1" cellpadding="0">
+
+                                                    <tr>
+                                                        <td width="100" class="oa_cell-left">查询范围：</td>
+                                                        <td class="oa_cell-right">
+                                                            <select title="查询范围" name="time_range" id="time_range">
+                                                                <option value="">请选择</option>
+                                                                <option value="last_week" <?php if(isset($_POST['time_range']) && $_POST['time_range']=="last_week"){echo "selected";} ?>>上周</option>
+                                                                <option value="this_week" <?php if(isset($_POST['time_range']) && $_POST['time_range']=="this_week"){echo "selected";} ?>>本周</option>
+                                                                <option value="last_month" <?php if(isset($_POST['time_range']) && $_POST['time_range']=="last_month"){echo "selected";} ?>>上月</option>
+                                                                <option value="this_month" <?php if(isset($_POST['time_range']) && $_POST['time_range']=="this_month"){echo "selected";} ?>>本月</option>
+                                                                <option value="custom" <?php if(isset($_POST['time_range']) && $_POST['time_range']=="custom"){echo "selected";} ?>>自定义时间范围</option>
+                                                            </select>
+                                                        </td>
+                                                    </tr>
+                                                    <tr id="time_part" style="<?php if(!isset($_POST['time_range']) || $_POST['time_range']!="custom"){echo "display: none;";} ?>">
+                                                        <td width="100"   class="oa_cell-left">时间段：</td>
+                                                        <td class="oa_cell-right">
+                                                            <input type="text"  style="width: 80px;"  id="begintime" name="begintime" autocomplete="off" class="form-control"  value="<?php if(isset($_POST['begintime']) ){echo $_POST['begintime'];} ?>"> -
+                                                            <input type="text" style="width: 80px;" id="endtime" name="endtime" autocomplete="off" class="form-control"  value="<?php if(isset($_POST['endtime']) ){echo $_POST['endtime'];} ?>">
+                                                            <script language='JavaScript'>seltime("begintime","YYYY-MM-DD");seltime("endtime","YYYY-MM-DD");</script>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td height="30"></td>
+                                                        <td class="oa_cell-right"><input  name="subSearch" type="submit" value="搜索"  class="oa_search-btn" /></td>
+                                                    </tr>
+                                                </table>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                    </div>
+                    <div class="oa_title clearfix">
+                        <span class="oa_title-btn">
+                          </span>
+                        <span class="oa_ico-left"></span>
+                        活动订单报表
+                    </div>
+                    <div class="oa_text-list">
+                        <table width="100%" border="0" cellspacing="0" cellpadding="0" style="table-layout:fixed">
+                            <tr class="oa_text-list-title">
+                                <th><span class="oa_arr-text-list-title">活动标题</span></th>
+                                <th><span class="oa_arr-text-list-title">套餐名</span></th>
+                                <th><span class="oa_arr-text-list-title">订单数量</span></th>
+                                <th><span class="oa_arr-text-list-title">销售数量</span></th>
+                                <th><span class="oa_arr-text-list-title">销售金额</span></th>
+                                <th><span class="oa_arr-text-list-title">利润</span></th>
+                                <th><span class="oa_arr-text-list-title">剩余库存</span></th>
+                            </tr>
+                            <?php if(empty($list)){?>
+                            <tr>
+                                <td colspan="7" style="height: 50px; text-align: center">当前没有访问记录</td>
+                            </tr>
+                            <?php }else{ ?>
+                            {volist name="list" id="vo"}
+                            <tr>
+                                {if condition="$vo['chrtitle'] eq '汇总数据'"}
+                                <td colspan="2" style="text-align: center">{$vo["chrtitle"]}</td>
+                                {else}
+                                <td>{$vo["chrtitle"]}</td>
+                                <td>{$vo["payname"]}</td>
+                                {/if}
+                                <td>{$vo["order_num"]}</td>
+                                <td>{$vo["pay_num"]}</td>
+                                <td>{$vo["pay_price"]}</td>
+                                <td>{$vo["profit"]}</td>
+                                {if condition="$vo['chrtitle'] eq '汇总数据'"}
+                                <td style="background-color: #f5f3ec"></td>
+                                {else}
+                                <td>{$vo["storage"]}</td>
+                                {/if}
+                            </tr>
+                            {/volist}
+                            <?php } ?>
+                        </table>
+                    </div>
+                    <div class="oa_content-main-bottom"></div>
+                </div>
+            </td>
+            <td class="oa_wrapper-middle-arr-right oa_wrapper-display"></td>
+        </tr>
+        <tr class="oa_wrapper-display">
+            <td class="oa_wrapper-bottom-arr-left">&nbsp;</td>
+            <td class="oa_wrapper-bottom-arr-middle"></td>
+            <td class="oa_wrapper-bottom-arr-right">&nbsp;</td>
+        </tr>
+    </table>
+</div>
+<script type="text/javascript">
+
+    $(document).ready(function(){
+        $('#time_range').change(function(){
+            if($(this).children('option:selected').val()=="custom"){
+                $("#time_part").show();
+            }else{
+                $("#time_part").hide();
+            }
+        })
+    });
+
+    function empty() {
+        window.location.reload();
+    }
+
+
+    function export_data(id,p) {
+        var time_range = $("#time_range").val();
+        var begintime = $("#begintime").val();
+        var endtime = $("#endtime").val();
+        var url = "/admin/report/order_report/time_range/"+time_range+"/begintime/"+begintime+'/endtime/'+endtime;
+        window.open(url,"_blank");
+    }
+</script>
+</body>
+</html>

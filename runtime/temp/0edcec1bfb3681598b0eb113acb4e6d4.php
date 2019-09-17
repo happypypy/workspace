@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:39:"template/M1/assemble/assemble_list.html";i:1563421729;s:52:"D:\workspace\work\public\template\M1\lib\header.html";i:1561691693;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:39:"template/M1/assemble/assemble_list.html";i:1565077108;s:52:"D:\workspace\work\public\template\M1\lib\header.html";i:1561691693;}*/ ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -71,12 +71,19 @@
         </form>
 
 
-        <div class="news-list activity news-list1">
-            <ul id="datalist">
-                <?php foreach($groupBuys as $groupBuy): ?>
+        <div class="news-list activity news-list1 ">
+            <ul id="datalist" >
+                <?php if(!$groupBuys){ ?>
+                <li>
+                    <div>
+                        <div style="text-align: center" >没有相关的活动</div>
+                    </div>
+                </li>
+
+                <?php } foreach($groupBuys as $groupBuy): ?>
                     <li>
                         <a href="/<?php echo $sitecode; ?>/detail/<?php echo $groupBuy['activity_id']; ?>">
-                            <div class="pic"><img src="<?php echo $roottpl; ?>/images/bar_03.jpg"></div>
+                            <div class="pic"><img src="<?php echo $groupBuy['chrimg_m']; ?>"></div>
                             <div class="txt">
                                 <div class="title title1"><?php echo $groupBuy['chrtitle']; ?></div>
                                 <div class="site site1"><i class="iconfont location">&#xe601;</i>适合年龄：<span><?php echo $groupBuy['minage'] == $groupBuy['maxage'] && $groupBuy['maxage'] == 0 ? '不限年龄' : $groupBuy['minage'] . ' ~ ' . $groupBuy['maxage']; ?></span></div>
@@ -128,7 +135,6 @@
     var scrollHandler = function () {
         var pageH = $(document).height();
         var scrollT = $(window).scrollTop(); //滚动条top
-
         if(pageH-winH-scrollT<1)
         {
             LoadData(page)

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>IE Image Upload</title>
+<link rel="stylesheet" href="__PUBLIC__/static/imgcropupload/css/jquery.Jcrop.min.css">
+<script type="text/javascript" src="__PUBLIC__/static/imgcropupload/js/jquery-1.8.3.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/imgcropupload/js/jquery.Jcrop.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/imgcropupload/js/imgCropUpload_z.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/js/lhgdialog.js?skin=aero"></script>
+<script type="text/javascript" src="__PUBLIC__/static/js/CostomLinkOpenSw.js"></script>
+
+<style type="text/css">
+    body {
+        font-size: 16px;
+        font-family:"Microsoft YaHei",Arial, Helvetica, sans-serif
+    }
+    *,
+    *:before,
+    *:after {
+        -webkit-box-sizing: border-box;
+           -moz-box-sizing: border-box;
+            -ms-box-sizing: border-box;
+                box-sizing: border-box;
+    }
+
+    .crop-picker-wrap {
+        position: relative;
+        width: 100px;
+        height: 30px;
+        overflow: hidden;
+    }
+    .crop-picker {
+        width: 100%;
+        height: 100%;
+        line-height: 1;
+
+        -webkit-appearance: none;
+        margin: 0;
+        border: none;
+        border-radius: 5px;
+        padding: 9px 0;
+        background-color: #1ab2ff;
+
+        color: #fff;
+        cursor: pointer;
+    }
+    .crop-picker-file {
+        position: absolute;
+        top: 0;
+        right: 0;
+        height: 100%;
+        opacity: 0;
+        cursor: pointer;
+        filter: alpha(opacity=0);
+    }
+
+    .crop-wrapper {
+        display: inline-block;
+        min-width: 750px;
+        margin: 10px 0;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-shadow: 0 0 5px 2px #ccc;
+    }
+
+    .crop-container {
+        font-size: 0;
+    }
+
+    .crop-container img[src=""] {
+        visibility: hidden;
+    }
+
+    .crop-area-wrapper,
+    .crop-preview-wrapper {
+        display: inline-block;
+        vertical-align: top;
+    }
+    .crop-area-wrapper {
+        width: 500px;
+        height: 400px;
+    }
+    .crop-preview-wrapper {
+        width: 200px;
+        height: 200px;
+        margin-left: 28px;
+        overflow: hidden;
+    }
+    .crop-preview-container {
+        position: relative;
+        overflow: hidden;
+    }
+    .crop-operate {
+        text-align: center;
+        margin: 10px 0;
+    }
+    .crop-save,
+    .crop-cancel {
+        display: inline-block;
+        vertical-align: middle;
+
+        width: 150px;
+        height: 50px;
+        line-height: 50px;
+
+        -webkit-appearance: none;
+        margin: 0 5px;
+        border: none;
+        border-radius: 5px;
+        background-color: #1ab2ff;
+
+        color: #fff;
+        cursor: pointer;
+    }
+    .crop-hidden {
+        display: none;
+    }
+</style>
+</head>
+<body>
+    <div id="TCrop"></div>
+    <script type="text/javascript">
+        $(function() {
+
+        <?php if(!empty($info["filepath"])) { ?>
+                var filepath = "{$info.filepath}";
+            if($(window.parent.document).find("#{$info.input}").attr("imgtype")=="small"){
+                 filepath = "{$info.filepath_small}";
+            }
+
+            $(window.parent.document).find("#{$info.input}").val(filepath);
+            $(window.parent.document).find("#{$info.input}_big").val("{$info.filepath_big}");
+            CloseDiv();
+            GetOpenerWin().empty();
+        <?php } ?>
+
+            var _w={$info.w};
+            var _h={$info.h};
+            var s=_w/_h;
+            var _w1=800;
+            var _h1=800;
+
+            if(s>1)
+            {
+                _h1=_h1/s;
+            }
+            else
+            {
+                _w1=_w1*s;
+            }
+
+
+            Crop.init({
+                id: 'TCrop',
+                /* 上传路径 */
+                url: '/index.php/admin/uploadify',
+                /* 允许上传的图片的后缀 */
+                allowsuf:['jpg','jpeg','png'],
+                /* JCrop参数设置 */
+                cropParam: {
+                    minSize: [_w1/8,  _h1/8],          // 选框最小尺寸
+                    maxSize: [_w1, _h1],        // 选框最大尺寸
+                    allowSelect: false,          // 允许新选框
+                    allowMove: true,            // 允许选框移动
+                    allowResize: true,          // 允许选框缩放
+                    aspectRatio: _w/_h,			// 长/宽 比例
+                    sideHandles: false,
+                    cornerHandles:false,
+                    dragEdges: true,            // 允许拖动边框
+                    onChange: function(c) {},   // 选框改变时的事件，参数c={x, y, x1, y1, w, h}
+                    onSelect: function(c) {}    // 选框选定时的事件，参数c={x, y, x1, y1, w, h}
+                },
+                /* 是否进行裁剪，不裁剪则按原图上传，默认进行裁剪 */
+                isCrop: true,
+                /* 图片上传完成之后的回调，无论是否成功上传 */
+                onComplete: function(data) {
+                    //alert(data);
+                    //console.log(data);
+                    //console.log('upload complete!');
+                }
+            });
+        });
+    </script>    
+</body>
+</html>

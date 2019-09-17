@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:68:"D:\workspace\work\public/../application/admin\view\order\refund.html";i:1563434181;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:68:"D:\workspace\work\public/../application/admin\view\order\refund.html";i:1564559667;}*/ ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -276,19 +276,25 @@
         var isrefundpart=$("#isrefundpart").val();
         var refundremark=$("#refundremark").val();
 
-        var data= {"sitecode":"<?php echo $sitecode ?>", "ordersn":"<?php echo $datainfo['ordersn'] ?>", "refundprice": refundprice,"flag":flag, "price":"<?php echo $datainfo['price'] ?>", "refund_desc": refund_desc,"isrefundpart":isrefundpart,"refundremark":refundremark};
+        var data= {"sitecode":"<?php echo $sitecode ?>", "ordersn":"<?php echo $datainfo['transaction_id'] ?>", "refundprice": refundprice,"flag":flag, "price":"<?php echo $datainfo['price'] ?>", "refund_desc": refund_desc,"isrefundpart":isrefundpart,"refundremark":refundremark,'transaction_id':"<?php echo $datainfo['transaction_id'] ?>"};
+        layer.load(1, {
+            shade: [0.1,'#fff'] //0.1透明度的白色背景
+        });
         $.ajax({
             url:"<?php echo url('admin/Api/refund'); ?>",
             data:data,
             type:"post",
             dataType:"json",
             success:function(msg) {
+                layer.closeAll('loading')
                 if(msg.state==1)
                 {
                     if(msg.info.return_code=="SUCCESS")
                     {
+
                         if(msg.info.result_code=="SUCCESS")
                         {
+
                             layer.confirm('退款成功！',{btn:['关闭'],btn1: function(index, layero){
                                     CloseDiv();
                                     GetOpenerWin().empty();

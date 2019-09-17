@@ -1,0 +1,248 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>评价管理</title>
+    <link href="/static/css/layout.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/page.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="/static/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="/static/js/lhgdialog.js?skin=aero"></script>
+    <script type="text/javascript" src="/static/js/CostomLinkOpenSw.js"></script>
+    <script type="text/javascript" src="/static/js/tabscommon.js"></script>
+    <script type="text/javascript" src="/static/js/layer/layer.js"></script>
+    <script type="text/javascript" src="/static/js/del-checked.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/js/daterangepicker/daterangepicker-bs3.css" />
+    <script type="text/javascript" src="/static/js/daterangepicker/moment.min.js"></script>
+    <script type="text/javascript" src="/static/js/daterangepicker/daterangepicker.js"></script>
+
+    <script type="text/javascript">
+        $(function(){
+            $(document).ready(function() {
+                $('.oa_text-list tr').addClass('odd');
+                $('.oa_text-list tr:even').addClass('even');
+            });
+            $('.oa_text-list tr').hover(
+                function(){
+                    $(this).addClass('oa_mouseover-bg');
+                },
+                function(){
+                    $(this).removeClass('oa_mouseover-bg');
+                }
+            );
+        });
+        function empty() {
+            window.location.reload();
+        }
+        //全选
+        function DoCheck(){
+            if($("#checked").is(':checked')){
+                $(".checked_one").attr("checked", true);
+            }else{
+                $(".checked_one").attr("checked", false);
+            }
+        }
+
+        function del_checked(value,remark) {
+
+            var msg='您确定要删除选定的记录吗？';
+            if(value>0) {
+                msg='您确定要删除“'+remark+'”吗？';
+            }
+
+            layer.confirm(msg, {
+                btn: ['确定','取消'] //按钮
+            }, function(){
+                del_checked1(value);
+            }, function(){
+
+            });
+        }
+
+        //删除选中
+        function del_checked1(value) {
+            var b = $(".checked_one");
+            var s = '';
+            if(value<1)
+            {
+                for (var i = 0; i < b.length; i++) {
+                    if (b[i].checked) {
+                        s += b[i].value + ',';
+                    }
+                }
+                s = s.substr(0, s.length - 1);
+            }
+            else
+            {
+                s=value;
+            }
+
+            $.ajax({
+                url:"{:url('act/del_comments')}",
+                data:"id="+s,
+                type:"post",
+                dataType:"json",
+                success:function(msg) {
+                    if (msg == 1) {
+                        layer.msg('删除成功', {icon:1,time: 1500});
+
+                        // location.reload();
+                        window.setTimeout(function(){
+                            location.reload();
+                        },1500)
+                    }
+                    else if(msg==-1){
+                        layer.msg('你没有删除权限', {icon: 5});
+                    }
+                    else
+                    {
+                        layer.msg('删除失败', {icon: 2});
+                        //location.reload();
+                    }
+                }
+            })
+        }
+        function reloaddata() {
+
+            location.reload();
+        }
+    </script>
+</head>
+<body>
+<div class="oa_wrapper">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr class="oa_wrapper-display">
+            <td class="oa_wrapper-top-arr-left">&nbsp;</td>
+            <td class="oa_wrapper-top-arr-middle"></td>
+            <td class="oa_wrapper-top-arr-right">&nbsp;</td>
+        </tr>
+        <tr>
+            <td class="oa_wrapper-middle-arr-left oa_wrapper-display"></td>
+            <td class="oa_wrapper-middle-arr-middle">
+                <div class="oa_location clearfix"><span class="oa_ico-left"></span>location<span class="oa_ico-right"></span></div>
+                <div class="oa_main clearfix">
+                    <!--这里是跟数据分析的统计数字跳转公用,所以加此判断-->
+                    <div class="oa_subnav clearfix">
+                    </div>
+                    <div class="oa_content-area clearfix">
+                        <div class="oa_content-main">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td valign="top">
+                                        <div class="oa_title clearfix">
+                                            <span class="oa_title-btn">
+												<ul>
+												  <li class="oa_selected">
+													<a href="javascript:CustomOpen('{:url('add_comment_stu','&aid='.$aid)}?sid={$sid}', 'pjedit','增加评论', 700,450)">增加评价</a>
+												  </li>
+												</ul>
+                                            </span>
+                                            <span class="oa_ico-left">
+											</span>【{$username}】评价管理</div>
+                                        <div class="oa_text-list">
+                                            <table width="100%" border="0" cellspacing="0" cellpadding="0" style="table-layout:fixed">
+                                                <tr class="oa_text-list-title">
+                                                    <th width="20" style="text-align:center;"><input id="checked"  onclick="DoCheck();" name="" type="checkbox" value="" /></th>
+                                                    <th><span class="oa_arr-text-list-title"></span>评价标题</th>
+                                                    <th width="100"><span class="oa_arr-text-list-title"></span>评价时间</th>
+                                                    <th width="100"><span class="oa_arr-text-list-title"></span>评价老师</th>
+                                                    <th width="80"><span class="oa_arr-text-list-title"></span>操作</th>
+                                                </tr>
+                                                {volist name="stu" id="vo"}
+                                                <tr>
+                                                    <td align="center"><input class="checked_one" type="checkbox" name="id[]" value="{$vo.id}"/></td>
+                                                    <td>{$vo.title}</td>
+                                                    <td><?php echo date("Y-m-d",$vo['comment_time']); ?> </td>
+                                                    <td>{$vo.commentator}</td>
+                                                    <td>
+                                                        <a href="javascript:CustomOpen('{:url('add_comment_stu','&cid='.$vo['id'])}','pjedit','评论',700,450)">修改 </a>
+                                                        <a href="javascript:;" class="del_c" cid="{$vo.id}">删除</a>
+                                                    </td>
+                                                </tr>
+                                                {/volist}
+                                            </table>
+                                            <div class="oa_bottom clearfix">
+                                                <div class="clearfix">
+                                                    <div class="oa_op-btn clearfix">
+                                                        <input  name="" value="删除" onclick="del_checked(0,'');" type="button" class="oa_input-submit" />
+                                                    </div>
+                                                    <div class="oa_page-controls">
+                                                        <ul><li>{$page->show()}</li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <div class="oa_bottom-bottom"><em></em></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                            <div class="oa_content-main-bottom"></div>
+                        </div>
+                    </div>
+                </div>
+            </td>
+            <td class="oa_wrapper-middle-arr-right oa_wrapper-display"></td>
+        </tr>
+        <tr class="oa_wrapper-display">
+            <td class="oa_wrapper-bottom-arr-left">&nbsp;</td>
+            <td class="oa_wrapper-bottom-arr-middle"></td>
+            <td class="oa_wrapper-bottom-arr-right">&nbsp;</td>
+        </tr>
+    </table>
+</div>
+
+
+<script type="text/javascript">
+    function check() {
+        var starttime = $('#dtstart').val();
+        var endtime = $('#dtend').val();
+        var start = new Date(starttime.replace("-", "/").replace("-", "/"));
+        var end = new Date(endtime.replace("-", "/").replace("-", "/"));
+        if (end < start) {
+            layer.alert("开始时间不能大于结束时间！");
+            return false;
+        }
+        return true;
+    }
+
+    function send_sms_msg(userid) {
+        userids=userid;
+        CustomOpen('/admin/activity/send_sms_msg.html','activity','短信发送',700,400);
+    }
+
+    $('.del_c').click(function(){
+        obj=$(this)
+        var cid=obj.attr('cid')
+        layer.confirm('您确定要删除吗？', {
+            btn: ['确定','取消'] //按钮
+        }, function(){
+            layer.closeAll()
+            $.get("{:url('act/del_comment')}?cid="+cid, function(result){
+                if(result==1){
+                    obj.parent().parent().remove()
+                    layer.msg('删除成功')
+                }else if(result== 2){
+                    layer.msg('删除失败',{icon: 5})
+                }else if(result== 3){
+                    layer.msg('你没有删除权限', {icon: 5});
+                }
+
+            });
+
+        }, function(){
+        });
+    })
+
+</script>
+<script src="/static/js/jquery.searchableSelect.js"></script>
+<script>
+    $(function () {
+        $('#u_chrname').searchableSelect();
+    });
+
+</script>
+
+</body>
+</html>

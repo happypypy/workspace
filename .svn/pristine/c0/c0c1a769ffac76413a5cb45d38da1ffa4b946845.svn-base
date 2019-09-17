@@ -1,0 +1,171 @@
+<?php
+/*
+ * @Descripttion: 手机端项目公共类
+ * @version: 
+ * @Author: ChenJie
+ * @Date: 2019-08-07 11:04:16
+ * @LastEditors: ChenJie
+ * @LastEditTime: 2019-08-12 15:05:02
+ */
+
+ namespace app\home\controller;
+ use think\Controller;
+
+ class Base2 extends Controller{
+    public $CMS = null;//这里声明
+    public $lang = 'cn';
+    protected $siteid = 0;    // 机构ID
+    protected $sitecode = ''; // 机构代号
+    protected $wxConfig = []; // 微信配置信息
+    protected $userinfo = []; // 微信用户信息
+	/**
+     * 析构函数
+     */
+    function __construct(){
+	    //Session::start();
+        session_start();
+        header("Cache-control: private");
+        $param = input('param.');
+        $sitecode = isset($param['sitecode']) ? $param['sitecode'] : '';
+
+        // 如果站点代号存在的话
+        if($sitecode){
+            // 初始化配置信息
+            $this->initWxConfig($sitecode);
+            // 判断机构是否过期
+            if (empty($this->wxConfig['expiretime']) || time() > $this->wxConfig['expiretime'])
+            {
+                header("location:/error.php?msg=" . urlencode("网站异常，请与机构联系。") . "&url=" );
+                exit();
+            }
+            // 拉起微信授权
+            $this->baseAuth();
+        }	
+       
+    }
+    /**
+     * 拉起微信授权
+     *
+     * @return void
+     * @author Chenjie
+     * @Date 2019-08-12 11:12:16
+     */
+    private function baseAuth(){
+        // 本地环境, 返回测试用户
+        if(strstr(request()->ip(),'192.168.168') || strstr(request()->ip(),'127.0.0.1')){
+            $userinfo = db('member')->field('idmember,intstate,chrname,nickname,intsex,intcity,intprovince,userimg,dtsubscribetime,unionid')->where(['openid' => "oZS4v1aiMfreRinDgG-uWZFEDpnk"])->find();
+            // 存入公共变量
+            $this->userinfo = $userinfo;
+            // 登陆成功存入session
+            session('userinfo',$userinfo);
+            return;
+        }
+
+        $param = input('param.');
+        $current_url = request()->url(true);    // 当前URL
+        //  拉起授权
+        $api = new \think\wx\Api(['appId' => $this->wxConfig['appid'],'appSecret' => $this->wxConfig['appsecret']]);
+        if(!isset($param['code'])){
+            $authorize_url = $api->get_authorize_url('snsapi_base',$current_url);
+            $this->redirect($authorize_url,301);
+        }else{
+            // 根据code，获取用户信息
+            $result = $api->get_userinfo_by_authorize('snsapi_userinfo');
+            $userinfo = $result[1];
+            // 如果openid存在
+            if($userinfo){
+                // 获取省市
+                $regionIds = [];
+                if(!empty($userinfo->province) && !empty($userinfo->city)) {
+                    $regionIds = getRegionIDs($userinfo->province, $userinfo->city);
+                }
+                $openid = $userinfo->openid;    
+                $member = db('member')->field('idmember,intstate,chrname,nickname,intsex,intcity,intprovince,userimg,dtsubscribetime,unionid')->where('openid',$openid)->find();
+                
+                $data = [
+                    'idsite' => $this->siteid,
+                    'intstate' => $userinfo->subscribe ? 1 : 3,
+                    'chrname' => isset($userinfo->nickname) ? $userinfo->nickname : '',
+                    'nickname' => isset($userinfo->nickname) ? $userinfo->nickname : '',
+                    'intsex' => isset($userinfo->sex) ? intval($userinfo->sex) : 0,
+                    'intcity' => $regionIds[1] ?: '',
+                    'intprovince' => $regionIds[0] ?: '',
+                    'userimg' => isset($userinfo->headimgurl) ? $userinfo->headimgurl : '',
+                    'dtsubscribetime' => isset($userinfo->subscribe_time) ? $userinfo->subscribe_time : '',
+                    'unionid' => isset($userinfo->unionid) ? intval($userinfo->unionid) : 0,
+                ];
+
+                // 如果用户存在，更新数据
+                if($member){
+                    $result = db('member')->where('openid',$openid)->update($data);
+                    // 如果关注状态更新
+                    if($member['intstate'] !== $data['intstate']){
+                        member_log($member,1);
+                    }
+                    $idmember = $member['idmember'];
+                }
+                // 不存在，写入数据
+                else{
+                    $data['openid'] = isset($userinfo->openid) ? $userinfo->openid : '';
+                    $data['subscribe_scene'] = isset($userinfo->subscribe_scene) ? $userinfo->subscribe_scene : '';
+                    $data['qr_scene'] = isset($userinfo->qr_scene) ? $userinfo->qr_scene : '';
+                    $data['qr_scene_str'] = isset($userinfo->qr_scene_str) ? $userinfo->qr_scene_str : '';
+                    $idmember = db('member')->insertGetId($data);
+                    member_log($data,1);                    
+                }
+
+                // 存入公共变量
+                array_unshift($data, $idmember);
+                $this->userinfo = $data;
+                // 登陆成功存入session
+                session('userinfo',$data);
+            }
+            // 授权拉取失败
+            else{
+                exit("'授权失败'");
+            }
+        }
+    }
+    // 初始化配置信息
+    private function initWxConfig($sitecode){
+        $wxCofnig = cache("wxCofnig") ? cache("wxCofnig") : [];
+        $site_manage = db('site_manage')->field('id,site_name,appid,appsecret,token,encodingaeskey,mchid,paykey,cainfo,sslcertpath,sslkeypath,expiretime')->where(['site_code'=>$sitecode])->find();
+        if(!array_key_exists($sitecode,$wxCofnig)){
+            if($site_manage)
+            {
+                $wxCofnig[$sitecode] = $site_manage;
+                cache("wxCofnig",$wxCofnig);
+            }else{
+                exit($sitecode." 不存在！");
+            }
+        }
+        $this->siteid = $wxCofnig[$sitecode]['id'];
+        $this->sitecode = $sitecode;
+        $this->wxConfig =  $wxCofnig[$sitecode];
+    }
+    /*
+     * 初始化操作
+     */
+    public function _initialize(){
+	    define('MODULE_NAME',request()->module());  // 当前模块名称是
+        define('CONTROLLER_NAME',request()->controller()); // 当前控制器名称
+        define('ACTION_NAME',request()->action()); // 当前操作名称是
+
+        // CMS初始化
+        $this->CMS = new Cms;
+        // CMS渲染到页面
+        $this->assign('cms',$this->CMS);
+        
+        if(cookie('lang_type')){
+            $this->lang = cookie('lang_type');
+        }
+        config('home_lang_list') ? $config_lang_type = config('home_lang_list') : $config_lang_type = ['cn'=>'简体中文'];
+        $this->assign('lang',$config_lang_type);
+
+        //加载语言常量
+        $constant =  str_replace('\\','/',APP_PATH . 'home/constant/'.$this->lang.'.php');
+        require_once $constant;
+
+    }
+ }
+?>

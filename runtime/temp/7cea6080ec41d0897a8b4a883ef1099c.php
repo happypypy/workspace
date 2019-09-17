@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:34:"template/M1/order/again_order.html";i:1562308188;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:34:"template/M1/order/again_order.html";i:1565256797;}*/ ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -40,7 +40,12 @@
     <ul>
         <li><font style="color:#ff7902;">*请如实填写以下信息</font></li>
         <?php
-             $re1 = $cms->GetActivityInfo($id, "selcontent,selsignfrom, intsignnum",$groupBuyId, $groupBuyOrderId);
+            if(isset($groupjoin) && $groupjoin==0){
+                $re1 = $cms->GetActivityInfo($id, "selcontent,selsignfrom, intsignnum",$groupBuyId,'');
+            }else{
+        $re1 = $cms->GetActivityInfo($id, "selcontent,selsignfrom, intsignnum",$groupBuyId, $groupBuyOrderId);
+        }
+
         $re = $cms->GetSignupTempSub($re1['selsignfrom']);
         if($re){
         foreach($re as $k=>$vo){ ?>
@@ -223,6 +228,7 @@
         <li><pre style="padding: 0 10px;color:  red;line-height: 150%; white-space: pre-wrap;word-wrap: break-word;"><?php echo $re2['remark']?></pre></li>
         <?php endif; ?>
 
+
         <li>
             <font style="color:#ff7902;">*请选择套餐</font></li>
         <li>
@@ -233,8 +239,25 @@
                 {
                     $keyword = $package['keyword1'] . ' ' . $package['keyword2'];
                     $price = '(' . $package['member_price'] . '元)';
+
+                if($package['package_sum'] == -1){
+                $package['stock']='已售完';
+                }
+                elseif($package['stock']=='已售完' && $order_info['stock_locked']==1 && $order_info['package_id']==$package['package_id']){
+                $package['stock']=0;
+                $package['stock']+=$order_info['paynum'];
+                }elseif(is_numeric($package['stock']) && $order_info['stock_locked']==1 && $order_info['package_id']==$package['package_id']){
+
+                    if(isset($group_num)){
+                        $paynum=$order_info['paynum'];
+                        $order_info['paynum']=$group_num;
+                    }
+
+                $package['stock']+=$order_info['paynum'];
+                }
+
                 ?>
-                    <div class="pwclass pw" Stock="<?php echo $package['stock']; ?>" price="<?php echo $package['member_price']; ?>"  data="<?php echo $package['package_id']; ?>">
+                    <div class="pwclass pw <?php if($package['package_id'] == $order_info['package_id']){echo 'pwon';} ?>" Stock="<?php echo $package['stock']; ?>" price="<?php echo $package['member_price']; ?>"  data="<?php echo $package['package_id']; ?>">
                         <!-- 关键字 -->
                         <?php echo $keyword; ?>
                         <span ><?php echo $price; ?></span>
@@ -250,9 +273,9 @@
         <div class="choose-num">
             <div class="tit">购买数量：</div>
             <div class="minus" onclick="changepaynum(1);"></div>
-            <div class="num" id="divpaynum">1</div>
+            <div class="num" id="divpaynum"><?php echo !empty($paynum)?$paynum:$order_info['paynum']; ?></div>
             <div class="plus" onclick="changepaynum(2);"></div>
-            <input type="hidden" id="txtpaynum" name="txtpaynum" value="1"></div>
+            <input type="hidden" id="txtpaynum" name="txtpaynum" value="<?php echo !empty($paynum)?$paynum:$order_info['paynum']; ?>"></div>
     </ul>
     <dl class="price-box">
         <dd>订单金额：
@@ -265,15 +288,17 @@
             <!--  优惠券  -->
             <dd class="red-packet flex" id="red-packet">
                 <div class="txt">优惠券<span>(现金抵扣券)</span></div>
-                <div class="num" id="divvolumeprice"><?php echo $cashed_list_count; ?>个可用</div>
+                <div class="num" id="divvolumeprice"><?php if($order_info['cashed_amount'] > 0): ?>-<?php echo $order_info['cashed_amount']; else: ?><?php echo $cashed_list_count; ?>个可用<?php endif; ?></div>
                 <span class="spsel"></span>
             </dd>
         <dd >实际支付：
             <span class="red">￥</span>
-            <span class="red" id="spdiwang">0</span></dd>
+            <span class="red" id="spdiwang"><?php echo $order_info['price']-$order_info['cashed_amount']; ?></span></dd>
         <?php endif; ?>
-        <input type="hidden" id="hidvolumeid" name="hidvolumeid" value="">
-        <input type="hidden" id="hidvolumeprice" name="hidvolumeprice" value="0">
+        <input type="hidden" id="hidvolumeid" name="hidvolumeid" value="<?php if($order_info['receive_cashed_id']): ?>,<?php echo $order_info['receive_cashed_id']; ?>,<?php endif; ?>">
+        <input type="hidden" id="hidvolumeprice" name="hidvolumeprice" value="<?php echo $order_info['cashed_amount']; ?>">
+        <!--该订单使用的现金券id,用来将这些现金券该为未使用-->
+        <input type="hidden" name="former_receive_cashed_id" value="<?php echo $order_info['receive_cashed_id']; ?>">
         <!--订单id-->
         <input type="hidden" id="order_id" name="order_id" value="<?php echo $order_id; ?>">
 
@@ -282,14 +307,33 @@
         <!--订单状态-->
         <input type="hidden" id="order_state" name="order_state" value="10">
         <?php endif; ?>
-        <input type="hidden" id="hidvolumeprice1" value="0">
+        <input type="hidden" id="hidvolumeprice1" value="<?php echo $order_info['cashed_amount']; ?>">
 
         <dd>
             <input style="display: none" id="subdata1" type="submit"  value="提交">
             <input type="button" class="submit" value="提交" style="background: #ff7800;color: #fff;" onclick="order_confirm();"></dd>
     </dl>
 
+    <?php if($groupBuyId !=''): ?>
+    <input type="hidden" name="group_buy_id" value="<?php echo $groupBuyId; ?>">
+    <?php endif; ?>
 </form>
+<!--如果是拼团的订单-->
+<script>
+<?php  if(isset($groupjoin) && $groupjoin == 1){ ?>
+
+    var url= "/<?php echo $sitecode; ?>/signup_post/<?php echo $id; ?>?group_buy_order_id=<?php echo $groupBuyOrderId; ?>&groupjoin=1"
+
+<?php }elseif(isset($groupjoin) && $groupjoin == 0){ ?>
+
+    var url= "/<?php echo $sitecode; ?>/signup_post/<?php echo $id; ?>?group_buy_order_id=<?php echo $groupBuyOrderId; ?>"
+
+<?php }else{ ?>
+
+    var url= "/<?php echo $sitecode; ?>/signup_post/<?php echo $id; ?>"
+
+<?php }?>
+</script>
 <?php if($activity_cashed): ?>
 <!-- 优惠券列表 -->
 <div class="choose-redpacket">
@@ -314,7 +358,7 @@
     <?php if($cashed_list){ ?>
     <div class="choose-box">
         <?php foreach($cashed_list as $val){ ?>
-        <div class="choose-item flex" onclick="choosevolume(<?php echo $val['id']; ?>,<?php echo $val['cashed_amount']; ?>,this)">
+        <div class="choose-item flex <?php if(in_array($val['id'],explode(',',$order_info['receive_cashed_id']))){echo 'on';} ?>" onclick="choosevolume(<?php echo $val['id']; ?>,<?php echo $val['cashed_amount']; ?>,this)">
             <div class="amount">
                 <div class="num"><span><?php echo $val['cashed_amount']; ?></span></div>
             </div>
@@ -472,7 +516,7 @@
                     var spddprice = $("#spddprice").html();
                     if (spddprice > 0) {
                         if (spddprice <= volumeprice) {
-                            $("#spdiwang").html(0.01);
+                            $("#spdiwang").html(0.00);
                         } else {
                             $("#spdiwang").html((spddprice - volumeprice).toFixed(2));
                         }
@@ -485,7 +529,7 @@
                         <?php if($activity_cashed): ?>
                     if (spddprice > 0) {
                         if (spddprice <= volumeprice) {
-                            $("#spdiwang").html(0.01);
+                            $("#spdiwang").html(0.00);
                         } else {
                             $("#spdiwang").html((spddprice - volumeprice).toFixed(2));
                         }
@@ -503,7 +547,7 @@
                     var spddprice = $("#spddprice").html();
                     if (spddprice > 0) {
                         if (spddprice <= volumeprice) {
-                            $("#spdiwang").html(0.01);
+                            $("#spdiwang").html(0.00);
                         } else {
                             $("#spdiwang").html((spddprice - volumeprice).toFixed(2));
                         }
@@ -516,7 +560,7 @@
                     var spddprice = $("#spddprice").html();
                     if (spddprice > 0) {
                         if (spddprice <= volumeprice) {
-                            $("#spdiwang").html(0.01);
+                            $("#spdiwang").html(0.00);
                         } else {
                             $("#spdiwang").html((spddprice - volumeprice).toFixed(2));
                         }
@@ -535,7 +579,7 @@
                 var spddprice = $("#spddprice").html();
                 if (spddprice > 0) {
                     if (spddprice <= volumeprice) {
-                        $("#spdiwang").html(0.01);
+                        $("#spdiwang").html(0.00);
                     } else {
                         $("#spdiwang").html((spddprice - volumeprice).toFixed(2));
                     }
@@ -548,7 +592,7 @@
                 var spddprice = $("#spddprice").html();
                 if (spddprice > 0) {
                     if (spddprice <= volumeprice) {
-                        $("#spdiwang").html(0.01);
+                        $("#spdiwang").html(0.00);
                     } else {
                         $("#spdiwang").html((spddprice - volumeprice).toFixed(2));
                     }
@@ -625,13 +669,14 @@ function close_confirm(){
     $(".gray-cover,.order-confirm").hide();
 }
 $(".pwclass").click(function(){
+    //让兄弟节点都去除该样式
     $(this).addClass("pwon").siblings().removeClass("pwon");
     $("#pwStock").val($(this).attr('Stock'));
     $("#pwprice").val($(this).attr('price'));
     $("#payname").val($(this).attr('data'));
     loadprice();
 });
-$(".pwclass").eq(0).click();
+$(".pwon").click();
 
                     //判断是否在pc端
                     function IsPC() {
@@ -648,15 +693,18 @@ $(".pwclass").eq(0).click();
                         }
                         return flag;
                     }
+
                     function submitedata(){
 
                         var data = new FormData(document.getElementById("frm1"));
                         layer.load(1, {
                             shade: [0.1,'#fff'] //0.1透明度的白色背景
                         });
+
+
                         $.ajax({
                                 type: 'post',
-                                url: "/<?php echo $sitecode; ?>/signup_post/<?php echo $id; ?>",
+                                url: url,
                                 dataType: 'json',
                                 data: data,
                                 contentType: false, //不设置内容类型
@@ -666,8 +714,6 @@ $(".pwclass").eq(0).click();
                                     close_confirm()
                                     layer.closeAll('loading');
                                     data=JSON.parse(data)
-
-                                    if(data.res==1){
                                         if(data.ischarge==2 && data.flag==1 && data.price > 0) {
                                             jsondata=$.parseJSON(data.data)
                                             wx.config({
@@ -707,36 +753,41 @@ $(".pwclass").eq(0).click();
 
                                         }else{
                                             if(data.flag==2) {
-                                                layer.confirm(
-                                                    data.errmsg,
-                                                    {
-                                                        btn:['关闭'],
-                                                        btn1: function(index, layero){
-                                                            window.location = "/" + data.sitecode + "/detail/" + data.dataID;
-                                                            return false;
-                                                        }});
-                                                if(data.err_arr){
+                                                if(typeof(data.errmsg) != "undefined"){
+
+                                                    layer.confirm(
+                                                        data.errmsg,
+                                                        {
+                                                            btn:['关闭'],
+                                                            //btn1: function(index, layero){
+                                                            //window.location = "/" + data.sitecode + "/detail/" + data.dataID;
+                                                            // return false;
+                                                            //}
+                                                        });
+                                                }
+
+                                                if(typeof(data.err_arr) != "undefined"){
                                                     layer.confirm(
                                                         data.err_arr[0]["err"],
                                                         {
                                                             btn:['关闭'],
-                                                            btn1: function(index, layero){
-                                                                window.location="/"+data.sitecode+"/againorder/"+data.order_id;
-                                                                return false;
-                                                            }});
+                                                            // btn1: function(index, layero){
+                                                            //     //window.location="/"+data.sitecode+"/againorder/"+data.order_id;
+                                                            //     return false;
+                                                            // }
+                                                        });
                                                 }
                                             } else{
                                                 layer.confirm('报名成功！',{btn:['关闭'],btn1: function(index, layero){ window.location="/"+data.sitecode+"/detail/"+data.dataID}});
                                             }
                                         }
-                                    }
+
                                 }
                             }
                         );
                     }
 
 function loadprice() {
-
     $("#spdiwang").html(($("#pwprice").val() * $("#txtpaynum").val()).toFixed(2));
     $("#spddprice").html(($("#pwprice").val() * $("#txtpaynum").val()).toFixed(2));
     <?php if($activity_cashed): ?>
@@ -752,7 +803,7 @@ function loadprice() {
     var spddprice = $("#spddprice").html();
     if (spddprice > 0) {
         if (spddprice <= volumeprice) {
-            $("#spdiwang").html(0.01);
+            $("#spdiwang").html(0.00);
         } else {
             $("#spdiwang").html((spddprice - volumeprice).toFixed(2));
         }
@@ -868,13 +919,14 @@ function  checkdata(datavalue,datatype,ismust) {
     <?php if($activity_cashed): ?>
     function choosevolume(obj, obj1, obj2) {
         var volumeids = $("#hidvolumeid").val();
+        //如果选择的现金券id,在隐藏域里面
         if (volumeids.indexOf(',' + obj + ',') > -1) { //已选过的就移除
             volumeids = volumeids.replace(',' + obj + ',', ',');
             if (volumeids == ",") {
                 volumeids = "";
             }
             $("#hidvolumeid").val(volumeids);
-            var volumeprice = $("#hidvolumeprice1").val() * 1 - obj1 * 1;
+            var volumeprice = ($("#hidvolumeprice1").val() * 1 - obj1 * 1).toFixed(2);
             $("#hidvolumeprice").val(volumeprice);
             $("#hidvolumeprice1").val(volumeprice);
             $("#divvolumeprice").html("-" + volumeprice);
@@ -921,7 +973,7 @@ function  checkdata(datavalue,datatype,ismust) {
         if (obj > 0) {
             if (spddprice > 0) {
                 if (spddprice <= volumeprice) {
-                    $("#spdiwang").html(0.01);
+                    $("#spdiwang").html(0.00);
                 } else {
                     $("#spdiwang").html((spddprice - volumeprice).toFixed(2));
                 }
@@ -944,7 +996,7 @@ function  checkdata(datavalue,datatype,ismust) {
         var spddprice = $("#spddprice").html();
         if (spddprice > 0) {
             if (spddprice <= volumeprice) {
-                $("#spdiwang").html(0.01);
+                $("#spdiwang").html(0.00);
             } else {
                 $("#spdiwang").html((spddprice - volumeprice).toFixed(2));
             }

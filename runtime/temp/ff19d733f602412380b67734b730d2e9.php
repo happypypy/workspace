@@ -1,9 +1,17 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:69:"D:\workspace\work\public/../application/admin\view\activity\modi.html";i:1563412646;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:69:"D:\workspace\work\public/../application/admin\view\activity\modi.html";i:1568631131;}*/ ?>
+<!--
+ * @Descripttion: 
+ * @version: 
+ * @Author: ChenJie
+ * @Date: 2019-09-05 10:23:35
+ * @LastEditors: ChenJie
+ * @LastEditTime: 2019-09-05 16:16:21
+ -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>活动管理</title>
+<title>产品管理</title>
     <link href="/static/css/layout.css" rel="stylesheet" type="text/css" />
     <link href="/static/css/page.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="/static/css/bootstrap.min.css">
@@ -91,38 +99,38 @@
             <span class="oa_ico-right"></span>
             <span class="oa_title-btn"></span>
             <span class="oa_ico-left"></span>
-            活动管理        </div>
+            产品管理        </div>
         <div class="oa_edition">
             <form id="frm" action="" method="post">
-                <table id="tabcontent" width="100%" border="0" cellspacing="1" cellpadding="0" class="oa_edition" style="border-bottom: #e0e0e0 solid 1px">
+                <table id="tabcontent" width="100%" border="0" cellspacing="1" cellpadding="0" class="oa_edition" style="border-bottom: #e0e0e0 solid 1px; min-width: 1100px;">
                     <tr>
-                        <td width="150"class="oa_cell-left"><span style="color:#ff0000">*</span>活动标题：</td>
-                        <td class="oa_cell-right"><input name="chrtitle" id="chrtitle" type="text" value="<?php echo $datainfo['chrtitle']; ?>" class="form-control "  style="width:800px;"   chname="活动标题"  /> </td>
+                        <td width="17%" class="oa_cell-left"><span style="color:#ff0000">*</span>产品标题：</td>
+                        <td class="oa_cell-right"><input name="chrtitle" id="chrtitle" type="text" value="<?php echo $datainfo['chrtitle']; ?>" class="form-control "  style="width:800px;"   chname="产品标题"  /> </td>
                     </tr>
                     <tr>
-                        <td width="150"class="oa_cell-left">活动简称：</td>
-                        <td class="oa_cell-right"><input name="short_title" id="short_title" type="text" value="<?php echo $datainfo['short_title']; ?>" class="form-control "  style="width:800px;"   chname="活动标题"  /> </td>
+                        <td width="17%" class="oa_cell-left">产品简称：</td>
+                        <td class="oa_cell-right"><input name="short_title" id="short_title" type="text" value="<?php echo $datainfo['short_title']; ?>" class="form-control "  style="width:800px;"   chname="产品标题"  /> </td>
                     </tr>
                     <tr>
-                        <td width="150" class="oa_cell-left">活动简介：</td>
+                        <td width="17%" class="oa_cell-left">产品简介：</td>
                         <td class="oa_cell-right">
                             <textarea id="chrsummary" name="chrsummary" is_null="1" cols="50" rows="3"  class="form-control input oa_input-200"  style="width:800px;height:80px;"><?php echo $datainfo['chrsummary']; ?></textarea>
-                            <div class="oa_info-source">活动简介内容展,示列表活动标题底部</div>
+                            <div class="oa_info-source">产品简介内容展,示列表产品标题底部</div>
                         </td>
                     </tr>
                     <tr>
-                        <td width="150" class="oa_cell-left">外链URL：</td>
+                        <td width="17%" class="oa_cell-left">外链URL：</td>
                         <td class="oa_cell-right"><input   name="chrurl" id="chrurl" type="text" value="<?php echo $datainfo['chrurl']; ?>"  class="form-control "  style="width:800px;"  chname="外链URL"  /></td>
                     </tr>
                     <tr>
-                        <td width="150" class="oa_cell-left">关键字：</td>
+                        <td width="17%" class="oa_cell-left">关键字：</td>
                         <td class="oa_cell-right"><input   name="chrkeyword" id="chrkeyword" type="text" value="<?php echo $datainfo['chrkeyword']; ?>"  class="form-control "  style="width:800px;"  chname="关键字,多个以逗号分开"  /></td>
                     </tr>
 
                     <tr>
-                        <td width="150" class="oa_cell-left">所属商务：</td>
+                        <td width="17%" class="oa_cell-left">所属商务：</td>
                         <td class="oa_cell-right">
-                            <select name="intselmarket" id="intselmarket" class="form-control" style="width: auto; height: 30px" >
+                            <select name="intselmarket" id="intselmarket" class="form-control" style="width: auto; height: 34px" >
                                 <option value="0:">==请选择==</option>
                                 <?php if(is_array($user) || $user instanceof \think\Collection || $user instanceof \think\Paginator): $i = 0; $__LIST__ = $user;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$vo): $mod = ($i % 2 );++$i;?>
                                 <option value="<?php echo $vo['idaccount']; ?>:<?php echo $vo['chrname']; ?>" <?php if ($vo['idaccount'] == $datainfo['intselmarket']) {echo "selected";}?> ><?php echo $vo['chrname']; ?></option>
@@ -131,9 +139,9 @@
                         </td>
                     </tr>
                     <tr>
-                        <td width="150" class="oa_cell-left"><span style="color:#ff0000">*</span>分类：</td>
+                        <td width="17%" class="oa_cell-left"><span style="color:#ff0000">*</span>分类：</td>
                         <td class="oa_cell-right">
-                            <select name="fidtype" id="fidtype" class="form-control" style="width: auto; height: 30px" >
+                            <select name="fidtype" id="fidtype" class="form-control" style="width: auto; height: 34px" >
                                 <option  value="">请选择</option>
                                 <?php if(is_array($hdfl) || $hdfl instanceof \think\Collection || $hdfl instanceof \think\Paginator): $i = 0; $__LIST__ = $hdfl;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$vo): $mod = ($i % 2 );++$i;?>
                                 <option value="<?php echo $vo['code']; ?>" <?php if ($vo['code'] == $datainfo['fidtype']) {echo "selected";}?> ><?php echo $vo['name']; ?></option>
@@ -142,9 +150,9 @@
                         </td>
                     </tr>
                     <tr>
-                        <td width="150" class="oa_cell-left">省：</td>
+                        <td width="17%" class="oa_cell-left">省：</td>
                         <td class="oa_cell-right">
-                            <select  id="fidprovince" onchange="getChild(this.value,0,'fidcity','/Admin/Api/getRegion');" is_null="1"  name="fidprovince"   class="form-control" style="width: auto; height: 30px" >
+                            <select  id="fidprovince" onchange="getChild(this.value,0,'fidcity','/Admin/Api/getRegion');" is_null="1"  name="fidprovince"   class="form-control" style="width: auto; height: 34px" >
                                 <option  value="">请选择</option>
                             </select>
                             <script language="javascript">
@@ -157,9 +165,9 @@
                         </td>
                     </tr>
                     <tr>
-                        <td width="150" class="oa_cell-left">市：</td>
+                        <td width="17%" class="oa_cell-left">市：</td>
                         <td  class="oa_cell-right">
-                            <select  id="fidcity" onchange="getChild(this.value,0,'fidarea','/Admin/Api/getRegion');" is_null="1"  name="fidcity"    class="form-control" style="width: auto; height: 30px">
+                            <select  id="fidcity" onchange="getChild(this.value,0,'fidarea','/Admin/Api/getRegion');" is_null="1"  name="fidcity"    class="form-control" style="width: auto; height: 34px">
                                 <option  value="">请选择</option>
                             </select>
                             <?php if (!empty($datainfo['fidarea']) && $datainfo['fidarea'] != 0) {?>
@@ -170,24 +178,24 @@
                         </td>
                     </tr>
                      <tr>
-                        <td width="150" class="oa_cell-left">区：</td>
+                        <td width="17%" class="oa_cell-left">区：</td>
                         <td class="oa_cell-right">
-                            <select  id="fidarea"  is_null="1" name="fidarea"   class="form-control" style="width: auto; height: 30px" >
+                            <select  id="fidarea"  is_null="1" name="fidarea"   class="form-control" style="width: auto; height: 34px" >
                                 <option  value="">请选择</option>
                             </select>
                         </td>
                     </tr>
                     <tr style="display: none">
-                        <td width="150" class="oa_cell-left">商圈id（暂时选一个）：</td>
+                        <td width="17%" class="oa_cell-left">商圈id（暂时选一个）：</td>
                         <td class="oa_cell-right">
                             <input name="fiddistrict" id="fiddistrict" type="text" value="<?php echo $datainfo['fiddistrict']; ?>" class="form-control "  style="width:800px;"  chname="商圈"  />
                         </td>
                     </tr>
                     </tr>
                      <tr>
-                        <td width="150" class="oa_cell-left">活动小图片（140x140）：</td>
+                        <td width="17%" class="oa_cell-left">产品小图片（140x140）：</td>
                         <td class="oa_cell-right">
-                            <input name="chrimg_m" id="chrimg_m" type="text" value="<?php echo $datainfo['chrimg_m']; ?>"  imgtype="small"  chname="活动小图片（140x140）"   class="form-control "  style="width:800px;" />
+                            <input name="chrimg_m" id="chrimg_m" type="text" value="<?php echo $datainfo['chrimg_m']; ?>"  imgtype="small"  chname="产品小图片（140x140）"   class="form-control "  style="width:800px;" />
                             <input style="display: none;" onclick="GetUploadify(1,'chrimg_m','admin','undefined','*.jpg;*.jpeg;*.png;*.gif;*.jpeg;');" type="button" value="上传单图片"/>
                             <input onclick="uploadimgcut('chrimg_m','admin',140,140);" type="button" value="上传单图片"/>
                             <input onclick="openimg('chrimg_m')" type="button" value="查看图片"/>
@@ -195,16 +203,16 @@
                     </tr>
                     </tr>
                     <tr>
-                        <td width="150" class="oa_cell-left">活动大图片（640x320）：</td>
+                        <td width="17%" class="oa_cell-left">产品大图片（640x320）：</td>
                         <td class="oa_cell-right">
-                        <input name="chrimg" id="chrimg" type="text" value="<?php echo $datainfo['chrimg']; ?>"   chname="活动大图片（640x320）"   class="form-control "  style="width:800px;" />
+                        <input name="chrimg" id="chrimg" type="text" value="<?php echo $datainfo['chrimg']; ?>"   chname="产品大图片（640x320）"   class="form-control "  style="width:800px;" />
                         <input style="display: none;" onclick="GetUploadify(1,'chrimg','admin','undefined','*.jpg;*.jpeg;*.png;*.gif;*.jpeg;');" type="button" value="上传单图片"/>
                         <input onclick="uploadimgcut('chrimg','admin',640,320);" type="button" value="上传单图片"/>
                         <input onclick="openimg('chrimg')" type="button" value="查看图片"/>
                         </td>
                     </tr>
                     <tr>
-                        <td width="150" class="oa_cell-left">活动开始时间：</td>
+                        <td width="17%" class="oa_cell-left">开始时间：</td>
                         <td class="oa_cell-right">
                             <div style="width:250px" class="input-prepend input-group"><span class="add-on input-group-addon"><i class="glyphicon glyphicon-calendar fa fa-calendar"></i></span>
                             <input type="text" is_null="0" id="dtstart" name="dtstart" class="form-control"  value="<?php echo $datainfo['dtstart']; ?>"></div>
@@ -213,7 +221,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td width="150" class="oa_cell-left">活动结束时间：</td>
+                        <td width="17%" class="oa_cell-left">结束时间：</td>
                         <td class="oa_cell-right">
                             <div style="width:250px" class="input-prepend input-group"><span class="add-on input-group-addon"><i class="glyphicon glyphicon-calendar fa fa-calendar"></i></span>
                             <input type="text" is_null="0" id="dtend" name="dtend" class="form-control"  value="<?php echo $datainfo['dtend']; ?>"></div><script language='JavaScript'>seltime("dtend","YYYY-MM-DD HH:mm:ss")</script>                               <!-- -->
@@ -222,18 +230,18 @@
                     </tr>
 
                     <tr>
-                        <td width="150" class="oa_cell-left">是否收费：</td>
+                        <td width="17%" class="oa_cell-left">是否收费：</td>
                         <td class="oa_cell-right">
-                            <select  id="ischarge"  is_null="1" name="ischarge"   class="form-control" style="width: auto; height: 30px" >
+                            <select  id="ischarge"  is_null="1" name="ischarge"   class="form-control" style="width: auto; height: 34px" >
                                 <option value="1" <?php if ($datainfo['ischarge'] != 2) {echo "selected";}?> >免费</option>
                                 <option value="2" <?php if ($datainfo['ischarge'] == 2) {echo "selected";}?> >收费</option>
                             </select>
                         </td>
                     </tr>
                     <tr>
-                        <td width="150" class="oa_cell-left">适合对象：</td>
+                        <td width="17%" class="oa_cell-left">适合对象：</td>
                         <td class="oa_cell-right">
-                            <select  id="chrrange"  is_null="1" name="chrrange"   class="form-control" style="width: auto; height: 30px" >
+                            <select  id="chrrange"  is_null="1" name="chrrange"   class="form-control" style="width: auto; height: 34px" >
                                 <option value="0">==请选择==</option>
                                 <option value="1" <?php if ($datainfo['chrrange'] == 1) {echo "selected";}?> >家长及儿童</option>
                                 <option value="2" <?php if ($datainfo['chrrange'] == 2) {echo "selected";}?> >仅儿童</option>
@@ -242,9 +250,9 @@
                         </td>
                     </tr>
                     <tr>
-                        <td width="150" class="oa_cell-left">参与最小年龄：</td>
+                        <td width="17%" class="oa_cell-left">参与最小年龄：</td>
                         <td class="oa_cell-right">
-                            <select  id="minage"  is_null="1" name="minage"   class="form-control" style="width: auto; height: 30px" >
+                            <select  id="minage"  is_null="1" name="minage"   class="form-control" style="width: auto; height: 34px" >
                                 <option value="0">==请选择==</option>
                                 <?php for ($i = 1; $i < 100; $i++) {?>
                                 <option value="<?php echo $i; ?>" <?php if ($datainfo['minage'] == $i) {echo "selected";}?> ><?php echo $i; ?></option>
@@ -253,9 +261,9 @@
                         </td>
                     </tr>
                     <tr>
-                        <td width="150" class="oa_cell-left">参与最大年龄：</td>
+                        <td width="17%" class="oa_cell-left">参与最大年龄：</td>
                         <td class="oa_cell-right">
-                            <select  id="maxage"  is_null="1" name="maxage"   class="form-control" style="width: auto; height: 30px" >
+                            <select  id="maxage"  is_null="1" name="maxage"   class="form-control" style="width: auto; height: 34px" >
                                 <option value="0">==请选择==</option>
                                 <?php for ($i = 1; $i < 100; $i++) {?>
                                 <option value="<?php echo $i; ?>" <?php if ($datainfo['maxage'] == $i) {echo "selected";}?> ><?php echo $i; ?></option>
@@ -265,40 +273,40 @@
                     </tr>
 
                     <tr style="display: none">
-                        <td width="150" class="oa_cell-left">活动价值：</td>
+                        <td width="17%" class="oa_cell-left">产品价值：</td>
                         <td class="oa_cell-right">
                             <textarea id="chrworth" name="chrworth" is_null="1" cols="50" rows="3"  class="form-control input oa_input-200"  style="width:800px;height:80px;"><?php echo $datainfo['chrworth']; ?></textarea>
                         </td>
                     </tr>
                     <tr style="display: none">
-                        <td width="150" class="oa_cell-left">收费说明：</td>
+                        <td width="17%" class="oa_cell-left">收费说明：</td>
                         <td class="oa_cell-right">
                             <textarea id="chrchargemark" name="chrchargemark" is_null="1" cols="50" rows="3"  class="form-control input oa_input-200"  style="width:800px;height:80px;"><?php echo $datainfo['chrchargemark']; ?></textarea>
                         </td>
                     </tr>
                     <tr style="display: none">
-                        <td width="150" class="oa_cell-left">下单须知：</td>
+                        <td width="17%" class="oa_cell-left">下单须知：</td>
                         <td class="oa_cell-right">
                             <textarea id="chrnotice" name="chrnotice" is_null="1" cols="50" rows="3"  class="form-control input oa_input-200"  style="width:800px;height:80px;"><?php echo $datainfo['chrnotice']; ?></textarea>
                         </td>
                     </tr>
                     <tr>
-                        <td width="150" class="oa_cell-left">活动详细地点：</td>
+                        <td width="17%" class="oa_cell-left">详细地址：</td>
                         <td class="oa_cell-right">
-                            <input name="chraddressdetail" id="chraddressdetail" type="text" value="<?php echo $datainfo['chraddressdetail']; ?>" readonly="readonly" class="form-control "  style="width:800px;"   chname="活动详细地点"  />
-                            <input name="chrmaplng" id="chrmaplng" type="hidden" value="<?php echo $datainfo['chrmaplng']; ?>" class="form-control "  style="width:800px;"   chname="活动详细地点经度"  />
-                            <input name="chrmaplat" id="chrmaplat" type="hidden" value="<?php echo $datainfo['chrmaplat']; ?>" class="form-control "  style="width:800px;"   chname="活动详细地点纬度"  />
+                            <input name="chraddressdetail" id="chraddressdetail" type="text" value="<?php echo $datainfo['chraddressdetail']; ?>" readonly="readonly" class="form-control "  style="width:800px;"   chname="详细地址"  />
+                            <input name="chrmaplng" id="chrmaplng" type="hidden" value="<?php echo $datainfo['chrmaplng']; ?>" class="form-control "  style="width:800px;"   chname="详细地址经度"  />
+                            <input name="chrmaplat" id="chrmaplat" type="hidden" value="<?php echo $datainfo['chrmaplat']; ?>" class="form-control "  style="width:800px;"   chname="详细地址纬度"  />
                             <input name="openmap" id="openmap" type="button" value="选择地址"  onclick="sel_address();" />
                         </td>
                     </tr>
                                         <tr>
-                        <td width="150" class="oa_cell-left">交通指引：</td>
+                        <td width="17%" class="oa_cell-left">交通指引：</td>
                         <td class="oa_cell-right">
                             <textarea id="chrmap" name="chrmap" is_null="1" cols="50" rows="3"  class="form-control input oa_input-200"  style="width:800px;height:80px;"><?php echo $datainfo['chrmap']; ?></textarea>
                         </td>
                     </tr>
                    <tr>
-                        <td width="150" class="oa_cell-left">详细内容：</td>
+                        <td width="17%" class="oa_cell-left">详细内容：</td>
                         <td class="oa_cell-right">
                             <div ><textarea  style="width:800px;height:600px;" class="span12 ckeditor" id="chrcontent" is_null="1" name="chrcontent"><?php echo $datainfo['chrcontent']; ?></textarea></div>
                             <script>var editorcontent;$(function(){editorcontent = new UE.ui.Editor(options);editorcontent.render("chrcontent");});</script>
@@ -306,21 +314,21 @@
                         </td>
                    </tr>
                    <tr>
-                        <td width="150" class="oa_cell-left">发布时间：</td>
+                        <td width="17%" class="oa_cell-left">发布时间：</td>
                         <td class="oa_cell-right">
                             <div style="width:250px" class="input-prepend input-group"><span class="add-on input-group-addon"><i class="glyphicon glyphicon-calendar fa fa-calendar"></i></span>
                                 <input type="text" is_null="0" id="dtpublishtime" name="dtpublishtime" class="form-control"  value="<?php echo $datainfo['dtpublishtime']; ?>"></div><script language='JavaScript'>seltime("dtpublishtime","YYYY-MM-DD HH:mm:ss")</script>
                             </td>
                     </tr>
                     <tr>
-                        <td width="150" class="oa_cell-left">用户权限：</td>
+                        <td width="17%" class="oa_cell-left">用户权限：</td>
                         <td width="150" class="oa_cell-right">
                             <?php if(is_array($hyfl) || $hyfl instanceof \think\Collection || $hyfl instanceof \think\Paginator): if( count($hyfl)==0 ) : echo "" ;else: foreach($hyfl as $key=>$v): ?>
                             <input type="checkbox" name="usertype[]" value="<?php echo $v['id']; ?>" <?php if (in_array($v['code'], explode(",", trim($datainfo['usertype'], ',')))) {echo "checked";}?> /><?php echo $v['name']; endforeach; endif; else: echo "" ;endif; ?>
                         </td>
                     </tr>
                    <tr>
-                        <td width="150" class="oa_cell-left">活动标签：</td>
+                        <td width="17%" class="oa_cell-left">产品标签：</td>
                         <td class="oa_cell-right">
                             <?php if(is_array($hdbq) || $hdbq instanceof \think\Collection || $hdbq instanceof \think\Paginator): $i = 0; $__LIST__ = $hdbq;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$vo): $mod = ($i % 2 );++$i;?>
                             <input type="checkbox" name="chrtags[]" value="<?php echo $vo['code']; ?>" <?php if (in_array($vo['code'], explode(",", trim($datainfo['chrtags'], ',')))) {echo "checked";}?> ><?php echo $vo['name']; ?></input>
@@ -328,7 +336,7 @@
                         </td>
                    </tr>
                    <tr style="display: none;">
-                        <td width="150" class="oa_cell-left">活动分享海报模版图：</td>
+                        <td width="17%" class="oa_cell-left">产品分享海报模版图：</td>
                         <td class="oa_cell-right">
                             <input name="sharebackpic" id="sharebackpic" type="text" value="<?php echo $datainfo['sharebackpic']; ?>"   class="form-control "  style="width:800px;" />
                             <input onclick="GetUploadify(1,'sharebackpic','admin','undefined','*.jpg;*.jpeg;*.png;*.gif;*.jpeg;');" type="button" value="上传单图片"/>
@@ -336,54 +344,54 @@
                    </tr>
 
                     <tr style="display: none;">
-                        <td width="150" class="oa_cell-left">是否自办：</td>
+                        <td width="17%" class="oa_cell-left">是否自办：</td>
                         <td class="oa_cell-right">
                             <input type="checkbox" name="chktags" id="chktags" value="1" <?php if ($datainfo['chktags'] == 1) {echo "checked";}?>>自办</input>
                         </td>
                     </tr>
                     <tr>
-                        <td width="150" class="oa_cell-left">是否置顶：</td>
+                        <td width="17%" class="oa_cell-left">是否置顶：</td>
                         <td class="oa_cell-right">
                             <input type="checkbox" name="chkcontentlev" id="chkcontentlev" value="1" <?php if ($datainfo['chkcontentlev'] == 1) {echo "checked";}?>>置顶</input>
                         </td>
                     </tr>
                     <tr>
-                        <td width="150" class="oa_cell-left">推荐到首页：</td>
+                        <td width="17%" class="oa_cell-left">推荐到首页：</td>
                         <td class="oa_cell-right">
                             <input type="checkbox" name="chkisindex" id="chkisindex" value="1" <?php if ($datainfo['chkisindex'] == 1) {echo "checked";}?>>推荐</input>
                         </td>
                     </tr>
                     <tr  style="display: none;">
-                        <td width="150" class="oa_cell-left">是否下单：</td>
+                        <td width="17%" class="oa_cell-left">是否下单：</td>
                         <td class="oa_cell-right">
                             <input type="checkbox" name="chkisthird" id="chkisthird" value="1" <?php if ($datainfo['chkisthird'] == 1) {echo "checked";}?>>自办</input>
                         </td>
                     </tr>
                     <tr>
-                        <td width="150" class="oa_cell-left">是否下架：</td>
+                        <td width="17%" class="oa_cell-left">是否下架：</td>
                         <td class="oa_cell-right">
                             <input type="checkbox" name="chkdown" id="chkdown" value="1" <?php if ($datainfo['chkdown'] == 1) {echo "checked";}?>>下架</input>
                         </td>
                     </tr>
                     <tr>
-                        <td width="150" class="oa_cell-left">服务条款：</td>
+                        <td width="17%" class="oa_cell-left">服务条款：</td>
                         <td class="oa_cell-right">
                             <div ><textarea  style="width:800px;height:600px;" class="span12 ckeditor" id="txtfwtk" is_null="1" name="txtfwtk"><?php echo $datainfo['txtfwtk']; ?></textarea></div>
                             <script>var editorcontent;$(function(){editorcontent = new UE.ui.Editor(options);editorcontent.render("txtfwtk");});</script>
                         </td>
                     </tr>
                     <tr >
-                        <td width="150" class="oa_cell-left">开启下单：</td>
+                        <td width="17%" class="oa_cell-left">开启下单：</td>
                         <td class="oa_cell-right">
                             <input  id="chkbm" onclick="javascript:isbm();"  type="checkbox" name="chksignup" value="1" <?php if ($datainfo['chksignup'] == 1) {echo "checked";}?>>在线下单</input>
                         </td>
                     </tr>
                     <tr id="bm">
                         <td colspan="2" style="padding: 0">
-                            <table id="tabcontent1" border="0">
+                            <table id="tabcontent1" border="0" width="100%">
 
                             <tr>
-                                <td width="150" class="oa_cell-left">下单开始时间：</td>
+                                <td width="17%" class="oa_cell-left">下单开始时间：</td>
                                 <td class="oa_cell-right">
                                     <div style="width:250px" class="input-prepend input-group"><span class="add-on input-group-addon"><i class="glyphicon glyphicon-calendar fa fa-calendar"></i></span>
                                         <input type="text" is_null="0" id="dtsignstime" name="dtsignstime" class="form-control"  value="<?php echo $datainfo['dtsignstime']; ?>"></div><script language='JavaScript'>seltime("dtsignstime","YYYY-MM-DD HH:mm:ss")</script>                               <!-- -->
@@ -391,7 +399,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td width="150" class="oa_cell-left">下单截止时间：</td>
+                                <td width="17%" class="oa_cell-left">下单截止时间：</td>
                                 <td class="oa_cell-right">
                                     <div style="width:250px" class="input-prepend input-group"><span class="add-on input-group-addon"><i class="glyphicon glyphicon-calendar fa fa-calendar"></i></span>
                                         <input type="text" is_null="0" id="dtsignetime" name="dtsignetime" class="form-control"  value="<?php echo $datainfo['dtsignetime']; ?>"></div><script language='JavaScript'>seltime("dtsignetime","YYYY-MM-DD HH:mm:ss")</script>                               <!-- -->
@@ -400,26 +408,26 @@
                             </tr>
                                 <?php if($is_cashed): ?>
                                 <tr >
-                                    <td width="150" class="oa_cell-left">是否可以使用现金券：</td>
+                                    <td width="17%" class="oa_cell-left">是否可以使用现金券：</td>
                                     <td class="oa_cell-right">
                                         <input type="checkbox" onclick="javascript:show_chkpay()" name="is_use_cashed" id="chkvolume" value="1" <?php if ($datainfo['is_use_cashed'] == 1) {echo "checked";}?>></input>
                                     </td>
                                 </tr>
                                 <tr id="set_volume" <?php if ($datainfo['is_use_cashed'] != 1) {echo "style=\"display: none;\"";}?> >
-                                    <td width="150" class="oa_cell-left"><span style="color:#ff0000">*</span>设置：</td>
+                                    <td width="17%" class="oa_cell-left"><span style="color:#ff0000">*</span>设置：</td>
                                     <td class="oa_cell-right">
                                         <div><span style="padding-left: 12px;color: #333">最大数量：</span><input name="max_use" type="text" value="<?php echo $datainfo['max_use']; ?>"  class="form-control "  style="width:100px;" />(张) <font style="color:red;">&nbsp;&nbsp; 0表示不限制</font></div>
                                         <div style="padding-top:5px;"><span style="padding-left: 12px;color: #333">最大金额：</span><input name="max_amount" type="text" value="<?php echo intval($datainfo['max_amount']) ?>"  class="form-control "  style="width:100px;"  />(元) <font style="color:red;">&nbsp;&nbsp; 0表示不限制</font> </div>
                                     </td>
                                 </tr>
                                 <tr id="is_can_receive" <?php if ($datainfo['is_use_cashed'] != 1) {echo "style=\"display: none;\"";}?>>
-                                    <td width="150" class="oa_cell-left">是否可以领取现金券：</td>
+                                    <td width="17%" class="oa_cell-left">是否可以领取现金券：</td>
                                     <td class="oa_cell-right">
                                         <input type="checkbox" onclick="javascript:show_cash()" name="is_receive_cashed" id="chkcash" value="1" <?php if ($datainfo['is_receive_cashed'] == 1) {echo "checked";}?>></input>
                                     </td>
                                 </tr>
                                 <tr  id="set_cash" <?php if ($datainfo['is_receive_cashed'] != 1) {echo "style=\"display: none;\"";}?> >
-                                    <td width="150" class="oa_cell-left"><span style="color:#ff0000">*</span>设置：</td>
+                                    <td width="17%" class="oa_cell-left"><span style="color:#ff0000">*</span>设置：</td>
                                     <td class="oa_cell-right">
                                         <div style="padding-top:5px;"><span style="padding-left: 12px;color: #333">领券金额：</span><input name="activity_cashed_amount" type="text" value="<?php echo intval($datainfo['activity_cashed_amount']) ?>"  class="form-control "  style="width:100px;"  />(元)  </div>
                                         <div style="padding-top:5px;"><span style="padding-left: 24px;color: #333">有效期：</span><input name="activity_cashed_validity" type="text" value="<?php echo $datainfo['activity_cashed_validity']; ?>"  class="form-control "  style="width:100px;"  />(天)
@@ -445,13 +453,13 @@
                                     </td>
                                 </tr>
                                 <tr >
-                                    <td width="150" class="oa_cell-left">是否可以分享现金券：</td>
+                                    <td width="17%" class="oa_cell-left">是否可以分享现金券：</td>
                                     <td class="oa_cell-right">
                                         <input type="checkbox" onclick="javascript:show_is_share_cashed()" name="is_share_cashed" id="is_share_cashed" value="1" <?php if ($datainfo['is_share_cashed'] == 1) {echo "checked";}?>></input>
                                     </td>
                                 </tr>
                                 <tr id="set_share_cashed" <?php if ($datainfo['is_share_cashed'] != 1) {echo "style=\"display: none;\"";}?> >
-                                <td width="150" class="oa_cell-left"><span style="color:#ff0000">*</span>设置现金券计划：</td>
+                                <td width="17%" class="oa_cell-left"><span style="color:#ff0000">*</span>设置现金券计划：</td>
                                 <td class="oa_cell-right">
                                     <div>
                                         <select name="cashed_plan_id" id="cashed_plan_id" >
@@ -467,28 +475,28 @@
                                 </tr>
                                 <?php endif; ?>
                             <tr>
-                                <td width="150" class="oa_cell-left">是否需要关注：</td>
+                                <td width="17%" class="oa_cell-left">是否需要关注：</td>
                                 <td class="oa_cell-right">
                                     <input type="checkbox" name="chkissubscribe" value="1" <?php if ($datainfo['chkissubscribe'] == 1) {echo "checked";}?> >勾选此项则需要用户关注公众号后才能下单</input>
                                 </td>
                             </tr>
                             <tr class="hidden">
-                                <td width="150" class="oa_cell-left"><span style="color:#ff0000">*</span>活动总库存(0为不限)：</td>
+                                <td width="17%" class="oa_cell-left"><span style="color:#ff0000">*</span>产品总库存(0为不限)：</td>
                                 <td class="oa_cell-right">
-                                    <input name="intsignnum" disabled="disabled" id="intsignnum" type="text" value="<?php echo $datainfo['intsignnum']; ?>" class="form-control "  style="width:300px;"  chname="活动总库存(0为不限)"  />
+                                    <input name="intsignnum" disabled="disabled" id="intsignnum" type="text" value="<?php echo $datainfo['intsignnum']; ?>" class="form-control "  style="width:300px;"  chname="产品总库存(0为不限)"  />
                                 </td>
                             </tr>
                             <tr id="allow-refund" style="<?=$datainfo['ischarge'] == 1 ? 'display: none' : '';?>">
-                                <td width="150" class="oa_cell-left">是否可申请退款：</td>
+                                <td width="17%" class="oa_cell-left">是否可申请退款：</td>
                                 <td class="oa_cell-right">
-                                    <select name="isrefund" id="isrefund" class="form-control" style="width: auto; height: 30px" >
+                                    <select name="isrefund" id="isrefund" class="form-control" style="width: auto; height: 34px" >
                                         <option value="1" <?php if (1 == $datainfo['isrefund']) {echo "selected";}?> >是</option>
                                         <option value="0" <?php if (0 == $datainfo['isrefund']) {echo "selected";}?> >否</option>
                                     </select>
                                 </td>
                             </tr>
                             <tr>
-                                <td width="150" class="oa_cell-left"><span style="color:#ff0000">*</span>报名模版：</td>
+                                <td width="17%" class="oa_cell-left"><span style="color:#ff0000">*</span>报名模版：</td>
                                 <td class="oa_cell-right">
                                     <select name="selsignfrom" id="selsignfrom" >
                                         <option value="0">请选报名模版</option>
@@ -500,13 +508,13 @@
                                 </td>
                             </tr>
                             <tr style="display: none;">
-                                <td width="150" class="oa_cell-left">开启支付：</td>
+                                <td width="17%" class="oa_cell-left">开启支付：</td>
                                 <td class="oa_cell-right">
                                     <input type="checkbox" name="chkpay" value="1" <?php if ($datainfo['chkpay'] == 1) {echo "checked";}?>>开启支付</input>
                                 </td>
                             </tr>
                             <tr style="display: none;">
-                                <td width="150" class="oa_cell-left">支付方式：</td>
+                                <td width="17%" class="oa_cell-left">支付方式：</td>
                                 <td class="oa_cell-right">
                                     <select name="selpaytype1" id="selpaytype1">
                                         <option value="1" <?php if ($datainfo['selpaytype1'] != 2) {echo "checked";}?>>线上支付</option>
@@ -515,33 +523,33 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td width="150" class="oa_cell-left">限制1：</td>
+                                <td width="17%" class="oa_cell-left">限制1：</td>
                                 <td class="oa_cell-right">
                                     <input type="checkbox" name="chkismobile" value="1" <?php if ($datainfo['chkismobile'] == 1) {echo "checked";}?>>同一手机号只能下单一次（下单表单中必须有手机类型框）</input>
                                 </td>
                             </tr>
                             <tr>
-                                <td width="150" class="oa_cell-left">限制2：</td>
+                                <td width="17%" class="oa_cell-left">限制2：</td>
                                 <td class="oa_cell-right">
                                     <input type="checkbox" name="chkisidcard" value="1" <?php if ($datainfo['chkisidcard'] == 1) {echo "checked";}?>>同一身份证号只能下单一次（下单表单中必须有身份证类型框）</input>
                                 </td>
                             </tr>
                             <tr>
-                                <td width="150" class="oa_cell-left">限制3：</td>
+                                <td width="17%" class="oa_cell-left">限制3：</td>
                                 <td class="oa_cell-right">
                                     <input name="intmaxpaynum" id="intmaxpaynum" type="text" value="<?php echo $datainfo['intmaxpaynum']; ?>" class="form-control "  style="width:100px;"  chname="限制3">
                                     单次最大购买数量，0表示不限
                                 </td>
                             </tr>
                             <tr>
-                                <td width="150" class="oa_cell-left">限制4：</td>
+                                <td width="17%" class="oa_cell-left">限制4：</td>
                                 <td class="oa_cell-right">
                                     <input name="intmaxmobilepaynum" id="intmaxmobilepaynum" type="text" value="<?php echo $datainfo['intmaxmobilepaynum']; ?>" class="form-control "  style="width:100px;"  chname="限制4"  />
                                     单个手机号累计购买上限，0表示不限（下单表单中必须有手机类型框）
                                 </td>
                             </tr>
                             <tr>
-                                <td width="150" class="oa_cell-left">限制5：</td>
+                                <td width="17%" class="oa_cell-left">限制5：</td>
                                 <td class="oa_cell-right">
                                     <input name="intmaxidcardpaynum" id="intmaxidcardpaynum" type="text" value="<?php echo $datainfo['intmaxidcardpaynum']; ?>" class="form-control "  style="width:100px;"  chname="限制5"  />
                                     单个身份证累计购买上限，0表示不限（下单表单中必须有身份证类型框）
@@ -549,13 +557,13 @@
                             </tr>
                                 <?php if($is_distribution): ?>
                             <tr>
-                                <td width="150" class="oa_cell-left">开启分销：</td>
+                                <td width="17%" class="oa_cell-left">开启分销：</td>
                                 <td class="oa_cell-right">
-                                    <input type="checkbox" name="is_distribution" id="is_distribution" value="1" onclick="javascript:show_is_distribution()" <?php if($datainfo['is_distribution']==1) { echo "checked"; } ?>><span style="color: red">勾选后，该活动可参与分销功能，套餐中的销售佣金和奖励金字段需要填写</span>
+                                    <input type="checkbox" name="is_distribution" id="is_distribution" value="1" onclick="javascript:show_is_distribution()" <?php if($datainfo['is_distribution']==1) { echo "checked"; } ?>><span style="color: red">勾选后，该产品可参与分销功能，套餐中的销售佣金和奖励金字段需要填写</span>
                                 </td>
                             </tr>
                                 <tr <?php if($datainfo['is_distribution']!=1) { echo "style=\"display: none;\""; } ?> id="distribution_img_tr">
-                                    <td width="150" class="oa_cell-left"><span style="color: red">*</span>分销海报图片：</td>
+                                    <td width="17%" class="oa_cell-left"><span style="color: red">*</span>分销海报图片(720x1280)：</td>
                                     <td class="oa_cell-right">
                                         <input name="distribution_img" id="distribution_img" type="text" value="<?php echo $datainfo['distribution_img']; ?>" chname="分销海报图片（720x1280）"   class="form-control "  style="width:800px;" />
                                         <input onclick="uploadimgcut('distribution_img','admin',720,1280);" type="button" value="上传图片"/>
@@ -564,7 +572,7 @@
                                 </tr>
                                 <?php endif; ?>
                             <tr class="paytypecontent2">
-                                <td width="150" class="oa_cell-left"> </td>
+                                <td width="17%" class="oa_cell-left"> </td>
                                 <td>
                                     <input style="border:none;text-align:center;" readonly="true" type="text" class="oa_input-100" value="关键字1(必填)" />
                                     <input style="border:none;text-align:center;" readonly="true" type="text" class="oa_input-100" value="关键字2" />
@@ -602,7 +610,7 @@
                             foreach ($datainfo['selcontent'] as $selcontent_index => $value):
                             ?>
                                 <tr class="paytypecontent2">
-                                    <td width="150" class="oa_cell-left" style="vertical-align: top; padding-top:8px;">套餐<?php echo $selcontent_index + 1; ?>:</td>
+                                    <td width="17%" class="oa_cell-left" style="vertical-align: top; padding-top:8px;">套餐<?php echo $selcontent_index + 1; ?>:</td>
                                     <td id="selcontent_<?php echo $selcontent_index + 1; ?>">
                                         <!-- <div> -->
                                             <input name="packages[<?php echo $selcontent_index; ?>][keyword1]" type="text" class="keyword1 oa_input-100" value="<?php echo $value['keyword1']; ?>" />
@@ -640,12 +648,12 @@
                                                             <td>
                                                                 <span class="td-left">成团商品数量</span>
                                                                 <input class="td-right form-control" type="text" name="packages[<?php echo $selcontent_index; ?>][group_buy][<?php echo $groupBuyIndex; ?>][group_num]" value="<?php echo $groupBuy['group_num']; ?>" style="width: 100px;">
-                                                                <span>必须大于等于2</span>
+                                                                <span style="color: red">必须大于等于2</span>
                                                             </td>
                                                         </tr>
                                                         <tr>
                                                             <td>
-                                                                <span class="td-left">拼团活动开始时间</span>
+                                                                <span class="td-left">拼团开始时间</span>
                                                                 <div class="oa_cell-right" style="display: inline-block; vertical-align: middle;">
                                                                     <div style="width:250px" class="input-prepend input-group">
                                                                         <span class="add-on input-group-addon">
@@ -661,7 +669,7 @@
                                                         </tr>
                                                         <tr>
                                                             <td>
-                                                                <span class="td-left">拼团活动结束时间</span>
+                                                                <span class="td-left">拼团结束时间</span>
                                                                 <div class="oa_cell-right" style="display: inline-block; vertical-align: middle;">
                                                                     <div style="width:250px" class="input-prepend input-group">
                                                                         <span class="add-on input-group-addon">
@@ -680,7 +688,7 @@
                                                             <td>
                                                                 <span class="td-left">团购价格</span>
                                                                 <input class="td-right form-control" type="text" name="packages[<?php echo $selcontent_index; ?>][group_buy][<?php echo $groupBuyIndex; ?>][group_buy_price]" value="<?php echo $groupBuy['group_buy_price']; ?>" style="width: 100px;">
-                                                                <span>元</span>
+                                                                <span style="color: #333">元</span>
                                                             </td>
                                                         </tr>
                                                         <tr class="hidden">
@@ -697,15 +705,15 @@
                                                                 <span class="td-left">时间限制类型</span>
                                                                 <select name="packages[<?php echo $selcontent_index; ?>][group_buy][<?php echo $groupBuyIndex; ?>][time_limit_type]" class="form-control time-limit-type" style="width: auto; height: 34px">
                                                                     <option value="1" <?=$groupBuy['time_limit_type'] == 1 ? 'selected="selected"' : ''?> >开团固定时间后拼团结束</option>
-                                                                    <option value="2" <?=$groupBuy['time_limit_type'] == 2 ? 'selected="selected"' : ''?> >拼团活动结束时间到，所有拼团活动立刻停止</option>
+                                                                    <option value="2" <?=$groupBuy['time_limit_type'] == 2 ? 'selected="selected"' : ''?> >拼团结束时间到，所有拼团立刻停止</option>
                                                                 </select>
                                                             </td>
                                                         </tr>
                                                         <tr class="time-limit">
                                                             <td>
                                                                 <span class="td-left">组团时间限制</span>
-                                                                <input class="td-right form-control" autocomplete="off" <?=$groupBuy['time_limit_type'] == 2 ? 'disabled' : '' ?>  name="packages[<?php echo $selcontent_index; ?>][group_buy][<?php echo $groupBuyIndex; ?>][time_limit]" type="text" value="<?php echo $groupBuy['time_limit']; ?>" style="width: 100px;">
-                                                                <span>小时</span>
+                                                                <input class="td-right form-control" autocomplete="off" <?=$groupBuy['time_limit_type'] == 2 ? 'disabled' : '' ?>  name="packages[<?php echo $selcontent_index; ?>][group_buy][<?php echo $groupBuyIndex; ?>][time_limit]" type="text" value="<?php echo $groupBuy['time_limit']==0?'':$groupBuy['time_limit']; ?>" style="width: 100px;">
+                                                                <span style="color: #333">小时</span>
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -874,7 +882,7 @@
 
         if($("#chrtitle").val()=="")
         {
-            alert("请输入活动标题");
+            alert("请输入产品标题");
             return false;
         }
         if($("#fidtype").val()=="")
@@ -898,6 +906,7 @@
                 if(flag == 2 || flag == 1){
                     var price = /^(([1-9]\d{0,6})|0)([.]{1}[0-9]{1,2})?$/; //金额
                     var int =  /^[0-9]*$/;//整数
+                    var int_not_zero = /^[1-9]\d{0,8}$/;
                     //如果选中可以使用现金券
                     if($('#chkvolume').is(':checked')){
                         //最大数量
@@ -914,11 +923,10 @@
                     //如果选中可以领取现金券
                     if($('#chkcash').is(':checked')){
                         //领券金额
-                        if(!int.test($('input[name="activity_cashed_amount"]').val())){
+                        if(!int_not_zero.test($('input[name="activity_cashed_amount"]').val())){
                             alert("请设置以整数为领券金额");
                             throw 'error';
                         }
-                        var int_not_zero = /^[1-9]\d{0,8}$/;
                         //有效期
                         if(!int_not_zero.test($('input[name="activity_cashed_validity"]').val()) || $('input[name="activity_cashed_validity"]').val() == ''){
                             alert("请设置以整数为有效期");
@@ -981,12 +989,12 @@
                         //如果选中开启分销
                         if ($('#is_distribution').is(':checked')) {
                             //销售佣金
-                            if (!one_price.test($(this).find('.sell_commission').eq(0).val())) {
+                            if (!one_price.test($(this).find('.sell_commission').eq(0).val()) || $(this).find('.sell_commission').eq(0).val() == 0) {
                                 alert("请设置套餐" + index + "的销售佣金字段的值为整数或一位小数！");
                                 throw 'error';
                             }
                             //奖励金
-                            if (!one_price.test($(this).find('.bounty_commission').eq(0).val())) {
+                            if (!one_price.test($(this).find('.bounty_commission').eq(0).val()) || $(this).find('.bounty_commission').eq(0).val() == 0) {
                                 alert("请设置套餐" + index + "的奖励金字段的值为整数或一位小数！");
                                 throw 'error';
                             }
@@ -1394,7 +1402,21 @@
         }
     });
 
-
+    function reserveCheck(){
+        var id = <?php echo $datainfo['idactivity']; ?>;
+        $.ajax({
+            type: "post",
+            url: "<?php echo url('activity/reservecheck'); ?>",
+            data: {"id":id},
+            dataType: "text",
+            success:function(result){
+                if(result == 1){
+                    $('#is_reserve').prop("checked",false);
+                    layer.msg("开启失败，套餐里不能包含拼团!");
+                }
+            }
+        });
+    }
 </script>
 
 <table class="ass-table" id="ass-table" style="margin-left:20px; display: none; ">
@@ -1410,12 +1432,12 @@
         <td>
             <span class="td-left">成团商品数量</span>
             <input class="td-right form-control" type="text" name="packages[package_index][group_buy][group_buy_index][group_num]" value="" style="width: 100px;">
-            <span>必须大于等于2</span>
+            <span style="color: red">必须大于等于2</span>
         </td>
     </tr>
     <tr>
         <td>
-            <span class="td-left">拼团活动开始时间</span>
+            <span class="td-left">拼团开始时间</span>
             <div class="oa_cell-right" style="display: inline-block; vertical-align: middle;">
                 <div style="width:250px" class="input-prepend input-group">
                     <span class="add-on input-group-addon">
@@ -1431,7 +1453,7 @@
     </tr>
     <tr>
         <td>
-            <span class="td-left">拼团活动结束时间</span>
+            <span class="td-left">拼团结束时间</span>
             <div class="oa_cell-right" style="display: inline-block; vertical-align: middle;">
                 <div style="width:250px" class="input-prepend input-group">
                     <span class="add-on input-group-addon">
@@ -1449,7 +1471,7 @@
         <td>
             <span class="td-left">团购价格</span>
             <input class="td-right form-control" type="text" name="packages[package_index][group_buy][group_buy_index][group_buy_price]" value="" style="width: 100px;">
-            <span>元</span>
+            <span style="color: #333">元</span>
         </td>
     </tr>
     <tr class="hidden">
@@ -1466,7 +1488,7 @@
             <span class="td-left">时间限制类型</span>
             <select name="packages[package_index][group_buy][group_buy_index][time_limit_type]" class="form-control time-limit-type" style="width: auto; height: 34px">
                 <option value="1" >开团固定时间后拼团结束</option>
-                <option value="2" >拼团活动结束时间到，所有拼团活动立刻停止</option>
+                <option value="2" >拼团结束时间到，所有拼团立刻停止</option>
             </select>
         </td>
     </tr>
@@ -1474,7 +1496,7 @@
         <td>
             <span class="td-left">组团时间限制</span>
             <input class="td-right form-control" autocomplete="off" name="packages[package_index][group_buy][group_buy_index][time_limit]" type="text" value="" style="width: 100px;">
-            <span>小时</span>
+            <span style="color: #333">小时</span>
         </td>
     </tr>
     <tr>

@@ -1,0 +1,38 @@
+<!-- 报名列表底部栏 -->
+<div class="footernav-wrap">
+      <div class="footernav-wrap-inner">
+        <form class="footer-comment-form" method="post" name="">
+          <div class="footer-comment-textarea">
+            <p>退款理由</p>
+            <textarea name="content" id="content"></textarea>
+          </div>
+          <div class="footer-comment-file">
+            <p>退款图片</p>
+            <label for="upimage" class="file-label">
+              <input type="button" value="点我上传">
+              <span class="red">请上传图片</span>
+              <input type="file" name="image" id="upimage" onchange="getfilename(this);"></label>
+          </div>
+          <div class="comment-submit">
+            <input type="button" onclick="javascript:add_comment1();" value="提交">
+            <input type="button" value="取消" id="close-comment">
+          </div>
+        </form>
+        <ul class="flex footernavbar">
+
+          <li>
+            <a href="/{$sitecode}" class="flexCol footernavbar-link">
+              <span><i class="iconfont">&#xe61a;</i></span>
+              <p>首页</p>
+            </a>
+          </li>
+
+          <li>
+            <a href="/{$sitecode}/mine" class="flexCol footernavbar-link bgColor on">
+              <span><i class="iconfont">&#xe666;</i></span>
+              <p>个人中心</p>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>

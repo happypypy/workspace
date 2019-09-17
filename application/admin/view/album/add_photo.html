@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/static/css/page.css?1" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="__PUBLIC__/static/js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/js/del-checked.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/CostomLinkOpenSw.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/lhgdialog.js?skin=aero"></script>
+    <link rel="stylesheet" href="__PUBLIC__/static/plugins/layui/css/layui.css" media="all">
+    <script type="text/javascript" src="__PUBLIC__/static/plugins/layui/layui.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/layer/layer.js"></script>
+</head>
+<body>
+<div class="oa_pop">
+  <div class="oa_pop-main">
+  	<div class="oa_edition">
+        <div class="layui-upload" style="margin-top: 10px;margin-bottom: 20px">
+            <button type="button" class="layui-btn layui-btn-normal" id="test2">选择多文件</button>
+            <div class="layui-upload-list">
+                <table class="layui-table">
+                    <thead>
+                    <tr>
+                        <th>文件名</th>
+                        <th>大小</th>
+                        <th>状态</th>
+                        <th>预览图</th>
+                        <th>操作</th>
+                    </tr></thead>
+                    <tbody id="demoList"></tbody>
+                </table>
+            </div>
+            <button type="button" class="layui-btn" id="testListAction">开始上传</button>
+        </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+<script type="text/javascript">
+    function loading(msg){
+        layer.msg(msg, {
+            icon:16,
+            shade:[0.1, '#fff'],
+            time:false  //取消自动关闭
+        })
+    }
+
+    var filesCount=0;
+    var updata_end=false;
+    layui.use('upload', function() {
+        var $ = layui.jquery
+            , upload = layui.upload;
+        var upurl ='/index.php/admin/Uploadify/uploadphoto/path/photo';
+        //多文件列表示例
+        var demoListView = $('#demoList')
+            ,uploadListIns = upload.render({
+            elem: '#test2'
+            ,url: upurl
+            ,accept: 'file'
+            ,multiple: true
+            ,auto: false
+            ,exts: 'jpg|png|gif|bmp|jpeg'
+            ,bindAction: '#testListAction'
+            ,choose: function(obj){
+                var files = this.files = obj.pushFile(); //将每次选择的文件追加到文件队列
+                //读取本地文件
+                obj.preview(function(index, file, result){
+                    var tr = $(['<tr id="upload-'+ index +'">'
+                        ,'<td>'+ file.name +'</td>'
+                        ,'<td>'+ (file.size/1014).toFixed(1) +'kb</td>'
+                        ,'<td>等待上传</td>'
+                        ,'<td>'+ '<img src="'+ result +'" alt="'+ file.name +'" class="layui-upload-img" style="width: 60px;height: 60px">' +'</td>'
+                        ,'<td>'
+                        ,'<button class="layui-btn layui-btn-xs demo-reload layui-hide">重传</button>'
+                        ,'<button class="layui-btn layui-btn-xs layui-btn-danger demo-delete">删除</button>'
+                        ,'</td>'
+                        ,'</tr>'].join(''));
+
+                    //单个重传
+                    tr.find('.demo-reload').on('click', function(){
+                        obj.upload(index, file);
+                    });
+
+                    //删除
+                    tr.find('.demo-delete').on('click', function(){
+                        delete files[index]; //删除对应的文件
+                        tr.remove();
+                        uploadListIns.config.elem.next()[0].value = ''; //清空 input file 值，以免删除后出现同名文件不可选
+                    });
+
+                    demoListView.append(tr);
+                });
+            }
+            ,done: function(res, index, upload){
+                if(res.code == 0){ //上传成功
+                    filesCount++;
+                    //调用添加图片到数据库并且注册人脸
+                    $.ajax({
+                        url:"/admin/album/add_photo/album_id/"+{$album_id},
+                        data:res,
+                        type:"post",
+                        dataType:"json",
+                        success:function(msg) {
+                            //这里减减是用来判断是否人脸图片处理完，因为这里是两个异步请求，里面处理的比较慢
+                            filesCount--;
+                            //当所有文件上传结束后，并且这里异步也处理完
+                            if(updata_end==true && filesCount<1)
+                            {
+                                return layer.alert('文件上传完成',{
+                                    time:1000,
+                                    end:function () {
+                                        //让上一级进行刷新
+                                        GetOpenerWin().location.reload();
+                                        CloseDiv();
+                                    }
+                                })
+
+                            }
+                        }
+                    });
+                    var tr = demoListView.find('tr#upload-'+ index)
+                        ,tds = tr.children();
+                    tds.eq(2).html('<span style="color: #5FB878;">上传成功</span>');
+                    tds.eq(4).html(''); //清空操作
+                    delete this.files[index]; //删除文件队列已经上传成功的文件
+                    //看文件对象是否为空
+                    for(var a in this.files){
+                        return;
+                    }
+                    updata_end=true;
+                    loading("数据处理中，请稍等！");
+                    // alert(filesCount);
+                    // layer.alert('文件上传完成，正在处理数据');
+                    //如果为空的话，那么就执行弹框并且关闭窗口
+                    // return setTimeout(function(){
+                    //     layer.alert('上传成功',{
+                    //         time:1500,
+                    //         end:function () {
+                    //             //让上一级进行刷新
+                    //             GetOpenerWin().location.reload();
+                    //             CloseDiv();
+                    //         }
+                    //     })
+                    // },1000);
+                }
+                this.error(index, upload);
+            }
+            // ,error: function(index, upload){
+            //     var tr = demoListView.find('tr#upload-'+ index)
+            //         ,tds = tr.children();
+            //     tds.eq(2).html('<span style="color: #FF5722;">上传失败</span>');
+            //     tds.eq(4).find('.demo-reload').removeClass('layui-hide'); //显示重传
+            // }
+        });
+    });
+</script>
+</html>

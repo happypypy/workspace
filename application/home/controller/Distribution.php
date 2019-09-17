@@ -1,0 +1,990 @@
+<?php
+
+namespace app\home\controller;
+
+use think\Request;
+use think\Log;
+
+class Distribution extends BaseAuth {
+    /**
+     * 生成产品海报的图片
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function getActivityImg()
+    {
+//        echo $_SERVER['HTTP_HOST'];exit;
+        $request = Request::instance()->param();
+        $id = $request['id']; // 当前内容id
+        //查询出该产品的海报图片
+        $activity = $datainfo=db("activity")->field("distribution_img")->find($id);
+        if(!$activity['distribution_img']){
+            die('未找到分销的海报');
+        }
+        $sitecode=$request['sitecode'];
+        $idsite = $this->siteid;
+        //判断是否开启了现金券营销包
+        if(!checkedMarketingPackage($idsite,'distribution')){
+            die('没有权限,请先订购营销包！');
+        }
+        $userid = $this->userinfo['idmember'];
+//        $userid=66;
+        //查询用户的数据
+        $user_info = db('member')->where(['idsite'=>$idsite,'idmember'=>$userid])->find();
+        if($user_info['spokesman_grade'] == 0){
+            die('您不是代言人,请先成为代言人');
+        }
+        //扫描二维码的链接
+        $url = ROOTURL."/".$sitecode."/detail/".$id."?a={$userid}";//带上分享海报用户的id
+//        echo $url;exit;
+        //二维码的图片地址
+        $filepath='public/code/'.$idsite.'/';
+        if(!is_dir($filepath)){
+            mkdir($filepath, 0777,true);
+        }
+        $img = $filepath.'user_'.$userid.'activity_id'.$id.'.png';
+        //产品的海报图片是720*1280的
+        $source       = ROOTURL.$activity['distribution_img'];
+//       判断
+        if(file_exists(trim($activity['distribution_img'],'/')) == false){
+            return '';
+        }
+        //二维码图片地址
+        $codeurl = $img;
+        if(false == file_exists($codeurl)){
+            ob_end_clean();
+            include_once('../thinkphp/library/think/Phpqrcode/phpqrcode.php');
+            $size=6;
+            Vendor('Phpqrcode.phpqrcode');
+            $obj=new \QRcode();
+            $obj::png($url,$img,QR_ECLEVEL_L,$size,4,false,0xFFFFFF,0x000000);
+        }
+//        halt(getimagesize($source));
+        $this->get_source($source,$idsite);
+        //获取资源的宽高
+        $img_arr = getimagesize($source);
+//        exit;二维码宽高182*182
+        #################################
+        //二维码位于图片中的位置
+        $sourcewidth  = $img_arr[0] - 182 - 3;//宽
+        $sourceheight = $img_arr[1] - 182 - 3;//高
+        //设置二维码
+        $generateImg  = $this->generateImg($source, $codeurl, $sourcewidth, $sourceheight);
+//        echo "<img src='/$generateImg'/>";exit;
+        $text         = "$userid";
+        //字的位置,图片宽的位置减去半个二维码
+//        $textwidth    = $img_arr[0] - 182/2 - 5;
+        $textwidth    = $img_arr[0] - 182/2 +60;
+        //为了让字体居中
+        if(strlen($text) > 2){
+            //每增加一个字符宽度减去6
+            $textwidth -= (strlen($text)-2) * 6 ;
+        }
+        $textherght   = $img_arr[1] - 8;
+        //设置字体
+        $generateFont = $this->generateFont($generateImg, $text, $textwidth, $textherght);
+//        echo "<img src='/$generateFont'/>";exit;
+        ##########################################################
+
+        //获得栏目列表模版路径
+        $roottpl = 'template/modules/';
+        $url =  $roottpl.'/distribution/distribution_img.html';
+        $this->assign('roottpl','/'.$roottpl);
+        $this->assign('img',$generateFont);
+        return $this->fetch($url);
+    }
+
+    /**
+     * 生成代言人海报的图片
+     * @param $user_img
+     * @param $template_img
+     * @return mixed
+     */
+    public function getSpokesmanImg($user_img,$template_img)
+    {
+//        echo $_SERVER['HTTP_HOST'];exit;
+        if(file_exists(trim($template_img,'/')) == false){
+            return '';
+        }
+        $request = Request::instance()->param();
+        $sitecode=$request['sitecode'];
+        $idsite = $this->siteid;
+        $userid = $this->userinfo['idmember'];
+        //扫描二维码的链接
+        $url = ROOTURL."/".$sitecode."/spokesmanregister/?share_id={$userid}";//带上分享海报用户的id
+//        echo $url;exit;
+        //二维码的图片地址
+        $filepath='public/spokesman_poster_img/'.$idsite.'/';
+        if(!is_dir($filepath)){
+            mkdir($filepath, 0777,true);
+        }
+        $img = $filepath.'user_'.$userid.'.jpg';
+        //产品的海报图片是720*1280的
+        $source       = ROOTURL.$template_img;
+        //二维码图片地址
+        $codeurl = $img;
+        if(false == file_exists($codeurl)){
+            ob_end_clean();
+            include_once('../thinkphp/library/think/Phpqrcode/phpqrcode.php');
+            $size=6;
+            Vendor('Phpqrcode.phpqrcode');
+            $obj=new \QRcode();
+            $obj::png($url,$img,QR_ECLEVEL_L,$size,4,false,0xFFFFFF,0x000000);
+        }
+        //将用户头像保存在的位置
+        $new_user_img = $filepath.'user_img'.$userid.'.png';
+        //调用读取微信的图片并且保存的方法,微信图片的本质是jpg格式
+        $this->userIconSave($user_img,$new_user_img);
+        $this->get_source($source,$idsite);
+        //获取资源的宽高,默认是720X1280
+        $img_arr = getimagesize($source);
+//        exit;二维码宽高182
+        #################################
+        $sourcewidth  = $img_arr[0]/2 - 182/2;//宽,位于图片的居中减去二维码的一半
+        $sourceheight = $img_arr[1] - 182 - 100;//高位于图片底部的上面100像素
+//        //设置二维码
+        $generateImg  = $this->generateImg($source, $codeurl, $sourcewidth, $sourceheight);
+        //将用户的头像再加上去
+        $user_sourcewidth  = $img_arr[0]/2 - 132/2;//宽
+        $user_sourceheight = 75;//高位于顶部75
+        //设置头像
+        $Img  = $this->generateImg($generateImg, $new_user_img, $user_sourcewidth, $user_sourceheight,132,132);
+//        echo "<img src='/$Img'/>";exit;
+        return $Img;
+    }
+
+        /**
+     * 个人代言数据
+     * @return mixed
+     */
+    public function endorse_data()
+    {
+        $request = Request::instance()->param();
+        $sitecode=$request['sitecode'];
+        $idsite = $this->siteid;
+        //判断是否开启了现金券营销包
+        if(!checkedMarketingPackage($idsite,'distribution')){
+            die('没有权限,请先订购营销包！');
+        }
+        $userid = $this->userinfo['idmember'];
+//        $userid=66;
+        //查询用户的数据
+        $user_info = db('member')->where(['idsite'=>$idsite,'idmember'=>$userid])->find();
+        if($user_info['spokesman_grade'] == 0){
+            die('您不是代言人,请先成为代言人');
+        }
+        //查询出个人今天代言的订单数据
+        $today_where['dtcreatetime'] = ['like','%'.date('Y-m-d',time()).'%'];//
+        //代言人id
+        $where['spokesman_user_id3'] = ['=',$userid];
+        $where['idsite'] = ['=',$idsite];
+        $where['source'] = ['=','代言人订单'];
+        $where['paytype1'] = ['<>',0];//已经支付过
+        //结算类型(已结算或者未结算的没有全额退款)
+        $where_str = 'is_balance = 1 or ((isrefundpart is NULL or isrefundpart = 1) and is_balance = 2)';
+        $today_where_one = array_merge($where,$today_where);
+        $today_order_info = db('order')->field('count(id) as num,sum(sell_commission) as sell_commission')->where($today_where_one)->where($where_str)->find();
+//        halt($today_order_info);
+        //历史成交订单数量
+        $history_order_info = db('order')->field('count(id) as num')->where($where)->where($where_str)->find();
+        $today_spokesman_info = [];
+        $spokesman_info = [];
+        $today_spokesman_order = [];
+        $history_spokesman_order = [];
+        $spokesman_img_path = '';
+        //如果是一级代言人,需要查询出该代言人的发展数据
+        if($user_info['spokesman_grade'] == 1){
+            //下级代言人
+            $spokesman_where['idsite'] = ['=',$idsite];
+            $spokesman_where['parent_user_id'] = $userid;
+            //今天发展的代言人
+            $today_spokesman_where['spokesman_time'] = ['like','%'.date('Y-m-d',time()).'%'];
+            $today_spokesman_where = array_merge($today_spokesman_where,$spokesman_where);
+            //查询出今日的发展代言人
+            $today_spokesman_info = db('member')->field('count(idmember) as num')->where($today_spokesman_where)->find();
+            //查询出所有发展的代言人
+            $spokesman_info = db('member')->field('count(idmember) as num')->where($spokesman_where)->find();
+            //今日所属代言人订单总数
+            $spokesman_order_where['spokesman_user_id2'] = ['=',$userid];//上级id
+            $spokesman_order_where['idsite'] = ['=',$idsite];
+            $spokesman_order_where['source'] = ['=','代言人订单'];
+            $spokesman_order_where['paytype1'] = ['<>',0];//已经支付过
+            $today_spokesman_order_where = array_merge($spokesman_order_where,$today_where);
+            //查询出今日的代言订单数据
+            $today_spokesman_order = db('order')->field('count(id) as num,sum(bounty_commission2) as bounty_commission2')->where($today_spokesman_order_where)->where($where_str)->find();
+            //历史发展代言订单
+            $history_spokesman_order = db('order')->field('count(id) as num,sum(bounty_commission2) as bounty_commission2')->where($spokesman_order_where)->where($where_str)->find();
+            //查询出该站点的代言人模板图片
+            $spokesman_img = db('spokesman_poster')->where(['site_id'=>$idsite])->find();
+            //如果存在代言人模板图片
+            if($spokesman_img){
+                $spokesman_img_path = $this->getSpokesmanImg($user_info['userimg'],$spokesman_img['spokesman_poster_img']);
+            }
+//            halt($history_spokesman_order);
+        }
+//        halt($today_order_info);
+        $roottpl = 'template/modules/';
+        //获得栏目列表模版路径
+        $url =$roottpl.'/distribution/endorse_data.html';
+
+        $this->assign('roottpl','/'.$roottpl);
+        $this->assign('sitecode',$sitecode);
+        $this->assign('idsite',$idsite);
+        $this->assign('user_info',$user_info);
+        $this->assign('today_order_info',$today_order_info);//代言人今日的订单数据
+        $this->assign('history_order_info',$history_order_info);//代言人历史的成交订单数据
+        $this->assign('today_spokesman_info',$today_spokesman_info);//代言人今天发展的代言人数据
+        $this->assign('spokesman_info',$spokesman_info);//代言人总的发展的代言人数据
+        $this->assign('today_spokesman_order',$today_spokesman_order);//代言人今天发展的代言人的订单数据
+        $this->assign('history_spokesman_order',$history_spokesman_order);//代言人所有发展的代言人的订单数据
+        $this->assign('spokesman_img_path',$spokesman_img_path);//代言人的发展海报图片地址
+        $this->assign('SelectFooterTab',1);
+
+        return $this->fetch($url);
+
+    }
+
+    /**
+     * 发展代言人列表
+     * @return mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function spokesman_list(){
+        $request = Request::instance()->param();
+        $sitecode=$request['sitecode'];
+        $idsite = $this->siteid;
+        $userid = $this->userinfo['idmember'];
+        $ipage=empty($request['ipage'])?0:$request['ipage'];
+        //判断是否开启了现金券营销包
+        if(!checkedMarketingPackage($idsite,'distribution')){
+            die('没有权限,请先订购营销包！');
+        }
+        //类型
+        $type = $request['type'];
+
+        //查询用户的数据
+        $user_info = db('member')->where(['idsite'=>$idsite,'idmember'=>$userid])->find();
+        if($user_info['spokesman_grade'] == 0){
+            die('您不是代言人,请先成为代言人');
+        }
+        $spokesman_where['idsite'] = ['=',$idsite];
+        $spokesman_where['parent_user_id'] = $userid;
+        //如果是1的话,那么就是今天的代言人
+        if($type == 1){
+            $spokesman_where['spokesman_time'] = ['like','%'.date('Y-m-d',time()).'%'];
+        }
+        //查询发展代言人
+        $result = db('member')->field('ismanage',true)->where($spokesman_where)->order("spokesman_time desc")->limit($ipage*$this->pageSize,$this->pageSize)->select();
+        $roottpl = 'template/modules/';
+        //获得栏目列表模版路径
+        $url =$roottpl.'/distribution/endorse_user_list.html';
+        if (Request::instance()->isPost() && isset($request['ajax'])) {
+            $url = $roottpl . '/distribution/ajax_endorse_user_list.html';
+        }
+
+        $this->assign('roottpl','/'.$roottpl);
+        $this->assign('sitecode',$sitecode);
+        $this->assign('list',$result);
+        $this->assign('idsite',$idsite);
+        $this->assign('user_info',$user_info);
+        $this->assign('SelectFooterTab',1);
+        $this->assign('type',$type);
+
+        return $this->fetch($url);
+    }
+
+    /**
+     * 发展代言人和代言人的订单
+     * @return mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function spokesman_order_list(){
+        $request = Request::instance()->param();
+        $sitecode=$request['sitecode'];
+        $idsite = $this->siteid;
+        $userid = $this->userinfo['idmember'];
+        $ipage=empty($request['ipage'])?0:$request['ipage'];
+        //判断是否开启了现金券营销包
+        if(!checkedMarketingPackage($idsite,'distribution')){
+            die('没有权限,请先订购营销包！');
+        }
+        //查询用户的数据
+        $user_info = db('member')->where(['idsite'=>$idsite,'idmember'=>$userid])->find();
+        if($user_info['spokesman_grade'] == 0){
+            die('您不是代言人,请先成为代言人');
+        }
+        //类型,1今日成交订单,2历史成交订单,3今日所属代言人订单总数,4所属代言人订单总数
+        $type = $request['type'];
+        //产品id
+        $activity_id = '';
+        if(array_key_exists('activity_id',$request)){
+            $activity_id = $request['activity_id'];
+        }
+        //如果是1的话,那么就是今天的代言订单
+        if($type == 1 || $type == 3) {
+            //查询出个人今天代言的订单数据
+            $where['dtcreatetime'] = ['like', '%' . date('Y-m-d', time()) . '%'];//
+        }
+        //代言人id
+        $where['spokesman_user_id3'] = ['=',$userid];
+        $where['idsite'] = ['=',$idsite];
+        $where['source'] = ['=','代言人订单'];
+        $where['paytype1'] = ['<>',0];//已经支付过
+        //我的代言发展人订单
+        if($type == 3 || $type == 4) {
+            $where['spokesman_user_id2'] = ['=', $userid];//上级id
+            unset($where['spokesman_user_id3']);
+        }
+        //如果是5的话,那么就是产品下的代言订单
+        if($type == 5){
+            unset($where['spokesman_user_id3']);
+            unset($where['paytype1']);
+            $where['dataid'] = ['=', $activity_id];//产品id
+            $where['spokesman_user_id3|spokesman_user_id2'] = ['=', $userid];
+        }
+        //结算类型(已结算或者未结算的没有全额退款)
+        $where_str = 'is_balance = 1 or ((isrefundpart is NULL or isrefundpart = 1) and is_balance = 2)';
+        if($type == 5){
+            $where_str = 'is_balance = 1 or is_balance = 2';
+        }
+        $result = db('order')->field('wechatid',true)->where($where)->where($where_str)->order('dtcreatetime desc')->limit($ipage*$this->pageSize,$this->pageSize)->select();
+        $roottpl = 'template/modules/';
+        //获得栏目列表模版路径
+        $url =$roottpl.'/distribution/endorse_order_list.html';
+        if (Request::instance()->isPost() && isset($request['ajax'])) {
+            $url = $roottpl . '/distribution/ajax_endorse_order_list.html';
+        }
+
+        $this->assign('roottpl','/'.$roottpl);
+        $this->assign('sitecode',$sitecode);
+        $this->assign('list',$result);
+        $this->assign('idsite',$idsite);
+        $this->assign('user_info',$user_info);
+        $this->assign('order_state',config('order_state'));
+        $this->assign('SelectFooterTab',1);
+        $this->assign('type',$type);
+        $this->assign('activity_id',$activity_id);
+        $this->assign('userid',$userid);
+
+        return $this->fetch($url);
+    }
+
+    /**
+     * 代言订单列表
+     * @return mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function distribution_order_list(){
+        $request = Request::instance()->param();
+        $sitecode=$request['sitecode'];
+        $idsite = $this->siteid;
+        $userid = $this->userinfo['idmember'];
+        $ipage=empty($request['ipage'])?0:$request['ipage'];
+        //判断是否开启了现金券营销包
+        if(!checkedMarketingPackage($idsite,'distribution')){
+            die('没有权限,请先订购营销包！');
+        }
+        //查询用户的数据
+        $user_info = db('member')->where(['idsite'=>$idsite,'idmember'=>$userid])->find();
+        if($user_info['spokesman_grade'] == 0){
+            die('您不是代言人,请先成为代言人');
+        }
+
+        //如果没有开始时间,那么默认就是昨天
+        if(!isset($request["begintime"]) || empty($request["begintime"])){
+            $start_date = date('Y-m-d',strtotime('-1 day'));
+        }else{
+            //搜索的结束时间
+            $start_date = $request["begintime"];
+        }
+        //如果没有结束时间,那么默认就是到昨天
+        if(!isset($request["endtime"]) || empty($request["endtime"])){
+            $end_date = date('Y-m-d',strtotime('-1 day'));
+        }else{
+            //搜索的开始时间
+            $end_date = $request["endtime"];
+        }
+        $search = ['begintime'=>$start_date,'endtime'=>$end_date];
+        //代言人id
+        $where['idsite'] = ['=',$idsite];
+        $where['source'] = ['=','代言人订单'];
+        $where['spokesman_user_id3|spokesman_user_id2|spokesman_user_id1'] = ['=', $userid];
+        $where['dtcreatetime'] = [['>=',$start_date.' 00:00:00'],['<=',$end_date.' 23:59:59']];
+        $result = db('order')->field('wechatid',true)->where($where)->order('dtcreatetime desc')->limit($ipage*$this->pageSize,$this->pageSize)->select();
+        //全部不分页
+        $all = db('order')->field('wechatid',true)->where($where)->order('dtcreatetime desc')->select();
+        $pay_num_total = 0;
+        $commission_total = 0;
+        if($all){
+            foreach ($all as $value){
+                $pay_num_total += $value['paynum'];
+                //如果用户id等于代言人用户id，那么就取代言人的佣金
+                if($user_info['idmember'] == $value['spokesman_user_id3']){
+                    $commission_total += $value['sell_commission'];
+                }elseif ($user_info['idmember'] == $value['spokesman_user_id2']){
+                    $commission_total += $value['bounty_commission2'];
+                }else{
+                    $commission_total += $value['bounty_commission1'];
+                }
+            }
+        }
+        $roottpl = 'template/modules/';
+        //获得栏目列表模版路径
+        $url =$roottpl.'/distribution/distribution_order_list.html';
+        if (Request::instance()->isPost() && isset($request['ajax'])) {
+            $url = $roottpl . '/distribution/ajax_endorse_order_list.html';
+        }
+
+        $this->assign('roottpl','/'.$roottpl);
+        $this->assign('sitecode',$sitecode);
+        $this->assign('list',$result);
+        $this->assign('idsite',$idsite);
+        $this->assign('user_info',$user_info);
+        $this->assign('pay_num_total',$pay_num_total);
+        $this->assign('commission_total',$commission_total);
+        $this->assign('search',$search);
+        $this->assign('order_state',config('order_state'));
+        $this->assign('SelectFooterTab',1);
+        $this->assign('userid',$userid);
+
+        return $this->fetch($url);
+    }
+
+    /**
+     * 可代言的产品列表
+     * @return mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function spokesman_activity_list(){
+        $request = Request::instance()->param();
+        $sitecode=$request['sitecode'];
+        $idsite = $this->siteid;
+        $userid = $this->userinfo['idmember'];
+        $ipage=empty($request['ipage'])?0:$request['ipage'];
+        //判断是否开启了现金券营销包
+        if(!checkedMarketingPackage($idsite,'distribution')){
+            die('没有权限,请先订购营销包！');
+        }
+        //名称
+        $chrtitle = empty($request['chrtitle'])?"":$request['chrtitle'];
+
+        //查询用户的数据
+        $user_info = db('member')->where(['idsite'=>$idsite,'idmember'=>$userid])->find();
+        if($user_info['spokesman_grade'] == 0){
+            die('您不是代言人,请先成为代言人');
+        }
+        if($chrtitle!='')
+        {
+            $Search_arr1['chrtitle']= array('like','%'.$chrtitle.'%');
+        }
+        $Search_arr1['siteid']= ['=',$idsite];
+        $Search_arr1['is_distribution']= ['=',1];//开启了分销的活动
+        $Search_arr1['chkdown']=array('neq',1);//上架的
+        $Search_arr1['dtsignetime']=array('>',date('Y-m-d H:i:s',time()));//还未过报名结束时间
+        $Search_arr1['intflag'] = 2;//状态是已发布的
+        //查询数据
+        $result = db('activity')->field('chrkeyword',true)->where($Search_arr1)->order('dtpublishtime desc,idactivity desc')->limit($ipage*$this->pageSize,$this->pageSize)->select();
+        //获取佣金的情况
+        if($result){
+            foreach ($result as $key=>&$value){
+                //去查询套餐表的数据
+                $package = db('package')->field('package_id',true)->where(['activity_id'=>$value['idactivity']])->select();
+                $value['package'] = $package;
+            }
+        }
+//        halt($result);
+        $roottpl = 'template/modules/';
+        //获得栏目列表模版路径
+        $url =$roottpl.'/distribution/endorse_activity.html';
+        if (Request::instance()->isPost() && isset($request['ajax'])) {
+            $url = $roottpl . '/distribution/ajax_endorse_activity.html';
+        }
+
+        $this->assign('roottpl','/'.$roottpl);
+        $this->assign('sitecode',$sitecode);
+        $this->assign('list',$result);
+        $this->assign('idsite',$idsite);
+        $this->assign('user_info',$user_info);
+        $this->assign('SelectFooterTab',1);
+        $this->assign('chrtitle',$chrtitle);
+
+        return $this->fetch($url);
+    }
+
+    /**
+     * 已代言的活动列表
+     * @return mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function already_spokesman_activity_list(){
+        $request = Request::instance()->param();
+        $sitecode=$request['sitecode'];
+        $idsite = $this->siteid;
+        $userid = $this->userinfo['idmember'];
+        $ipage=empty($request['ipage'])?0:$request['ipage'];
+        //判断是否开启了现金券营销包
+        if(!checkedMarketingPackage($idsite,'distribution')){
+            die('没有权限,请先订购营销包！');
+        }
+
+        //查询用户的数据
+        $user_info = db('member')->where(['idsite'=>$idsite,'idmember'=>$userid])->find();
+        if($user_info['spokesman_grade'] == 0){
+            die('您不是代言人,请先成为代言人');
+        }
+        $Search_arr1['site_id']= ['=',$idsite];
+        $Search_arr1['spokesman_user_id'] = $userid;//代言人的id
+        //查询数据
+        $result = db('spokesman_activity')->field('chrkeyword',true)->where($Search_arr1)->order('spokesman_time desc')->limit($ipage*$this->pageSize,$this->pageSize)->select();
+        //获取佣金的情况
+        if($result){
+            foreach ($result as $key=>&$value){
+                //去查询套餐表的数据
+                $package = db('package')->field('package_id',true)->where(['activity_id'=>$value['activity_id']])->select();
+                $value['package'] = $package;
+                $where['dataid'] = $value['activity_id'];
+                $num = $this->getOrderNum($where,"spokesman_user_id3 = {$value['spokesman_user_id']} or spokesman_user_id2 = {$value['spokesman_user_id']} or spokesman_user_id1 = {$value['spokesman_user_id']}",$idsite);
+                //该代言人代言该产品的所有订单
+                $value['total'] = $num['total'];
+                $value['no_pay'] = $num['no_pay'];
+                $value['refund'] = $num['refund'];
+                $value['spokesman_pay_num'] = $num['pay'];
+            }
+        }
+//        halt($result);
+        $roottpl = 'template/modules/';
+        //获得栏目列表模版路径
+        $url =$roottpl.'/distribution/endorse_activity_complete.html';
+        if (Request::instance()->isPost() && isset($request['ajax'])) {
+            $url = $roottpl . '/distribution/ajax_endorse_activity_complete.html';
+        }
+
+        $this->assign('roottpl','/'.$roottpl);
+        $this->assign('sitecode',$sitecode);
+        $this->assign('list',$result);
+        $this->assign('idsite',$idsite);
+        $this->assign('user_info',$user_info);
+        $this->assign('SelectFooterTab',1);
+
+        return $this->fetch($url);
+    }
+
+    /**
+     * 佣金结算列表
+     * @return mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function balance_record_list(){
+        $request = Request::instance()->param();
+        $sitecode=$request['sitecode'];
+        $idsite = $this->siteid;
+        $userid = $this->userinfo['idmember'];
+        $ipage=empty($request['ipage'])?0:$request['ipage'];
+        //判断是否开启了现金券营销包
+        if(!checkedMarketingPackage($idsite,'distribution')){
+            die('没有权限,请先订购营销包！');
+        }
+
+        //查询用户的数据
+        $user_info = db('member')->where(['idsite'=>$idsite,'idmember'=>$userid])->find();
+        if($user_info['spokesman_grade'] == 0){
+            die('您不是代言人,请先成为代言人');
+        }
+        if($user_info['is_balance'] != 1){
+            die('您未开启分销结算');
+        }
+        $Search_arr1['site_id']= ['=',$idsite];
+        $Search_arr1['user_id'] = $userid;//申请结算的用户id
+        //查询数据
+        $result = db('balance_record')->field('audit_account_id',true)->where($Search_arr1)->order('create_time desc')->limit($ipage*10,10)->select();
+//        halt($result);
+        $roottpl = 'template/modules/';
+        //获得栏目列表模版路径
+        $url =$roottpl.'/distribution/commission_list.html';
+        if (Request::instance()->isPost() && isset($request['ajax'])) {
+            $url = $roottpl . '/distribution/ajax_commission_list.html';
+        }
+
+        $this->assign('roottpl','/'.$roottpl);
+        $this->assign('sitecode',$sitecode);
+        $this->assign('list',$result);
+        $this->assign('idsite',$idsite);
+        $this->assign('userid',$userid);
+        $this->assign('SelectFooterTab',1);
+
+        return $this->fetch($url);
+    }
+
+    /**
+     * 新增佣金结算记录
+     * @return mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function add_balance_record(){
+        $request = Request::instance()->param();
+        $sitecode=$request['sitecode'];
+        $idsite = $this->siteid;
+        $userid = $this->userinfo['idmember'];
+//        $userid=66;
+        //判断是否开启了现金券营销包
+        if(!checkedMarketingPackage($idsite,'distribution')){
+            die('没有权限,请先订购营销包！');
+        }
+
+        //查询用户的数据
+        $user_info = db('member')->where(['idsite'=>$idsite,'idmember'=>$userid])->find();
+        if($user_info['spokesman_grade'] == 0){
+            die('您不是代言人,请先成为代言人');
+        }
+        if($user_info['is_balance'] != 1){
+            die('您未开启分销结算');
+        }
+        //如果是提交数据
+        if(Request::instance()->isPost()){
+//            halt($request);
+            //生成结算申请记录数据
+            $bool = db('balance_record')->insertGetId([
+                'create_time'=>date('Y-m-d H:i:s',time()),
+                'user_id'=>$userid,
+                'wechat_number'=>$user_info['wechat_number'],
+                'u_chrname'=>$user_info['u_chrname'],
+                'u_chrtel'=>$user_info['u_chrtel'],
+                'balance_amount'=>$request['balance_amount'],
+                'audit_status'=>1,
+                'site_id'=>$idsite,
+            ]);
+            //如果执行成功跳转到结算申请列表
+            if($bool){
+                //给管理员发送模板消息
+                template_tg_balance_record($bool);
+                $this->redirect(url('/'.$sitecode.'/balancerecordlist'));
+            }
+        }
+//                halt($user_info);
+        $roottpl = 'template/modules/';
+        //获得栏目列表模版路径
+        $url =$roottpl.'/distribution/commission_exchange.html';
+
+        $this->assign('roottpl','/'.$roottpl);
+        $this->assign('sitecode',$sitecode);
+        $this->assign('idsite',$idsite);
+        $this->assign('user_info',$user_info);
+        $this->assign('SelectFooterTab',1);
+
+        return $this->fetch($url);
+    }
+
+    /**
+     * 代言人注册
+     * @return mixed
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function spokesman_register(){
+        $request = Request::instance()->param();
+        $sitecode=$request['sitecode'];
+        $idsite = $this->siteid;
+        $userid = $this->userinfo['idmember'];
+        //看是否是扫码进来的
+        $share_id = isset($request['share_id'])&&!empty($request['share_id'])?intval($request['share_id']):'';
+//        $userid=66;
+        //判断是否开启了现金券营销包
+        if(!checkedMarketingPackage($idsite,'distribution')){
+            die('没有权限,请先订购营销包！');
+        }
+
+        //查询用户的数据
+        $user_info = db('member')->where(['idsite'=>$idsite,'idmember'=>$userid])->find();
+//                halt($user_info);
+        $roottpl = 'template/modules/';
+        //获得栏目列表模版路径
+        $url =$roottpl.'/distribution/endorse_register.html';
+        //halt($err);
+        $this->assign('roottpl','/'.$roottpl);
+        $this->assign('sitecode',$sitecode);
+        $this->assign('idsite',$idsite);
+        $this->assign('share_id',$share_id);
+        $this->assign('user_info',$user_info);
+        $this->assign('qrcodeurl',$this->qrcodeurl());
+        $this->assign('SelectFooterTab',1);
+
+        return $this->fetch($url);
+    }
+
+    /**
+     * 提交注册代言人
+     * @return \think\response\Json
+     * @throws Exception
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * @throws \think\exception\PDOException
+     */
+    public function ajax_spokesman_register(){
+        $request = Request::instance()->param();
+//        halt($request);
+        $idsite = $this->siteid;
+        $userid = $this->userinfo['idmember'];
+        //看是否是扫码进来的
+        $share_id = isset($request['share_id'])&&!empty($request['share_id'])?intval($request['share_id']):'';
+//        $userid=66;
+        //判断是否开启了现金券营销包
+        if(!checkedMarketingPackage($idsite,'distribution')){
+            die('没有权限,请先订购营销包！');
+        }
+        //错误信息
+        $err = ['code'=>1,'message'=>''];
+        //如果是提交数据
+        if(Request::instance()->isPost()){
+            //绑定时间
+            $data['spokesman_time'] = date('Y-m-d H:i:s',time());
+            $data['is_balance'] = 1;//默认开启分销结算
+            $data['u_chrname'] = $request['u_chrname'];
+            $data['u_chrtel'] = $request['u_chrtel'];
+            $data['u_identity_card_num'] = $request['u_identity_card_num'];
+            $data['wechat_number'] = $request['wechat_number'];
+            //判断是否有上级代言人id
+            if($share_id){
+                //查询选择的一级代言人的信息
+                $one_spokesman = db('member')->where(['idmember'=>$share_id,'idsite'=>$idsite])->find();
+                if($one_spokesman['spokesman_grade'] != 1){
+                    $err = ['code'=>0,'message'=>'该代言人不是一级代言人'];
+                    return json($err);
+                }
+                //如果是的话
+                if($err['code'] == 1) {
+                    //上级代言人
+                    $data['parent_user_id'] = $one_spokesman['idmember'];
+                    //上级姓名
+                    $data['parent_u_chrname'] = $one_spokesman['u_chrname'];
+                    //上级手机号
+                    $data['parent_u_chrtel'] = $one_spokesman['u_chrtel'];
+                    //上级的昵称
+                    $data['parent_nick_name'] = $one_spokesman['nickname'];
+                    //等级
+                    $data['spokesman_grade'] = 2;
+                    //如果一级存在上级代言信息
+                    if ($one_spokesman['parent_user_id']) {
+                        //上上级代言人
+                        $data['top_parent_user_id'] = $one_spokesman['parent_user_id'];
+                        //上上级姓名
+                        $data['top_parent_u_chrname'] = $one_spokesman['parent_u_chrname'];
+                        //上上级手机号
+                        $data['top_parent_u_chrtel'] = $one_spokesman['parent_u_chrtel'];
+                        //上上级的昵称
+                        $data['top_parent_nick_name'] = $one_spokesman['parent_nick_name'];
+                    }
+                }
+                //否则没有的话,那么就是一级代言人
+            }else{
+                $data['spokesman_grade'] = 1;
+            }
+            //进行修改数据
+            if($err['code'] == 1){
+                $bool = db('member')->where(['idmember'=>$userid,'idsite'=>$idsite])->update($data);
+                //如果执行成功跳转到会员中心
+                if($bool){
+                    return json($err);
+                }
+            }
+        }
+    }
+
+        /**
+     * 获取总报名/未付款/已退款订单数量
+     * @param $where
+     * @param $where_str
+     * @return array
+     */
+    public  function getOrderNum($where,$where_str,$idsite)
+    {
+        $where['idsite'] = $idsite;
+        $where['source'] = '代言人订单';
+        $order =  db('order')->field('state')->where($where)->where($where_str)->select();
+        $num = array('total'=>0,'no_pay'=>0,'refund'=>0,'pay'=>0);
+        if($order){
+            foreach ($order as $value){
+                $num['total'] += 1;
+                if($value['state'] == 12){
+                    $num['no_pay'] += 1;
+                }
+                //已部分退款，继续服务;已退款，继续服务;已退款，终止服务;已部分退款，终止服务;
+                if (in_array($value['state'],array(6,7,11,13))){
+                    $num['refund'] += 1;
+                }
+                //如果是已付款
+                if (in_array($value['state'],array(3,4,5,6,7,8,11,13,14))){
+                    $num['pay'] += 1;
+                }
+            }
+        }
+        return $num;
+    }
+
+    /**
+     * 读取微信的图片并且保存的方法
+     * @param $url
+     * @param $path
+     */
+    public function userIconSave($url,$path){
+
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL, $url);
+
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
+
+        $file = curl_exec($ch);
+
+        curl_close($ch);
+
+        $resource = fopen($path ,'a');
+
+        fwrite($resource, $file);
+
+        fclose($resource);
+
+    }
+
+    #region     生成合成图片的代码
+    private $date,$img,$main,$width,$height,$target,$white,$idsite;
+
+    /**
+     * 获取到文件资源
+     * @param $source
+     * @param $idsite
+     */
+    public function get_source($source,$idsite)
+    {
+        $file_path = 'public/distribution_img/' .$idsite .'/' . date('Ymd') . '/';
+        if(!is_dir($file_path)){
+            mkdir($file_path, 0777,true);
+        }
+        $this->idsite = $idsite;
+        $this->date   = $file_path;
+        $this->img    = $this->date . md5($source) . '.jpg';
+        $ename=getimagesize($source);
+        $ename=explode('/',$ename['mime']);
+        $ext=$ename[1];
+        $image = '';
+        switch($ext){
+            case "png":
+
+                $image=imagecreatefrompng($source);
+                break;
+            case "jpeg":
+
+                $image=imagecreatefromjpeg($source);
+                break;
+            case "jpg":
+
+                $image=imagecreatefromjpeg($source);
+                break;
+            case "gif":
+
+                $image=imagecreatefromgif($source);
+                break;
+        }
+        $this->main   = $image ;
+        $this->width  = imagesx($this->main);
+        $this->height = imagesy($this->main);
+        $this->target = imagecreatetruecolor($this->width, $this->height);
+        $this->white  = imagecolorallocate($this->target, 255, 255, 255);
+        imagefill($this->target, 0, 0, $this->white);
+        imagecopyresampled($this->target, $this->main, 0, 0, 0, 0, $this->width, $this->height, $this->width, $this->height);
+    }
+    /**
+     * 把二维码图片生成到背景图片上及文字
+     * @param  string  $source      背景图片
+     * @param  string  $text1       文字描述
+     * @param  string  $child1      二维码图
+     * @param  integer $textwidth   文字横向位置
+     * @param  integer $textherght  文字高度
+     * @param  integer $$fontSize   字体大小
+     * @param  integer $cate1,$cate2,$cate3 颜色表
+     * @param  string $font         文字字体
+     * @return [type]               [description]
+     */
+    public function generateFont($source, $text1, $textwidth, $textherght, $fontSize = 8, $cate1 = 102, $cate2 = 102, $cate3 = 102, $font = 'static/font/simfang.ttf')
+    {
+        $this->get_source($source,$this->idsite);
+        $fontColor = imagecolorallocate($this->target, $cate1, $cate2, $cate3); //字的RGB颜色
+        $fontBox   = imagettfbbox($fontSize, 0, $font, $text1); //文字水平居中实质
+        imagettftext($this->target, $fontSize, 0, $textwidth, $textherght, $fontColor, $font, $text1);
+        $this->createImg();
+        return $this->img;
+    }
+    /**
+     * [generateImg description]
+     * @param  string  $source        背景图片
+     * @param  string  $codeurl       二维码图片
+     * @param  integer  $sourcewidth  二维码横向所在位置
+     * @param  integer  $sourceheight 二维码高度位置
+     * @param  integer $codewidth    二维码宽度
+     * @param  integer $codeheight   二维码高度
+     * @return [type]                [description]
+     */
+    public function generateImg($source, $codeurl, $sourcewidth, $sourceheight, $codewidth = 182, $codeheight = 182)
+    {
+        $this->get_source($source,$this->idsite);
+
+        $ename=getimagesize($codeurl);
+        $ename=explode('/',$ename['mime']);
+        $ext=$ename[1];
+        $image = '';
+        switch($ext){
+            case "png":
+
+                $image=imagecreatefrompng($codeurl);
+                break;
+            case "jpeg":
+
+                $image=imagecreatefromjpeg($codeurl);
+                break;
+            case "jpg":
+
+                $image=imagecreatefromjpeg($codeurl);
+                break;
+            case "gif":
+
+                $image=imagecreatefromgif($codeurl);
+                break;
+        }
+        $child1 = $image;
+        $codewidth = $codewidth > 0 ? $codewidth :imagesx($child1);
+        $codeheight = $codeheight > 0 ? $codeheight : imagesy($child1);
+        imagecopyresampled($this->target, $child1, $sourcewidth, $sourceheight, 0, 0, $codewidth, $codeheight,imagesx($child1),imagesy($child1));
+        imagedestroy($child1);
+        $this->createImg();
+        return $this->img;
+    }
+    function createImg()
+    {
+        if(!is_dir($this->date)) {
+            @mkdir('./' . $this->date);
+        }
+        imagejpeg($this->target, './' . $this->img, 95);
+        imagedestroy($this->main);
+        imagedestroy($this->target);
+    }
+
+    #endregion
+}

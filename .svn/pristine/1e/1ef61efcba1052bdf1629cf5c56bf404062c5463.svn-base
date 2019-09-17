@@ -1,0 +1,22 @@
+<header class="flex">
+  <a href="/{$sitecode}" class="logo flex">
+    <img src="{$cms->GetConfigVal('webset','weblogo',$idsite);}">
+  </a>
+  <div class="menu-btns iconfont">
+    <span class="menu-btn1 iconfont fl">&#xe615;</span>
+    <span class="menu-btn2 iconfont fl bgColor" id="open-menu">&#xe602;</span>
+    <span class="menu-btn3 iconfont fl bgColor" id="close-menu">&#xe677;</span>
+  </div>
+</header>
+<aside>
+  <div class="menu" id="menu">
+    <ul>
+	  <li class="border-line"><a href="/{$sitecode}">首页</a></li>
+	  {php}$menuList = $cms->GetAllNodes(['showonmenu'=>1,'nodetype'=>['in','1,2'],'parentid'=>0],'idorder asc,nodeid asc','',20,$idsite);{/php}
+	  {volist name="menuList" id="menu"}
+      <li class="border-line"><a href="{strstr($menu.url,'http') ? $menu.url : '/'.$sitecode.'/'.$menu.url}">{$menu.nodename}</a></li>
+	  {/volist}
+    </ul>
+  </div>
+  <div class="menu-cover"></div>
+</aside>

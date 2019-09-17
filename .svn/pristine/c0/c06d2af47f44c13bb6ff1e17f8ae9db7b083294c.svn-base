@@ -1,0 +1,364 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>选择可预约场次</title>
+<link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/static/css/page.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="__PUBLIC__/static/js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/js/lhgdialog.js?skin=aero"></script>
+<script type="text/javascript" src="__PUBLIC__/static/js/CostomLinkOpenSw.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/js/tabscommon.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/js/del-checked.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/js/layer/layer.js"></script>
+
+<script type="text/javascript">
+    var session_key_list = [];      // id列表
+    var select_content = '';   // 选中的ID
+    $(function(){
+        $(document).ready(function() {
+            $('.oa_text-list tr').addClass('odd');
+            $('.oa_text-list tr:even').addClass('even');
+        });
+        $('.oa_text-list tr').hover(
+            function(){
+                $(this).addClass('oa_mouseover-bg');
+            },
+            function(){
+                $(this).removeClass('oa_mouseover-bg');
+            }
+        );
+    });
+    function empty() {
+        window.location.reload();
+    }
+    //全选
+    function DoCheck(){
+        if($("#checked").is(':checked')){
+            $(".checked_one").prop("checked", true);
+        }else{
+            $(".checked_one").prop("checked", false);
+        }
+    }
+    //全选
+    function DoCheck2(){
+        if($("#checked2").is(':checked')){
+            $(".checked_two").prop("checked", true);
+        }else{
+            $(".checked_two").prop("checked", false);
+        }
+    }
+    // 选择二维码
+    function selectMember(){
+        var qrcode_name = "";
+        var scene_str = "";
+        $('.checked_one').each(function(){
+            if($(this).is(":checked")){
+                qrcode_name = $(this).val();
+                scene_str = $(this).attr("scene_str");
+            }
+        })
+
+        GetOpenerWin().selectQrcodeCallback(qrcode_name,scene_str);
+        CloseDiv();
+    }
+    // 加入相关场次
+    function add_session(){
+        var select_content = '';
+        var number = 0; // 添加数量
+        $('.checked_one').each(function(){
+            if($(this).is(":checked")){
+                var session_key = $(this).data("sessionKey");
+                if(session_key_list.indexOf(session_key) == -1){
+                    session_key_list.push(session_key);
+                    select_content = select_content + session_key + ',';
+                    var allow_session = $(this).parent().parent().clone().append("<td><a href=\"javascript:;\" onclick=\"delete_session('"+session_key+"');\" >删除</a></td>");
+                    allow_session.find(".checked_one").each(function(){
+                        $(this).removeClass("checked_one").addClass("checked_two").prop("checked",false);
+                    })
+                    $('#session_empty').before(allow_session);
+                    number++;
+                }
+            }
+        });
+
+        if(number > 0){
+            select_content = select_content.substr(0,select_content.length-1);
+            $('#select_content').val(select_content);
+        }
+        if(session_key_list.length > 0){
+            $('#session_empty').hide();
+        }else{
+            layer.msg('请先选择相关场次!');
+            $('#checked2').prop("checked", false);
+            $('#session_empty').show();
+        }
+    }
+    // 删除场次
+    function delete_session(session_key){
+        var select_content = '';
+        var msg='您确定要删除“'+session_key+'”吗？';
+        if(session_key == 0) {
+           msg='您确定要删除选定的记录吗？';
+        }
+
+        var index = layer.confirm(msg, {
+            btn: ['确定','取消'] //按钮
+        }, function(){
+            if(session_key == 0){
+                $('.checked_two').each(function(){
+                    if($(this).is(":checked")){
+                        var session_id = $(this).val();
+                        var session_key = $(this).data("sessionKey");
+                        $(this).parent().parent().remove();
+                        session_key_list.forEach(function(value,index){
+                            if(session_key == value){
+                                session_key_list.splice(index,1);
+                            }
+                        });
+                    }
+                });
+            }else{
+                $('.checked_two').each(function(){
+                    var checked_id = $(this).val();
+                    if(checked_id == session_key){
+                        $(this).parent().parent().remove();
+                        session_key_list.forEach(function(value,index){
+                            if(session_key == value){
+                                session_key_list.splice(index,1);
+                            }
+                        });
+                    }
+                });
+            }
+            session_key_list.forEach(function(session_key){
+                select_content = select_content +  session_key + ",";
+            })
+            select_content = select_content.substr(0,select_content.length-1);
+            $('#select_content').val(select_content);
+            layer.close(index);
+
+            if(session_key_list.length > 0){
+                $('#session_empty').hide();
+            }else{
+                $('#checked2').prop("checked", false);
+                $('#session_empty').show();
+            }
+        }, function(){
+
+        });
+
+    }
+    // 确定
+    function ok(){
+        var select_content = $('#select_content').val();
+        if(select_content.length <= 0){
+            layer.msg('请加入相关场次!');
+        }else{
+            GetOpenerWin().selectSession($('#select_content').val());
+            CloseDiv();
+        }
+
+    }
+</script>
+</head>
+<body>
+<div class="oa_wrapper">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr class="oa_wrapper-display">
+            <td class="oa_wrapper-top-arr-left">&nbsp;</td>
+            <td class="oa_wrapper-top-arr-middle"></td>
+            <td class="oa_wrapper-top-arr-right">&nbsp;</td>
+        </tr>
+        <tr>
+            <td class="oa_wrapper-middle-arr-left oa_wrapper-display"></td>
+            <td class="oa_wrapper-middle-arr-middle">
+                <div class="oa_location clearfix"><span class="oa_ico-left"></span>location<span class="oa_ico-right"></span></div>
+                <div class="oa_main clearfix">
+                    <div class="oa_content-area clearfix">
+                        <div class="oa_content-main">
+                            
+                            <!-- <form action="{:url('member/qrcode_select')}" method="post"></form> -->
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td valign="top">
+                                        <div class="oa_title clearfix">
+                                            <span class="oa_ico-right"></span>
+                                            <span class="oa_ico-left"></span>
+                                            {:lang('search')}
+                                        </div>
+                                        <div class="oa_search-area clearfix">
+                                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                <tr>
+                                                    <td>
+                                                        <div class="oa_search-type clearfix">
+                                                            <form action="{:url('subscribe/selectallowsession')}" method="post" id="form1">
+                                                                <table width="100%" border="0" cellspacing="1" cellpadding="0">
+                                                                    <tr>
+                                                                        <td width="150" class="oa_cell-left">项目名称：</td>
+                                                                        <td class="oa_cell-right">
+                                                                            <input id="object_name" type="text" name="object_name" value="{$param['object_name'] ?? ''}" >
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td width="150" class="oa_cell-left">地点：</td>
+                                                                        <td class="oa_cell-right">
+                                                                            <input id="place" type="text" name="place" value="{$param['place'] ?? ''}" >
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td width="150" class="oa_cell-left">周期：</td>
+                                                                        <td class="oa_cell-right">
+                                                                            <select name="week">
+                                                                                <option value="">全部</option>
+                                                                                <option value="周一" {if condition="$param['week']=='周一'"}selected{/if}>周一</option>
+                                                                                <option value="周二" {if condition="$param['week']=='周二'"}selected{/if}>周二</option>
+                                                                                <option value="周三" {if condition="$param['week']=='周三'"}selected{/if}>周三</option>
+                                                                                <option value="周四" {if condition="$param['week']=='周四'"}selected{/if}>周四</option>
+                                                                                <option value="周五" {if condition="$param['week']=='周五'"}selected{/if}>周五</option>
+                                                                                <option value="周六" {if condition="$param['week']=='周六'"}selected{/if}>周六</option>
+                                                                                <option value="周日" {if condition="$param['week']=='周日'"}selected{/if}>周日</option>
+                                                                            </select>
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td width="150" class="oa_cell-left">时间段：</td>
+                                                                        <td class="oa_cell-right">
+                                                                            <input id="period" type="text" name="period" value="{$param['period'] ?? ''}" >
+                                                                        </td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td height="30"></td>
+                                                                        <td class="oa_cell-right">
+                                                                            <input type="submit" value="查询" class="oa_search-btn" />
+                                                                        </td>
+                                                                    </tr>
+                                                                </table>
+                                                            </form>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                        <div class="oa_title clearfix">
+                                            <span class="oa_title-btn"></span>
+                                            <span class="oa_ico-left"></span>场次列表
+                                        </div>
+                                        <div class="oa_text-list">
+                                            <table width="100%" border="0" cellspacing="0" cellpadding="0" style="table-layout:fixed" id="session_list">
+                                                <tr class="oa_text-list-title">
+                                                    <th width="20" style="text-align:center;">
+                                                        <input id="checked"  onclick="DoCheck();" name="" type="checkbox" value="" />
+                                                    </th>
+													<th width="20"><span class="oa_arr-text-list-title"></span>ID</th>
+                                                    <th><span class="oa_arr-text-list-title"></span>项目名称</th>
+                                                    <th><span class="oa_arr-text-list-title"></span>地点</th>
+                                                    <th><span class="oa_arr-text-list-title"></span>周期</th>
+                                                    <th><span class="oa_arr-text-list-title"></span>时间段</th>
+                                                </tr>
+                                                {volist name="datalist" id="vo"}
+                                                <tr>
+                                                    <td align="center">
+                                                        <input class="checked_one" type="checkbox" name="id[]" data-session-key="{$vo.subscribe_object_id}-{$vo.session_key}" value="{$vo.subscribe_object_id}-{$vo.session_key}" />
+                                                    </td>
+													<td>{$vo.id}</td>
+                                                    <td>{$vo.subscribe_object_name}</td>
+                                                    <td>{$vo.place}</td>
+                                                    <td>{$vo.week}</td>
+                                                    <td>{$vo.period}</td>
+                                                </tr>
+                                                {/volist}
+                                            </table>
+                                            <div class="oa_bottom clearfix">
+                                                
+                                                <div class="clearfix">
+                                                    <div class="oa_op-btn clearfix">
+                                                        <input type="button" name="" onclick="add_session()"  value="加入相关场次">
+                                                    </div>
+                                                    <div class="oa_page-controls">
+                                                        <ul>
+                                                            {$page->show()}
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="clearfix">
+                                                    <div class="clearfix">
+                                                        <div class="oa_op-btn clearfix">
+                                                            
+                                                        </div>
+                                                    </div>
+                                                    <div class="oa_bottom-bottom"><em></em></div>
+                                                </div>
+                                                <div class="oa_bottom-bottom"><em></em></div>
+                                            </div>
+                                        </div>
+
+                                        <div class="oa_title clearfix">
+                                            <span class="oa_title-btn"></span>
+                                            <span class="oa_ico-left"></span>相关场次
+                                        </div>
+
+                                        <div class="oa_text-list">
+                                            <table width="100%" border="0" cellspacing="0" cellpadding="0" style="table-layout:fixed"  id="related_session">
+                                                <tr class="oa_text-list-title">
+                                                    <th width="20" style="text-align:center;">
+                                                        <input id="checked2"  onclick="DoCheck2();" name="" type="checkbox" value="" />
+                                                    </th>
+                                                    <th width="20"><span class="oa_arr-text-list-title"></span>ID</th>
+                                                    <th><span class="oa_arr-text-list-title"></span>项目名称</th>
+                                                    <th><span class="oa_arr-text-list-title"></span>地点</th>
+                                                    <th><span class="oa_arr-text-list-title"></span>周期</th>
+                                                    <th><span class="oa_arr-text-list-title"></span>时间段</th>
+                                                    <th width="40"><span class="oa_arr-text-list-title"></span>操作</th>
+                                                </tr>
+                                                <tr id="session_empty">
+                                                    <td colspan="7">暂无记录</td>
+                                                </tr>
+                                            </table>
+                                            <div class="oa_bottom clearfix">
+                                                <div class="clearfix">
+                                                    <div class="oa_op-btn clearfix">
+                                                        <input type="button" name="" onclick="delete_session(0)"  value="删除相关场次">
+                                                    </div>
+                                                    <div class="oa_page-controls">
+
+                                                    </div>
+                                                </div>
+                                                <div class="clearfix" style="margin: 10px 0">
+                                                </div>
+                                                <div class="clearfix">
+                                                    <div class="clearfix">
+                                                        <div class="oa_op-btn clearfix">
+                                                            <input name="select_content" type="hidden" value="" id="select_content" style="width:400px;">
+                                                            <input type="button" name="btnReturn" value="确定" id="btnReturn" onclick="ok()" class="oa_input-submit">      
+                                                            <input type="button" name="btnReturn" value="关闭" id="btnClose" onclick="CloseDiv()" class="oa_input-submit">      
+                                                        </div>
+                                                        <div class="oa_page-controls">
+                                                            &nbsp;</div>
+                                                    </div>
+                                                    <div class="oa_bottom-bottom"><em></em></div>
+                                                </div>
+                                                <div class="oa_bottom-bottom"><em></em></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                            <!-- </form> -->
+                            <div class="oa_content-main-bottom"></div>
+                        </div>
+                    </div>
+                </div>
+            </td>
+            <td class="oa_wrapper-middle-arr-right oa_wrapper-display"></td>
+        </tr>
+        <tr class="oa_wrapper-display">
+            <td class="oa_wrapper-bottom-arr-left">&nbsp;</td>
+            <td class="oa_wrapper-bottom-arr-middle"></td>
+            <td class="oa_wrapper-bottom-arr-right">&nbsp;</td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

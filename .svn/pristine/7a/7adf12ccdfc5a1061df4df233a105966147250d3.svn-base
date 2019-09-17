@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+<title>产品</title>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+
+<script type="text/javascript" src="__PUBLIC__/static/modules/js/jquery.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/modules/js/swiper.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/modules/js/common.js"></script>
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/static/modules/style/css/swiper.min.css">
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/static/modules/style/css/common.css">
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/static/modules/style/css/pc.css">
+</head>
+<body>
+	{include file="modules/lib/header" /}
+	<div class="site-section clearfix">
+		<div class="where jigou">
+			<p>{$node_info['nodename']}</p>
+			<a href="/{$sitecode}" class="iconfont">&#xe617;</a>
+		</div>
+		<form id="frm" method="post">
+		<div class="classify-choose flex flex-middle">
+
+			<div class="select">
+				<select name="typeid">
+					<option value="">全部类别</option>
+					{volist name="hdfl" id="vo"}
+					<option value="{$vo.code}" <?php if($vo['code']==$typeid) { echo "selected"; } ?> >{$vo.name}</option>
+					{/volist}
+				</select>
+			</div>
+			<div class="select">
+				<select name="tagid">
+					<option value="">全部标签</option>
+					{volist name="hdbq" id="vo"}
+					<option value="{$vo.code}" <?php if($vo['code']==$tagid) { echo "selected"; } ?> >{$vo.name}</option>
+					{/volist}
+				</select>
+			</div>
+			<div class="select">
+				<select name="intflag">
+					<option value="0">全部</option>
+					<option <?php if($intflag=="1") { echo "selected"; } ?>  value="1">进行中</option>
+					<option <?php if($intflag=="2") { echo "selected"; } ?> value="2">已结束</option>
+				</select>
+			</div>
+
+		</div>
+		</form>
+		<div style="border-top:solid 1px #e0e0e0"></div>
+		<div class="select-bar fixed" style="position:static; display: none;">
+			<ul class="select-bar-tab" id="select-bar-tab">
+				<li class="on"><span>进行中</span></li>
+				<li><span>已结束</span></li>
+			</ul>
+		</div>
+		<ul class="common-list" id="data">
+			 <?php  if(!$result_data) { ?>
+			<li>
+				<div class="noword">
+					<div class="txt" >没有相关的产品</div>
+				</div>
+			</li>
+			<?php }
+			foreach($result_data as $k=>$val){ ?>
+			<li>
+				<a href="<?php echo (empty($val['chrurl'])?'/'.$sitecode.'/detail/'.$val['idactivity']:$val['chrurl']) ?>">
+					<img src="{$val['chrimg_m']}">
+					<div class="word">
+						<div class="tit">
+							{if condition="$val['is_receive_cashed'] == 1 && $is_cashed"}<span class="iconfont coupon-link">&#xe624;</span>{/if}{$val['chrtitle']}</div>
+						<div class="txt">{$val['chrsummary']}</div>
+						<div class="info">
+							<!--<div class="type">活动</div>-->
+							<div class="view"><span>{$val['hits']}</span>浏览</div>
+							<div class="time">{:date('m-d',strtotime($val['dtpublishtime']))}</div>
+						</div>
+					</div>
+				</a>
+			</li>
+			<?php } ?>
+		</ul>
+		<!--<ul class="common-list" id="dataload" style="display: none">-->
+			<!--<li id="loadmsg" >数据加载中。。。</li>-->
+		<!--</ul>-->
+		<div id="dataload" class="iconfont iconload" style="display: none">&#xe72f;</div>
+		{include file="modules/lib/footer0" /}
+		{include file="modules/lib/footer" /}
+	</div>
+<script language="JavaScript">
+    $(function(){
+        $(".classify-choose select").change(
+            function(){
+                $("#frm").submit();
+            });
+    });
+
+</script>
+
+	<script type="text/javascript" src="/static/js/layer/layer.js"></script>
+	<script type="text/javascript">
+
+        //==============核心代码=============
+        var winH = $(window).height(); //页面可视区域高度
+
+        var ipage=2;
+        var scrollHandler = function () {
+            var pageH = $(document).height();
+            var scrollT = $(window).scrollTop(); //滚动条top
+
+            if(pageH-winH-scrollT<1)
+            {
+                LoadData(ipage)
+                ipage++;
+            }
+        }
+        //定义鼠标滚动事件
+        $(window).scroll(scrollHandler);
+        //==============核心代码=============
+
+        function LoadData(ipage)
+        {
+            $("#dataload").show();
+            $ (window).unbind ('scroll');
+            //类别id
+            var typeid = $('select[name="typeid"]').val();
+            //标签id
+            var tagid = $('select[name="tagid"]').val();
+            //状态
+            var intflag = $('select[name="intflag"]').val();
+            // alert(typeid);
+            $.ajax({
+                url: "/{$sitecode}/activity/{$nodeid}/"+ipage+"?&ajax=1",
+                type: 'POST',
+                cache: false,
+                data:{"typeid":typeid,"tagid":tagid,"intflag":intflag} ,
+                success : function(data) {
+
+                    if(data== 11)
+                    {
+                        $("#dataload").hide();
+                        // $("#loadmsg").html("已无更多数据");
+                        return;
+                    }
+                    $("#dataload").hide();
+                    $("#data").html($("#data").html()+data);
+                    $(window).scroll(scrollHandler);
+                }
+            });
+
+        }
+
+
+
+	</script>
+
+
+
+<script>
+
+</script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:32:"template/M6/mine/order_list.html";i:1562315895;s:53:"D:\workspace\work\public\template\M6\lib\footer0.html";i:1561691704;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:32:"template/M6/mine/order_list.html";i:1564999662;s:53:"D:\workspace\work\public\template\M6\lib\footer0.html";i:1561691704;}*/ ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -74,19 +74,18 @@
                         <!--支付成功后-->
                         <?php if($is_cashed && $vo['state']==4 && $vo['share_plan_id'] > 0) { ?>
                         <a href="/<?php echo $sitecode; ?>/share/<?php echo $vo['id']; ?>/0" style="background: #5fd2b8; ">分享现金券</a>
-                        <?php } ?>
-
-                        <!-- 拼团 -->
-                        <a href="#" style="background: #d9b38b; ">拼团情况</a>
+                        <?php } if(checkedMarketingPackage($idsite, 'group_buy') && !empty($vo['group_buy_order_id']) && $vo['group_buy_order_state'] != 0 && $vo['group_buy_order_state'] != 4): ?>
+                        <a href="/<?php echo $sitecode; ?>/group_buy_share/<?php echo $vo['group_buy_order_id']; ?>/<?php echo $userid; ?>" style="background: #d9b38b; ">拼团情况</a>
+                        <?php endif; ?>
                         
                         <!--待支付可以手动改为终止服务-->
                         <?php if($vo['state']==12 && $vo['stock_locked'] ==1) { ?>
                         <a onclick="cancel_order(<?php echo $vo['id']; ?>)"  style="background: #666; ">取消订单</a>
                         <?php } ?>
                         <!--终止服务可以进行重新下单-->
-                        <?php if($vo['state']==10) { ?>
-                        <a  href="/<?php echo $sitecode; ?>/againorder/<?php echo $vo['id']; ?>"  style="background: #d9b38b; ">重新下单</a>
-                        <?php } ?>
+                        <!--<?php if($vo['state']==10) { ?>-->
+                        <!--<a  href="/<?php echo $sitecode; ?>/againorder/<?php echo $vo['id']; ?>"  style="background: #d9b38b; ">重新下单</a>-->
+                        <!--<?php } ?>-->
                         <a href="#" style="background: #d9b38b; display: none" >查看约玩</a>
                         </div>
                     </div>

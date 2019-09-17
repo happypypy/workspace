@@ -1,0 +1,170 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>评价管理</title>
+    <link href="/static/css/layout.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/page.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <script type="text/javascript" src="/static/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="/static/js/del-checked.js"></script>
+    <script type="text/javascript" src="/static/js/layer/layer.js"></script>
+    <script type="text/javascript" src="/static/js/ContorlValidator.js"></script>
+    <script type="text/javascript" src="/static/js/CostomLinkOpenSw.js"></script>
+    <link href="/static/js/daterangepicker/daterangepicker-bs3.css" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="/static/js/daterangepicker/moment.min.js"></script>
+    <script type="text/javascript" src="/static/js/daterangepicker/daterangepicker.js"></script>
+    <script type="text/javascript" src="/static/js/lhgdialog.js?skin=aero"></script>
+    <style>
+        .layui-layer.layui-layer-page.layui-layer-rim.layer-anim .layui-layer-content{
+            padding: 10px;
+        }
+        .layui-layer.layui-layer-page.layui-layer-rim.layer-anim *{
+            max-width : 100%!important;
+            box-sizing: border-box;
+        }
+        .layui-layer.layui-layer-page.layui-layer-rim.layer-anim img{
+            height: auto!important;
+        }
+    </style>
+
+
+    <script type="text/javascript">
+        window.UEDITOR_Admin_URL = "/public/plugins/Ueditor/";
+        var URL_upload = "/index.php/Admin/Ueditor/imageUp/savepath/article";
+        var URL_fileUp = "/index.php/Admin/Ueditor/fileUp/savepath/article";
+        var URL_scrawlUp = "/index.php/Admin/Ueditor/scrawlUp/savepath/article";
+        var URL_getRemoteImage = "/index.php/Admin/Ueditor/getRemoteImage/savepath/article";
+        var URL_imageManager = "/index.php/Admin/Ueditor/imageManager/savepath/article";
+        var URL_imageUp = "/index.php/Admin/Ueditor/imageUp/savepath/article";
+        var URL_getMovie = "/index.php/Admin/Ueditor/getMovie/savepath/article";
+        var URL_home = "";
+    </script>
+    <!--
+    <script>
+        KindEditor.ready(function(K) {
+            window.editor = K.create('#editor_id');
+        });
+    </script>
+-->
+    <script language="javascript">
+        //具体参数配置在  editor_config.js 中
+        var options = {
+            zIndex: 999,
+            initialFrameWidth: 558, //初化宽度
+            initialFrameHeight: 400, //初化高度
+            focus: false, //初始化时，是否让编辑器获得焦点true或false
+            maximumWords: 99999, removeFormatAttributes: 'class,style,lang,width,height,align,hspace,valign',//允许的最大字符数 'fullscreen',
+            pasteplain:false, //是否默认为纯文本粘贴。false为不使用纯文本粘贴，true为使用纯文本粘贴
+            autoHeightEnabled: false
+            /*   autotypeset: {
+             mergeEmptyline: true,        //合并空行
+             removeClass: true,           //去掉冗余的class
+             removeEmptyline: false,      //去掉空行
+             textAlign: "left",           //段落的排版方式，可以是 left,right,center,justify 去掉这个属性表示不执行排版
+             imageBlockLine: 'center',    //图片的浮动方式，独占一行剧中,左右浮动，默认: center,left,right,none 去掉这个属性表示不执行排版
+             pasteFilter: false,          //根据规则过滤没事粘贴进来的内容
+             clearFontSize: false,        //去掉所有的内嵌字号，使用编辑器默认的字号
+             clearFontFamily: false,      //去掉所有的内嵌字体，使用编辑器默认的字体
+             removeEmptyNode: false,      //去掉空节点
+             //可以去掉的标签
+             removeTagNames: {"font": 1},
+             indent: false,               // 行首缩进
+             indentValue: '0em'           //行首缩进的大小
+             }*/
+        };
+        function sel_address(){
+            var lng=$("#chrmaplng").val();
+            var lat=$("#chrmaplat").val();
+            CustomOpen("/static/map/test.php?lng="+lng+"&lat="+lat,"sel_address","选择地址",950,680);
+        }
+    </script>
+    <script type="text/javascript" src="/static/plugins/Ueditor/ueditor.config.js"></script>
+    <script type="text/javascript" src="/static/plugins/Ueditor/ueditor.all.js"></script>
+</head>
+<body>
+<div class="oa_pop">
+    <div class="oa_pop-main">
+        <div style="height: 6px"></div>
+        <div class="oa_title clearfix">
+            <span class="oa_ico-right"></span>
+            <span class="oa_title-btn"></span>
+            <span class="oa_ico-left"></span>
+            评价管理        </div>
+        <div class="oa_edition">
+            <form id="frm" action="" method="post">
+                <input type="hidden" name="id_activities" value="{$info['id_activities']}">
+                <table id="tabcontent" width="100%" border="0" cellspacing="1" cellpadding="0" class="oa_edition" style="border-bottom: #e0e0e0 solid 1px">
+                    <tr>
+                        <td width="150"class="oa_cell-left"><span style="color:#ff0000">*</span>评价标题</td>
+                        <td class="oa_cell-right"><input name="title" id="title" type="text" value="{$info.title}" class="form-control "  style="width:400px;"   chname="评价标题"  /> </td>
+                    </tr>
+                    <tr>
+                        <td width="150"class="oa_cell-left">评价时间：</td>
+                        <td class="oa_cell-right">
+                            <input type="text"   style="width: 150px;"  autocomplete="off" id="comment_time" name="comment_time" class="form-control"  value="<?php echo date('Y-m-d',$info['comment_time']); ?>">
+                            <script language='JavaScript'>seltime("comment_time","YYYY-MM-DD");</script>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="150" class="oa_cell-left">评价内容：</td>
+                        <td class="oa_cell-right">
+                            <select  name="u_t" id="u_t" onchange="SelP()">
+                                <option value=""  >选择评价模版</option>
+                                <option value="1" >A类评价</option>
+                                <option value="2" >B类评价</option>
+                                <option value="3" >C类评价</option>
+                                <option value="4" >D类评价</option>
+                            </select><br>
+                            <textarea name="content" rows="5" cols="5" id="content" style="width:500px; height:200px;" >{$info.content}</textarea>
+
+                        </td>
+                    </tr>
+
+                    <td colspan="2" style="padding:10px;">
+                        <input type="button"  class="subdata" value="提交">
+                    </td>
+                    </tr>
+                </table>
+
+            </form>
+        </div>
+        <div style="height: 30px"></div>
+    </div>
+</div>
+<script>
+    function SelP()
+    {
+        var sid=$("#u_t").val();
+        if(sid=='1')
+        {
+            $("#content").val('很好\r\n继续努力！');
+        }
+        else if(sid=='2')
+        {
+            $("#content").val('好\r\n争取更好');
+        }
+        else if(sid=='3')
+        {
+            $("#content").val('还可以\r\n要加油');
+        }
+        else if(sid=='4')
+        {
+            $("#content").val('差\r\n没救了');
+        }
+    }
+
+    $('.subdata').click(function(){
+        if(!$.trim($("#title").val())){
+            layer.alert('请输入评价标题')
+            return false
+        }
+        $('#frm').submit()
+    })
+</script>
+
+
+</body>
+</html>

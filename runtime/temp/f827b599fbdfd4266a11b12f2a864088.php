@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:70:"D:\workspace\work\public/../application/admin\view\index\leftbar1.html";i:1561691687;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:70:"D:\workspace\work\public/../application/admin\view\index\leftbar1.html";i:1564045943;}*/ ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -9,7 +9,8 @@
 <script type="text/javascript">function AddMainTab(url,code,title){window.parent.mainFrame.TabAdd(url,title,code);}</script>
 <script type="text/javascript">
     $(function () {
-        //$(".leftbar dl.nav dd").hide();
+        $(".leftbar dl.nav dd:first").show();
+
         $(".leftbar dl.nav dt").click(function () {
             $(".leftbar dl.nav dd").not($(this).next()).hide();
             $(".leftbar dl.nav dt").not($(this).next()).removeClass("nav-title");

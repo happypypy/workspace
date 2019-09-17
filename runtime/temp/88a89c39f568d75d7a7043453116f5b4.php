@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:4:{s:22:"template/M1/index.html";i:1562315896;s:67:"C:\phpStudy\PHPTutorial\WWW\work\public\template\M1\lib\header.html";i:1561691693;s:68:"C:\phpStudy\PHPTutorial\WWW\work\public\template\M1\lib\footer0.html";i:1561691693;s:67:"C:\phpStudy\PHPTutorial\WWW\work\public\template\M1\lib\footer.html";i:1561691693;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:4:{s:22:"template/M1/index.html";i:1568688954;s:57:"D:\workspace\work\public\template\modules\lib\header.html";i:1568631130;s:58:"D:\workspace\work\public\template\modules\lib\footer0.html";i:1565663557;s:57:"D:\workspace\work\public\template\modules\lib\footer.html";i:1568605126;}*/ ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,12 +12,12 @@
 	<meta name="keywords" content="" />
 	<meta name="description" content="" />
 
-	<script type="text/javascript" src="<?php echo $roottpl; ?>/js/jquery.min.js"></script>
-	<script type="text/javascript" src="<?php echo $roottpl; ?>/js/swiper.min.js"></script>
-	<script type="text/javascript" src="<?php echo $roottpl; ?>/js/common.js"></script>
-	<link rel="stylesheet" type="text/css" href="<?php echo $roottpl; ?>/style/css/swiper.min.css">
+	<script type="text/javascript" src="/static/modules/js/jquery.min.js"></script>
+	<script type="text/javascript" src="/static/modules/js/swiper.min.js"></script>
+	<script type="text/javascript" src="/static/modules/js/common.js"></script>
+	<link rel="stylesheet" type="text/css" href="/static/modules/style/css/swiper.min.css">
 	<link rel="stylesheet" type="text/css" href="<?php echo $roottpl; ?>/style/css/common.css">
-	<link rel="stylesheet" type="text/css" href="<?php echo $roottpl; ?>/style/css/pc.css">
+	<link rel="stylesheet" type="text/css" href="/static/modules/style/css/pc.css">
 </head>
 <body>
 	<header>
@@ -30,7 +30,8 @@
 	</header>
 	<div class="menu" id="menu">
 		<ul>
-			<?php  $result=$cms->GetAllNodes(['showonmenu'=>1,'nodetype'=>['in','1,2'],'parentid'=>0],'idorder asc,nodeid asc','',20,$idsite);
+			<li><a href="/<?php echo $sitecode; ?>">首页<a></li>
+			<?php  $result=$cms->GetAllNodes(['showonmenu'=>1,'nodetype'=>['in','1,2,3'],'parentid'=>0],'idorder asc,nodeid asc','',20,$idsite);
 			foreach($result as $k=>$v){
 			$jumpUrl ="/". $sitecode.$v["url"];
 			if(substr( $v["url"],0,4 ) == "http"){
@@ -40,7 +41,7 @@
 			<li><a href="<?php echo $jumpUrl; ?>"><?php echo $v['nodename']; ?></a></li>
 			<?php }?>
 		</ul>
-	</div>
+	</div> 
 	<div class="menu-cover"></div>
 
 <div class="site-section clearfix bg">
@@ -53,7 +54,7 @@
 				foreach($result1 as $k=>$v){ ?>
 				<div class="swiper-slide"><a href="<?php echo $v['ad_link']==''?'javascript:;':$v['ad_link']; ?>"><img src="<?php echo $v['ad_code']; ?>"></a></div>
 				<?php }} else { ?>
-				<div class="swiper-slide"><a href="javascript:;"><img src="<?php echo $roottpl; ?>/images/banner_01.jpg"></a></div>
+				<div class="swiper-slide"><a href="javascript:;"><img src="/static/modules/images/banner_01.jpg"></a></div>
 				<?php } ?>
 
 			</div>
@@ -85,7 +86,7 @@
 					foreach($result1 as $k=>$v){ ?>
 					<div class="swiper-slide"><a href="<?php echo $v['ad_link']==''?'javascript:;':$v['ad_link']; ?>"><img src="<?php echo $v['ad_code']; ?>"></a></div>
 					<?php }} else { ?>
-					<div class="swiper-slide"><a href="javascript:;"><img class="swiper-slideImg" src="<?php echo $roottpl; ?>/images/bar_03.jpg"></a></div>
+					<div class="swiper-slide"><a href="javascript:;"><img class="swiper-slideImg" src="/static/modules/images/bar_03.jpg"></a></div>
 					<?php } ?>
 				</div>
 				<div class="swiper-pagination swiper-pagination1"></div>
@@ -101,17 +102,17 @@
                 <?php foreach($groupBuys as $groupBuy): ?>
                     <li>
                         <a href="/<?php echo $sitecode; ?>/detail/<?php echo $groupBuy['activity_id']; ?>">
-                            <div class="pic"><img src="<?php echo $roottpl; ?>/images/bar_03.jpg"></div>
+                            <div class="pic"><img src="<?php echo $groupBuy['chrimg_m']; ?>"></div>
                             <div class="txt">
                                 <div class="title title1"><?php echo $groupBuy['chrtitle']; ?></div>
                                 <div class="site site1"><i class="iconfont location">&#xe601;</i>适合年龄：<span><?php echo $groupBuy['minage'] == $groupBuy['maxage'] && $groupBuy['maxage'] == 0 ? '不限年龄' : $groupBuy['minage'] . ' ~ ' . $groupBuy['maxage']; ?></span></div>
-                                <div class="time time1"><i class="iconfont clock">&#xe602;</i><span>活动时间：<?php echo date('Y-m-d', $groupBuy['start_at']); ?> ~ <?php echo date('Y-m-d', $groupBuy['end_at']); ?></span></div>
+                                <div class="time time1"><i class="iconfont clock">&#xe602;</i><span>使用时间：<?php echo date('Y-m-d', $groupBuy['start_at']); ?> ~ <?php echo date('Y-m-d', $groupBuy['end_at']); ?></span></div>
                             </div>
                         </a>
                         <a href="/<?php echo $sitecode; ?>/detail/<?php echo $groupBuy['activity_id']; ?>">
                             <div class="txt spell-txt">
-                                <div class="spell-txtl">单购价:<del><?php echo $groupBuy['member_price']; ?></del>元</div>
-                                <span class="spell-txtm">拼团价:<span><?php echo $groupBuy['group_buy_price']; ?></span>元</span>
+                                <div class="spell-txtl">单购:￥<del><?php echo $groupBuy['member_price']; ?></del></div>
+                                <span class="spell-txtm"><?php echo $groupBuy['group_num']; ?>人拼团:￥<span><?php echo $groupBuy['group_buy_price']; ?></span></span>
                                 <!-- <a href="/<?php echo $sitecode; ?>/detail/<?php echo $groupBuy['activity_id']; ?>"> -->
                                     <input class="button_1 spell-txtr" type="button" value="我要拼团" onclick="">
                                 <!-- </a> -->
@@ -126,7 +127,7 @@
 
 
     <div class="combox bgw">
-        <div  class="headline">活动推荐</div>
+        <div  class="headline">产品推荐</div>
         <ul class="common-list">
             <?php  $re = $cms->GetActivity($idsite,array('chkdown'=>array('neq',1)),'','idactivity,chkisindex,chrtitle,chrimg_m,chrurl,chrsummary,dtstart,dtpublishtime,hits,s.is_receive_cashed',10);
             $index=0;
@@ -151,7 +152,7 @@
             <?php }}
                 if($index==0){ ?>
             <li style="height:0.3rem;">
-                <div class="t9">抱歉，当前没有最新活动信息</div>
+                <div class="t9">抱歉，当前没有最新产品信息</div>
             </li>
             <?php }?>
         </ul>
@@ -214,7 +215,7 @@
 					<li <?php echo $SelectFooterTab==2?"class='on'":"" ?>>
 						<a href="/<?php echo $sitecode; ?>/activity">
 							<span><i class="iconfont coffee">&#xe604;</i></span>
-							<p>活动</p>
+							<p>产品</p>
 						</a>
 					</li> 
 					<li <?php echo $SelectFooterTab==3?"class='on'":"" ?>>

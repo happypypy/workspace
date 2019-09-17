@@ -1,0 +1,594 @@
+﻿/**
+ * 折线图
+ * @param DivID  标签div
+ * @param ArrData	数据
+ * @param stitle	标题
+ * @param leftX		图形定位位于div左边的距离
+ * @param bottomY	图形定位位于div底边的距离
+ * @param rotateFlag	x轴值的倾斜角度
+ * 分组数据格式:
+ * 第一个数组下标值代表有几个组的系列,第二个数组下标值代表x轴的值,第三个数组下标值代表的是数据(每一个分组的数据)
+ * [["邮件营销","联盟广告"],["周一","周二","周三"],[[120,132,101],[220,182,191]]]
+ * 单条数据格式:
+ * 第一个数组下标值代表单个的系列,第二个数组下标值代表x轴的值,第三个数组下标值代表的是数据
+ * [["邮件营销"],["周一","周二","周三"],[[120,132,101]]]
+ */
+function showLine(DivID,ArrData,stitle,leftX,bottomY,rotateFlag)
+	{
+	
+	if(leftX==undefined || leftX==null || leftX=="" || leftX==NaN)
+		leftX=200;
+	if(bottomY==undefined || bottomY==null || bottomY=="" || bottomY==NaN)
+		bottomY=150;
+	
+	if(rotateFlag==undefined || rotateFlag==null || rotateFlag=="" || rotateFlag==NaN || rotateFlag!=1)
+		rotateFlag=45;
+	else
+		rotateFlag=0;	
+	
+    // 图表实例化------------------
+	// srcipt标签式引入
+	var myChart = echarts.init(document.getElementById(DivID));
+	myChart.clear();
+	// 过渡---------------------
+	myChart.showLoading({
+		text: '正在努力的读取数据中...',    //loading话术
+	});
+
+	myChart.hideLoading();
+	
+	var	option = {
+		//标题,位于x轴居中
+	 title : {
+            text : stitle,
+			 x: 'center'
+			
+        },
+		//提示信息
+    tooltip : {
+        trigger: 'axis',
+        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+            type : 'line'        // 默认为直线，可选为：'line' | 'shadow'(为有阴影的)
+        }
+       
+    },
+		//图例
+    legend: {
+        data:(ArrData[0].length>1?ArrData[0]:""),
+		left:'right',
+		y:'center',
+		//align:'center',
+		//朝向垂直的
+		orient:'vertical'//'horizontal'
+    },
+    toolbox: {
+        show : true,
+		color:['#1e90ff','#22bb22','#4b0082','#d2691e'],
+        right: '50',
+        feature : {
+            mark : {show: true},
+            saveAsImage : {show: true}//保存图片
+        }
+    },
+    calculable : true,
+        xAxis : [
+            {
+                type : 'category',
+                boundaryGap: false,
+                data : ArrData[1]
+
+            }
+        ],
+        grid: { // 控制图的大小，调整下面这些值就可以，
+            x: 80,
+            x2: leftX,
+            y2: bottomY,// y2可以控制 X轴跟Zoom控件之间的间隔，避免以为倾斜后造成 label重叠到zoom上
+        },
+    yAxis : [
+        {
+			type : 'value',
+            minInterval : 1,
+            boundaryGap : [ 0, 0.1 ],
+        }
+    ],
+    series : []
+};
+myChart.setOption(option);
+
+	for(var i=0;i<ArrData[0].length;i++)
+	{
+		option.series.push({
+				name: ArrData[0][i],                            // 系列名称
+				type: 'line',                           // 图表类型，折线图line、散点图scatter、柱状图bar、饼图pie、雷达图radar
+				data: ArrData[2][i],
+		});
+		myChart.setOption(option);
+	}
+
+}
+
+/**
+ * 堆叠区域图
+ * @param DivID  标签div
+ * @param ArrData	数据
+ * @param stitle	标题
+ * 分组数据格式:
+ * 第一个数组下标值代表有几个组的系列,第二个数组下标值代表x轴的值,第三个数组下标值代表的是数据(每一个分组的数据)
+ * [["邮件营销","联盟广告"],["周一","周二","周三"],[[120,132,101],[220,182,191]]]
+ * 单条数据格式:
+ * 第一个数组下标值代表单个的系列,第二个数组下标值代表x轴的值,第三个数组下标值代表的是数据
+ * [["邮件营销"],["周一","周二","周三"],[[120,132,101]]]
+ */
+function showLineArea(DivID,ArrData,stitle)
+{
+
+    // 图表实例化------------------
+    // srcipt标签式引入
+    var myChart = echarts.init(document.getElementById(DivID));
+    myChart.clear();
+    // 过渡---------------------
+    myChart.showLoading({
+        text: '正在努力的读取数据中...',    //loading话术
+    });
+
+    myChart.hideLoading();
+    var series_arr = new Array();
+    for(var i=0;i<ArrData[0].length;i++)
+    {
+
+        series_arr.push({
+
+            name: ArrData[0][i],                            // 系列名称
+            type:'line',
+            stack: '总量',//声明堆叠的重要参数
+            // label: {
+            //     normal: {
+            //         show: true,
+            //         position: 'top',
+            //         color:'white'
+            //     }
+            // },
+            areaStyle: {normal: {}},
+            data:ArrData[2][i]
+      });
+    }
+
+    var	option = {
+        title: {
+            text : stitle,
+            x: 'center'
+        },
+        tooltip : {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'cross',
+                label: {
+                    backgroundColor: '#6a7985'
+                }
+            }
+        },
+        legend: {
+            data:(ArrData[0].length>1?ArrData[0]:""),
+            // left:'right',
+            // y:'center',
+            // //align:'center',
+            // //朝向垂直的
+            // orient:'vertical'//'horizontal'
+            left: 'center',
+            bottom:10,
+        },
+        toolbox: {
+            right: '50',//让保存为图片向右偏移，防止显示不全
+            feature: {
+                saveAsImage: {}
+            }
+        },
+        grid: { // 控制图的大小，调整下面这些值就可以，
+            x: 80,
+            x2: 30,
+            // y2: bottomY,// y2可以控制 X轴跟Zoom控件之间的间隔，避免以为倾斜后造成 label重叠到zoom上
+        },
+        xAxis : [
+            {
+                type : 'category',
+                boundaryGap : false,
+                data : ArrData[1]
+            }
+        ],
+        yAxis : [
+            {
+                type : 'value',
+                minInterval : 1,
+                boundaryGap : [ 0, 0.1 ],
+            }
+        ],
+        series : series_arr
+    };
+    myChart.setOption(option);
+
+}
+
+/**
+ * 柱状图
+ * @param DivID  标签div
+ * @param ArrData	数据
+ * @param stitle	标题
+ * @param leftX		图形定位位于div左边的距离
+ * @param bottomY	图形定位位于div底边的距离
+ * @param rotateFlag	x轴值的倾斜角度
+ */
+function showBar(DivID,ArrData,stitle,leftX,bottomY,rotateFlag)
+	{
+	if(leftX==undefined || leftX==null || leftX=="" || leftX==NaN)
+		leftX=200;
+	if(bottomY==undefined || bottomY==null || bottomY=="" || bottomY==NaN)
+		bottomY=150;
+	
+	if(rotateFlag==undefined || rotateFlag==null || rotateFlag=="" || rotateFlag==NaN || rotateFlag!=1)
+		rotateFlag=40;
+	else
+		rotateFlag=0;	
+		
+    // 图表实例化------------------
+	// srcipt标签式引入
+	var myChart = echarts.init(document.getElementById(DivID));
+	myChart.clear();
+	// 过渡---------------------
+	myChart.showLoading({
+		text: '正在努力的读取数据中...',    //loading话术
+	});
+
+	myChart.hideLoading();
+	
+	var	option = {
+	 title : {
+            text : stitle,
+			 x: 'center'  
+			
+        },
+    tooltip : {
+        trigger: 'axis',
+        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+        }
+       
+    },
+    legend: {
+        data:(ArrData[0].length>1?ArrData[0]:""),
+		left:'right',
+		y:'center',
+		//align:'center',
+		orient:'vertical'//'horizontal'
+    },
+    toolbox: {
+        show : true,
+		color:['#1e90ff','#22bb22','#4b0082','#d2691e'],
+        right: '50',
+        feature : {
+            mark : {show: true},
+            saveAsImage : {show: true}//保存图片
+        }
+    },
+    calculable : true,
+    xAxis : [
+        {
+			type : 'category',
+			axisLabel:{
+                         interval:0,
+                         rotate:rotateFlag,
+                         margin:8,
+                         textStyle:{
+                             color:"#222"
+                         }
+                     },
+            data : ArrData[1]
+           
+        }
+    ],
+	grid: { // 控制图的大小，调整下面这些值就可以，
+             x: 80,
+             x2: leftX,
+             y2: bottomY,// y2可以控制 X轴跟Zoom控件之间的间隔，避免以为倾斜后造成 label重叠到zoom上
+         },
+        yAxis : [
+            {
+                type : 'value',
+                minInterval : 1,
+                boundaryGap : [ 0, 0.1 ],
+            }
+        ],
+    series : []
+};
+myChart.setOption(option);
+
+	for(var i=0;i<ArrData[0].length;i++)
+	{
+		option.series.push({
+				name: ArrData[0][i],                            // 系列名称
+				type: 'bar',                           // 图表类型，折线图line、散点图scatter、柱状图bar、饼图pie、雷达图radar
+				barMaxWidth:80,
+				itemStyle :　{
+					normal : {
+						label : {
+							show : true,
+							position: 'top',
+							formatter : "{c}"
+						},
+						labelLine : {
+							show : true
+						}
+					}
+				},
+				
+				data: ArrData[2][i]
+		});
+		myChart.setOption(option);
+	}
+
+}
+
+/**
+ * 条形图
+ * @param DivID  标签div
+ * @param ArrData	数据
+ * @param stitle	标题
+ */
+function showBar1(DivID,ArrData,stitle)
+{
+    // 图表实例化------------------
+    // srcipt标签式引入
+    var myChart = echarts.init(document.getElementById(DivID));
+    myChart.clear();
+    // 过渡---------------------
+    myChart.showLoading({
+        text: '正在努力的读取数据中...',    //loading话术
+    });
+
+    myChart.hideLoading();
+
+
+
+    var	option = {
+        title : {
+            text : stitle,
+            x: 'center'
+        },
+        tooltip : {
+            trigger: 'axis',
+            axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+            }
+
+        },
+        legend: {
+            data:(ArrData[0].length>1?ArrData[0]:""),
+            left:'right',
+            y:'center',
+            //align:'center',
+            orient:'vertical'//'horizontal'
+        },
+        toolbox: {
+            show : true,
+            color:['#1e90ff','#22bb22','#4b0082','#d2691e'],
+            right: '50',
+            feature : {
+                mark : {show: true},
+                saveAsImage : {show: true}//保存图片
+            }
+        },
+        calculable : true,
+        xAxis : [
+            {
+                type : 'value'
+            }
+        ],
+        grid: { // 控制图的大小，调整下面这些值就可以，
+            x: 180,
+            x2: 200,
+            y2: 50,// y2可以控制 X轴跟Zoom控件之间的间隔，避免以为倾斜后造成 label重叠到zoom上
+        },
+        yAxis : [
+            {
+                type : 'category',
+
+                data : ArrData[1]
+            }
+        ],
+        series : []
+    };
+    myChart.setOption(option);
+
+    for(var i=0;i<ArrData[0].length;i++)
+    {
+        option.series.push({
+            name: ArrData[0][i],                            // 系列名称
+            type: 'bar',                           // 图表类型，折线图line、散点图scatter、柱状图bar、饼图pie、雷达图radar
+            itemStyle :　{
+                normal : {
+                    label : {
+                        show : true,
+                        position: 'right',
+                        formatter : "{c}"
+                    },
+                    labelLine : {
+                        show : true
+                    }
+                }
+            },
+            data: ArrData[2][i]
+        });
+        myChart.setOption(option);
+    }
+
+}
+
+/**
+ * 饼状图
+ * @param DivID  标签div
+ * @param ArrData	数据
+ * @param stitle	标题
+ */
+function showPie(DivID,ArrData,stitle,subtext)
+{	
+	var myChart = echarts.init(document.getElementById(DivID));
+	myChart.clear();
+	// 过渡---------------------
+	myChart.showLoading({
+		text: '正在努力的读取数据中...',    //loading话术
+	});
+	myChart.hideLoading();
+	
+	// 图表使用-------------------
+	var option = {
+	
+		title: {  
+                    //主标题文本，'\n'指定换行  
+                    text: stitle,  
+                    //主标题文本超链接  
+                    //link: 'http://www.tqyb.com.cn/weatherLive/climateForecast/2014-01-26/157.html',  
+                    //副标题文本，'\n'指定换行  
+                    subtext: subtext,
+                    //副标题文本超链接  
+                    //sublink: 'http://www.stepday.com/myblog/?Echarts',  
+                    //水平安放位置，默认为左侧，可选为：'center' | 'left' | 'right' | {number}（x坐标，单位px）  
+                    x: 'center',  
+                    //垂直安放位置，默认为全图顶端，可选为：'top' | 'bottom' | 'center' | {number}（y坐标，单位px）  
+                    y: 'top'  
+                },
+        legend: {
+            left: 'center',
+            bottom:10,
+            data: ArrData[1]
+        },
+		//下载
+        toolbox: {
+            right: '50',
+            feature: {
+                saveAsImage: {}
+            }
+        },
+		//工具提示
+        tooltip : {
+            trigger: 'item',
+            formatter: "{b} : {c} ({d}%)"
+        },
+		series: []
+	};
+	
+	
+	var _data=[];
+    //因为饼状不能分组,所以取第一组的数据
+	for(var i=0;i<ArrData[1].length;i++)
+	{
+		var obj = new Object();  
+	    obj.name = ArrData[1][i];
+	    obj.value = ArrData[2][0][i];
+	    _data.push(obj);  
+	}
+	option.series.push({
+				type: 'pie', 
+				radius : [0, 80],//0是代表中间不缺,90代表大小跟环形一样
+itemStyle :　{
+					normal : {
+						label : {
+							show : true,
+							formatter : "{b}-{c}[{d}%]"
+						},
+						labelLine : {
+							show : true
+						}
+					}
+				},				// 图表类型，折线图line、散点图scatter、柱状图bar、饼图pie、雷达图radar
+				data:_data
+		});
+	myChart.setOption(option);
+
+}
+
+/**
+ * 圆环图
+ * @param DivID  标签div
+ * @param ArrData	数据
+ * @param stitle	标题
+ */
+function showPie1(DivID,ArrData,stitle,subtext)
+{	
+	var myChart = echarts.init(document.getElementById(DivID));
+	myChart.clear();
+	// 过渡---------------------
+	myChart.showLoading({
+		text: '正在努力的读取数据中...',    //loading话术
+	});
+	myChart.hideLoading();
+	
+	// 图表使用-------------------
+	var option = {
+	
+		title: {  
+                    //主标题文本，'\n'指定换行  
+                    text: stitle,
+                    //主标题文本超链接  
+                    //link: 'http://www.tqyb.com.cn/weatherLive/climateForecast/2014-01-26/157.html',  
+                    //副标题文本
+                    subtext: subtext,
+                    //副标题文本超链接  
+                    //sublink: 'http://www.stepday.com/myblog/?Echarts',  
+                    //水平安放位置，默认为左侧，可选为：'center' | 'left' | 'right' | {number}（x坐标，单位px）  
+                    x: 'center',  
+                    //垂直安放位置，默认为全图顶端，可选为：'top' | 'bottom' | 'center' | {number}（y坐标，单位px）  
+                    y: 'top'  
+                },
+        //定义系列的位置
+        legend: {
+            // orient: 'vertical',
+            // left: '400',
+            // y:'center',
+            left: 'center',
+            bottom:10,
+            data: ArrData[1]
+        },
+        //下载
+        toolbox: {
+            right: '50',
+            feature: {
+                saveAsImage: {}
+            }
+        },
+        //工具提示
+        tooltip : {
+            trigger: 'item',
+            formatter: "{b} : {c} ({d}%)"
+        },
+		series: []
+	};
+	
+	
+	var _data=[];
+	//因为饼状不能分组,所以取第一组的数据
+	for(var i=0;i<ArrData[1].length;i++)
+	{
+		var obj = new Object();  
+	    obj.name = ArrData[1][i];  
+	    obj.value = ArrData[2][0][i];
+	    _data.push(obj);  
+	}
+	option.series.push({
+				type: 'pie', 
+				radius : [60, 80],
+				//radius : 90,
+itemStyle :　{
+					normal : {
+						label : {
+							show : true,
+							formatter : "{b}-{c}[{d}%]"
+						},
+						labelLine : {
+							show : true
+						}
+					}
+				},				// 图表类型，折线图line、散点图scatter、柱状图bar、饼图pie、雷达图radar
+				data:_data
+		});
+	myChart.setOption(option);
+
+}

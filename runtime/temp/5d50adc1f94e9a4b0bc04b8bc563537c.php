@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:4:{s:32:"template/M1/activity/detail.html";i:1563415435;s:52:"D:\workspace\work\public\template\M1\lib\header.html";i:1561691693;s:53:"D:\workspace\work\public\template\M1\lib\footer0.html";i:1561691693;s:53:"D:\workspace\work\public\template\M1\lib\footer1.html";i:1561691693;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:4:{s:32:"template/M1/activity/detail.html";i:1565247560;s:52:"D:\workspace\work\public\template\M1\lib\header.html";i:1561691693;s:53:"D:\workspace\work\public\template\M1\lib\footer0.html";i:1561691693;s:53:"D:\workspace\work\public\template\M1\lib\footer1.html";i:1561691693;}*/ ?>
 
 <?php $info = $cms->GetActivityInfo($id, 'nodeid,intflag,chkdown,chrtitle,chrcontent,chrimg,publishname,dtpublishtime,chksignup,dtstart,dtend,dtsignstime,dtsignetime,intsignnum,minage,maxage,chrrange,ischarge,txtfwtk,chraddressdetail,chrmap,chrmaplng,chrmaplat,usertype,is_distribution');
 if(empty($info))
@@ -80,7 +80,7 @@ elseif(($info["intflag"]!=2 || $info["chkdown"]==1)  && empty($_GET["type"]))
                     <div class="coupon">
                         <div class="price"><?php echo intval($activity_cashed['activity_cashed_amount']); ?></div>
                         <div class="txt">仅限本活动使用</div>
-                        <a href="javascript:void(0);" onclick="getvolume1();" class="btn"></a>
+                        <a href="javascript:void(0);" onclick="getvolume1();" class='btn <?php if($user_receive_info): ?>gray<?php endif; ?>' id="receive-id"><?php if($user_receive_info): ?>已领取<?php else: ?>点击领取<?php endif; ?></a>
                     </div>
                 </div>
 				<?php endif; ?>
@@ -95,8 +95,8 @@ elseif(($info["intflag"]!=2 || $info["chkdown"]==1)  && empty($_GET["type"]))
                     <em class="rich_media_meta rich_media_meta_text"><?php echo date('Y-m-d',strtotime($info['dtend'])); ?></em>
                     <br>
                     <em class="rich_media_meta rich_media_meta_text">报名时间：</em>
-                    <em class="rich_media_meta rich_media_meta_text"><?php echo date('Y-m-d',strtotime($info['dtsignstime'])); ?> -</em>
-                    <em class="rich_media_meta rich_media_meta_text"><?php echo date('Y-m-d',strtotime($info['dtsignetime'])); ?></em>
+                    <em class="rich_media_meta rich_media_meta_text"><?php echo date('Y-m-d H:i',strtotime($info['dtsignstime'])); ?> -</em>
+                    <em class="rich_media_meta rich_media_meta_text"><?php echo date('Y-m-d H:i',strtotime($info['dtsignetime'])); ?></em>
                     <br>
                     <em class="rich_media_meta rich_media_meta_text">参与方式：</em>
                     <em class="rich_media_meta rich_media_meta_text"><?php echo $info['chrrange']==1?'家长及儿童':($info['chrrange']==2?'仅儿童':'仅家长') ?></em>
@@ -112,8 +112,8 @@ elseif(($info["intflag"]!=2 || $info["chkdown"]==1)  && empty($_GET["type"]))
                     <em class="rich_media_meta rich_media_meta_text"><?php echo $info['maxage']; ?>岁</em>
                     <?php } ?>
                     <br>
-                    <em class="rich_media_meta rich_media_meta_text">最大人数：</em>
-                    <em class="rich_media_meta rich_media_meta_text"><?php echo $info['intsignnum']; ?>人</em>
+                    <em style="display: none" class="rich_media_meta rich_media_meta_text">最大人数：</em>
+                    <em style="display: none"  class="rich_media_meta rich_media_meta_text"><?php echo $info['intsignnum']; ?>人</em>
                 </div>
 				<?php if(!empty($info['chrmap']) || !empty($info['txtfwtk'])) { ?>
 				<div class="rich_media_meta_list" style="padding-top: 10px;">
@@ -130,9 +130,9 @@ elseif(($info["intflag"]!=2 || $info["chkdown"]==1)  && empty($_GET["type"]))
 					<?php echo replearurl($info['txtfwtk']) ?>
 				</div>
                 <?php } ?>
-                
+
                 <!-- 拼团 -->
-                <?php if(checkedMarketingPackage($idsite, 'group_buy') &&  $groupBuys): ?>
+                <?php if(checkedMarketingPackage($idsite, 'group_buy') &&  $groupBuys){ ?>
                     <div class="act-schedule">
                         <div class="act-schedule-in">
     <!--                         <div class="act-schedule-tit">一起拼，更优惠</div>
@@ -144,7 +144,7 @@ elseif(($info["intflag"]!=2 || $info["chkdown"]==1)  && empty($_GET["type"]))
 
                                     <div style="color: red; text-align: center">
                                         <span style="font-size: 12px">
-                                             <span class="count-down" endtime="<?php echo $groupBuy['expiration']; ?>">
+                                             <span class="count-down" endtime="<?php echo $groupBuy['expiration']; ?>" group="start<?php echo $groupBuy['group_buy_id']; ?>">
      <span class="day">0</span> 天 <span class="hour">0</span> 时 <span class="minute">0</span> 分 <span class="sec">0</span> 秒
  </span>
                                         </span>
@@ -155,7 +155,7 @@ elseif(($info["intflag"]!=2 || $info["chkdown"]==1)  && empty($_GET["type"]))
                                             <div class="item-in-dlt"><?php echo $groupBuy['group_num']; ?>人成团</div>
                                             <div class="item-in-dld">拼团价 <em><?php echo $groupBuy['group_buy_price']; ?></em>元，单购价<del> <?php echo $groupBuy['member_price']; ?> </del>元</div>
                                         </div>
-                                        <a href="/<?php echo $sitecode; ?>/signup/<?php echo $id; ?>/<?php echo $groupBuy['group_buy_id']; ?>">
+                                        <a href="/<?php echo $sitecode; ?>/signup/<?php echo $id; ?>/<?php echo $groupBuy['group_buy_id']; ?>?share_id=<?php echo $share_id; ?>&a=<?php echo $a; ?>" class="start<?php echo $groupBuy['group_buy_id']; ?>">
                                             <div class="item-in-dr">
                                                 <button>我要开团</button>
                                             </div>
@@ -168,7 +168,7 @@ elseif(($info["intflag"]!=2 || $info["chkdown"]==1)  && empty($_GET["type"]))
                                 <div class="item-in">
                                     <div style="color: red; text-align: center">
                                         <span style="font-size: 12px">
-                                             <span class="count-down" endtime="<?php echo $groupBuyOrder['expiration']; ?>">
+                                             <span class="count-down" endtime="<?php echo $groupBuyOrder['expiration']; ?>" group="join<?php echo $groupBuyOrder['group_buy_order_id']; ?>">
      <span class="day">0</span> 天 <span class="hour">0</span> 时 <span class="minute">0</span> 分 <span class="sec">0</span> 秒
  </span>
                                         </span>
@@ -180,7 +180,7 @@ elseif(($info["intflag"]!=2 || $info["chkdown"]==1)  && empty($_GET["type"]))
                                             <img class="user" src="<?php echo $groupBuyOrder['userimg']; ?>" alt="">
                                             目前还差<span><?php echo $groupBuyOrder['left_num']; ?></span>人,赶快加入吧！
                                         </div>
-                                        <a href="/<?php echo $sitecode; ?>/signup/<?php echo $id; ?>/<?php echo $groupBuyOrder['group_buy_id']; ?>/<?php echo $groupBuyOrder['group_buy_order_id']; ?>">
+                                        <a href="/<?php echo $sitecode; ?>/signup/<?php echo $id; ?>/<?php echo $groupBuyOrder['group_buy_id']; ?>/<?php echo $groupBuyOrder['group_buy_order_id']; ?>?share_id=<?php echo $share_id; ?>&a=<?php echo $a; ?>" class="join<?php echo $groupBuyOrder['group_buy_order_id']; ?>">
                                             <div class="item-in-dr">
                                                 <button>我要参团</button>
                                             </div>
@@ -202,7 +202,7 @@ elseif(($info["intflag"]!=2 || $info["chkdown"]==1)  && empty($_GET["type"]))
                     
                     
                     </div>
-                <?php endif; ?>
+                <?php } ?>
 
 
                 <div class="docs-pictures clearfix">
@@ -263,7 +263,7 @@ elseif(($info["intflag"]!=2 || $info["chkdown"]==1)  && empty($_GET["type"]))
         </form>
 
         <!-- 分销 -->
-        <?php if($info['is_distribution'] && $user_info['spokesman_grade'] != 0): ?>
+        <?php if($info['is_distribution'] == 1 && $user_info['spokesman_grade'] != 0): ?>
          <div class="share-bill-box"><a href="/<?php echo $sitecode; ?>/getactivityimg/<?php echo $id; ?>" style="color: white">分享海报</a></div>
         <?php endif; ?>
 
@@ -368,13 +368,19 @@ elseif(($info["intflag"]!=2 || $info["chkdown"]==1)  && empty($_GET["type"]))
                             $this.find(opts.sec).text(addZero(secs));
                         } else {    //否则清除定时器，倒计时结束
                             clearInterval(timer);
+                            button=$this.attr('group')
+                            $("."+button).children().children('button').css('background',"#ccc")
+                            $("."+button).click(function(){
+                                return false
+                            })
                             $this.html("<span style='color: red;'>很遗憾，已结束</span>")
+
+
                         }
 
                         $this.attr('endtime',tms-1)
                     }
                 });
-
 
                 function addZero(t) {  //一位数加0
                     if (t < 10) {
@@ -556,6 +562,9 @@ elseif(($info["intflag"]!=2 || $info["chkdown"]==1)  && empty($_GET["type"]))
             dataType: 'json',
             success: function (result) {
                 layer.alert(result.message)//提示
+                if(result.success){
+                    $('#receive-id').addClass('gray').html('已领取');
+                }
             },
             error: function () {
                 alert('删除失败');

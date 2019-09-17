@@ -1,0 +1,49 @@
+<!-- 活动页底部栏 -->
+<div class="footernav-wrap">
+  <div class="footernav-wrap-inner">
+    <form class="footer-comment-form">
+      <div class="footer-comment-textarea">
+        <textarea name="content" id="content"></textarea>
+      </div>
+      <div class="comment-submit">
+        <input type="button" onclick="javascript:add_comment1();" value="提交">
+        <input type="button" value="取消" id="close-comment">
+      </div>
+    </form>
+    <ul class="flex footernavbar">
+      <li class="">
+        <a href="/{$sitecode}/activity/{$info['nodeid']}" class="flexCol footernavbar-link">
+          <span><i class="iconfont">&#xe778;</i></span>
+          <p>更多</p>
+        </a>
+      </li>
+
+      <li id="openService">
+        <a href="/{$sitecode}/waiter/2/{$id}" class="flexCol footernavbar-link">
+          <span><i class="iconfont">&#xe71d;</i></span>
+          <p>咨询</p>
+        </a>
+      </li>
+
+      <li>
+        <a href="javascript:;" id="show-comment" class="flexCol footernavbar-link">
+          <span><i class="iconfont">&#xe6d3;</i></span>
+          <p>评论</p>
+        </a>
+      </li>
+      <li>
+        <a href="#" onclick="add_collection1()" class="flexCol footernavbar-link">
+          <span><i class="iconfont fontColor" id="colle">&#xe705;</i></span>
+          <p>收藏</p>
+        </a>
+      </li>
+
+      <li>
+        <a href="#" onclick="javascript:bm();" class="flexCol footernavbar-link bgColor on">
+          <span><i class="iconfont">&#xe619;</i></span>
+          <p id="openSign">报名</p>
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>

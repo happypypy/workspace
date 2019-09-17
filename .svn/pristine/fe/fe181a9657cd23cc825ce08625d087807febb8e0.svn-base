@@ -1,0 +1,84 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+    <title>老师点评详情</title>
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+
+    <script type="text/javascript" src="/static/modules/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/static/modules/js/swiper.min.js"></script>
+    <script type="text/javascript" src="/static/modules/js/common.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/modules/style/css/swiper.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/modules/style/css/common.css">
+    <link rel="stylesheet" type="text/css" href="/static/modules/style/css/pc.css">
+</head>
+
+<body>
+<header>
+    <a href="/tongxiang" class="logo"><img
+            src="/public/uploads/7/admin/2019/05-17/6213ccb439082963a6b7232864cda5af.png"></a>
+    <div class="btns">
+        <a class="btn1" href="/tongxiang/mine"></a>
+        <a class="btn2" href="javascript:;" id="open-menu"></a>
+        <a class="btn3" href="javascript:;" id="close-menu"></a>
+    </div>
+</header>
+<div class="menu" id="menu">
+    <ul>
+        <li><a href="/tongxiang">首页<a></li>
+        <li><a href="/tongxiang/content/1209">童享云</a></li>
+        <li><a href="http://www.txy123.com/newindex">蜗牛童行</a></li>
+        <li><a href="https://www.hdxx123.com/newindex">立即试用</a></li>
+        <li><a href="/tongxiang/activity/1092">购童享云</a></li>
+        <li><a href="/tongxiang/content/1212">认识我们</a></li>
+        <li><a href="/tongxiang/node/1153">我是一个文章</a></li>
+        <li><a href="/tongxiang/node/1071">功能介绍</a></li>
+        <li><a href="/tongxiang/node/1072">最新资讯</a></li>
+        <li><a href="/tongxiang/content/1207">立即咨询</a></li>
+        <li><a href="/tongxiang/album/1184">相册</a></li>
+        <li><a href="/tongxiang/activity/1077">交流活动</a></li>
+        <li><a href="/tongxiang/node/1075">关于我们</a></li>
+    </ul>
+</div>
+<div class="menu-cover"></div>
+<?php
+    if(empty($data)){
+        header("location:/error.php?msg=".urlencode("评论不存在，有疑问请和管理联系！")."&url=".urlencode("/".$sitecode));
+	    exit();
+    }
+?>
+<div class="site-section clearfix">
+    <div class="where jigou">
+        <p>老师点评详情</p>
+        <a href="/tongxiang" class="iconfont">&#xe617;</a>
+    </div>
+
+    <div class="rich_media clearfix">
+        <div class="rich_media_area_primary">
+            <h3 class="camp-title">{$data.title}</h3>
+            <div class="sub-h3">发布时间：{$data.comment_time}</div>
+
+            <div class="docs-pictures clearfix">
+                {$data.content}
+            </div>
+        </div>
+    </div>
+
+    {include file="modules/lib/footer0" /}
+
+</div>
+</body>
+
+<script type="text/javascript">
+
+</script>
+</html>

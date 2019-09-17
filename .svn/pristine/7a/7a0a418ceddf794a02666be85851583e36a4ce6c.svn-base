@@ -1,0 +1,206 @@
+window.onload = function() {
+  ('use strict');
+
+  var Cropper = window.Cropper;
+  var URL = window.URL || window.webkitURL;
+  var container = document.querySelector('.img-container');
+  var image = container.getElementsByTagName('img').item(0);
+  var actions = document.querySelector('.actions');
+  var screenWidth = $(window).width();
+  var screenHeight = $(window).height();
+  var inputImage = document.querySelector('.inputImage');
+  var dataArea;//dataArea里面width、height是裁剪框的尺寸
+  dataArea = {
+    area: inputImage.getAttribute('data-area') || undefined,
+  };
+  var cropArea = dataArea.area;
+  cropArea = cropArea.replace(/"/g, '').replace(/\s*/g, '');//去除""和空格
+  var areaObj = {};//将width、height转换成对象
+  var arr = cropArea.split(',');
+  for (var i = 0; i < arr.length; i++) {
+    var kv = arr[i].split(':');
+    if (areaObj[kv[0]]) {
+      areaObj[kv[0]] += ',' + kv[1];
+    } else {
+      areaObj[kv[0]] = kv[1];
+    }
+  }
+
+  var options = {
+    minContainerHeight: screenHeight,
+    minContainerWidth: screenWidth,
+    aspectRatio: areaObj.width / areaObj.height,//根据页面中dataArea里面width、height设置裁剪框比例
+    viewMode: 3, //显示
+    guides: false, //裁剪框虚线 默认true有
+    dragMode: 'move',
+    autoCropArea: 0.8, //自动裁剪面积大小(百分比)和图片进行对比
+
+    ready: function(e) {
+      $('.containerDiv').show();
+      $('.imgEdit').show();
+    },
+
+    background: true, // 容器是否显示网格背景
+    movable: true, //是否能移动图片
+    cropBoxMovable: true, //是否允许拖动裁剪框
+    cropBoxResizable: false, //是否允许拖动 改变裁剪框大小
+    toggleDragModeOnDblclick: false, //定义当点击两次时可以在“crop”和“move”之间切换拖拽模式
+  };
+
+  var cropper = new Cropper(image, options);
+  var originalImageURL = image.src;
+  var uploadedImageType = 'image/jpeg';
+  var uploadedImageName = 'cropped.jpg';
+  var uploadedImageURL;
+
+  // // Buttons
+  if (!document.createElement('canvas').getContext) {
+    $('button[data-method="getCroppedCanvas"]').prop('disabled', true);
+  }
+
+  if (typeof document.createElement('cropper').style.transition === 'undefined') {
+    $('button[data-method="scale"]').prop('disabled', true);
+  }
+
+  // Methods
+
+  actions.querySelector('.docs-buttons').onclick = function(event) {
+    var e = event || window.event;
+    var target = e.target || e.srcElement;
+    var cropped;
+    var result;
+    var input;
+    var data;
+
+    if (!cropper) {
+      return;
+    }
+
+    while (target !== this) {
+      if (target.getAttribute('data-method')) {
+        break;
+      }
+
+      target = target.parentNode;
+    }
+
+    if (target === this || target.disabled || target.className.indexOf('disabled') > -1) {
+      return;
+    }
+
+    data = {
+      method: target.getAttribute('data-method'),
+      option: target.getAttribute('data-option') || undefined,
+      secondOption: target.getAttribute('data-second-option') || undefined,
+    };
+
+    // cropped = cropper.cropped;
+    if (data.method) {
+      switch (data.method) {
+        // case 'rotate':
+        //   if (cropped && options.viewMode > 0) {
+        //     cropper.clear();
+        //   }
+
+        //   break;
+
+        case 'getCroppedCanvas':
+          try {
+            data.option = JSON.parse(data.option);
+          } catch (e) {
+            console.log(e.message);
+          }
+
+          if (uploadedImageType === 'image/jpeg') {
+            if (!data.option) {
+              data.option = {};
+            }
+
+            data.option.fillColor = '#fff';
+          }
+
+          break;
+      }
+
+      result = cropper[data.method](data.option, data.secondOption);
+
+      switch (data.method) {
+        case 'rotate':
+          if (cropped && options.viewMode > 0) {
+            cropper.crop();
+          }
+
+          break;
+
+        case 'scaleX':
+        case 'scaleY':
+          target.setAttribute('data-option', -data.option);
+          break;
+
+        case 'getCroppedCanvas':
+          if (result) {
+            fileImg = result.toDataURL('image/jpg');
+            $('.showImg')
+              .attr('src', fileImg)
+              .show();
+          }
+
+          break;
+        case 'destroy':
+          $('.inputImage').val('');
+          $('.containerDiv').hide();
+          $('.imgEdit').hide();
+          break;
+      }
+
+      if (typeof result === 'object' && result !== cropper && input) {
+        try {
+          input.value = JSON.stringify(result);
+        } catch (e) {
+          console.log(e.message);
+        }
+      }
+    }
+  };
+
+  document.body.onkeydown = function(event) {
+    var e = event || window.event;
+
+    if (e.target !== this || !cropper || this.scrollTop > 300) {
+      return;
+    }
+  };
+
+  // Import image
+  var inputImage = document.querySelector('.inputImage');
+
+  if (URL) {
+    inputImage.onchange = function() {
+      var files = this.files;
+      var file;
+
+      if (cropper && files && files.length) {
+        file = files[0];
+
+        if (/^image\/\w+/.test(file.type)) {
+          uploadedImageType = file.type;
+          uploadedImageName = file.name;
+
+          if (uploadedImageURL) {
+            URL.revokeObjectURL(uploadedImageURL);
+          }
+
+          image.src = uploadedImageURL = URL.createObjectURL(file);
+          cropper.destroy();
+          cropper = new Cropper(image, options);
+          inputImage.value = null;
+        } else {
+          window.alert('Please choose an image file.');
+        }
+      }
+    };
+  } else {
+    inputImage.disabled = true;
+    inputImage.parentNode.className += ' disabled';
+  }
+};

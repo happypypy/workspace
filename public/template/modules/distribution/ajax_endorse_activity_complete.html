@@ -1,0 +1,59 @@
+
+            <?php if($list){foreach($list as $k=>$vo) {?>
+            <li>
+                <a class="flex">
+                    <div class="small-img"><img src="{$vo.chrimg}" alt=""></div>
+                    <div class="img-txt">
+                        <div class="info">{$vo.chrtitle}</div>
+                        <div class="info flex first-icon w64">
+                            <div class="tit">报名总数</div>：
+                            <div class="txt">{$vo['total']}</div>
+                        </div>
+                        <div class="info flex first-icon w64">
+                            <div class="tit">待付款数</div>：
+                            <div class="txt">{$vo['no_pay']}</div>
+                        </div>
+                        <div class="info flex first-icon w64">
+                            <div class="tit">已付款数</div>：
+                            <div class="txt">{$vo['spokesman_pay_num']}</div>
+                        </div>
+                        <div class="info flex first-icon w64">
+                            <div class="tit">已退款数</div>：
+                            <div class="txt">{$vo['refund']}</div>
+                        </div>
+                        <div class="info flex first-icon w64">
+                            <div class="tit">已获得佣金</div>：
+                            <div class="txt">{$vo['get_commission']}(元)</div>
+                        </div>
+                    </div>
+                </a>
+                <div class="btn-box flex">
+                    <input type="button" value="查看报名" onclick="javascript:window.location='/{$sitecode}/spokesmanorderlist?type=5&activity_id={$vo.activity_id}';">
+                    <input type="button" value="佣金明细" class="emdorse-detailed" onclick="show_endorse_detailed({$vo.activity_id})">
+                </div>
+            </li>
+            <div class="emdorse-detailed-content flex" style="display: none" id="emdorse-detailed-content_{$vo.activity_id}">
+                <div class="box">
+                    <div class="title">产品套餐对应的价格及佣金明细</div>
+                    <ul>
+                        {if condition="!$vo['package']"}
+                        <li class="empty">暂无佣金明细~</li>
+                        {else}
+                        <?php foreach($vo['package'] as $key=>$v) {?>
+                        <li>
+                            <div class="info"><span>{$v['keyword1']}</span>:<span>￥{$v['member_price']}</span></div>
+                            <div class="info">
+                                <span>可获销售佣金</span>:<span>￥{$v['sell_commission']}</span> &nbsp;&nbsp;&nbsp;&nbsp;
+                                <span>奖励金</span>:<span style="color: red">￥{$v['bounty_commission']}</span>
+                            </div>
+                        </li>
+                        <?php } ?>
+                        {/if}
+                    </ul>
+                    <div class="btn-box">
+                        <input type="button" value="我知道了" class="close" onclick="close_endorse_detailed({$vo.activity_id})">
+                    </div>
+                </div>
+            </div>
+            <?php }}else{echo 11;exit;} ?>
+        

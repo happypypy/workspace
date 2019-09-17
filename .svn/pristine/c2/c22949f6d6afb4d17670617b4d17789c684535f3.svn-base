@@ -1,0 +1,26 @@
+$(function() {
+  //侧边栏效果
+  $('#open-menu').on('click', function(event) {
+    event.stopPropagation();
+    $('body')
+      .addClass('open-menu')
+      .find('.menu-btn2')
+      .css('display', 'none')
+      .end()
+      .find('.menu-btn3,.menu-cover')
+      .css('display', 'block');
+  });
+  $('.menu-cover').on('click', function(event) {
+    if ($('body').hasClass('open-menu')) {
+      event.stopPropagation();
+      $('body')
+        .removeClass('open-menu')
+        .find('.menu-btn2')
+        .css('display', 'block')
+        .end()
+        .find('.menu-btn3,.menu-cover')
+        .css('display', 'none');
+    }
+  });
+
+});

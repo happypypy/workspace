@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="yes" name="apple-mobile-web-app-capable">
+  <meta content="yes" name="apple-touch-fullscreen">
+  <meta content="telephone=no,email=no" name="format-detection">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+  <script src="__PUBLIC__/static/template/pub/js/common.js"></script>
+  <link rel="stylesheet" href="__PUBLIC__/static/template/pub/css/main.css?v={:time()}">
+  <link rel="stylesheet" href="__PUBLIC__/static/template/skin/M1/css/skin.css?v={:time()}">
+  
+  <title>个人中心</title>
+</head>
+<body class="flexCol">
+  {include file="modules/lib/header" /}
+  <section class="section">
+    <div class="mine-head">
+      <div class="mine-head-box">
+        <img src="{$userinfo.userimg ? (strstr($userinfo.userimg,'http') ? $userinfo.userimg : '/'.$userinfo.userimg ) : '/static/images/userimg.jpg'}">
+      </div>
+      <div class="mine-head-name">{$userinfo['nickname']}</div>
+      <div class="scorenum-box"><a href="/{$sitecode}/integralrecord" class="scorenum">总积分：{$userinfo.integral}</a></div>
+    </div>
+    <div class="mine-content">
+      <ul>
+        <a href="/{$sitecode}/act/plist" class="mine-link mine-link-signup">
+          <p>我参与的活动</p>
+        </a>
+        <li>
+          <a href="/{$sitecode}/signuplist" class="mine-link mine-link-signup">我的报名</a>
+        </li>
+        {if condition="$is_distribution && $userinfo['spokesman_grade'] != 0"}
+        <li>
+          <a href="/{$sitecode}/spokesmanactivitylist" class="mine-link mine-link-endorse">产品代言</a>
+        </li>
+        {/if}
+        {if condition="$is_integral"}
+        <li>
+          <a href="/{$sitecode}/integralrecord" class="mine-link mine-link-score">我的积分</a>
+        </li>
+        {/if}
+        {if condition="$is_subscribe"}
+        <li>
+          <a href="/{$sitecode}/membercart" class="mine-link mine-link-card">我的卡包</a>
+        </li>
+		<li>
+          <a href="/{$sitecode}/subscriberecord" class="mine-link mine-link-card">我的预约记录</a>
+        </li>
+        {/if}
+        {if condition="$is_cashed"}
+        <li>
+          <a href="/{$sitecode}/cashedlist/1" class="mine-link mine-link-coupon">我的现金券</a>
+        </li>
+        {/if}
+        <li>
+          <a href="/{$sitecode}/collection" class="mine-link mine-link-collect">我的收藏</a>
+        </li>
+        <li>
+          <a href="/{$sitecode}/comment" class="mine-link mine-link-comment">我的评论</a>
+        </li>
+        <li>
+          <a href="/{$sitecode}/usermodi" class="mine-link mine-link-info">我的资料</a>
+        </li>
+        {if condition="$ismanage"}
+        <li>
+          <a href="/{$sitecode}/signupmanagelist" class="mine-link mine-link-signupmg">报名管理</a>
+        </li>
+        <li>
+          <a href="/{$sitecode}/integralexchangemanage/3" class="mine-link mine-link-scoremg">积分兑换管理</a>
+        </li>
+        <li>
+          <a href="/{$sitecode}/signin" class="mine-link mine-link-check">用户签到</a>
+        </li>
+        <li>
+          <a href="/{$sitecode}/commentmanage" class="mine-link mine-link-commentmg">评论管理</a>
+        </li>
+        {/if}
+      </ul>
+    </div>
+  </section>
+  
+  <footer class="footer">
+	{include file="modules/lib/footer" /}
+  </footer>
+
+  <script src="__PUBLIC__/static/template/pub/js/jquery.min.js"></script>
+  <script src="__PUBLIC__/static/template/pub/js/menu.js"></script>
+</body>
+
+</html>

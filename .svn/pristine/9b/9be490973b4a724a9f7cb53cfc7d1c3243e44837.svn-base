@@ -1,0 +1,202 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>导入用户</title>
+    <link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
+    <link href="__PUBLIC__/static/css/page.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="__PUBLIC__/static/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/lhgdialog.js?skin=aero"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/CostomLinkOpenSw.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/tabscommon.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/layer/layer.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/del-checked.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/js/daterangepicker/daterangepicker-bs3.css" />
+    <script type="text/javascript" src="/static/js/daterangepicker/moment.min.js"></script>
+    <script type="text/javascript" src="/static/js/daterangepicker/daterangepicker.js"></script>
+    <script type="text/javascript">
+        $(function(){
+            $(document).ready(function() {
+                $('.oa_text-list tr').addClass('odd');
+                $('.oa_text-list tr:even').addClass('even');
+            });
+            $('.oa_text-list tr').hover(
+                function(){
+                    $(this).addClass('oa_mouseover-bg');
+                },
+                function(){
+                    $(this).removeClass('oa_mouseover-bg');
+                }
+            );
+        });
+        function empty() {
+            window.location.reload();
+        }
+        //全选
+        function DoCheck(){
+            if($("#checked").is(':checked')){
+                $(".checked_one").attr("checked", true);
+            }else{
+                $(".checked_one").attr("checked", false);
+            }
+        }
+        //重新匹配
+        function againmatching(id){
+            $.ajax({
+                url:"{:url('member/again_matching')}",
+                data:{id:id},
+                type:"post",
+                dataType:"json",
+                success:function(result) {
+                    if(result == 1){
+                        layer.msg("匹配成功");
+                    }else if(result > 1){
+                        layer.msg("匹配成功"+result+"条数据");
+                    }else if(result <=0 && id==0){
+                        layer.msg("全部匹配失败");
+                    }else{
+                        layer.msg("匹配失败");
+                    }
+                }
+            })
+        }
+    </script>
+</head>
+<body>
+<div class="oa_wrapper">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr class="oa_wrapper-display">
+            <td class="oa_wrapper-top-arr-left">&nbsp;</td>
+            <td class="oa_wrapper-top-arr-middle"></td>
+            <td class="oa_wrapper-top-arr-right">&nbsp;</td>
+        </tr>
+        <tr>
+            <td class="oa_wrapper-middle-arr-left oa_wrapper-display"></td>
+            <td class="oa_wrapper-middle-arr-middle">
+                <div class="oa_location clearfix"><span class="oa_ico-left"></span>location<span class="oa_ico-right"></span></div>
+                <div class="oa_main clearfix">
+                    <div class="oa_subnav clearfix">
+                        <div class="oa_subnav-tab clearfix">
+                            <ul>
+                                <li onclick="javascript:window.location='{:url('member/index','')}'"><em>用户管理</em></li>
+                                <li onclick="javascript:window.location='{:url('member/followup','')}'" ><em>访谈记录</em></li>
+                                <li class="oa_on"><em>导入用户</em></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="oa_subnav-list clearfix">
+                        <ul>
+                            {if condition="$status == 1"}
+                            <li class="oa_on"><em>匹配成功</em></li>
+                            <li onclick="javascript:window.location='{:url('member/history_member',['status'=>0])}'"><em>匹配失败</em></li>
+                            {else/}
+                            <li onclick="javascript:window.location='{:url('member/history_member',['status'=>1])}'"><em>匹配成功</em></li>
+                            <li class="oa_on"><em>匹配失败</em></li>
+                            {/if}
+                        </ul>
+                    </div>
+                    <div class="oa_content-area clearfix">
+                        <div class="oa_content-main">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td valign="top">
+
+                                        <div class="oa_title clearfix">
+                                            <span class="oa_title-btn">
+                                                
+                                                <ul>
+                                                    {if condition="$cms->CheckPurview('historymember','allagainmatching')"}
+                                                    {if condition="$status == 0"}
+                                                    <li class="oa_selected">
+                                                        <a href="javascript:againmatching(0)">全部重新匹配</a>
+                                                    </li>
+                                                    {/if}
+                                                    {/if}
+                                                    {if condition="$cms->CheckPurview('historymember','importmember')"}
+                                                    <li class="oa_selected">
+                                                        <a href="javascript:CustomOpen('{:url('member/import_member')}', 'member','导入用户', 550,160)">导入用户</a>
+                                                    </li>
+                                                    {/if}
+                                                </ul>
+                                            </span>
+                                            <span class="oa_ico-left"></span>{$status==1 ? '匹配成功' : '匹配失败'}
+                                        </div>
+                                        <div class="oa_text-list">
+                                            <table width="100%" border="0" cellspacing="0" cellpadding="0" style="table-layout:fixed">
+                                                <tr class="oa_text-list-title">
+                                                 	<th width="20" style="text-align:center;">
+                                                 		<input id="checked"  onclick="DoCheck();" name="" type="checkbox" value="" />
+                                                 	</th>
+		                                            <th width="20">ID</th>
+		                                            <th width="0">姓名</th>
+		                                            <th width="80">手机号</th>
+		                                            <th width="70">用户类别</th>
+                                                    <th width="115">身份证号</th>
+                                                    <th width="30">来源</th>
+                                                    <th width="115">创建时间</th>
+                                                    {if condition="$status == 0"}
+                                                    <th width="115">操作</th>
+                                                    {/if}
+                                                </tr>
+                                                {notempty name="datalist"}
+                                                {volist name="datalist" id="vo"}
+                                                <tr>
+                                                 	<td align="center">
+														<input class="checked_one" type="checkbox" name="subscribe_object[]"  value="{$vo.id}" />
+													</td>
+                                                    <td>{$vo.id}</td>
+		                                            <td>{$vo.real_name}</td>
+                                                    <td>{$vo.mobile}</td>
+                                                    <td>{$vo.user_type}</td>
+                                                    <td>{$vo.id_card}</td>
+                                                    <td>{$vo.source}</td>
+                                                    <td>{$vo.create_time|date="Y-m-d H:i:s",###}</td>
+                                                    {if condition="$status == 0"}
+                                                    <td>
+                                                        {if condition="$cms->CheckPurview('historymember','againmatching')"}
+                                                        <a href="#" onclick="againmatching({$vo.id})">重新匹配</a>
+                                                        {/if}
+                                                        {if condition="$cms->CheckPurview('historymember','sendmessage')"}
+                                                        <a href="javascript:CustomOpen('{:url('member/send_sms','id='.$vo.id,'')}','modi','发送短信',700,550)">发送短信</a>
+                                                        {/if}
+                                                    </td>
+                                                    {/if}
+                                                </tr>
+                                                {/volist}
+                                                {/notempty}
+											</table>
+                                            <div class="oa_bottom clearfix">
+                                                <div class="clearfix">
+                                                    <div class="oa_op-btn clearfix">
+                                                    </div>
+                                                    <div class="oa_page-controls">
+                                                        <ul>
+                                                            {$page->show()}
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <div class="oa_bottom-bottom"><em></em></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                            <div class="oa_content-main-bottom"></div>
+                        </div>
+                    </div>
+                </div>
+            </td>
+            <td class="oa_wrapper-middle-arr-right oa_wrapper-display"></td>
+        </tr>
+        <tr class="oa_wrapper-display">
+            <td class="oa_wrapper-bottom-arr-left">&nbsp;</td>
+            <td class="oa_wrapper-bottom-arr-middle"></td>
+            <td class="oa_wrapper-bottom-arr-right">&nbsp;</td>
+        </tr>
+    </table>
+</div>
+<script type="text/javascript">
+
+</script>
+</body>
+</html>

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" type="text/css" href="{$roottpl}/style/css/swiper.min.css">
+    <link rel="stylesheet" type="text/css" href="{$roottpl}/style/css/common.css">
+    <link rel="stylesheet" type="text/css" href="{$roottpl}/style/css/pc.css">
+    <script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+    <title>报名签到</title>
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <script type="text/javascript" src="{$roottpl}/js/jquery.min.js"></script>
+</head>
+<style type="text/css">
+    .seltab{
+        background-color: #c2c2c2;
+    }
+</style>
+<body style="background: #e7e7e7;">
+<div class="site-section clearfix" id="container" style="padding-top: 48px;">
+    <div class="select-bar fixed">
+        <ul class="select-bar-tab" id="select-bar-tab">
+            <li  <?php if($flag==1) echo 'class="seltab"'?> id="sel1"><a href="#"  onclick="javascript:sel('1')">二维码</a></li>
+            <li <?php if($flag==2) echo 'class="seltab"'?> id="sel2"><a href="#"  onclick="javascript:sel('2')">签到码</a></li>
+        </ul>
+    </div>
+
+    <div id="searchdiv">
+        <div id="tab1"  class="comment-submit" style="padding: 0.5rem 0">
+            <input type="button" value="扫二维码" id="butsm" />
+        </div>
+        <div id="tab2"  style="padding-top:0.02; padding-bottom: 0.2rem;" >
+            <form class="information-list" method="post" id="submit_code">
+                <ul>
+                    <li>
+                        <div class="tit">签到码类型：</div>
+                        <div class="txt">
+                           <select name="signintype" id="signintype">
+                               <option value="signin">活动签到码</option>
+                               <option value="subscribe">预约签到码</option>
+                           </select>
+                        </div>
+                    </li>
+                </ul>
+                <ul>
+                    <li>
+                        <div class="tit">签到码：</div>
+                        <div class="txt">
+                            <input type="text" id="checkcode" name="checkcode" value="">
+                        </div>
+                    </li>
+                </ul>
+                <div class="comment-submit">
+                    <input type="hidden" name="flag" value="2">
+                    <input type="button" onClick="javascript:checkdata();" value="查询" />
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="section-shade" id="section-shade"></div>
+    <div id="frmdata">
+
+    </div>
+    <div class="toTop-btn" title="回到顶部" onClick="toTop()"></div>
+    {include file="M2/lib/footer0" /}
+</div>
+
+</body>
+</html>
+<script type="text/javascript" src="/static/js/layer/layer.js"></script>
+<script language="JavaScript">
+
+    function checkdata()
+    {
+        var signintype = $("#signintype").val();
+        var checkcode = $("#checkcode").val();
+        if(checkcode.length <= 0)
+        {
+            layer.alert('请输入签到码',{icon:2});
+            return;
+        }
+
+        $("#searchdiv").hide();
+        loaddata2(checkcode,signintype);
+    }
+
+
+    function return_search() {
+        $("#frmdata").hide();
+        $("#searchdiv").show();
+        $("#checkcode").val('');
+    }
+
+
+    function sel(index) {
+        if(index=="2")
+        {
+            $("#sel1").removeClass("seltab");
+            $("#sel2").addClass("seltab");
+            $("#tab1").hide();
+            $("#tab2").show();
+
+        }
+        else
+        {
+            $("#sel2").removeClass("seltab");
+            $("#sel1").addClass("seltab");
+            $("#tab2").hide();
+            $("#tab1").show();
+
+        }
+    }
+    $(function () {
+        sel(1);
+    });
+
+
+    wx.config({
+        debug: false,
+        appId: '<?php echo $signPackage["appId"]; ?>',
+        timestamp: '<?php echo $signPackage["timestamp"]; ?>',
+        nonceStr: '<?php echo $signPackage["nonceStr"]; ?>',
+        signature: '<?php echo $signPackage["signature"]; ?>',
+        jsApiList: ['scanQRCode',]
+    });
+
+    wx.ready(function () {
+        wx.checkJsApi({
+            jsApiList: [
+                'scanQRCode'
+            ],
+            success: function (res) {
+                if (res.checkResult.getLocation == false) {
+                    alert('你的微信版本太低，不支持微信JS接口，请升级到最新的微信版本！');
+                    return;
+                }
+            }
+        });
+        wx.error(function(res){
+          //  alert("接口调取失败")
+        });
+        document.querySelector('#butsm').onclick = function() {
+            wx.scanQRCode({
+                needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+                scanType: ["qrCode"], // 可以指定扫二维码还是一维码，默认二者都有
+                success: function (res) {
+                    var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
+                    // window.location.href = result;//因为我这边是扫描后有个链接，然后跳转到该页面
+                    loaddata(result);
+                }
+            });
+        }
+
+    });
+
+    // 扫码加载数据
+    function loaddata(url){
+        $("#searchdiv").hide();
+        $.ajax({
+            url: '/{$sitecode}/signinloaddata',
+            type: 'post',
+            data: {'url':url},
+            success:function(data){
+                if(data.length < 50){
+                    layer.alert(data,{icon:2});
+                    return_search();
+                }else{
+                    $("#frmdata").show();
+                    $('#frmdata').html(data);
+                }
+            }
+        });
+    }
+    // 签到码加载数据
+    function loaddata2(checkcode,signintype){
+        $("#searchdiv").hide();
+        $.ajax({
+            url: '/{$sitecode}/signinloaddata',
+            type: 'post',
+            data: {'signintype':signintype, 'checkcode':checkcode},
+            success:function(data){
+                if(data.length < 50){
+                    layer.alert(data,{icon:2});
+                    return_search();
+                }else{
+                    $("#frmdata").show();
+                    $('#frmdata').html(data);
+                }
+            }
+        });
+    }
+</script>

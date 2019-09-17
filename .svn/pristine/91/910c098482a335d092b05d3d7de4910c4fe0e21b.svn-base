@@ -1,0 +1,17 @@
+{volist name="$subscribe_record_list" id="vo"}
+<a href="/{$sitecode}/subscriberecorddetail/{$vo['id']}">
+<li>
+    <div class="flex">
+        <div class="txt">
+            <div class="title">预约编号：{$vo.subscribe_object_name}</div>
+            <div class="price">会员卡名称：{$vo.member_cart_name}</span></div>
+            <div class="state">预约对象名称：<span>{$vo.subscribe_object_name}</span></div>
+            <div class="state">预约次数：<span>{$vo.subscribe_number}</span></div>
+            <div class="state">创建时间：<span>{$vo.create_time|date="Y-m-d H:i:s",###}</span></div>
+            <div class="state">是否签到：<span>{$vo.is_signin ? '已签到' : '未签到'}</span></div>
+            <div class="state">签到时间：<span>{notempty name="$vo.signin_time"}{$vo.signin_time|date="Y-m-d H:i:s",###}{/notempty}</span></div>
+        </div>
+    </div>
+</li>
+</a>
+{/volist}

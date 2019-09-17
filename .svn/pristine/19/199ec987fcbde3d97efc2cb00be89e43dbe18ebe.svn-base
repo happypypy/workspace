@@ -1,0 +1,41 @@
+<input type="hidden" id="echart_again_condition" value='{$list.echart}'>
+<input type="hidden" id="search_again_begintime" value='{$list.search.again_begintime}'>
+<input type="hidden" id="search_again_endtime" value='{$list.search.again_endtime}'>
+        <div style="min-width:1350px;overflow-x:auto;white-space:nowrap;">
+            <div class="oa_text-list clearfix"
+                style="margin-bottom: 40px;border-left: 0;width: 35%;min-width: 580px;border-right: 1px solid grey;padding-right: 60px;float: left">
+                <div id="main_again_condition" style="height: 450px; "></div>
+            </div>
+            <div class="oa_text-list clearfix"
+                style="margin-bottom: 40px;border-left: 0;width: 40%;min-width: 620px;padding-left: 60px;float: left;">
+                <table width="100%" border="0" cellspacing="0" cellpadding="0" style="table-layout:fixed;margin-top: 40px">
+                    <tr class="oa_text-list-title">
+                        <th><span class="oa_arr-text-list-title"></span>购买次数</th>
+                        <th><span class="oa_arr-text-list-title"></span>用户数</th>
+                        <th><span class="oa_arr-text-list-title"></span>占比</th>
+                    </tr>
+                    <?php if(isset($list['echart_normal']['again_condition']) && !empty($list['echart_normal']['again_condition'])){
+                                                        foreach($list['echart_normal']['again_condition'][1] as $key=>$val){
+                            ?>
+                    <tr>
+                        <td>{$val}</td>
+                        <td>
+                            <a
+                                href="javascript:CustomOpen('{:url('report/getUserList','start_time='.$list['search']['again_begintime'].'&end_time='.$list['search']['again_endtime'].'&count_str='.$val.'&origin=again_buy'.'&intstate='.$list['search']['intstate'],'')}','activity','用户列表',1000,600)">{$list['echart_normal']['again_condition'][2][0][$key]}</a>
+                        </td>
+                        <td>
+                            <?php
+                                                        if($list['again_condition_count'] > 0){
+                                    echo  round($list['echart_normal']['again_condition'][2][0][$key]/$list['again_condition_count'],4) * 100;
+                                    }else{
+                                    echo 0;
+                                    }
+                                    ?>%
+                        </td>
+                    </tr>
+                    <?php }} ?>
+                </table>
+            </div>
+        </div>
+        
+        <div style="clear:both;"></div>

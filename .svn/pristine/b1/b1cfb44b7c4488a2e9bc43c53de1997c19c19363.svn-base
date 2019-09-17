@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+<title>预约记录</title>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+
+<script type="text/javascript" src="{$roottpl}/js/jquery.min.js"></script>
+<script type="text/javascript" src="{$roottpl}/js/swiper.min.js"></script>
+<script type="text/javascript" src="{$roottpl}/js/common.js"></script>
+<script src="__PUBLIC__/static/js/layer/layer.js"></script>
+<link rel="stylesheet" type="text/css" href="{$roottpl}/style/css/swiper.min.css">
+<link rel="stylesheet" type="text/css" href="{$roottpl}/style/css/common.css">
+<link rel="stylesheet" type="text/css" href="{$roottpl}/style/css/pc.css">
+</head>
+<body style="background: #e7e7e7;">
+
+<!--site section start-->
+<div class="site-section clearfix" id="container" style="padding-top: 10px;">
+    <div class="news-list activity">
+        <ul  id="data">
+            {empty name="$subscribe_record_list"}
+                <li>没找到可预约场次信息</li>
+            {/empty}
+            {volist name="$subscribe_record_list" id="vo"}
+            <a href="/{$sitecode}/subscriberecorddetail/{$vo['id']}">
+            <li>
+                <div class="flex">
+                    <div class="txt">
+                        <div class="title">预约编号：{$vo.subscribe_no}</div>
+                        <div class="price">会员卡名称：{$vo.member_cart_name}</span></div>
+                        <div class="state">项目名称：<span>{$vo.subscribe_object_name}</span></div>
+                        <div class="state">预约次数：<span>{$vo.subscribe_number}</span></div>
+                        <div class="state">创建时间：<span>{$vo.create_time|date="Y-m-d H:i:s",###}</span></div>
+                        <div class="state">是否签到：<span>{$vo.is_signin ? '已签到' : '未签到'}</span></div>
+                        <div class="state">签到时间：<span>{notempty name="$vo.signin_time"}{$vo.signin_time|date="Y-m-d H:i:s",###}{/notempty}</span></div>
+                    </div>
+                </div>
+            </li>
+            </a>
+            {/volist}
+        </ul>
+        <div id="dataload" class="iconfont iconload" style="display: none">&#xe72f;</div>
+    </div>
+    <div class="toTop-btn" title="回到顶部" onclick="toTop()"></div>
+    {include file="M3/lib/footer0" /}
+</div>
+<!--site section end-->
+
+<div class="footer">
+    <ul>
+        <li>
+            <a href="/{$sitecode}">
+                <span><i class="iconfont home">&#xe617;</i></span>
+                <p>主页</p>
+            </a>
+        </li>
+        <li class="on">
+            <a href="/{$sitecode}/mine">
+                <span><i class="iconfont head">&#xe606;</i></span>
+                <p>我的</p>
+            </a>
+        </li>
+    </ul>
+</div>
+
+<script type="text/javascript">
+    //==============核心代码=============
+    var winH = $(window).height(); //页面可视区域高度
+
+    var ipage = 2;
+    var totalPage = {$total_page};
+    var scrollHandler = function () {
+        var pageH = $(document).height();
+        var scrollT = $(window).scrollTop(); //滚动条top
+
+        if(pageH-winH-scrollT<1)
+        {
+            LoadData(ipage)
+            ipage++;
+        }
+    }
+    //定义鼠标滚动事件
+    $(window).scroll(scrollHandler);
+    //==============核心代码=============
+
+    function LoadData(ipage)
+    {
+        $("#dataload").show();
+        $ (window).unbind ('scroll');
+        // var state = $('input[name="states"]').val();
+        $.ajax({
+            url: "/{$sitecode}/subscriberecord",
+            type: 'POST',
+            cache: false,
+            data:{"ipage":ipage,"ajax":1} ,
+            success : function(data) {
+
+                if(ipage > totalPage)
+                {
+                    $("#dataload").hide();
+                    // $("#loadmsg").html("已无更多数据");
+                    return;
+                }
+                $("#dataload").hide();
+                $("#data").html($("#data").html()+data);
+                $(window).scroll(scrollHandler);
+            }
+        });
+
+    }
+</script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:40:"template/M4/assemble/assemble_share.html";i:1563268550;s:52:"D:\workspace\work\public\template\M1\lib\header.html";i:1561691693;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:40:"template/M4/assemble/assemble_share.html";i:1565077782;s:52:"D:\workspace\work\public\template\M1\lib\header.html";i:1561691693;}*/ ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -59,7 +59,7 @@
             </div>
         </div>
         <div class="ass-share-info">
-            <?php if($data['state'] == 2 ): ?>
+            <?php if($data['state'] == 2): ?>
             <div class="ass-timebox">恭喜您，已成团！</div>
 
             <?php elseif($data['state'] == 4): ?>
@@ -75,7 +75,7 @@
             <?php endif; ?>
             <div class="ass-share-item">
                 <a href="">
-                    <div class="pic"><img src="<?php echo $data['imgs'][0]['userimg']; ?>" alt=""></div>
+                    <div class="pic"><img src="<?php echo $data['chrimg_m']; ?>" alt=""></div>
                     <div class="txt">
                         <div class="tit"><?php echo $data['chrtitle']; ?></div>
                         <div class="time"><?php echo $data['package_name']; ?></div>

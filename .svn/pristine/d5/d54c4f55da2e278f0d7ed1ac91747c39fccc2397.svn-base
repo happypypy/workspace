@@ -1,0 +1,600 @@
+<?php
+
+namespace app\home\model;
+
+use think\Model;
+use think\Log;
+
+class GroupBuyOrder extends Model
+{
+    public $groupBuy = false;
+
+    /**
+     * 开团订单 继续支付
+     * @author Hlt
+     * @DateTime 2019-06-15T14:33:20+0800
+     * @param    integer                   $groupBuyOrderId 拼团订单id
+     * @param    integer                   $num             购买数量
+     * @param    integer                   $packageStock    套餐剩余库存
+     * @return   boolean|integer                            false|1
+     */
+    public function restart($groupBuyOrderId, $num, $packageStock)
+    {
+        $groupBuyOrder = db('group_buy_order')->find($groupBuyOrderId);
+        $isExpired = $this->checkIsExpiredStart($groupBuyOrder['group_buy_id']);
+        if($isExpired)
+        {
+            return false;
+        }
+
+        $groupBuy = $this->getGroupBuy($groupBuyOrder['group_buy_id']);
+        // 开团购买数量小于等于拼团数量限制 拼团数量小于等于套餐剩余库存
+        if($groupBuy['group_num'] >= $num && $groupBuy['group_num'] <= $packageStock)
+        {
+            // 扣活动|套餐库存
+            $res = changeStock($groupBuy['package_id'], $groupBuy['group_num']);
+            if(!$res)
+            {
+                return false;
+            }
+            // 扣拼团订单库存
+            return $this->lockStock($groupBuyOrderId, $num);
+        }else
+        {
+            return false;
+        }
+    }
+
+
+    /**
+     * 参团
+     * @author Hlt
+     * @DateTime 2019-06-15T14:29:17+0800
+     * @param    integer                   $groupBuyOrderId     拼团订单id
+     * @param    integer                   $num                 购买数量
+     * @return   boolean|integer                                false|1
+     */
+    public function join($groupBuyOrderId, $num)
+    {
+        // $isExpired = $this->checkIsExpiredJoin($groupBuyOrderId);
+        // if($isExpired)
+        // {
+        //     return false;
+        // }
+
+        $groupBuyOrder = db('group_buy_order')->lock(true)->find($groupBuyOrderId);
+        if($groupBuyOrder['expire_at'] < time())
+        {
+            return false;
+        }
+        $stock = $groupBuyOrder['group_num'] - $groupBuyOrder['sold'];
+        if($stock < $num)
+        {
+            return false;
+        }
+
+        return $this->lockStock($groupBuyOrderId, $num);
+    }
+
+
+    /**
+     * 开团
+     * @author Hlt
+     * @DateTime 2019-06-15T11:34:08+0800
+     * @param    integer                   $groupBuyId   拼团id
+     * @param    integer                   $num          购买数量
+     * @param    integer                   $packageStock 套餐剩余库存
+     * @param    integer                   $siteId 构构ID
+     * @param    integer                    $activityName 活动名称
+     * @param    integer                    $pachage_name 套餐名称
+     * @param    integer                   $UserName 用户名称
+     * @param    integer                   $UserID 用户ID
+     * @return   boolean|integer                         false|拼团订单id
+     */
+    public function start($groupBuyId, $num, $packageStock, $siteId, $activityName,$pachage_name='',$UserName='',$UserID=0)
+    {
+        // 检查拼团是否过期
+        if($this->checkIsExpiredStart($groupBuyId))
+        {
+            return false;
+        }
+
+        //新增group_buy_order 记录拼团总库存，锁定本次订单库存，拼团订单为未支付
+        $groupBuy = $this->getGroupBuy($groupBuyId);
+
+        if($groupBuy['group_num'] < $num || $groupBuy['group_num'] > $packageStock)
+        {
+            return false;
+        }
+        
+        //从活动或套餐中扣除本次拼团所需的所有库存
+        $res = changeStock($groupBuy['package_id'], $groupBuy['group_num']);
+        if(!$res)
+        {
+            return false;
+        }
+
+        $groupBuyOrder = [
+            'group_buy_id' => $groupBuyId,
+            'package_id' => $groupBuy['package_id'],
+            'pachage_name' => $pachage_name,
+            'group_num' => $groupBuy['group_num'],
+            'userid' => $UserID,
+            'username' => $UserName,
+            'sold' => $num,
+            'create_at' => time(),
+            'state' => 0,
+            'site_id' => $siteId,
+            'activity_name' => $activityName
+        ];
+        return db('group_buy_order')->insert($groupBuyOrder, false, true);
+    }
+
+
+    /**
+     * 拼团 开团时检查拼团是否过期
+     * @author Hlt
+     * @DateTime 2019-06-15T14:34:53+0800
+     * @param    integer                   $groupBuyId 拼团id
+     * @return   boolean
+     */
+    public function checkIsExpiredStart($groupBuyId)
+    {
+        $groupBuy = $this->getGroupBuy($groupBuyId);
+        $time = time();
+        if($time < $groupBuy['start_at'] || $time > $groupBuy['end_at'])
+        {
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * 获取拼团过期时间
+     * @author Hlt
+     * @DateTime 2019-06-15T11:30:31+0800
+     * @param    integer                   $groupBuyOrderId 拼团订单id
+     * @return   integer                                    过期时间戳
+     */
+    public function getExpire($groupBuyOrderId)
+    {
+        $groupBuyOrder = db('group_buy_order')->find($groupBuyOrderId);
+        $groupBuy = $this->getGroupBuy($groupBuyOrder['group_buy_id']);
+        if($groupBuy['time_limit_type'] == 1)
+        {
+            // 开团后，固定时间内拼团有效
+            return $groupBuyOrder['activated_at'] + $groupBuy['time_limit'] * 60 * 60;
+        }else
+        {
+            // 拼团在拼团结束时间之前有效
+            return $groupBuy['end_at'];
+        }
+    }
+
+
+
+    /**
+     * 锁定拼团订单库存
+     * @author Hlt
+     * @DateTime 2019-06-15T14:35:50+0800
+     * @param    integer                   $groupBuyOrderId 拼团订单id
+     * @param    integer                   $num             购买数量
+     * @return   integer                                    更新记录数
+     */
+    protected function lockStock($groupBuyOrderId, $num)
+    {
+        return db('group_buy_order')->where(
+                [
+                    'group_buy_order_id' => $groupBuyOrderId
+                ]
+            )
+            ->update(
+                [
+                    'sold' => $this->raw('sold + ' . (int)$num)
+                ]
+            );
+    }
+
+
+    /**
+     * 发送开团|参团微信消息
+     * @author Hlt
+     * @DateTime 2019-06-15T14:37:00+0800
+     * @param    integer                   $orderId 订单id
+     * @param    string                    $action  动作：参团|开团
+     * @return                               [description]
+     */
+    public function sendJoinGroupBuyWechatMsg($orderId, $action, $siteId)
+    {
+        $sitecode = getSiteCode($siteId);
+        $templateKey = getWxTemplateId("OPENTM417838832",$siteId);
+
+        $order = db('order')->find($orderId);
+        $activity = db('activity')->where(['idactivity' => $order['dataid']])->field(['chrtitle', 'intselmarket'])->find();
+        $packageName = db('package')->where(['package_id' => $order['package_id']])->value('concat_ws(" ", keyword1, keyword2)');
+
+
+        $marketOpenid = db('account')->where(['idaccount' => $activity['intselmarket']])->value('openid');
+
+        $groupBuyOrder = db('group_buy_order')->find($order['group_buy_order_id']);
+        //$groupBuy = db('group_buy')->find($groupBuyOrder['group_buy_id']);
+        // 用户openid
+        $openid = $order['wechatid'];
+        $expiredAt = $groupBuyOrder['expire_at'];
+        $expiredAt = empty($expiredAt) ? '' : date('Y-m-d H:i:s', $expiredAt);
+        $leftnumber=intval($groupBuyOrder['group_num']) - intval($groupBuyOrder['sold']);
+        if($leftnumber > 0){
+            $userMsg = [
+                'first' => [
+                    'value' => $order['chrusername'] .
+                        '，您好，您选择的' .
+                        $activity['chrtitle'] .
+                        ' ' .
+                        $packageName .
+                        $action .
+                        '成功了！该拼团在' .
+                        $expiredAt .
+                        '之前有效，还差' .
+                        (intval($groupBuyOrder['group_num']) -
+                            intval($groupBuyOrder['sold'])) .
+                        '份成团',
+                    'color' => '#ff7902'
+                ],
+                'keyword1' => ['value' => $order['dtcreatetime'], 'color' => '#8d8d8d'],
+                'keyword2' => ['value' => $order['price'], 'color' => '#8d8d8d'],
+                'keyword3' => ['value' => '拼团中', 'color' => '#8d8d8d'],
+                'remark' => ['value' => '点击分享转发，邀请小伙伴们一起参团吧！', 'color' => '#4a93e4']
+            ];
+            $marketMsg = $userMsg;
+            $marketMsg['first'] = [
+                'value' => $activity['chrtitle'] . ' ' . $packageName . ' ' . $order['chrusername'] . $action . '了',
+                'color' => '#ff7902'
+            ];
+            $marketMsg['remark'] = ['value' => '请跟进关注！点击可查看订单详情！', 'color' => '#4a93e4'];
+            $arr = [
+                'dataid' => $order['id'],
+                'Template_key' => $templateKey,
+                'url' => ROOTURL."/".$sitecode."/orderdetail/".$orderId,
+                'inttype' => 3,
+                'inttype1' => 4,
+                'state' => 1,
+                'userid' => 0,
+                'username' => '系统',
+                'ip' => getip(),
+                'createtime' => time(),
+                'idsite' => $siteId
+            ];
+            $userArr = [
+                'touser' => $openid,
+                'data' => json_encode($userMsg, JSON_UNESCAPED_UNICODE)
+            ];
+            $userArr = array_merge($arr, $userArr);
+            $this->sendWechatMsg($userArr, $sitecode);
+            if($marketOpenid)
+            {
+                $marketArr = [
+                    'touser' => $marketOpenid,
+                    'data' => json_encode($marketMsg, JSON_UNESCAPED_UNICODE)
+                ];
+                $marketArr = array_merge($arr, $marketArr);
+                $this->sendWechatMsg($marketArr, $sitecode);
+            }
+
+        }
+
+
+        // {{first.DATA}}
+        // OPENTM417838832
+        //     开|参团->商务：{活动名称+套餐名称}{参团人微信昵称}参|开团了。
+        //     开|参团->用户：{参团人微信昵称}，您好，您选择的{活动名称+套餐名称}参团成功了！该拼团在{拼团有效期}内 有效，还差{成团数量-购买数量}份成团。
+        // 下单时间：{{keyword1.DATA}}
+        // 团购价格：{{keyword2.DATA}}
+        // 状态：{{keyword3.DATA}} 拼团中
+        // {{remark.DATA}}
+        //     商务：请跟进关注！点击可查看订单详情！  用户：点击分享转发，邀请小伙伴们一起参团吧！
+    }
+
+    public function sendGroupBuySuccessWechatMsg($groupBuyOrderId, $siteId)
+    {
+        $sitecode=getSiteCode($siteId);
+        $templateKey = getWxTemplateId("OPENTM417724211",$siteId);
+        $users = db('order')->where(
+                [
+                    'group_buy_order_id' => $groupBuyOrderId,
+                    // 4.已报名 已支付，
+                    // 5.已报名 退款中，
+                    // 6已部分退款 继续服务，
+                    // 7已退款 继续服务，
+                    // 8.已报名 退款不通过，
+                    'state' => ['in', [4,5,6,7,8]]
+                ]
+            )
+            ->field([
+                'wechatid',
+                'ordersn',
+                'price',
+                'id',
+                'dataid',
+                'package_id'
+            ])
+            ->select();
+        if(empty($users))
+            return false;
+        $order = $users[0];
+        $activityName = db('activity')->where(['idactivity' => $order['dataid']])->value('chrtitle');
+        $packageName = db('package')->where(['package_id' => $order['package_id']])->value('concat_ws(" ", keyword1, keyword2)');
+
+        $now = date('Y-m-d H:i:s');
+        $userMsg = [
+            'first' => ['value' => '成团提醒', 'color' => '#ff7902'],
+            'keyword2' => ['value' => $activityName . ' ' . $packageName, 'color' => '#8d8d8d'],
+            'keyword4' => ['value' => $now, 'color' => '#8d8d8d'],
+            'remark' => ['value' => '点击查看详情', 'color' => '#4a93e4']
+        ];
+
+        $ip = getip();
+        foreach ($users as $user)
+        {
+            $msg = $userMsg;
+            $msg['keyword1'] = ['value' => $user['ordersn'], 'color' => '#8d8d8d'];
+            $msg['keyword3'] = ['value' => $user['price'], 'color' => '#8d8d8d'];
+
+            $arr = [
+                'data' => json_encode($msg, JSON_UNESCAPED_UNICODE),
+                'Template_key' => $templateKey,
+                'dataid' => $user['id'],
+                'url' => ROOTURL."/".$sitecode."/orderdetail/".$user['id'],
+                'idsite' => $siteId,
+                'ip' => $ip,
+                'touser' => $user['wechatid'],
+                'createtime' => time(),
+            ];
+            
+            $this->sendWechatMsg($arr, $sitecode);
+        }
+        // 拼团成功通知----成团
+        // OPENTM417724211
+        // {{first.DATA}}
+        // 订单号：{{keyword1.DATA}}
+        // 团购商品：{{keyword2.DATA}}
+        // 拼团价：{{keyword3.DATA}}
+        // 成团时间：{{keyword4.DATA}}
+        // {{remark.DATA}}
+    }
+
+
+    public function sendGroupBuyFailedWechatMsg($groupBuyOrderId, $siteId, $reason = '')
+    {
+        $sitecode = getSiteCode($siteId);
+        $templateKey = getWxTemplateId("OPENTM417724209",$siteId);
+        $order = db('order')->where([
+                'group_buy_order_id' => $groupBuyOrderId
+            ])
+            ->field('dataid','package_id')
+            ->find();
+
+        $activityName = db('activity')->where(['idactivity' => $order['dataid']])->value('chrtitle');
+        $packageName = db('package')->where(['package_id' => $order['package_id']])->value('concat_ws(" ", keyword1, keyword2)');
+
+
+        $userMsg = [
+            'first' => ['value' => '拼团失败通知', 'color' => '#ff7902'],
+            'keyword2' => ['value' => $activityName . ' ' . $packageName, 'color' => '#ff7902'],
+            'keyword4' => ['value' => $reason, 'color' => '#ff7902'],
+            'remark' => ['value' => '点击查看详情', 'color' => '#4a93e4']
+        ];
+
+
+        $users = db('order')->where(
+                [
+                    'group_buy_order_id' => $groupBuyOrderId,
+                    // 4.已报名 已支付，
+                    // 5.已报名 退款中，
+                    // 6已部分退款 继续服务，
+                    // 7已退款 继续服务，
+                    // 8.已报名 退款不通过，
+                    'state' => [4,5,6,7,8]
+                ]
+            )
+            ->field([
+                'wechatid',
+                'ordersn',
+                'price',
+                'id'
+            ])
+            ->select();
+
+        $ip = getip();
+        foreach ($users as $user)
+        {
+            $msg = $userMsg;
+            $msg['keyword1'] = ['value' => $user['ordersn'], 'color' => '#8d8d8d'];
+            $msg['keyword3'] = ['value' => $user['price'], 'color' => '#8d8d8d'];
+            $arr = [
+                'data' => json_encode($msg, JSON_UNESCAPED_UNICODE),
+                'Template_key' => $templateKey,
+                'dataid' => $user['id'],
+                'url' => ROOTURL."/".$sitecode."/orderdetail/".$user['id'],
+                'idsite' => $siteId,
+                'ip' => $ip,
+                'touser' => $user['wechatid'],
+                'createtime' => time(),
+                'idsite' => $siteId
+            ];
+            
+            $this->sendWechatMsg($arr, $sitecode);
+        }
+        // 拼团失败通知----拼团失败
+        // OPENTM417724209
+        // {{first.DATA}}
+        // 订单号：{{keyword1.DATA}}
+        // 拼团商品：{{keyword2.DATA}}
+        // 拼团价：{{keyword3.DATA}}
+        // 失败原因：{{keyword4.DATA}}
+        // {{remark.DATA}}
+    }
+
+    public function sendWechatMsg($msg, $sitecode)
+    {
+        $msg['inttype']=3;
+        $msg['inttype1']=2;
+        $msg['username']="系统";
+        $msg['userid']=0;
+        $msg['state']=1;
+        $msg['createtime']=time();
+        $msg['key']=getNumber();
+
+        $bl=db("sendmsg")->insert($msg);
+        if($bl) {
+            $result = send_msg($msg['key'], $sitecode);
+            Log::debug('时间：' . date('Y-m-d H:i:s') . ' 微信消息：' . print_r($msg, true) . ' 发送结果：' . print_r($result, true));
+        }
+    }
+
+
+    /**
+     * 获取拼团数据
+     * @author Hlt
+     * @DateTime 2019-06-15T14:58:40+0800
+     * @param    integer                   $groupBuyId 拼团id
+     * @return   array                                 拼团数据
+     */
+    public function getGroupBuy($groupBuyId)
+    {
+        if(!isset($this->groupBuy[$groupBuyId]))
+        {
+            $groupBuy = db('group_buy')->find($groupBuyId);
+            if(empty($groupBuy) || $groupBuy['state'] != 1)
+            {
+                $this->groupBuy[$groupBuyId] = false;
+            }else
+            {
+                $this->groupBuy[$groupBuyId] = $groupBuy;
+            }
+        }
+
+        return $this->groupBuy[$groupBuyId];
+    }
+
+
+    /**
+     * 释放拼团库存 调用时务必使用事务
+     * @author Hlt
+     * @DateTime 2019-06-10T16:43:18+0800
+     * @param    integer                   $groupBuyOrderId     拼团订单id
+     * @param    integer                   $num                 释放的库存数量
+     * @return   boolean
+     */
+    public function releaseGroupBuyOrderStock($groupBuyOrderId, $num)
+    {
+        $groupBuyOrder = db('group_buy_order')->where(
+                [
+                    'group_buy_order_id' => $groupBuyOrderId,
+                    'state' => ['neq', 4]
+                ]
+            )
+//            ->lock(true)
+            ->find();
+        if(!$groupBuyOrder)
+        {
+            return false;
+        }
+
+        $groupBuy = $this->getGroupBuy($groupBuyOrder['group_buy_id']);
+//        //是否允许退款
+//        if($groupBuy['allow_refund'] == GroupBuy::DISALLOW_REFUND)
+//        {
+//            return false;
+//        }
+        $state = $groupBuyOrder['state'];
+
+        if($groupBuyOrder['sold'] - $num <= 0)
+        {
+            //修改拼团订单状态
+            $state = 4;
+            //拼团取消，释放套餐或者活动库存
+            changeStock($groupBuyOrder['package_id'], $groupBuyOrder['group_num'], false);
+
+        }
+//
+
+        return db('group_buy_order')->where(
+                [
+                    'group_buy_order_id' => $groupBuyOrderId
+                ]
+            )
+            ->update(
+                [
+                    'state' => $state,
+                    'sold' => $groupBuyOrder['sold'] - $num
+                ]
+            );
+    }
+
+
+    /**
+     * 开团|参团后业务处理 用于支付回调
+     * @author Hlt
+     * @DateTime 2019-06-21T17:52:37+0800
+     * @param    array                   $order 订单数据
+     * @param    string                   $action     动作 开团|参团
+     * @return   void
+     */
+    public function afterStart($order, $action)
+    {
+        $sold = db('order')->where(
+                [
+                    'group_buy_order_id' => $order['group_buy_order_id'],
+                    //已支付，部分退款继续服务，全部退款继续服务，拒绝退款
+                    'state' => ['in', [4, 6, 7, 8]]
+                ]
+            )
+            ->sum('paynum');
+        $groupBuyOrder = db('group_buy_order')
+            ->field(
+                [
+                    'group_num',
+                    'state',
+                    'group_buy_id'
+                ]
+            )
+            ->find($order['group_buy_order_id']);
+        $groupBuy = db('group_buy')->find($groupBuyOrder['group_buy_id']);
+        // 已售完或已超售
+        // 拼团未支付状态会直接变成拼团成功状态
+        $data = [];
+        if($sold >= $groupBuyOrder['group_num'])
+        {
+            // 发送拼团成功消息
+            $this->sendGroupBuySuccessWechatMsg($order['group_buy_order_id'], $order['idsite']);
+            $data = ['state' => 2];
+        }else if($groupBuyOrder['state'] == 0)      //拼团订单未支付状态，修改为已支付拼团中
+        {
+            $now = time();
+            if($groupBuy['time_limit_type'] == 1)
+            {
+                $expiredAt = $now + $groupBuy['time_limit'] * 3600;
+            }else
+            {
+                $expiredAt = $groupBuy['end_at'];
+            }
+            $data = ['state' => 1, 'activated_at' => time(), 'expire_at' => $expiredAt];
+        }
+
+        // Log::error('修改拼团订单状态，参数：group_buy_order_id=' . $order['group_buy_order_id'] . ' data=' . print_r($data, true) . 'res=' . $res);
+        // 修改拼团订单状态
+        db('group_buy_order')->where(
+                [
+                    'group_buy_order_id' => $order['group_buy_order_id'],
+                ]
+            )
+            ->update($data);
+        //db('group_buy_order')->where(['group_buy_order_id' => $order['group_buy_order_id']])->setInc("buy_num",$order['paynum']);
+
+        // 发送微信消息
+        $this->sendJoinGroupBuyWechatMsg($order['id'], $action, $order['idsite']);            
+    }
+
+
+}

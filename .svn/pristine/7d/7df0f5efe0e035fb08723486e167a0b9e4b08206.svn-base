@@ -1,0 +1,19 @@
+
+<?php
+if($result_data){
+			foreach($result_data as $k=>$val){ ?>
+<li>
+    <a href="/{$sitecode}/photolist/{$val.id}">
+        <img src="{$val.album_cover_url}">
+        <div class="word">
+            <div class="tit">{$val.album_name}</div>
+            <div class="txt"></div>
+            <div class="info">
+                <div class="view">相片数<span>{$val.photo_num}</span></div>
+                <div class="time">{$val.create_time}</div>
+            </div>
+        </div>
+    </a>
+</li>
+<?php }}else{echo 11;exit;} ?>
+        

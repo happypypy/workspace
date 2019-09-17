@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+<title>预约信息</title>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+
+<script type="text/javascript" src="{$roottpl}/js/jquery.min.js"></script>
+<script type="text/javascript" src="{$roottpl}/js/swiper.min.js"></script>
+<script type="text/javascript" src="{$roottpl}/js/common.js"></script>
+<link rel="stylesheet" type="text/css" href="{$roottpl}/style/css/swiper.min.css">
+<link rel="stylesheet" type="text/css" href="{$roottpl}/style/css/common.css">
+<link rel="stylesheet" type="text/css" href="{$roottpl}/style/css/pc.css">
+</head>
+<body style="background: #e7e7e7;">
+
+<form class="information-list">
+    <ul>
+        <li>
+            <div class="head">预约信息</div>
+        </li>
+        <li>
+            <div class="tit">预约编号：</div>
+            <div class="txt">
+                <div class="info">
+                    <span class="name">{$subscriberecord['subscribe_no']}</span>
+                </div>
+            </div>
+        </li>
+        <li>
+            <div class="tit">会员卡名称：</div>
+            <div class="txt">
+                <div class="info">{$subscriberecord['member_cart_name']}</div>
+            </div>
+        </li>
+        <li>
+            <div class="tit">用户名称：</div>
+            <div class="txt">
+                <div class="info">{$subscriberecord['member_nickanme']}</div>
+            </div>
+        </li>
+        <li>
+            <div class="tit">项目名称：</div>
+            <div class="txt">
+                <div class="info">{$subscriberecord['subscribe_object_name']}</div>
+            </div>
+        </li>
+        <li>
+            <div class="tit">预约次数：</div>
+            <div class="txt">
+                <div class="info">{$subscriberecord['subscribe_number']}</div>
+            </div>
+        </li>
+        {notempty name="$subscriberecord['week']"}
+        <li>
+            <div class="tit">周期：</div>
+            <div class="txt">
+                <div class="info">{$subscriberecord['week']}</div>
+            </div>
+        </li>
+        {/notempty}
+        {notempty name="$subscriberecord['period']"}
+        <li>
+            <div class="tit">时间段：</div>
+            <div class="txt">
+                <div class="info">{$subscriberecord['period']}</div>
+            </div>
+        </li>
+        {/notempty}
+        {notempty name="$subscriberecord['place']"}
+        <li>
+            <div class="tit">地点：</div>
+            <div class="txt">
+                <div class="info">{$subscriberecord['place']}</div>
+            </div>
+        </li>
+        {/notempty}
+        <li>
+            <div class="tit">预约时间：</div>
+            <div class="txt">
+                <div class="info">{$subscriberecord['subscribe_time']|date="Y-m-d",###}</div>
+            </div>
+        </li>
+        <li>
+            <div class="tit">下单时间：</div>
+            <div class="txt">
+                <div class="info">{$subscriberecord['create_time']|date="Y-m-d H:i:s",###}</div>
+            </div>
+        </li>
+        <li>
+            <div class="head">签到信息</div>
+        </li>
+        <li>
+            <div class="tit">签到用户昵称：</div>
+            <div class="txt">
+                <div class="info">{$subscriberecord['signin_member_nickname']}</div>
+            </div>
+        </li>
+        <li>
+            <div class="tit">签到方式：</div>
+            <div class="txt">
+                <div class="info">
+                    {if condition="$subscriberecord['signin_way'] == 1"}
+                    扫码签到
+                    {elseif condition="$subscriberecord['signin_way'] == 2"}
+                    输码签到
+                    {elseif condition="$subscriberecord['signin_way'] == 3"}
+                    电脑签到
+                    {else}
+                    暂未签到
+                    {/if}
+                </div>
+            </div>
+        </li>
+        <li>
+            {if condition="$subscriberecord['is_signin'] == 1"}
+            <div class="tit">
+                签到时间：
+            </div>
+            <div class="txt"><div class="info">{$subscriberecord['signin_time']|date="Y-m-d H:i:s",###}</div></div>
+            {else}
+            <img id='img_rqcode' src='/admin/Qrcode/subscribe/code/{$sitecode}/id/{$subscriberecord.id}' />
+            {/if}
+        </li>
+    </ul>
+    {include file="M5/lib/footer0" /}
+</form>
+
+<div class="footer">
+    <ul>
+        <li>
+            <a href="/{$sitecode}">
+                <span><i class="iconfont home">&#xe617;</i></span>
+                <p>主页</p>
+            </a>
+        </li>
+        <li class="on">
+            <a href="/{$sitecode}/mine">
+                <span><i class="iconfont head">&#xe606;</i></span>
+                <p>我的</p>
+            </a>
+        </li>
+    </ul>
+</div>
+</body>
+</html>

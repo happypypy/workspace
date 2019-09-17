@@ -1,0 +1,48 @@
+{volist name="list" id="vo"}
+<li class="list-item  flex">
+  <div class="list-item-img"><img src="{$vo.chrimg}"></div>
+  <div class="list-item-txt flexCol">
+    <div class="info title fontColor flex">{$vo.chrtitle}</div>
+    <div class="price info flex">
+      <div class="tit">价格</div>：
+      <div class="txt">{$vo.price}</div>
+    </div>
+    <div class="state info flex">
+        <div class="tit">状态</div>：
+        <div class="txt fontColor">{$order_state[$vo['state']]}</div>
+    </div>
+    {if condition="checkedMarketingPackage($idsite, 'group_buy') && !empty($vo.group_buy_order_state_name)"}
+    <div class="state info flex">
+      <div class="tit">状态</div>：
+      <div class="txt fontColor">{$vo.group_buy_order_state_name}</div>
+    </div>
+    {/if}
+    <div class="time info flex">
+      <div class="tit">购买时间</div>：
+      <div class="txt">{$vo.dtcreatetime}</div>
+    </div>
+    <div class="time info flex">
+      <div class="tit">产品使用时间</div>：
+      <div class="txt">{$vo.dtstart}~{$vo.dtend}</div>
+    </div>
+    <div class="btns-right">
+      <input class="several-btn1" type="button" value="订单详情" onclick="location.href='/{$sitecode}/orderdetail/{$vo.id}'">
+      {if condition="$vo.state==4 && $vo.isrefund==1  && $vo.issign!=1"}
+      <input class="several-btn6" type="button" value="申请退款" onclick="refund({$vo.id})">
+      {/if}
+      {if condition="$is_cashed && $vo['state']==4 && $vo['share_plan_id'] > 0"}
+      <input class="several-btn3" type="button" value="分享现金券" onclick="location.href='/{$sitecode}/share/{$vo.id}/0'">
+      {/if}
+      {if condition="$vo['state']==12 && $vo['stock_locked'] ==1"}
+      <input class="several-btn6" type="button" value="取消订单" onclick="cancel_order({$vo.id})" style="display: none">
+      {/if}
+      {if condition="$vo['state']==10 && empty($vo['group_buy_order_state_name'])"}
+      <input class="several-btn5" type="button" value="重新下单" onclick="location.href='/{$sitecode}/againorder/{$vo.id}'" style="display: none">
+      {/if}
+      {if condition="checkedMarketingPackage($idsite, 'group_buy') && !empty($vo['group_buy_order_id']) && $vo['group_buy_order_state'] != 0 && $vo['group_buy_order_state'] != 4"}
+      <input class="several-btn4" type="button" value="拼团情况" onclick="location.href='/{$sitecode}/group_buy_share/{$vo.group_buy_order_id}/{$userid}'" style="display: none">
+      {/if}
+    </div>
+  </div>
+</li>
+{/volist}

@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:27:"template/M1/mine/index.html";i:1563351181;s:52:"D:\workspace\work\public\template\M4\lib\header.html";i:1561691701;s:53:"D:\workspace\work\public\template\M4\lib\footer0.html";i:1561691701;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:27:"template/M1/mine/index.html";i:1565321885;s:52:"D:\workspace\work\public\template\M4\lib\header.html";i:1561691701;s:53:"D:\workspace\work\public\template\M4\lib\footer0.html";i:1561691701;}*/ ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -63,9 +63,16 @@
 	 <a href="/<?php echo $sitecode; ?>/spokesmanactivitylist" class="mine-link mine-link-endorse">
 		 <p>活动代言</p>
 	 </a>
-	<?php endif; if($isbuy): ?>
+	<?php endif; if($is_integral): ?>
 	<a href="/<?php echo $sitecode; ?>/integralrecord" class="mine-link mine-link-score">
 		<p>我的积分</p>
+	</a>
+	<?php endif; if($is_subscribe): ?>
+	<a href="/<?php echo $sitecode; ?>/membercart" class="mine-link mine-link-score">
+		<p>我的卡包</p>
+	</a>
+	<a href="/<?php echo $sitecode; ?>/subscriberecord" class="mine-link mine-link-score">
+		<p>我的预约记录</p>
 	</a>
 	<?php endif; if($is_cashed): ?>
 	<a href="/<?php echo $sitecode; ?>/cashedlist/1" class="mine-link mine-link-coupon">
@@ -83,6 +90,9 @@
 	</a>
 
 	<?php if($ismanage) { ?>
+	<a href="/<?php echo $sitecode; ?>/integralexchangemanage/3" class="mine-link mine-link-signupmanage">
+		<p>积分兑换管理</p>
+	</a>
 	<a href="/<?php echo $sitecode; ?>/signupmanagelist" class="mine-link mine-link-signupmanage">
 		<p>报名管理</p>
 	</a>

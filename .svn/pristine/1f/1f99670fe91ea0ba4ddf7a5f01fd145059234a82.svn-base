@@ -1,0 +1,131 @@
+
+<?php
+// +----------------------------------------------------------------------
+// | ThinkPHP [ WE CAN DO IT JUST THINK ]
+// +----------------------------------------------------------------------
+// | Copyright (c) 2006~2016 http://thinkphp.cn All rights reserved.
+// +----------------------------------------------------------------------
+// | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
+// +----------------------------------------------------------------------
+// | Author: liu21st <liu21st@gmail.com>
+// +----------------------------------------------------------------------
+
+
+return [
+    '__pattern__' => [
+        'name' => '\w+',
+    ],
+    '[hello]'     => [
+        ':id/[n:name]/[p:page]'   => ['Index/hello', ['method' => 'get'], ['id' => '\d+']],
+        ':name' => ['Index/hello', ['method' => 'post']],
+    ],
+
+
+
+    ['reg','home/index/reg',[],[]],
+    ['content/:contentid','home/index/info','GET',['contentid'=>'\d+']],
+    ['detail/:id/[:p]/[:pagesize]','home/Index/detail',[],['id'=>'\d+']],
+    ['addVisitRecord','home/index/addVisitRecord',[],[]],
+    ['addwaitervisit','home/index/addwaitervisit',[],[]],
+    ['addVisitRecorded','home/index/addVisitRecorded',[],[]],
+    ['addcollection','home/Index/addcollection',[],[]],
+    ['delcollection','home/Index/delcollection',[],[]],
+    ['addcomment','home/Index/addcomment',[],[]],
+    ['delcomment','home/Index/delcomment',[],[]],
+    ['sendmsg','home/Index/sendmsg',[],[]],
+
+    //['/:m',':m',[],['m'=>'[a-zA-Z]+']],
+    ['weixin/createmune/[:sitecode]','home/weixin/createmune',[],['sitecode'=>'\w+']],
+    ['weixin/[:sitecode]','home/weixin/index',[],['sitecode'=>'\w+']],
+    //'blog/:name'        => ['blog/read', ['method' => 'get'], ['name' => '\w+']],
+    //home/weixin/index/sitecode/abc
+
+    ['userlogin/[:sitecode]','home/index/userlogin',[],['sitecode'=>'\w+']],
+
+    [':sitecode/loginlog','home/Index/loginlog',[],['sitecode'=>'\w+']],
+    [':sitecode/forwardedlog','home/Index/forwardedlog',[],['sitecode'=>'\w+']],
+    [':sitecode/content/:contentid','home/index/info','GET',['sitecode'=>'^((?!Admin|admin).)*$','contentid'=>'\d+']],
+    [':sitecode/node/:nodeid/[p:p]/[size:pagesize]','home/Index/lists',[],['sitecode'=>'^((?!Admin|admin).)*$','nodeid'=>'\d+']],
+    [':sitecode/node/:nodeid/[:p]/[:pagesize]','home/Index/lists',[],['sitecode'=>'^((?!Admin|admin).)*$','nodeid'=>'\d+']],
+
+    [':sitecode/sendmsg','home/Index/sendmsg',[],['sitecode'=>'\w+']],
+    [':sitecode/signin/:id','home/Index/signin',[],['sitecode'=>'\w+','id'=>'\w+']],
+    [':sitecode/signin','home/Index/signin',[],['sitecode'=>'\w+']],
+    // 活动 填写表单并支付页面
+    [':sitecode/signup/:id/[:group_buy_id]/[:group_buy_order_id]','home/Index/signup',[],['sitecode'=>'\w+','id'=>'\d+', 'group_buy_id' => '\d+', 'group_buy_order_id' => '\d+']],
+    [':sitecode/signup_post/:id','home/index/signup_post',[],['sitecode'=>'\w+','id'=>'\d+']],
+    [':sitecode/signup_repost/:ordersn','home/index/signup_repost',[],['sitecode'=>'\w+','ordersn'=>'\d+']],
+    [':sitecode/signup_post1/:id','home/index/signup_post1',[],['sitecode'=>'\w+','id'=>'\d+']],
+    // 
+    [':sitecode/detail/:id/[:group_buy_id]','home/Index/detail',[],['sitecode'=>'\w+','id'=>'\d+', 'group_buy_id' => '\d+']],//活动详情 拼团id为可选参数
+    [':sitecode/getactivityimg/:id','home/Index/getActivityImg',[],['sitecode'=>'\w+','id'=>'\d+']],//获取图片
+    [':sitecode/receive/:id/','home/Index/receive_cashed',[],['sitecode'=>'\w+','id'=>'\d+']],//活动详情领取优惠券的路由
+    [':sitecode/share/:order_id/:plan_id','home/Index/share_cashed',[],['sitecode'=>'\w+','order_id'=>'\d+','plan_id'=>'\d+']],//购买完活动后分享现金券的路由
+    [':sitecode/receiveshare/:user_id/:order_id/:plan_id','home/Index/receive_share',[],['sitecode'=>'\w+','user_id'=>'\d+','order_id'=>'\d+','plan_id'=>'\d+']],//购买完活动后分享出去后领取现金券的路由
+    [':sitecode/cashedactivity/:type/:activity_id','home/Index/cashed_activity',[],['sitecode'=>'\w+','type'=>'\d+','activity_id'=>'\d+']],//限时优惠活动的列表的路由
+    [':sitecode/mine','home/Index/mine',[],['sitecode'=>'\w+']],
+    [':sitecode/collection/[:p]/[:pagesize]','home/Index/collection',[],['sitecode'=>'^((?!Admin|admin).)*$']],
+    [':sitecode/activity/:nodeid/[:p]/[:pagesize]','home/Index/activity',[],['sitecode'=>'^((?!Admin|admin).)*$','nodeid'=>'\d+']],
+    [':sitecode/qrcode','home/Index/qrcodeurl',[],['sitecode'=>'^((?!Admin|admin|Home|home|template|static|public|postsuccess).)*$']],
+    [':sitecode/signuplist/[:state]','home/Index/signuplist',[],['sitecode'=>'\w+','state'=>'\d+']],
+    [':sitecode/cashedlist/[:state]','home/Index/my_cashed_list',[],['sitecode'=>'\w+','state'=>'\d+']],//个人中心的我的优惠券列表
+    [':sitecode/endorsedata','home/Index/endorse_data',[],['sitecode'=>'\w+']],//个人中心活动代言的个人代言数据
+    [':sitecode/spokesmanlist','home/Index/spokesman_list',[],['sitecode'=>'\w+']],//发展代言人的用户列表
+    [':sitecode/spokesmanorderlist','home/Index/spokesman_order_list',[],['sitecode'=>'\w+']],//发展代言人的订单列表
+    [':sitecode/spokesmanactivitylist','home/Index/spokesman_activity_list',[],['sitecode'=>'\w+']],//可代言的活动列表
+    [':sitecode/alreadyspokesmanactivitylist','home/Index/already_spokesman_activity_list',[],['sitecode'=>'\w+']],//已代言的活动列表
+    [':sitecode/balancerecordlist','home/Index/balance_record_list',[],['sitecode'=>'\w+']],//佣金结算列表
+    [':sitecode/addbalancerecord','home/Index/add_balance_record',[],['sitecode'=>'\w+']],//新增结算记录
+    [':sitecode/spokesmanregister','home/Index/spokesman_register',[],['sitecode'=>'\w+']],//代言人注册的路由
+    [':sitecode/ajaxspokesmanregister','home/Index/ajax_spokesman_register',[],['sitecode'=>'\w+']],//提交代言人注册的路由
+    [':sitecode/cancelorder/[:id]','home/Index/cancel_order',[],['sitecode'=>'\w+','id'=>'\d+']],//用户手动取消订单的功能
+    [':sitecode/againorder/[:id]','home/Index/again_order',[],['sitecode'=>'\w+','id'=>'\d+']],//再一次修改(提交)订单
+    [':sitecode/signupmanagelist/[:state]','home/Index/signupmanagelist',[],['sitecode'=>'\w+','state'=>'\d+']],
+    [':sitecode/collection','home/Index/collection',[],['sitecode'=>'\w+']],
+    [':sitecode/orderdetail/:id','home/Index/orderdetail',[],['sitecode'=>'\w+'],'id'=>'\d+'],
+    [':sitecode/ordermanagedetail/:id','home/Index/ordermanagedetail',[],['sitecode'=>'\w+'],'id'=>'\d+'],
+    [':sitecode/comment/[:flag]','home/Index/comment',[],['sitecode'=>'^((?!Admin|admin).)*$','flag'=>'\d+']],
+    [':sitecode/commentmanage/[:flag]','home/Index/commentmanage',[],['sitecode'=>'^((?!Admin|admin).)*$','flag'=>'\d+']],
+    [':sitecode/usermodi','home/Index/usermodi',[],['sitecode'=>'\w+']],
+    [':sitecode/collection','home/Index/collection',[],['sitecode'=>'\w+']],
+    [':sitecode/waiter/[:flag]/[:id]','home/Index/waiter',[],['sitecode'=>'^((?!Admin|admin).)*$','flag'=>'\d+','id'=>'\d+']],
+    [':sitecode/refund','home/Index/refund',[],['sitecode'=>'^((?!Admin|admin).)*$']],
+    [':sitecode/getuserinfo1','home/Index/getuserinfo1',[],['sitecode'=>'^((?!Admin|admin).)*$']],
+    [':sitecode/getuserinfo2','home/Index/getuserinfo2',[],['sitecode'=>'^((?!Admin|admin).)*$']],
+    [':sitecode/dailysignin','home/Index/dailysignin',[],['sitecode'=>'^((?!Admin|admin).)*$']],
+    [':sitecode/getsigninrecord','home/Index/getsigninrecord',[],['sitecode'=>'^((?!Admin|admin).)*$']],
+    [':sitecode/membersignin','home/Index/membersignin',[],['sitecode'=>'^((?!Admin|admin).)*$']],
+    [':sitecode/integralrecord','home/Index/integralrecord',[],['sitecode'=>'^((?!Admin|admin).)*$']],
+    [':sitecode/getintegralrecord','home/Index/getintegralrecord',[],['sitecode'=>'^((?!Admin|admin).)*$']],
+    [':sitecode/integralmall','home/Index/integralmall',[],['sitecode'=>'^((?!Admin|admin).)*$']],
+    [':sitecode/getintegralmall','home/Index/getintegralmall',[],['sitecode'=>'^((?!Admin|admin).)*$']],
+    [':sitecode/getexchangerecord','home/Index/getexchangerecord',[],['sitecode'=>'^((?!Admin|admin).)*$']],
+    [':sitecode/integraldetail/:id','home/Index/integraldetail',[],['sitecode'=>'^((?!Admin|admin).)*$','id'=>'\w+']],
+    [':sitecode/integralexchange/:id','home/Index/integralexchange',[],['sitecode'=>'^((?!Admin|admin).)*$','id'=>'\w+']],
+    [':sitecode/integralvalidation','home/Index/integralvalidation',[],['sitecode'=>'^((?!Admin|admin).)*$']],
+    [':sitecode/exchangegoods','home/Index/exchangegoods',[],['sitecode'=>'^((?!Admin|admin).)*$']],
+    [':sitecode/siteqrcode','home/Index/siteqrcode',[],['sitecode'=>'^((?!Admin|admin).)*$']],
+    [':sitecode/group_buy_share/:group_buy_order_id/:sharer_id', 'home/index/groupBuyShare', [], ['sitecode' => '\w+', 'group_buy_order_id' => '\d+', 'sharer_id' => '\d+']],
+    [':sitecode/group_buy_list', 'home/index/groupBuyList', [], []],
+    [':sitecode/membercart','home/Index/membercart',[],['sitecode'=>'^((?!Admin|admin).)*$']],
+    [':sitecode/membercartcheck','home/Index/membercartcheck',[],['sitecode'=>'^((?!Admin|admin).)*$']],
+    [':sitecode/subscribe/:id','home/Index/subscribe',[],['sitecode'=>'^((?!Admin|admin).)*$','id'=>'\w+']],
+    [':sitecode/subscribepost','home/Index/subscribepost',[],['sitecode'=>'^((?!Admin|admin).)*$','membercartid'=>'\w+','sessionid'=>'\w+']],
+    [':sitecode/subscriberecord','home/Index/subscriberecord',[],['sitecode'=>'^((?!Admin|admin).)*$']],
+    [':sitecode/subscriberecorddetail/:id','home/Index/subscriberecorddetail',[],['sitecode'=>'^((?!Admin|admin).)*$']],
+    [':sitecode/subscribesignin/:id','home/Index/subscribesignin',[],['sitecode'=>'^((?!Admin|admin).)*$']],
+    [':sitecode/signinloaddata','home/Index/signinloaddata',[],['sitecode'=>'^((?!Admin|admin).)*$']],
+    [':sitecode/integralexchangemanage/[:order_status]','home/Index/integralexchangemanage',[],['sitecode'=>'^((?!Admin|admin).)*$','order_status'=>'\d+']],
+    [':sitecode/integralexchangemanagedetail/:id','home/Index/integralexchangemanagedetail',[],['sitecode'=>'^((?!Admin|admin).)*$','id'=>'\d+']],
+    [':sitecode','home/index/index',[],['sitecode'=>'^((?!Admin|admin|Home|home|template|static|public|postsuccess).)*$']],
+
+    //[':sitecode','home/index/index',[],['sitecode'=>'^(?!.*?(?:Admin|admin|template|static|public)).*$']]
+
+/*
+    '[home]'=>
+        [
+            ':m'    =>  ['@:m/index/index'],
+        ]
+
+*/
+];

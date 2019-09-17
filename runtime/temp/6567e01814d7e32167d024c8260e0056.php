@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:42:"template/M1/mine/ajax_mine_order_list.html";i:1562315896;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:42:"template/M1/mine/ajax_mine_order_list.html";i:1565160353;}*/ ?>
 
             <?php if($list){foreach($list as $k=>$vo) {?>
             <li>
@@ -25,7 +25,7 @@
                             <a onclick="cancel_order(<?php echo $vo['id']; ?>)"  style="background: #666; ">取消订单</a>
                             <?php } ?>
                             <!--终止服务可以进行重新下单-->
-                            <?php if($vo['state']==10) { ?>
+                            <?php if($vo['state']==10 && empty($vo['group_buy_order_state_name'])) { ?>
                             <a  href="/<?php echo $sitecode; ?>/againorder/<?php echo $vo['id']; ?>"  style="background: #d9b38b; ">重新下单</a>
                             <?php } ?>
                             <a href="#" style="background: #d9b38b; display: none" >查看约玩</a>

@@ -1,9 +1,17 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:70:"D:\workspace\work\public/../application/admin\view\activity\index.html";i:1562660368;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:70:"D:\workspace\work\public/../application/admin\view\activity\index.html";i:1568631131;}*/ ?>
+<!--
+ * @Descripttion: 
+ * @version: 
+ * @Author: ChenJie
+ * @Date: 2019-09-05 10:23:35
+ * @LastEditors: ChenJie
+ * @LastEditTime: 2019-09-09 13:47:48
+ -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>活动管理</title>
+    <title>产品管理</title>
     <link href="/static/css/layout.css" rel="stylesheet" type="text/css" />
     <link href="/static/css/page.css" rel="stylesheet" type="text/css" />
     <script type="text/javascript" src="/static/js/jquery-3.2.1.min.js"></script>
@@ -235,13 +243,17 @@
                         <div class="oa_subnav-tab clearfix">
                             <ul>
                                 <li <?php echo $intflag==6?'class="oa_on"':''; ?> onclick="javascript:window.location='<?php echo url('activity/index','&intflag=6&nodeid='.$nodeid); ?>'"><em>草稿箱  <span style="color: red">(<?php echo $acount[6]; ?>)</span></em></li>
-                                <li <?php echo $intflag==1?'class="oa_on"':''; ?> onclick="javascript:window.location='<?php echo url('activity/index','&intflag=1&nodeid='.$nodeid); ?>'"><em>待审批活动  <span style="color: red">(<?php echo $acount[1]; ?>)</span></em></li>
-                                <li <?php echo $intflag==3?'class="oa_on"':''; ?> onclick="javascript:window.location='<?php echo url('activity/index','&intflag=3&nodeid='.$nodeid); ?>'"><em>审批不过的活动  <span style="color: red">(<?php echo $acount[3]; ?>)</span></em></li>
-                                <li <?php echo $intflag==2?'class="oa_on"':''; ?> onclick="javascript:window.location='<?php echo url('activity/index','&intflag=2&nodeid='.$nodeid); ?>'"><em>已发布活动  <span style="color: red">(<?php echo $acount[2]; ?>)</span></em></li>
-                                <li <?php echo $intflag==5?'class="oa_on"':''; ?> onclick="javascript:window.location='<?php echo url('activity/index','&intflag=5&nodeid='.$nodeid); ?>'"><em>7天内即将开始的活动  <span style="color: red">(<?php echo $acount[5]; ?>)</span></em></li>
+                                <li <?php echo $intflag==1?'class="oa_on"':''; ?> onclick="javascript:window.location='<?php echo url('activity/index','&intflag=1&nodeid='.$nodeid); ?>'"><em>待审批产品  <span style="color: red">(<?php echo $acount[1]; ?>)</span></em></li>
+                                <li <?php echo $intflag==3?'class="oa_on"':''; ?> onclick="javascript:window.location='<?php echo url('activity/index','&intflag=3&nodeid='.$nodeid); ?>'"><em>审批不过的产品  <span style="color: red">(<?php echo $acount[3]; ?>)</span></em></li>
+                                <li <?php echo $intflag==2?'class="oa_on"':''; ?> onclick="javascript:window.location='<?php echo url('activity/index','&intflag=2&nodeid='.$nodeid); ?>'"><em>已发布产品  <span style="color: red">(<?php echo $acount[2]; ?>)</span></em></li>
+                                <li <?php echo $intflag==5?'class="oa_on"':''; ?> onclick="javascript:window.location='<?php echo url('activity/index','&intflag=5&nodeid='.$nodeid); ?>'"><em>7天内即将开始的产品  <span style="color: red">(<?php echo $acount[5]; ?>)</span></em></li>
                                 <li <?php echo $intflag==4?'class="oa_on"':''; ?> onclick="javascript:window.location='<?php echo url('activity/index','&intflag=4&nodeid='.$nodeid); ?>'"><em>回收站  <span style="color: red">(<?php echo $acount[4]; ?>)</span></em></li>
                             </ul>
                         </div>
+
+
+
+
                     </div>
                     <div class="oa_content-area clearfix">
                         <div class="oa_content-main">
@@ -262,13 +274,13 @@
                                                                 <table width="100%" border="0" cellspacing="1" cellpadding="0">
 
                                                                     <tr>
-                                                                        <td width="100" class="oa_cell-left">活动标题：</td>
+                                                                        <td width="100" class="oa_cell-left">产品标题：</td>
                                                                         <td class="oa_cell-right">
                                                                             <input style="width: 300px;"  type="text" name="chrtitle" value="<?php echo $search['chrtitle']; ?>" >
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
-                                                                        <td width="100" class="oa_cell-left">活动分类：</td>
+                                                                        <td width="100" class="oa_cell-left">产品分类：</td>
                                                                         <td class="oa_cell-right">
                                                                             <select name="fidtype" >
                                                                                 <option value="" >所有类别</option>
@@ -285,8 +297,8 @@
                                                                         <td class="oa_cell-right">
                                                                             <select name="ischarge" >
                                                                                 <option value="" >所有记录</option>
-                                                                                <option value="1" <?php if($search['ischarge']==1) { echo "selected"; } ?> >免费活动</option>
-                                                                                <option value="2" <?php if($search['ischarge']==2) { echo "selected"; } ?> >收费活动</option>
+                                                                                <option value="1" <?php if($search['ischarge']==1) { echo "selected"; } ?> >免费产品</option>
+                                                                                <option value="2" <?php if($search['ischarge']==2) { echo "selected"; } ?> >收费产品</option>
                                                                             </select>
 
                                                                         </td>
@@ -333,7 +345,7 @@
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
-                                                                        <td width="100" class="oa_cell-left">活动标签：</td>
+                                                                        <td width="100" class="oa_cell-left">产品标签：</td>
                                                                         <td class="oa_cell-right">
                                                                             <?php if(is_array($hdbq) || $hdbq instanceof \think\Collection || $hdbq instanceof \think\Paginator): $i = 0; $__LIST__ = $hdbq;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$vo): $mod = ($i % 2 );++$i;?>
                                                                             <input type="checkbox" name="chrtags[]" value="<?php echo $vo['code']; ?>"  <?php if(in_array($vo['code'],$search['chrtags'])) { echo "checked"; } ?> ><?php echo $vo['name']; ?></input>
@@ -358,24 +370,24 @@
                                                 <ul>
                                                   <?php if($cms->CheckPurview('contentmanage','add') && $intflag==6){ ?>
                                                   <li class="oa_selected">
-                                                      <a href="javascript:CustomOpen('<?php echo url('activity/modi','&action=add&nodeid='.$nodeid,''); ?>', 'activity','新建活动', 1100,600)">新建活动</a>
+                                                      <a href="javascript:CustomOpen('<?php echo url('activity/modi','&action=add&nodeid='.$nodeid,''); ?>', 'activity','新建产品', 1100,600)">新建产品</a>
                                                   </li>
                                                     <?php } ?>
                                                 </ul>
                                               </span>
                                             <span class="oa_ico-left"></span>
-                                            活动管理                                        </div>
+                                            产品管理                                        </div>
                                         <div class="oa_text-list">
                                             <table width="100%" border="0" cellspacing="0" cellpadding="0"  style="table-layout:fixed">
                                                 <tr class="oa_text-list-title">
                                                     <th width="20" style="text-align:center;"><input id="checked"  onclick="DoCheck();" name="" type="checkbox" value="" /></th>
-                                                    <th><span class="oa_arr-text-list-title"></span>活动标题</th>
+                                                    <th><span class="oa_arr-text-list-title"></span>产品标题</th>
                                                     <th WIDTH="60"><span class="oa_arr-text-list-title"></span>所属分类</th>
                                                     <th WIDTH="100"><span class="oa_arr-text-list-title"></span>发布时间</th>
                                                     <?php if($intflag>1) { ?>
                                                     <th WIDTH="100"><span class="oa_arr-text-list-title"></span>审批时间</th>
                                                     <?php } ?>
-                                                    <th WIDTH="105"><span class="oa_arr-text-list-title"></span>活动举办时间</th>
+                                                    <th WIDTH="105"><span class="oa_arr-text-list-title"></span>举办时间</th>
                                                     <th WIDTH="105"><span class="oa_arr-text-list-title"></span>报名时间</th>
                                                     <th WIDTH="105" style="display: none;"><span class="oa_arr-text-list-title"></span>价格</th>
                                                     <th WIDTH="50"><span class="oa_arr-text-list-title"></span>订单数</th>
@@ -417,18 +429,18 @@
                                                     </td>
                                                     <?php } ?>
                                                     <td  style="white-space:normal;padding: 5px; ">
-                                                        <a onmousemove="javascript:show_rqcode(this,'<?php echo $vo['idactivity']; ?>')" onmouseout="javascript:close_rqcode()" href="/<?php echo $sitecode; ?>/detail/<?php echo $vo['idactivity']; ?>?type=test" target="_blank">浏览</a>
+                                                        <a onmousemove="javascript:show_rqcode(this,'<?php echo $vo['idactivity']; ?>')" onmouseout="javascript:close_rqcode()" href="/<?php echo $sitecode; ?>/detail/<?php echo $vo['idactivity']; ?>" target="_blank">浏览</a>
                                                         <a href="<?php echo url('activity/visitlist','dataid='.$vo['idactivity'],''); ?>" target="_blank">访问数据</a>
                                                         <?php  if($intflag!=4) {  if($intflag==1) {
                                                            if($cms->CheckPurview('contentmanage','checkactivity')){
                                                         ?>
-                                                        <a href="javascript:CustomOpen('<?php echo url('activity/activitycheck','id='.$vo['idactivity'].'&action=edit',''); ?>','activity','活动修改',1100,600)">审批</a>
+                                                        <a href="javascript:CustomOpen('<?php echo url('activity/activitycheck','id='.$vo['idactivity'].'&action=edit',''); ?>','activity','产品修改',1100,600)">审批</a>
                                                         <?php }} ?>
                                                         <a href="javascript:CustomOpen('<?php echo url('activity/signupindex','id='.$vo['idactivity'],''); ?>','activity','<?php echo $vo['chrtitle']; ?>',1200,600)">查看报名</a>
                                                         <?php if($cms->CheckPurview('contentmanage','add')){ ?>
                                                         <a href="javascript:copydata('<?php echo $vo['idactivity']; ?>')">复制</a>
                                                         <?php } if($cms->CheckPurview('contentmanage','edit') && $intflag!=5){ ?>
-                                                        <a href="javascript:CustomOpen('<?php echo url('activity/modi','id='.$vo['idactivity'].'&action=edit',''); ?>','activity','活动修改',1100,600)">修改</a>
+                                                        <a href="javascript:CustomOpen('<?php echo url('activity/modi','id='.$vo['idactivity'].'&action=edit',''); ?>','activity','产品修改',1100,600)">修改</a>
                                                         <?php } if($cms->CheckPurview('contentmanage','del')){ ?>
                                                         <a href="#" onclick="del_checked(<?php echo $vo['idactivity']; ?>,'<?php echo $vo['chrtitle']; ?>');" >删除</a>
                                                         <?php } } else{ if($cms->CheckPurview('contentmanage','edit')){ ?>
@@ -436,7 +448,7 @@
                                                         <?php } if($cms->CheckPurview('contentmanage','del')){ ?>
                                                         <a href="#" onclick="del_checked(<?php echo $vo['idactivity']; ?>,'<?php echo $vo['chrtitle']; ?>');" >删除</a>
                                                         <?php } } ?>
-                                                        <a href="javascript:CustomOpen('<?php echo url('activity/importorder',array('id'=>$vo['idactivity'],'templateid'=>$vo['selsignfrom'])); ?>','activity','活动修改',550,160)">导入报名</a>
+                                                        <a href="javascript:CustomOpen('<?php echo url('activity/importorder',array('id'=>$vo['idactivity'],'templateid'=>$vo['selsignfrom'])); ?>','activity','产品修改',550,160)">导入报名</a>
                                                         <a href="javascript:void(0);" class="data<?php echo $vo['idactivity']; ?>" data-clipboard-text="http://www.tongxiang123.cn/<?php echo $sitecode; ?>/detail/<?php echo $vo['idactivity']; ?>?type=test" onclick="copycontent('data<?php echo $vo['idactivity']; ?>')" >复制链接</a>
                                                         <a href="javascript:CustomOpen('<?php echo url('activity/customdetail',array('id'=>$vo['idactivity'])); ?>','customdetail','咨询详情',700,400)">咨询详情</a>
                                                         <!--除了待审核中不可以同步-->
@@ -446,9 +458,7 @@
                                                         <?php }  if(in_array($vo['wntx_sync_status'],array(1,4))) { ?>
                                                         <a href="javascript:cancelWntxSync(<?php echo $vo['idactivity']; ?>)" id="cancel_wn">取消同步到蜗牛童行</a>
                                                         <?php } ?>
-
                                                         <a href="javascript:CustomOpen('<?php echo url('activity/audit_result',array('id'=>$vo['idactivity'])); ?>','activity','审核记录',700,400)">审核记录</a>
-
                                                         <?php } ?>
                                                     </td>
                                                 </tr>

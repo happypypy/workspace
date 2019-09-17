@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:39:"template/M2/assemble/assemble_list.html";i:1563421879;s:52:"D:\workspace\work\public\template\M1\lib\header.html";i:1561691693;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:39:"template/M2/assemble/assemble_list.html";i:1563437365;s:52:"D:\workspace\work\public\template\M1\lib\header.html";i:1561691693;}*/ ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -72,7 +72,14 @@
 
         <div class="news-list activity news-list1">
             <ul id="datalist">
-                <?php foreach($groupBuys as $groupBuy): ?>
+                <?php if(!$groupBuys){ ?>
+                <li>
+                    <div>
+                        <div style="text-align: center" >没有相关的活动</div>
+                    </div>
+                </li>
+                <?php  }
+                foreach($groupBuys as $groupBuy): ?>
                     <li>
                         <a href="/<?php echo $sitecode; ?>/detail/<?php echo $groupBuy['activity_id']; ?>">
                             <div class="pic"><img src="<?php echo $roottpl; ?>/images/bar_03.jpg"></div>
@@ -96,6 +103,7 @@
             </ul>
         </div>
     </div>
+<div id="dataload" class="iconfont iconload" style="display: none">&#xe72f;</div>
 <script>
     $(function(){
         //padding-top:

@@ -1,0 +1,307 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+    <title>图片信息</title>
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+
+    <script type="text/javascript" src="/static/modules/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/static/modules/js/swiper.min.js"></script>
+    <script type="text/javascript" src="/static/modules/js/common.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/modules/style/css/swiper.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/modules/style/css/common.css">
+    <link rel="stylesheet" type="text/css" href="/static/modules/style/css/pc.css">
+    <style>
+        body,html{
+            overflow-y: hidden;
+        }
+        .comment-list ul li.noword {
+            flex: 0 0 100% ;
+            font-size: 0.14rem;
+            color: #999;
+            background: #e7e7e7;
+            line-height: 0.32rem;
+            padding: 0 0 0 0.1rem;
+            margin-bottom: 0;
+            border-radius: 4px;
+        }
+        .swiper-wrapper {
+            width: fit-content;
+            overflow: hidden;
+        }
+
+        .swiper-wrapper .swiper-slide {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            float: left;
+            width: 100%;
+            height: 4.3rem;
+        }
+
+        .gallery-title {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+            font-size: 0.14rem;
+            color: #fff;
+            padding:0.1rem 0 0.1rem 0.1rem;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .gallery-title>span {
+            font-size: 0.15rem;
+            color: #fff;
+        }
+
+        .gallery-top {
+            display: flex;
+            width: 100%;
+            flex: auto;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.2);
+        }
+        .gallery-top>img{
+            max-width: 100%;
+            height: auto;
+        }
+
+        .gallery-thumbs {
+            width: 100%;
+            overflow: hidden;
+            height: 0.4rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-top: 1px solid rgba(0, 0, 0, 0.3);
+            padding: 0.06rem 0 0.1rem;
+            overflow-x: auto;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+        }
+
+        .gallery-thumbs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .gallery-thumbs .img-div {
+            padding: 0 0.1rem;
+            overflow-x: auto;
+            width: fit-content;
+            height: inherit;
+        }
+
+        .gallery-thumbs .img-div>img {
+            display: block;
+            width: 0.4rem;
+            height: 0.4rem;
+            border-radius: 50%;
+            margin-right: 0.06rem;
+            float: left;
+        }
+    </style>
+</head>
+
+<body>
+<div class="site-section clearfix bg" style="background: #fff;padding-top: 0">
+    <div class="swiper-container">
+        <ul class="swiper-wrapper">
+            <?php  if(!$result_data) { ?>
+            <li class="noword">没有相关的图片</li>
+            <?php }
+			foreach($result_data as $k=>$val){ ?>
+            <li class="swiper-slide flex">
+                <div class="gallery-title">
+                    上传图片者：<span>{$val.account_name}</span>
+                </div>
+                <div class="gallery-top">
+                    <img src="{$val.face_url}">
+                </div>
+                <!--如果有检测到人脸信息的图片-->
+                {if condition="$val.detect_face_url"}
+                <?php $detect_face_url_arr = explode(',',$val['detect_face_url']); ?>
+                <div class="gallery-thumbs">
+                    <div class="img-div">
+                        {foreach $detect_face_url_arr as $v}
+                        <img src="{$v}" alt=""  onclick="javascript:window.location='/{$sitecode}/searchphoto/{$album_id}?face_url={$v}'">
+                        {/foreach}
+                    </div>
+                </div>
+                {/if}
+                <div style="display: none" class="likes">{$val.is_like}</div>
+                <div style="display: none" class="dataid">{$val.id}</div>
+            </li>
+            <?php } ?>
+        </ul>
+    </div>
+</div>
+
+<div class="footer">
+    <form class="comment-form" style="display: none;">
+        <div class="comment-textarea">
+            <textarea name="content" id="content"></textarea>
+        </div>
+        <div class="comment-submit">
+            <input type="button" value="取消" id="close-comment">
+            <input type="button" onclick="javascript:add_comment();" value="提交">
+        </div>
+    </form>
+    <ul>
+        <li>
+            <a href="javascript:;" id="show-comment">
+                <span><i class="iconfont message">&#xe65d;</i></span>
+                <p>评论</p>
+            </a>
+        </li>
+
+        <li>
+            <a href="javascript:;" id="liked">
+                <span><i class="iconfont message">&#xe871;</i></span>
+                <p>点赞</p>
+            </a>
+        </li>
+    </ul>
+</div>
+<input type="hidden" name="dataid" id="dataid" value="{$photo_id}">
+<input type="hidden" value="{$result_data[$key]['is_like']}" id="dataindex">
+<input type="hidden" value="{$key}" id="index">
+</body>
+
+<script type="text/javascript" src="/static/js/layer/layer.js"></script>
+<script>
+    var swiper1 = new Swiper('.swiper-container', {
+        slidesPerView: 1,
+        spaceBetween: 10,
+        watchSlidesVisibility: true,
+        watchSlidesProgress: true,
+        noSwipingSelector: '.gallery-thumbs,.gallery-title',
+        on: {
+            slideChangeTransitionEnd: function () {
+                var index = this.activeIndex;
+                var st = $('.swiper-slide').eq(index).find('.likes').html();
+                var dataid = $('.swiper-slide').eq(index).find('.dataid').html();
+                $('#dataindex').val(st);
+                $('#index').val(index);//给滚动第几张图片的索引赋值
+                // debugger;
+                $('#dataid').val(dataid);
+                // window.location.href = "?key=" + index;
+                console.log(st);
+                getLiked(st);
+            },
+        },
+    });
+
+    swiper1.slideTo({$key},0,false);
+
+    function getLiked(st) {
+        if(st==0){
+            $("#liked").find('i').html('&#xe871;')
+        }else{
+            $("#liked").find('i').html('&#xe870;')
+        }
+
+    }
+    //该图片是否点赞
+    var st = $('#dataindex').val();
+    //初始化的时候点赞的手标志
+    getLiked(st);
+
+
+    //指定img-div宽度
+    var imgWidth = $('.img-div');
+    imgWidth.each(function () {
+        $(this).css('width',$(this).children('img').length*0.46+'rem')
+    })
+
+    //评论
+    $(function () {
+        $("#show-comment").on("click", function () {
+            $(".comment-form,.cover").show();
+        })
+        $("#close-comment").on("click", function () {
+            $(".comment-form,.cover").hide();
+        })
+    })
+
+    function add_comment() {
+        var photo_id = $('#dataid').val();
+        var content = $('#content').val();//评论的内容
+        if(content == ''){
+            layer.alert('请填写评论内容');return;
+        }
+        $.ajax({
+            url:"/{$sitecode}/addphotocomment/"+photo_id+"?content="+content,
+            // data:data,
+            type:"post",
+            dataType:"json",
+            success:function(msg) {
+                if(msg==1)
+                {
+                    layer.alert('评论已成功提交！');
+                    $("#content").val('');
+                    $(".comment-form,.cover").hide();
+                    // location.reload();
+                }
+            }
+        })
+    }
+
+
+
+
+    /* 点赞 */
+    $('#liked').on('click', function () {
+        //该图片是否点赞
+        var st = $('#dataindex').val();
+        //图片的索引
+        var index = $('#index').val();
+
+        var action = 'add';
+        //获取图片id
+        var photo_id = $('#dataid').val();
+        // alert(st);
+        if(st == 0){
+            $('#dataindex').val(1);
+            $('.swiper-slide').eq(index).find('.likes').html(1)
+        }else{
+            $('#dataindex').val(0);
+            $('.swiper-slide').eq(index).find('.likes').html(0);
+            action = 'sub';
+        }
+        getClickLiked(st);
+        $.ajax({
+            url:"/{$sitecode}/photolike/"+photo_id+"?action="+action,
+            // data:data,
+            type:"post",
+            dataType:"json",
+            success:function(msg) {
+
+            }
+        })
+        // console.log($('#dataindex').attr('data-index'));
+
+    })
+    function getClickLiked(st) {
+        if (st == 1) {
+            //未点赞
+            $("#liked").find('i').html('&#xe871;')
+        } else {
+            $("#liked").find('i').html('&#xe870;')
+        }
+    }
+
+</script>
+
+</html>

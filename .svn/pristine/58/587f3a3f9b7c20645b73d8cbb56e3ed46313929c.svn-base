@@ -1,0 +1,150 @@
+
+<?php
+// +----------------------------------------------------------------------
+// | ThinkPHP [ WE CAN DO IT JUST THINK ]
+// +----------------------------------------------------------------------
+// | Copyright (c) 2006~2016 http://thinkphp.cn All rights reserved.
+// +----------------------------------------------------------------------
+// | Licensed ( http://www.apache.org/licenses/LICENSE-2.0 )
+// +----------------------------------------------------------------------
+// | Author: liu21st <liu21st@gmail.com>
+// +----------------------------------------------------------------------
+
+
+return [
+    // 创建微信菜单
+    ['weixin/createmune/[:sitecode]','home/weixin/createmune',[],['sitecode'=>'\w+']],
+    // 微信事件
+    ['weixin/[:sitecode]','home/weixin/index',[],['sitecode'=>'\w+']],
+
+    // 注册童享云
+    ['reg','home/index/reg',[],[]],
+    
+    /** 暂时废弃的路由开始 */
+    ['content/:contentid','home/index/info','GET',['contentid'=>'\d+']],
+    ['detail/:id/[:p]/[:pagesize]','home/Index/detail',[],['id'=>'\d+']],
+    ['addwaitervisit','home/index/addwaitervisit',[],[]],
+    ['addVisitRecorded','home/index/addVisitRecorded',[],[]],
+    ['addcollection','home/Index/addcollection',[],[]],
+    ['delcollection','home/Index/delcollection',[],[]],
+    ['addcomment','home/Index/addcomment',[],[]],
+    ['sendmsg','home/Index/sendmsg',[],[]],
+    // 方法找不到
+    ['userlogin/[:sitecode]','home/index/userlogin',[],['sitecode'=>'\w+']],
+    /** 暂时废弃的路由结束 */
+
+    /* 其它功能开始 */
+    [':sitecode/loginlog','home/Index/loginlog',[],['sitecode'=>'\w+']], // 登陆日志
+    [':sitecode/forwardedlog','home/Index/forwardedlog',[],['sitecode'=>'\w+']], // 转发日志
+    [':sitecode/content/:contentid','home/index/info','GET',['sitecode'=>'^((?!Admin|admin).)*$','contentid'=>'\d+']], // 文章详情
+    [':sitecode/node/:nodeid/[p:p]/[size:pagesize]','home/Index/lists',[],['sitecode'=>'^((?!Admin|admin).)*$','nodeid'=>'\d+']], // 栏目详情
+    [':sitecode/node/:nodeid/[:p]/[:pagesize]','home/Index/lists',[],['sitecode'=>'^((?!Admin|admin).)*$','nodeid'=>'\d+']],
+    [':sitecode/signup_post1/:id','home/index/signup_post1',[],['sitecode'=>'\w+','id'=>'\d+']], // 支付回调页面
+    [':sitecode/addVisitRecord','home/Index/addVisitRecord',[],['sitecode'=>'\w+']], // 访问记录
+    [':sitecode/qrcode','home/Index/qrcodeurl',[],['sitecode'=>'^((?!Admin|admin|Home|home|template|static|public|postsuccess).)*$']], // 生成微信二维码
+    [':sitecode/getuserinfo1','home/Index/getuserinfo1',[],['sitecode'=>'^((?!Admin|admin).)*$']], // 拉取授权
+    [':sitecode/siteqrcode','home/Index/siteqrcode',[],['sitecode'=>'^((?!Admin|admin).)*$']], // 站点ID,获取公众二维码
+    /* 其它功能结束 */
+
+    /* 个人中心相关功能开始 */
+    [':sitecode/mine','home/Index/mine',[],['sitecode'=>'\w+']], // 个人中心
+    [':sitecode/signin/:id','home/Index/signin',[],['sitecode'=>'\w+','id'=>'\w+']], // 用户签到详情
+    [':sitecode/signin','home/Index/signin',[],['sitecode'=>'\w+']], // 用户签到
+    [':sitecode/signinloaddata','home/Index/signinloaddata',[],['sitecode'=>'^((?!Admin|admin).)*$']], // 签到操作
+    [':sitecode/collection/[:p]/[:pagesize]','home/Index/collection',[],['sitecode'=>'^((?!Admin|admin).)*$']], // 我的收藏分页页
+    [':sitecode/collection','home/Index/collection',[],['sitecode'=>'\w+']], // 我的收藏
+    [':sitecode/signuplist/[:state]','home/Index/signuplist',[],['sitecode'=>'\w+','state'=>'\d+']], // 我的报名
+    [':sitecode/signupmanagelist/[:state]','home/Index/signupmanagelist',[],['sitecode'=>'\w+','state'=>'\d+']], // 报名管理
+    [':sitecode/usermodi','home/Index/usermodi',[],['sitecode'=>'\w+']], // 我的资料
+    [':sitecode/waiter/[:flag]/[:id]','home/Index/waiter',[],['sitecode'=>'^((?!Admin|admin).)*$','flag'=>'\d+','id'=>'\d+']], // 在线客服
+    /* 个人中心相关功能结束 */
+
+    /* 订单功能开始 */
+    [':sitecode/orderdetail/:id','home/Index/orderdetail',[],['sitecode'=>'\w+'],'id'=>'\d+'], // 订单详情
+    [':sitecode/ordermanagedetail/:id','home/Index/ordermanagedetail',[],['sitecode'=>'\w+'],'id'=>'\d+'],  // 订单管理详情、
+    [':sitecode/cancelorder/[:id]','home/Index/cancel_order',[],['sitecode'=>'\w+','id'=>'\d+']],    // 取消订单
+    [':sitecode/againorder/[:id]','home/Index/again_order',[],['sitecode'=>'\w+','id'=>'\d+']],    // 重新下单
+    [':sitecode/refund','home/Index/refund',[],['sitecode'=>'^((?!Admin|admin).)*$']], // 退款
+    /* 订单功能结束 */
+    [':sitecode/activitydetailedit','home/Index/activityDetailEdit',[],['sitecode'=>'\w+']],
+    [':sitecode/deleteGroupBuy','home/Index/deleteGroupBuy',[],['sitecode'=>'\w+']],//删除拼团
+    [':sitecode/activitychkdown','home/Index/activityChkdown',[],['sitecode'=>'\w+']],
+    [':sitecode/deletePackage','home/Index/deletePackage',[],['sitecode'=>'\w+']],
+
+    /* 活动功能开始 */
+    [':sitecode/detail/:id/[:group_buy_id]','home/Index/detail',[],['sitecode'=>'\w+','id'=>'\d+', 'group_buy_id' => '\d+']],  // 活动详情 拼团id为可选参数
+    [':sitecode/activity/:nodeid/[:p]/[:pagesize]','home/Index/activity',[],['sitecode'=>'^((?!Admin|admin).)*$','nodeid'=>'\d+']], // 活动栏目
+    [':sitecode/activitymanage/[:nodeid]/[:p]/[:pagesize]','home/Index/activitymanage',[],['sitecode'=>'^((?!Admin|admin).)*$','nodeid'=>'\d+']], // 活动管理
+    [':sitecode/activitymanagecopy','home/Index/activitymanagecopy',[],['sitecode'=>'\w+']], // 活动复制
+    [':sitecode/activitymanagemodi/[:id]/[:action]/[:nodeid]','home/Index/activitymanageModi',[],['sitecode'=>'\w+','id'=>'\d+']], // 活动修改
+    [':sitecode/signup/:id/[:group_buy_id]/[:group_buy_order_id]','home/Index/signup',[],['sitecode'=>'\w+','id'=>'\d+', 'group_buy_id' => '\d+', 'group_buy_order_id' => '\d+']], // 报名表单页面
+    [':sitecode/signup_post/:id','home/index/signup_post',[],['sitecode'=>'\w+','id'=>'\d+']], // 报名表单提交
+    /* 活动功能结束 */
+
+    /* 评论功能开始 */
+    [':sitecode/comment/[:flag]','home/Index/comment',[],['sitecode'=>'^((?!Admin|admin).)*$','flag'=>'\d+']], // 评论列表
+    [':sitecode/commentmanage/[:flag]','home/Index/commentmanage',[],['sitecode'=>'^((?!Admin|admin).)*$','flag'=>'\d+']], // 评论管理
+    [':sitecode/delcomment','home/Index/delcomment',[],['sitecode'=>'\w+']],// 删除评论
+    [':sitecode/showcomment','home/Index/showcomment',[],['sitecode'=>'\w+']],// 显示评论
+    /* 评论功能结束 */
+
+    /* 现金券功能开始 */
+    // [':sitecode/receive/:id/','home/CashCoupon/receive_cashed',[],['sitecode'=>'\w+','id'=>'\d+']],//活动详情领取优惠券的路由
+    [':sitecode/receive/:id/','home/Index/receive_cashed',[],['sitecode'=>'\w+','id'=>'\d+']],//活动详情领取优惠券的路由(还原后的路由)
+    [':sitecode/share/:order_id/:plan_id','home/CashCoupon/share_cashed',[],['sitecode'=>'\w+','order_id'=>'\d+','plan_id'=>'\d+']],//购买完活动后分享现金券的路由
+    [':sitecode/receiveshare/:user_id/:order_id/:plan_id','home/CashCoupon/receive_share',[],['sitecode'=>'\w+','user_id'=>'\d+','order_id'=>'\d+','plan_id'=>'\d+']],//购买完活动后分享出去后领取现金券的路由
+    [':sitecode/cashedactivity/:type/:activity_id','home/CashCoupon/cashed_activity',[],['sitecode'=>'\w+','type'=>'\d+','activity_id'=>'\d+']],//限时优惠活动的列表的路由
+    [':sitecode/cashedlist/[:state]','home/CashCoupon/my_cashed_list',[],['sitecode'=>'\w+','state'=>'\d+']],//个人中心的我的优惠券列表
+    /* 现金券功能结束 */
+
+    /* 分销功能开始 */
+    [':sitecode/getactivityimg/:id','home/Distribution/getActivityImg',[],['sitecode'=>'\w+','id'=>'\d+']],//获取图片
+    [':sitecode/endorsedata','home/Distribution/endorse_data',[],['sitecode'=>'\w+']],//个人中心活动代言的个人代言数据
+    [':sitecode/spokesmanlist','home/Distribution/spokesman_list',[],['sitecode'=>'\w+']],//发展代言人的用户列表
+    [':sitecode/spokesmanorderlist','home/Distribution/spokesman_order_list',[],['sitecode'=>'\w+']],//发展代言人的订单列表
+    [':sitecode/distributionorderlist','home/Distribution/distribution_order_list',[],['sitecode'=>'\w+']],//代言订单列表(2019年8月23新加)
+    [':sitecode/spokesmanactivitylist','home/Distribution/spokesman_activity_list',[],['sitecode'=>'\w+']],//可代言的活动列表
+    [':sitecode/alreadyspokesmanactivitylist','home/Distribution/already_spokesman_activity_list',[],['sitecode'=>'\w+']],//已代言的活动列表
+    [':sitecode/balancerecordlist','home/Distribution/balance_record_list',[],['sitecode'=>'\w+']],//佣金结算列表
+    [':sitecode/addbalancerecord','home/Distribution/add_balance_record',[],['sitecode'=>'\w+']],//新增结算记录
+    [':sitecode/spokesmanregister','home/Distribution/spokesman_register',[],['sitecode'=>'\w+']],//代言人注册的路由
+    [':sitecode/ajaxspokesmanregister','home/Distribution/ajax_spokesman_register',[],['sitecode'=>'\w+']],//提交代言人注册的路由
+    /* 分销功能结束 */
+
+    /* 拼团功能开始 */
+    [':sitecode/group_buy_share/:group_buy_order_id/:sharer_id', 'home/GroupBuy/groupBuyShare', [], ['sitecode' => '\w+', 'group_buy_order_id' => '\d+', 'sharer_id' => '\d+']],
+    [':sitecode/group_buy_list', 'home/GroupBuy/groupBuyList', [], []],
+    /* 拼团功能结束 */
+
+    /* 积分功能开始 */
+    [':sitecode/dailysignin','home/Integral/dailysignin',[],['sitecode'=>'^((?!Admin|admin).)*$']],
+    [':sitecode/getsigninrecord','home/Integral/getsigninrecord',[],['sitecode'=>'^((?!Admin|admin).)*$']],
+    [':sitecode/membersignin','home/Integral/membersignin',[],['sitecode'=>'^((?!Admin|admin).)*$']],
+    [':sitecode/integralrecord','home/Integral/integralrecord',[],['sitecode'=>'^((?!Admin|admin).)*$']],
+    [':sitecode/getintegralrecord','home/Integral/getintegralrecord',[],['sitecode'=>'^((?!Admin|admin).)*$']],
+    [':sitecode/integralmall','home/Integral/integralmall',[],['sitecode'=>'^((?!Admin|admin).)*$']],
+    [':sitecode/getintegralmall','home/Integral/getintegralmall',[],['sitecode'=>'^((?!Admin|admin).)*$']],
+    [':sitecode/getexchangerecord','home/Integral/getexchangerecord',[],['sitecode'=>'^((?!Admin|admin).)*$']],
+    [':sitecode/integraldetail/:id','home/Integral/integraldetail',[],['sitecode'=>'^((?!Admin|admin).)*$','id'=>'\w+']],
+    [':sitecode/integralexchange/:id','home/Integral/integralexchange',[],['sitecode'=>'^((?!Admin|admin).)*$','id'=>'\w+']],
+    [':sitecode/integralvalidation','home/Integral/integralvalidation',[],['sitecode'=>'^((?!Admin|admin).)*$']],
+    [':sitecode/exchangegoods','home/Integral/exchangegoods',[],['sitecode'=>'^((?!Admin|admin).)*$']],
+    [':sitecode/integralexchangemanage/[:order_status]','home/Integral/integralexchangemanage',[],['sitecode'=>'^((?!Admin|admin).)*$','order_status'=>'\d+']],
+    [':sitecode/integralexchangemanagedetail/:id','home/Integral/integralexchangemanagedetail',[],['sitecode'=>'^((?!Admin|admin).)*$','id'=>'\d+']],
+    /* 积分功能结束 */
+    
+    /* 预约路由开始 */
+    [':sitecode/membercart','home/Subscribe/membercart',[],['sitecode'=>'^((?!Admin|admin).)*$']],
+    [':sitecode/membercartcheck','home/Subscribe/membercartcheck',[],['sitecode'=>'^((?!Admin|admin).)*$']],
+    [':sitecode/subscribe/:id','home/Subscribe/subscribe',[],['sitecode'=>'^((?!Admin|admin).)*$','id'=>'\w+']],
+    [':sitecode/subscribepost','home/Subscribe/subscribepost',[],['sitecode'=>'^((?!Admin|admin).)*$','membercartid'=>'\w+','sessionid'=>'\w+']],
+    [':sitecode/subscriberecord/:id','home/Subscribe/subscriberecord',[],['sitecode'=>'^((?!Admin|admin).)*$','id'=>'\d+']],
+    [':sitecode/subscriberecord','home/Subscribe/subscriberecord',[],['sitecode'=>'^((?!Admin|admin).)*$']],
+    [':sitecode/subscriberecorddetail/:id','home/Subscribe/subscriberecorddetail',[],['sitecode'=>'^((?!Admin|admin).)*$']],
+    [':sitecode/subscribesignin/:id','home/Subscribe/subscribesignin',[],['sitecode'=>'^((?!Admin|admin).)*$']],
+    [':sitecode/objectdetail/:id','home/Subscribe/objectdetail',[],['sitecode'=>'^((?!Admin|admin).)*$']],
+    [':sitecode/cancelsubscribe/:id','home/Subscribe/cancel_subscribe',[],['sitecode'=>'^((?!Admin|admin).)*$']],
+    /* 预约路由结束 */
+
+    [':sitecode','home/index/index',[],['sitecode'=>'^((?!Admin|admin|Home|home|template|static|public|postsuccess).)*$']],
+];

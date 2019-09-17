@@ -1,0 +1,16 @@
+{volist name="$member_cart_list" id="vo"}
+<li>
+    <div class="flex">
+        <div class="txt">
+            <div class="title">会员卡名称：{$vo.member_cart_name}</div>
+            <div class="price">会员卡类型：{:config('member_cart_type')[$vo.cart_type]}</span></div>
+            <div class="state">可用次数：<span>{$vo.available_number ?: '不限次'}</span></div>
+            <div class="state">已用次数：<span>{$vo.use_number}</span></div>
+            <div class="state">有效时间：<span>{$vo.start_time|date="Y-m-d",###} 到 {$vo.end_time|date="Y-m-d",###}</span></div>
+            <div class="btn">
+                <a href="javascript:subscribe({$vo.id},{$vo.end_time},{:time()})" style="background: #d98bb3;">预约</a>
+            </div>
+        </div>
+    </div>
+</li>
+{/volist}

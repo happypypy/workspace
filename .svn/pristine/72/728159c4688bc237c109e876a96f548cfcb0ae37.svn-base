@@ -1,0 +1,1008 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>用户增减报表</title>
+    <link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
+    <link href="__PUBLIC__/static/css/page.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="__PUBLIC__/static/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/lhgdialog.js?skin=aero"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/CostomLinkOpenSw.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/tabscommon.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/del-checked.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/layer/layer.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/js/daterangepicker/daterangepicker-bs3.css" />
+    <script type="text/javascript" src="/static/js/daterangepicker/moment.min.js"></script>
+    <script type="text/javascript" src="/static/js/daterangepicker/daterangepicker.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/echarts/echarts.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/echarts/echartsFunction.js"></script>
+    <script type="text/javascript">
+
+    </script>
+</head>
+<body>
+
+<div class="oa_wrapper">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr class="oa_wrapper-display">
+            <td class="oa_wrapper-top-arr-left">&nbsp;</td>
+            <td class="oa_wrapper-top-arr-middle"></td>
+            <td class="oa_wrapper-top-arr-right">&nbsp;</td>
+        </tr>
+        <tr>
+            <td class="oa_wrapper-middle-arr-left oa_wrapper-display"></td>
+            <td class="oa_wrapper-middle-arr-middle">
+                <div class="oa_location clearfix"><span class="oa_ico-left"></span>location<span class="oa_ico-right"></span></div>
+                <div class="oa_main clearfix">
+                    <div class="oa_content-area clearfix">
+                        <div class="oa_content-main">
+                    <div class="oa_subnav clearfix">
+                        <div class="oa_subnav-tab clearfix">
+                            <ul>
+                                <?php if($cms->CheckPurview('manage','index')){ ?>
+                                <li onclick="javascript:window.location='{:url('report/index','')}'"><em>用户增减报表</em></li>
+                                <?php } ?>
+                                <?php if($cms->CheckPurview('manage','attribute')){ ?>
+                                <li  onclick="javascript:window.location='{:url('report/user_attribute','')}'"><em>用户属性分析</em></li>
+                                <?php } ?>
+                                <?php if($cms->CheckPurview('manage','buy_user')){ ?>
+                                <li class="oa_on" onclick="javascript:window.location='{:url('report/buy_user','')}'"><em>购买用户分析</em></li>
+                                <?php } ?>
+                                <?php if($cms->CheckPurview('manage','order')){ ?>
+                                <li onclick="javascript:window.location='{:url('report/order','')}'"><em>订单报表</em></li>
+                                <?php } ?>
+                                <?php if($cms->CheckPurview('manage','activity')){ ?>
+                                <li onclick="javascript:window.location='{:url('report/activity','')}'"><em>产品报表</em></li>
+                                <?php } ?>
+                                <!--<li onclick="javascript:window.location='{:url('weixinreplay/follow','')}'"><em>用户跟踪报表</em></li>-->
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="oa_search-area clearfix">
+
+                        <div class="oa_title clearfix">
+                            <span class="oa_ico-right"></span>
+                            <span class="oa_ico-left"></span>
+                            购买用户属性
+                        </div>
+                        <div class="oa_search-area clearfix">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td>
+                                        <div class="oa_search-type clearfix">
+                                            <form action="" method="post" id="form1">
+                                                <table width="100%" border="0" cellspacing="1" cellpadding="0">
+
+                                                    <tr>
+                                                        <td width="150" class="oa_cell-left">查询订单时间范围：</td>
+                                                        <td class="oa_cell-right">
+                                                            <select title="查询范围" name="time_range" id="time_range">
+                                                                <option value="last_week" <?php if(isset($_POST['time_range']) && $_POST['time_range']=="last_week"){echo "selected";} ?>>上周</option>
+                                                                <option value="this_week" <?php if(isset($_POST['time_range']) && $_POST['time_range']=="this_week"){echo "selected";} ?>>本周</option>
+                                                                <option value="last_month" <?php if(isset($_POST['time_range']) && $_POST['time_range']=="last_month"){echo "selected";} ?>>上月</option>
+                                                                <option value="this_month" <?php if(isset($_POST['time_range']) && $_POST['time_range']=="this_month"){echo "selected";} ?>>本月</option>
+                                                                <option value="this_year" <?php if(isset($_POST['time_range']) && $_POST['time_range']=="this_year"){echo "selected";} ?>>本年</option>
+                                                                <option value="custom" <?php if(isset($_POST['time_range']) && $_POST['time_range']=="custom"){echo "selected";} ?>>自定义时间范围</option>
+                                                            </select>
+                                                        </td>
+                                                    </tr>
+                                                    <tr id="time_part" style="<?php if(!isset($_POST['time_range']) || $_POST['time_range']!="custom"){echo "display: none;";} ?>">
+                                                    <td width="100"   class="oa_cell-left">时间段：</td>
+                                                    <td class="oa_cell-right">
+                                                        <input type="text"  style="width: 80px;"  id="begintime" name="begintime" autocomplete="off" class="form-control"  value="<?php if(isset($_POST['begintime']) ){echo $_POST['begintime'];} ?>"> -
+                                                        <input type="text" style="width: 80px;" id="endtime" name="endtime" autocomplete="off" class="form-control"  value="<?php if(isset($_POST['endtime']) ){echo $_POST['endtime'];} ?>">
+                                                        <script language='JavaScript'>seltime("begintime","YYYY-MM-DD");seltime("endtime","YYYY-MM-DD");</script>
+                                                    </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td height="30"></td>
+                                                        <td class="oa_cell-right"><input  name="subSearch" type="button" value="搜索"  class="oa_search-btn" onclick="javascript:shearch_check();"/></td>
+                                                    </tr>
+                                                </table>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <!--性別-->
+                    <div style="min-width:1350px;overflow-x:auto;white-space:nowrap;">
+                        <div class="oa_text-list clearfix"
+                            style="margin-bottom: 40px;border-left: 0;min-width: 580px; width:35%;border-right: 1px solid grey;padding-right: 60px;float: left">
+                            <div id="main" style="height: 400px; "></div>
+                        </div>
+                        <div class="oa_text-list clearfix" style="margin-bottom: 40px;border-left: 0;min-width: 620px; width:40%;padding-left: 60px;float: left">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0" style="table-layout:fixed;margin-top: 40px">
+                                <tr class="oa_text-list-title">
+                                    <th><span class="oa_arr-text-list-title"></span>性别</th>
+                                    <th><span class="oa_arr-text-list-title"></span>用户数</th>
+                                    <th><span class="oa_arr-text-list-title"></span>占比</th>
+                                </tr>
+                                <tr>
+                                    <td>男</td>
+                                    <td>
+                                        <?php if(isset($list['echart_normal']['sex'])){ ?>
+                                        <a
+                                            href="javascript:CustomOpen('{:url('report/getUserList','start_time='.$list['search']['begintime'].'&end_time='.$list['search']['endtime'].'&intsex=1&origin=buy_user','')}','activity','用户列表',1000,600)">{$list['echart_normal']['sex'][2][0][0]}</a>
+                                        <?php }else{echo 0;} ?>
+                                    </td>
+                                    <td>
+                                        <?php if(isset($list['sex_rate'])){
+                                                              echo  $list['sex_rate'][0].'%';
+                                                            }else{echo 0;}
+                                                        ?>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>女</td>
+                                    <td>
+                                        <?php if(isset($list['echart_normal']['sex'])){ ?>
+                                        <a
+                                            href="javascript:CustomOpen('{:url('report/getUserList','start_time='.$list['search']['begintime'].'&end_time='.$list['search']['endtime'].'&intsex=2&origin=buy_user','')}','activity','用户列表',1000,600)">{$list['echart_normal']['sex'][2][0][1]}</a>
+                                        <?php }else{echo 0;} ?>
+                                    <td><?php if(isset($list['sex_rate'])){
+                                                              echo  $list['sex_rate'][1].'%';
+                                                            }else{echo 0;}
+                                                        ?>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>未知</td>
+                                    <td>
+                                        <?php if(isset($list['echart_normal']['sex'])){ ?>
+                                        <a
+                                            href="javascript:CustomOpen('{:url('report/getUserList','start_time='.$list['search']['begintime'].'&end_time='.$list['search']['endtime'].'&intsex=3&origin=buy_user','')}','activity','用户列表',1000,600)">{$list['echart_normal']['sex'][2][0][2]}</a>
+                                        <?php }else{echo 0;} ?>
+                                    <td><?php if(isset($list['sex_rate'])){
+                                                              echo  $list['sex_rate'][2].'%';
+                                                            }else{echo 0;}?></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div style="clear:both;"></div>
+                    <!--状态-->
+                    <div style="min-width:1350px;overflow-x:auto;white-space:nowrap;">
+                        <div class="oa_text-list clearfix"
+                            style="margin-bottom: 40px;border-left: 0;width: 35%;min-width: 580px;border-right: 1px solid grey;padding-right: 60px;float: left">
+                            <div id="main_state" style="height: 400px; "></div>
+                        </div>
+                        <div class="oa_text-list clearfix" style="margin-bottom: 40px;border-left: 0;width: 40%;min-width: 620px;padding-left: 60px;float: left">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0" style="table-layout:fixed;margin-top: 40px">
+                                <tr class="oa_text-list-title">
+                                    <th><span class="oa_arr-text-list-title"></span>用户状态</th>
+                                    <th><span class="oa_arr-text-list-title"></span>用户数</th>
+                                    <th><span class="oa_arr-text-list-title"></span>占比</th>
+                                </tr>
+                                <tr>
+                                    <td>关注</td>
+                                    <td>
+                                        <?php if(isset($list['echart_normal']['state'])){  ?>
+                                        <a
+                                            href="javascript:CustomOpen('{:url('report/getUserList','start_time='.$list['search']['begintime'].'&end_time='.$list['search']['endtime'].'&intstate=1&origin=buy_user','')}','activity','用户列表',1000,600)">{$list['echart_normal']['state'][2][0][0]}</a>
+                                        <?php }else{echo 0;} ?>
+                                    </td>
+                                    <td>
+                                        <?php if(isset($list['state_rate'])){
+                                                              echo  $list['state_rate'][0].'%';
+                                                            }else{echo 0;}
+                                                        ?>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>取消关注</td>
+                                    <td>
+                                        <?php if(isset($list['echart_normal']['state'])){  ?>
+                                        <a
+                                            href="javascript:CustomOpen('{:url('report/getUserList','start_time='.$list['search']['begintime'].'&end_time='.$list['search']['endtime'].'&intstate=2&origin=buy_user','')}','activity','用户列表',1000,600)">{$list['echart_normal']['state'][2][0][1]}</a>
+                                        <?php }else{echo 0;} ?>
+                        
+                                    </td>
+                                    <td><?php if(isset($list['state_rate'])){
+                                                              echo  $list['state_rate'][1].'%';
+                                                            }else{echo 0;}
+                                                        ?>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>游客</td>
+                                    <td>
+                                        <?php if(isset($list['echart_normal']['state'])){  ?>
+                                        <a
+                                            href="javascript:CustomOpen('{:url('report/getUserList','start_time='.$list['search']['begintime'].'&end_time='.$list['search']['endtime'].'&intstate=3&origin=buy_user','')}','activity','用户列表',1000,600)">{$list['echart_normal']['state'][2][0][2]}</a>
+                                        <?php }else{echo 0;} ?>
+                                    </td>
+                                    <td><?php if(isset($list['state_rate'])){
+                                                              echo  $list['state_rate'][2].'%';
+                                                            }else{echo 0;}?></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div style="clear:both;"></div>
+
+                    <!--关注的时长-->
+                    <div style="min-width:1350px;overflow-x:auto;white-space:nowrap;">
+                        <div class="oa_text-list clearfix"
+                            style="margin-bottom: 40px;border-left: 0;width: 35%;min-width: 580px;border-right: 1px solid grey;padding-right: 60px;float: left">
+                            <div id="main_time" style="height: 450px; "></div>
+                        </div>
+                        <div class="oa_text-list clearfix"
+                            style="margin-bottom: 40px;border-left: 0;width: 40%;min-width: 620px;padding-left: 60px;float: left;">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0" style="table-layout:fixed;margin-top: 40px">
+                                <tr class="oa_text-list-title">
+                                    <th><span class="oa_arr-text-list-title"></span>关注时长</th>
+                                    <th><span class="oa_arr-text-list-title"></span>用户数</th>
+                                    <th><span class="oa_arr-text-list-title"></span>占比</th>
+                                </tr>
+                                <!--如果存在孩子信息-->
+                                <?php if(isset($list['echart_normal']['time']) && !empty($list['echart_normal']['time'])){
+                                                            foreach($list['echart_normal']['time'][1] as $key=>$val){
+                                                    ?>
+                                <tr>
+                                    <td>{$val}</td>
+                                    <td>
+                                        {if condition="$val == '3天以内'"}
+                                        <?php $val='3天以下'; ?>
+                                        {/if}
+                                        <a
+                                            href="javascript:CustomOpen('{:url('report/getUserList','start_time='.$list['search']['begintime'].'&end_time='.$list['search']['endtime'].'&focus_time_str='.$val.'&origin=buy_user','')}','activity','用户列表',1000,600)">{$list['echart_normal']['time'][2][0][$key]}</a>
+                                    </td>
+                                    <td>
+                                        <?php
+                                                            if($list['time_count'] > 0){
+                                                            echo  round($list['echart_normal']['time'][2][0][$key]/$list['time_count'],4) * 100;
+                                                            }else{
+                                                            echo 0;
+                                                            }
+                                                            ?>%
+                                    </td>
+                                </tr>
+                                <?php }} ?>
+                            </table>
+                        </div>
+                    </div>
+                    <div style="clear:both;"></div>
+
+                    <!--复购情况-->
+                    <div class="oa_search-area clearfix">
+
+                        <div class="oa_title clearfix">
+                            <span class="oa_ico-right"></span>
+                            <span class="oa_ico-left"></span>
+                            复购情况
+                        </div>
+                        <div class="oa_search-area clearfix">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td>
+                                        <div class="oa_search-type clearfix">
+                                                <table width="100%" border="0" cellspacing="1" cellpadding="0">
+
+                                                    <tr>
+                                                        <td width="150" class="oa_cell-left">关注状态：</td>
+                                                        <td class="oa_cell-right">
+                                                            <select  name="intstate" id="intstate">
+                                                                <option value="">请选择</option>
+                                                                <option value="1">关注</option>
+                                                                <option value="2">取消</option>
+                                                                <option value="3">游客</option>
+                                                            </select>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td width="150" class="oa_cell-left">查询订单时间范围：</td>
+                                                        <td class="oa_cell-right">
+                                                            <input type="text"  style="width: 80px;"  id="again_begintime" name="again_begintime" autocomplete="off" class="form-control"  value=""> -
+                                                            <input type="text" style="width: 80px;" id="again_endtime" name="again_endtime" autocomplete="off" class="form-control"  value="">
+                                                            <script language='JavaScript'>seltime("again_begintime","YYYY-MM-DD");seltime("again_endtime","YYYY-MM-DD");</script>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td height="30"></td>
+                                                        <td class="oa_cell-right">
+                                                            <input  name="subSearch" type="button" value="搜索"  class="oa_search-btn" onclick="javascript:get_ajax_again_data(1);"/>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div  id="again_condition"></div>
+
+                    <!--消费能力-->
+
+                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                        <tr>
+                            <td valign="top">
+                                <div class="oa_title clearfix">
+                                    <span class="oa_ico-right"></span>
+                                    <span class="oa_ico-left"></span>
+                                    消费能力
+                                </div>
+                                <div class="oa_search-area clearfix">
+                                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                        <tr>
+                                            <td>
+                                                <div class="oa_search-type clearfix">
+                                                    <table width="100%" border="0" cellspacing="1" cellpadding="0">
+
+                                                        <tr>
+                                                            <td width="150" class="oa_cell-left">查询订单时间范围：</td>
+                                                            <td class="oa_cell-right">
+                                                                <select title="查询范围" name="buy_power_time_range" id="buy_power_time_range">
+                                                                    <option value="last_week" >上周</option>
+                                                                    <option value="this_week" >本周</option>
+                                                                    <option value="last_month" >上月</option>
+                                                                    <option value="this_month" >本月</option>
+                                                                    <option value="this_year" >本年</option>
+                                                                    <option value="custom" >自定义时间范围</option>
+                                                                </select>
+                                                            </td>
+                                                        </tr>
+                                                        <tr id="buy_power_time_part" style="display: none">
+                                                            <td width="100"   class="oa_cell-left">时间段：</td>
+                                                            <td class="oa_cell-right">
+                                                                <input type="text"  style="width: 80px;"  id="buy_power_begintime" name="buy_power_begintime" autocomplete="off" class="form-control"  value=""> -
+                                                                <input type="text" style="width: 80px;" id="buy_power_endtime" name="buy_power_endtime" autocomplete="off" class="form-control"  value="">
+                                                                <script language='JavaScript'>seltime("buy_power_begintime","YYYY-MM-DD");seltime("buy_power_endtime","YYYY-MM-DD");</script>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td width="100" class="oa_cell-left">订单状态：</td>
+                                                            <td class="oa_cell-right">
+                                                                <select name="state" id="state">
+                                                                    <option value="0" >所有状态</option>
+                                                                    <option value="1" >已报名，待审核</option>
+                                                                    <option value="3" >已报名，已审核</option>
+                                                                    <option value="2" >已报名，审核不通过</option>
+                                                                    <option value="12" >已报名，待支付</option>
+                                                                    <option value="4" >已报名，已支付</option>
+                                                                    <option value="5" >已报名，退款中</option>
+                                                                    <option value="8" >已报名，退款不通过</option>
+                                                                    <option value="6" >已部分退款，继续服务</option>
+                                                                    <option value="7" >已退款，继续服务</option>
+                                                                    <option value="13" >已部分退款，终止服务</option>
+                                                                    <option value="11" >已退款，终止服务</option>
+                                                                    <option value="10" >终止服务</option>
+                                                                </select>
+
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td width="150" class="oa_cell-left">排序方式：</td>
+                                                            <td class="oa_cell-right">
+                                                                <select  name="order_by" id="order_by">
+                                                                    <option value="total" >订单总额</option>
+                                                                    <option value="max_price" >单笔最高金额</option>
+                                                                    <option value="num" >购买次数</option>
+                                                                    <option value="pay_num" >购买数量</option>
+                                                                </select>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td height="30"></td>
+                                                            <td class="oa_cell-right">
+                                                                <input  name="subSearch" type="button" value="搜索"  class="oa_search-btn" onclick="javascript:get_ajax_buy_power(1);"/>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="oa_title clearfix">
+                                            <span class="oa_title-btn">
+
+                                              </span>
+                                    <span class="oa_ico-left"></span>
+                                    消费能力列表
+                                </div>
+                                <div class="oa_text-list" id="buy_power">
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!--消费热力图-->
+                            <div  id="img_buy_power" style="margin-top: 20px"></div>
+
+                            <!--每个产品购买人数-->
+                            <div class="oa_search-area clearfix">
+
+                                <div class="oa_title clearfix">
+                                    <span class="oa_ico-right"></span>
+                                    <span class="oa_ico-left"></span>
+                                    成交数据
+                                </div>
+                                <div class="oa_search-area clearfix">
+                                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                        <tr>
+                                            <td>
+                                                <div class="oa_search-type clearfix">
+                                                    <table width="100%" border="0" cellspacing="1" cellpadding="0">
+                                                        <tr>
+                                                            <td width="150" class="oa_cell-left">查询订单时间范围：</td>
+                                                            <td class="oa_cell-right">
+                                                                <input type="text"  style="width: 80px;"  id="user_count_activity_begintime" name="user_count_activity_begintime" autocomplete="off" class="form-control"  value=""> -
+                                                                <input type="text" style="width: 80px;" id="user_count_activity_endtime" name="user_count_activity_endtime" autocomplete="off" class="form-control"  value="">
+                                                                <script language='JavaScript'>seltime("user_count_activity_begintime","YYYY-MM-DD");seltime("user_count_activity_endtime","YYYY-MM-DD");</script>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td height="30"></td>
+                                                            <td class="oa_cell-right">
+                                                                <input  name="subSearch" type="button" value="搜索"  class="oa_search-btn" onclick="javascript:get_ajax_user_count_activity(1);"/>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <!--购买人数-->
+                            <div  id="user_count_activity"></div>
+                            <!--购买数量-->
+                            <div  id="pay_count_activity"></div>
+
+                            <!--浏览数据-->
+                            <div class="oa_search-area clearfix">
+
+                                <div class="oa_title clearfix">
+                                    <span class="oa_ico-right"></span>
+                                    <span class="oa_ico-left"></span>
+                                    访问数据
+                                </div>
+                                <div class="oa_search-area clearfix">
+                                    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                        <tr>
+                                            <td>
+                                                <div class="oa_search-type clearfix">
+                                                    <table width="100%" border="0" cellspacing="1" cellpadding="0">
+                                                        <tr>
+                                                            <td width="150" class="oa_cell-left">查询产品发布时间范围：</td>
+                                                            <td class="oa_cell-right">
+                                                                <input type="text"  style="width: 80px;"  id="browse_data_begintime" name="browse_data_begintime" autocomplete="off" class="form-control"  value=""> -
+                                                                <input type="text" style="width: 80px;" id="browse_data_endtime" name="browse_data_endtime" autocomplete="off" class="form-control"  value="">
+                                                                <script language='JavaScript'>seltime("browse_data_begintime","YYYY-MM-DD");seltime("browse_data_endtime","YYYY-MM-DD");</script>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td height="30"></td>
+                                                            <td class="oa_cell-right">
+                                                                <input  name="subSearch" type="button" value="搜索"  class="oa_search-btn" onclick="javascript:get_ajax_browse_data(1);"/>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <!--浏览数据-->
+                            <div  id="browse_data"></div>
+                            <!--转发数据-->
+                            <div  id="share_data"></div>
+                    <div class="oa_content-main-bottom"></div>
+
+                </div>
+                    </div>
+                </div>
+            </td>
+            <td class="oa_wrapper-middle-arr-right oa_wrapper-display"></td>
+        </tr>
+        <tr class="oa_wrapper-display">
+            <td class="oa_wrapper-bottom-arr-left">&nbsp;</td>
+            <td class="oa_wrapper-bottom-arr-middle"></td>
+            <td class="oa_wrapper-bottom-arr-right">&nbsp;</td>
+        </tr>
+    </table>
+</div>
+<script type="text/javascript">
+
+    $(document).ready(function(){
+        //第一个购买用户属性的点击搜索条件
+        $('#time_range').change(function(){
+            if($(this).children('option:selected').val()=="custom"){
+                $("#time_part").show();
+            }else{
+                $("#time_part").hide();
+            }
+        })
+        //消费能力的搜索条件
+        $('#buy_power_time_range').change(function(){
+            if($(this).children('option:selected').val()=="custom"){
+                $("#buy_power_time_part").show();
+            }else{
+                $("#buy_power_time_part").hide();
+            }
+        })
+        var subtext = '查询范围：'+ "{$list.search.begintime}"+ '～'+ "{$list.search.endtime}";
+        //初始化获取性别的分布图
+        get_echarts('sex','购买用户性别分布','main',subtext);
+        //初始化用户状态
+        get_echarts('state','购买用户状态分布','main_state',subtext);
+        //初始化获得购买用户的关注时长的分布图
+        get_echarts('time','购买用户的关注时长分布','main_time',subtext);
+        //初始化获取复购情况的数据
+        get_ajax_again_data(0);
+        //初始化获取消费能力的数据
+        get_ajax_buy_power(0);
+        //初始化获取消费热力图的数据
+        get_ajax_img_buy_power(0);
+        //初始化获取成交数据的数据
+        get_ajax_user_count_activity(0);
+        //初始化获取浏览数据
+        get_ajax_browse_data(0);
+        //初始化获取省份的分布图
+        // get_echarts('region','省级分布','main_province');
+        //初始化获得第一个省下面的数据的环形图表
+        // get_one_province_echarts('region','地级分布','main_city');
+    });
+
+    function empty() {
+        window.location.reload();
+    }
+
+
+    function export_data(id,p) {
+        var time_range = $("#time_range").val();
+        var begintime = $("#begintime").val();
+        var endtime = $("#endtime").val();
+        var url = "/admin/report/member_report/time_range/"+time_range+"/begintime/"+begintime+'/endtime/'+endtime;
+        window.open(url,"_blank");
+    }
+    //获取消费能力列表的数据
+    function get_ajax_buy_power(type,url) {
+        var st = $("#buy_power_begintime").val();
+        var et = $("#buy_power_endtime").val();
+        var state = $("#state").val();
+        var order_by = $("#order_by").val();
+        var buy_power_time_range = $("#buy_power_time_range").val();
+        //如果是搜索
+        if(type == 1 && buy_power_time_range == 'custom'){
+            if (st != "" && et != "") {
+                var start = new Date(st.replace("-", "/").replace("-", "/"));
+                var end = new Date(et.replace("-", "/").replace("-", "/"));
+                var now = new Date();
+                var yesterday = now.setTime(now.getTime());
+                // alert(now);
+                if (end < start) {
+                    layer.alert("查询订单范围开始时间不能大于结束时间！")
+                    return;
+                }
+                if (start >= yesterday || end >= yesterday ) {
+                    layer.alert("查询订单时间范围不能大于今天的时间！");
+                    return;
+                }
+            }else{
+                layer.alert("查询订单时间范围不能为空！");
+                return;
+            }
+        }
+        //获取到第几页
+        var p = $("input[name='p']").val();
+        //如果是ajax请求过来的
+        var ajax_url = url?url:"{:url('report/buy_power_list')}";
+        var data = url?"":{"begintime":st,"endtime":et,"state":state,"time_range":buy_power_time_range,"p":p,"order_by":order_by};
+        // debugger;
+        $.ajax({
+            url:ajax_url,
+            data:data,
+            type:"post",
+            dataType:"json",
+            success:function(msg) {
+                //在给定的图表div赋值
+                $('#buy_power').html(msg);
+                //给跳转的第几页赋值
+                $("input[name='p']").val($("input[name='dump_page']").val());
+            }
+        })
+    }
+
+    // 获取复购情况的数据
+    function get_ajax_again_data(type) {
+        var st = $("#again_begintime").val();
+        var et = $("#again_endtime").val();
+        var intstate = $("#intstate").val();
+        var intstate_name = $('#intstate').children('option:selected').text();
+        //如果是搜索
+        if(type == 1){
+            if (st != "" && et != "") {
+                var start = new Date(st.replace("-", "/").replace("-", "/"));
+                var end = new Date(et.replace("-", "/").replace("-", "/"));
+                var now = new Date();
+                var yesterday = now.setTime(now.getTime());
+                // alert(now);
+                if (end < start) {
+                    layer.alert("查询订单范围开始时间不能大于结束时间！")
+                    return;
+                }
+                if (start >= yesterday || end >= yesterday ) {
+                    layer.alert("查询订单时间范围不能大于今天的时间！");
+                    return;
+                }
+            }else{
+                layer.alert("查询订单时间范围不能为空！");
+                return;
+            }
+        }
+        $.ajax({
+            url:"{:url('report/again_condition')}",
+            data:{"begintime":st,"endtime":et,"intstate":intstate},
+            type:"post",
+            dataType:"json",
+            success:function(msg) {
+                //在给定的图表div赋值
+                $('#again_condition').html(msg);
+                //获取到复购情况的图表数据
+                var echart_str = $('#echart_again_condition').val();
+                //给搜索框赋值
+                $('#again_begintime').val($("#search_again_begintime").val());
+                $('#again_endtime').val($("#search_again_endtime").val());
+                var subtext = '查询范围：'+ $("#search_again_begintime").val()+ '～'+ $("#search_again_endtime").val();
+                //如果存在关注状态
+                if(intstate){
+                    subtext += '； 用户状态：'+intstate_name;
+                }
+                get_ajax_echarts('again_condition','购买次数分布','main_again_condition',echart_str,'',subtext);
+            }
+        })
+    }
+
+    // 获取消费热力图的数据的数据
+    function get_ajax_img_buy_power(type) {
+        $.ajax({
+            url:"{:url('report/img_buy_power')}",
+            type:"post",
+            dataType:"json",
+            success:function(msg) {
+                //在给定的图表div赋值
+                $('#img_buy_power').html(msg);
+                //获取消费热力图的图表数据
+                var echart_str = $('#echart_img_buy_power').val();
+                get_ajax_echarts('img_buy_power','消费热力图分布','main_img_buy_power',echart_str,'img_buy_power');
+            }
+        })
+    }
+
+    // 获取每个活动的购买人数的数据
+    function get_ajax_user_count_activity(type) {
+        var st = $("#user_count_activity_begintime").val();
+        var et = $("#user_count_activity_endtime").val();
+        //如果是搜索
+        if(type == 1){
+            if (st != "" && et != "") {
+                var start = new Date(st.replace("-", "/").replace("-", "/"));
+                var end = new Date(et.replace("-", "/").replace("-", "/"));
+                var now = new Date();
+                var yesterday = now.setTime(now.getTime());
+                // alert(now);
+                if (end < start) {
+                    layer.alert("查询订单范围开始时间不能大于结束时间！")
+                    return;
+                }
+                if (start >= yesterday || end >= yesterday ) {
+                    layer.alert("查询订单时间范围不能大于今天的时间！");
+                    return;
+                }
+            }else{
+                layer.alert("查询订单时间范围不能为空！");
+                return;
+            }
+        }
+        $.ajax({
+            url:"{:url('report/deal_data')}",
+            data:{"begintime":st,"endtime":et,"order_by":"user_count"},
+            type:"post",
+            dataType:"json",
+            success:function(msg) {
+                //在给定的图表div赋值
+                $('#user_count_activity').html(msg);
+                //获取到复购情况的图表数据
+                var echart_str = $('#echart_json').val();
+                //给搜索框赋值
+                var search_user_count_activity_begintime = $("#search_user_count_activity_begintime").val();
+                var search_user_count_activity_endtime = $("#search_user_count_activity_endtime").val();
+                $('#user_count_activity_begintime').val(search_user_count_activity_begintime);
+                $('#user_count_activity_endtime').val(search_user_count_activity_endtime);
+                var subtext = '查询范围：'+ search_user_count_activity_begintime+ '～'+ search_user_count_activity_endtime;
+                get_ajax_echarts('user_count_activity','产品购买人数分布','main_user_count_activity',echart_str,'',subtext);
+                //生成产品类别购买人数的图表
+                get_ajax_echarts('user_count_class','产品类别购买人数分布','main_user_count_class',echart_str,'',subtext);
+                //生成产品标签购买人数的图表
+                get_ajax_echarts('user_count_chrtags','产品标签购买人数分布','main_user_count_chrtags',echart_str,'',subtext);
+            }
+        })
+
+        $.ajax({
+            url:"{:url('report/deal_data')}",
+            data:{"begintime":st,"endtime":et,"order_by":"pay_num"},
+            type:"post",
+            dataType:"json",
+            success:function(msg) {
+                //在给定的图表div赋值
+                $('#pay_count_activity').html(msg);
+                //获取到复购情况的图表数据
+                var echart_str = $('#echart_json_pay_count').val();
+                //给搜索框赋值
+                // $('#user_count_activity_begintime').val($("#search_user_count_activity_begintime").val());
+                // $('#user_count_activity_endtime').val($("#search_user_count_activity_endtime").val());
+                var subtext = '查询范围：'+ $("#search_pay_count_activity_begintime").val()+ '～'+ $("#search_pay_count_activity_endtime").val();
+                get_ajax_echarts('user_count_activity','产品购买量分布','main_pay_count_activity',echart_str,'',subtext);
+                //生成产品类别购买人数的图表
+                get_ajax_echarts('user_count_class','产品类别购买量分布','main_pay_count_class',echart_str,'',subtext);
+                //生成产品标签购买人数的图表
+                get_ajax_echarts('user_count_chrtags','产品标签购买数量分布','main_pay_count_chrtags',echart_str,'',subtext);
+            }
+        })
+    }
+
+    // 获取浏览数据
+    function get_ajax_browse_data(type) {
+        var st = $("#browse_data_begintime").val();
+        var et = $("#browse_data_endtime").val();
+        //如果是搜索
+        if(type == 1){
+            if (st != "" && et != "") {
+                var start = new Date(st.replace("-", "/").replace("-", "/"));
+                var end = new Date(et.replace("-", "/").replace("-", "/"));
+                var now = new Date();
+                var yesterday = now.setTime(now.getTime());
+                // alert(now);
+                if (end < start) {
+                    layer.alert("查询产品发布范围开始时间不能大于结束时间！")
+                    return;
+                }
+                if (start >= yesterday || end >= yesterday ) {
+                    layer.alert("查询产品发布时间范围不能大于今天的时间！");
+                    return;
+                }
+            }else{
+                layer.alert("查询产品发布时间范围不能为空！");
+                return;
+            }
+        }
+        $.ajax({
+            url:"{:url('report/browse_data')}",
+            data:{"begintime":st,"endtime":et,"type":"browse"},
+            type:"post",
+            dataType:"json",
+            success:function(msg) {
+                //在给定的图表div赋值
+                $('#browse_data').html(msg);
+                //获取到图表数据
+                var echart_str = $('#echart_json_browse_data').val();
+                //给搜索框赋值
+                $('#browse_data_begintime').val($("#search_browse_data_begintime").val());
+                $('#browse_data_endtime').val($("#search_browse_data_endtime").val());
+                var subtext = '查询范围：'+ $("#search_browse_data_begintime").val()+ '～'+ $("#search_browse_data_endtime").val();
+                get_ajax_echarts('user_count_activity','产品阅读次数分布','main_browse_data_activity',echart_str,'',subtext);
+                //生成产品类别购买人数的图表
+                get_ajax_echarts('user_count_class','产品类别阅读次数分布','main_browse_data_class',echart_str,'',subtext);
+                //生成产品标签购买人数的图表
+                get_ajax_echarts('user_count_chrtags','产品标签阅读次数分布','main_browse_data_chrtags',echart_str,'',subtext);
+            }
+        })
+
+        $.ajax({
+            url:"{:url('report/browse_data')}",
+            data:{"begintime":st,"endtime":et,"type":"share"},
+            type:"post",
+            dataType:"json",
+            success:function(msg) {
+                //在给定的图表div赋值
+                $('#share_data').html(msg);
+                //获取到复购情况的图表数据
+                var echart_str = $('#echart_json_share_data').val();
+                //给搜索框赋值
+                // $('#user_count_activity_begintime').val($("#search_user_count_activity_begintime").val());
+                // $('#user_count_activity_endtime').val($("#search_user_count_activity_endtime").val());
+                var subtext = '查询范围：'+ $("#search_browse_data_share_begintime").val()+ '～'+ $("#search_browse_data_share_endtime").val();
+                get_ajax_echarts('user_count_activity','产品转发次数分布','main_browse_data_share_activity',echart_str,'',subtext);
+                //生成产品类别购买人数的图表
+                get_ajax_echarts('user_count_class','产品类别转发次数分布','main_browse_data_share_class',echart_str,'',subtext);
+                //生成产品标签购买人数的图表
+                get_ajax_echarts('user_count_chrtags','产品标签转发次数分布','main_browse_data_share_chrtags',echart_str,'',subtext);
+            }
+        })
+    }
+
+    /**
+     * 获得数据的环形图表
+     */
+    function get_echarts(type,strtitle,code,subtext) {
+        //将封装好的图表数据赋值
+        var echart = {$list.echart};
+        //取点击传过来的类型值
+        var arrData = echart[type];
+        //如果是关注时长
+        if(type == 'time'){
+            showPie(code, arrData, strtitle,subtext);
+        }else{
+            showPie1(code, arrData, strtitle,subtext);
+        }
+
+    }
+    /**
+     * 获得通过ajax请求的数据的环形图表
+     */
+    function get_ajax_echarts(type,strtitle,code,echart_str,img,subtext) {
+        //将数据转换为对象
+        var echart = JSON.parse(echart_str);
+        var arrData = echart[type];
+        //如果系列的字长度太长的话   截掉一部分
+        if(arrData[1].length > 0){
+            for (var i = 0;i < arrData[1].length;i++){
+                if (arrData[1][i].length > 6 )
+                {
+                    arrData[1][i] = arrData[1][i].substring(0, 6) + "..."
+                }
+            }
+        }
+        if(img == 'img_buy_power'){
+            showLineArea(code, arrData, strtitle,subtext)
+        }else{
+            showPie(code, arrData, strtitle,subtext);
+        }
+
+    }
+    //搜索
+    function shearch_check() {
+        var st = $("#begintime").val();
+        var et = $("#endtime").val();
+        var time_range = $("#time_range").val();
+        if(time_range == 'custom'){
+            if (st != "" && et != "") {
+                var start = new Date(st.replace("-", "/").replace("-", "/"));
+                var end = new Date(et.replace("-", "/").replace("-", "/"));
+                var now = new Date();
+                var yesterday = now.setTime(now.getTime());
+                // alert(now);
+                if (end < start) {
+                    layer.alert("查询订单范围开始时间不能大于结束时间！")
+                    return;
+                }
+                if (start >= yesterday || end >= yesterday ) {
+                    layer.alert("查询订单时间范围不能大于今天的时间！");
+                    return;
+                }
+            }else{
+                layer.alert("查询订单时间范围不能为空！");
+                return;
+            }
+        }
+
+        // if(!checkTime()){
+        //     return false;
+        // };
+        $("#form1").submit();
+    }
+
+    /**
+     * 限制查询跨度在两个月之内
+     * @returns {boolean}
+     */
+    function checkTime(){
+        var begintime = $("#begintime").val();
+        var endtime = $("#endtime").val();
+        if(!endtime){
+            return true;
+        }
+
+        var time1 = new Date(begintime).getTime();
+        var time2 = new Date(endtime).getTime();
+        if(begintime==''){
+            layer.alert("开始时间不能为空！")
+            return false;
+        }
+        if(endtime==''){
+            layer.alert("结束时间不能为空");
+            return false;
+        }
+        if(time1 > time2){
+            layer.alert("开始时间不能大于结束时间");
+            return false;
+        }
+
+        //判断时间跨度是否大于2个月
+        var arr1 = begintime.split('-');
+        var arr2 = endtime.split('-');
+        arr1[1] = parseInt(arr1[1]);
+        arr1[2] = parseInt(arr1[2]);
+        arr2[1] = parseInt(arr2[1]);
+        arr2[2] = parseInt(arr2[2]);
+        var flag = true;
+        //同年
+        if(arr1[0] == arr2[0]){
+            if(arr2[1]-arr1[1] > 2){ //月间隔超过2个月
+                flag = false;
+            }else if(arr2[1]-arr1[1] == 2){ //月相隔2个月，比较日
+                if(arr2[2] > arr1[2]){ //结束日期的日大于开始日期的日
+                    flag = false;
+                }
+            }
+        }else{ //不同年
+            if(arr2[0] - arr1[0] > 1){
+                flag = false;
+            }else if(arr2[0] - arr1[0] == 1){
+                if(arr1[1] < 10){ //开始年的月份小于10时，不需要跨年
+                    flag = false;
+                }else if(arr1[1]+2-arr2[1] < 12){ //月相隔大于2个月
+                    flag = false;
+                }else if(arr1[1]+2-arr2[1] == 12){ //月相隔2个月，比较日
+                    if(arr2[2] > arr1[2]){ //结束日期的日大于开始日期的日
+                        flag = false;
+                    }
+                }
+            }
+        }
+        if(!flag){
+            layer.alert("时间跨度不得超过2个月！");
+            return false;
+        }
+        return true;
+    }
+
+    function setmanage(id,name,flag) {
+
+        var msg='您确定要取消“'+name+'”管理员身份吗？';
+        if(flag=="1") {
+            msg='您确定要设“'+name+'”为管理员吗？';
+        }
+
+        layer.confirm(msg, {
+            btn: ['确定','取消'] //按钮
+        }, function(){
+            setmanage1(id,flag);
+        }, function(){
+
+        });
+    }
+
+    function setmanage1(id,flag) {
+        $.ajax({
+            url:"{:url('member/ismanage')}",
+            data:{"id":id,"flag":flag},
+            type:"post",
+            dataType:"json",
+            success:function(msg) {
+                if (msg == 1) {
+                    layer.alert('操作成功', {icon: 1},function (index) {
+                        location.reload();
+                        layer.close(index);
+                    });
+
+                } else {
+                    layer.alert('操作失败', {icon: 2},function (index) {
+                        layer.close(index);
+                    });
+                }
+            }
+        })
+    }
+
+    function send_msg(openid) {
+        if(openid=="")
+        {
+            openid =getid("");
+        }
+        if(openid=="")
+        {
+            alert("该用户openid不存在无法发送");
+            return;
+        }
+        openids=openid;
+        CustomOpen('{:url('member/sendmsg')}','activity','信息发送',700,400);
+    }
+</script>
+</body>
+</html>

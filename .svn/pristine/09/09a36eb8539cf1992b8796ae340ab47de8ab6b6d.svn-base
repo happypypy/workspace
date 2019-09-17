@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+    <title>产品管理</title>
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+
+    <script type="text/javascript" src="__PUBLIC__/static/modules/js/jquery.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/modules/js/swiper.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/modules/js/common.js"></script>
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/static/modules/style/css/swiper.min.css">
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/static/modules/style/css/common.css">
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/static/modules/style/css/pc.css">
+    <style>
+       .activity_checkbox{
+           -webkit-appearance: checkbox;
+       }
+        #checkdown{
+            border: 1px solid #ddd;
+            position:fixed;
+            bottom: 50px;
+            width:100%;
+            height:50px;
+            background-color:#ff7902;
+        }
+    </style>
+</head>
+<body>
+
+<div class="clearfix">
+    <form id="frm" method="post">
+        <div class="classify-choose flex flex-middle">
+            <div class="select">
+                <select name="nodeid">
+                    {volist name="nodes" id="vo"}
+                    <option value="{$vo.nodeid}" <?php if($vo['nodeid']==$nodeid) { echo "selected"; } ?> >{$vo.nodename}</option>
+                    {/volist}
+                </select>
+            </div>
+            <div class="select">
+                <select name="typeid">
+                    <option value="">全部类别</option>
+                    {volist name="hdfl" id="vo"}
+                    <option value="{$vo.code}" <?php if($vo['code']==$typeid) { echo "selected"; } ?> >{$vo.name}</option>
+                    {/volist}
+                </select>
+            </div>
+            <div class="select">
+                <select name="tagid">
+                    <option value="">全部标签</option>
+                    {volist name="hdbq" id="vo"}
+                    <option value="{$vo.code}" <?php if($vo['code']==$tagid) { echo "selected"; } ?> >{$vo.name}</option>
+                    {/volist}
+                </select>
+            </div>
+            <div class="select">
+                <select name="intflag">
+                    <option value="0">状态</option>
+                    <option <?php if($intflag=="1") { echo "selected"; } ?>  value="1">进行中</option>
+                    <option <?php if($intflag=="2") { echo "selected"; } ?> value="2">已结束</option>
+                    <option <?php if($intflag=="3") { echo "selected"; } ?> value="3">草稿</option>
+                    <option <?php if($intflag=="4") { echo "selected"; } ?> value="4">待审批</option>
+                    <option <?php if($intflag=="5") { echo "selected"; } ?> value="5">审批不通过</option>
+                </select>
+            </div>
+
+        </div>
+        <div class="pintuan-search">
+            <input class="pintuan-search-in" placeholder="请输入关键字搜索" name="keyword" value="{$Think.session.keyword}">
+            <span class="iconfont">&#xe605;</span>
+        </div>
+
+        <span id="opendiv">操作</span>
+        <a href="/{$sitecode}/activitymanagemodi/{$nodeid}/add" style="float: right">新建产品</a>
+    </form>
+    <div style="border-top:solid 1px #e0e0e0"></div>
+    <div class="select-bar fixed" style="position:static; display: none;">
+        <ul class="select-bar-tab" id="select-bar-tab">
+            <li class="on"><span>进行中活动</span></li>
+            <li><span>已结束活动</span></li>
+        </ul>
+    </div>
+    <ul class="common-list" id="data">
+        <?php  if(!$result_data) { ?>
+        <li>
+            <div class="noword">
+                <div class="txt" >没有相关的活动</div>
+            </div>
+        </li>
+        <?php }
+			foreach($result_data as $k=>$val){ ?>
+        <li>
+            <div style="float:left"> <input name="activity[]" type="checkbox"  value="{$val['idactivity']}" class="activity_checkbox activity_one"/></div>
+            <a href="<?php echo (empty($val['chrurl'])?'/'.$sitecode.'/detail/'.$val['idactivity']:$val['chrurl']) ?>" style="">
+                <img src="{$val['chrimg_m']}">
+                <div class="word">
+                    <div class="tit">
+                        {if condition="$val['is_receive_cashed'] == 1 && $is_cashed"}<span class="iconfont coupon-link">&#xe624;</span>{/if}{$val['chrtitle']}</div>
+                    <div class="txt">{$val['chrsummary']}</div>
+                </div>
+            </a>
+            <div style="right:5px;float:right">
+                <button >发布</button>
+                <button type="button" onclick="activitymanagemodi({$val['idactivity']})">编辑</button>
+                <button type="button" class="copy" activityid="{$val['idactivity']}">复制</button>
+                <?php  if($intflag=="3" || $val['intflag'] == 6) {  ?>
+                <button type="button">提交审核</button>
+                <button type="button">分享</button>
+                <?php } ?>
+            </div>
+        </li>
+        <?php } ?>
+    </ul>
+    <!--<ul class="common-list" id="dataload" style="display: none">-->
+    <!--<li id="loadmsg" >数据加载中。。。</li>-->
+    <!--</ul>-->
+    <div id="dataload" class="iconfont iconload" style="display: none">&#xe72f;</div>
+    {include file="modules/lib/footer0" /}
+    {include file="modules/lib/footer" /}
+</div>
+<div id="checkdown" style="display: none ">
+    <input id="checked"  onclick="DoCheck();" name="" type="checkbox" value="" class="activity_checkbox"/>
+    <span style="float:right" onclick="chkdown_checked(0,'')">批量下架</span>
+</div>
+<div class="footer">
+    <ul>
+        <li>
+            <a href="/{$sitecode}">
+                <span><i class="iconfont home">&#xe617;</i></span>
+                <p>主页</p>
+            </a>
+        </li>
+        <li class="on">
+            <a href="/{$sitecode}/mine">
+                <span><i class="iconfont head">&#xe606;</i></span>
+                <p>我的</p>
+            </a>
+        </li>
+    </ul>
+</div>
+<script language="JavaScript">
+    $(function(){
+        $(".classify-choose select").change(
+            function(){
+                $("#frm").submit();
+
+            });
+    });
+    $(".iconfont").click(function(){
+        $("#frm").submit();
+    })
+
+</script>
+
+<script type="text/javascript" src="/static/js/layer/layer.js"></script>
+<script type="text/javascript">
+
+    //==============核心代码=============
+    var winH = $(window).height(); //页面可视区域高度
+
+    var ipage=2;
+    var scrollHandler = function () {
+        var pageH = $(document).height();
+        var scrollT = $(window).scrollTop(); //滚动条top
+
+        if(pageH-winH-scrollT<1)
+        {
+            LoadData(ipage)
+            ipage++;
+        }
+    }
+    //定义鼠标滚动事件
+    $(window).scroll(scrollHandler);
+    //==============核心代码=============
+
+    function LoadData(ipage)
+    {
+        $("#dataload").show();
+        $ (window).unbind ('scroll');
+        var nodeid=$('select[name="nodeid"]').val();
+        //类别id
+        var typeid = $('select[name="typeid"]').val();
+        //标签id
+        var tagid = $('select[name="tagid"]').val();
+        //状态
+        var intflag = $('select[name="intflag"]').val();
+
+        var keyword=$(".pintuan-search-in").val()
+        // alert(typeid);
+        $.ajax({
+            url: "/{$sitecode}/activitymanage/{$nodeid}/"+ipage+"?&ajax=1",
+            type: 'POST',
+            cache: false,
+            data:{"nodeid":nodeid,"typeid":typeid,"tagid":tagid,"intflag":intflag,"keyword":keyword} ,
+            success : function(data) {
+
+                if(data== 11)
+                {
+                    $("#dataload").hide();
+                    // $("#loadmsg").html("已无更多数据");
+                    return;
+                }
+                $("#dataload").hide();
+                $("#data").html($("#data").html()+data);
+                $(window).scroll(scrollHandler);
+            }
+        });
+
+    }
+
+    $(".copy").click(function(){
+        var activityid=$(this).attr("activityid")
+        $.ajax({
+            url:"/{$sitecode}/activitymanagecopy",
+            data:{"id":activityid,"siteid":{$idsite}},
+            type:"post",
+            dataType:"json",
+            success:function(msg) {
+                if (msg == 1) {
+                    layer.alert('复制成功',{icon:1},function(){window.location.reload();});
+                } else
+                {
+                    layer.alert('复制失败', {icon: 2});
+                    //location.reload();
+                }
+            }
+        })
+    })
+
+    function activitymanagemodi(id){
+        window.location.href="/{$sitecode}/activitymanagemodi/"+id+"/edit"
+    }
+
+    $("#opendiv").click(function(){
+        if($("#opendiv").text()== "完成"){
+            $("#opendiv").text('操作')
+            $("#checkdown").hide()
+        }else if($("#opendiv").text()== "操作"){
+            $("#opendiv").text('完成')
+            $("#checkdown").show()
+        }
+    })
+
+    //全选
+    function DoCheck(){
+        console.log($("#checked").is(':checked'))
+        if($("#checked").is(':checked')){
+            console.log(1)
+            $(".activity_one").attr("checked", true);
+            console.log($(".activity_one").is(':checked'))
+        }else{
+            console.log(2)
+            $(".activity_one").attr("checked", false);
+            console.log($(".activity_one").is(':checked'))
+        }
+    }
+
+    function chkdown_checked(value,remark) {
+
+        var msg='您确定要下架选定的活动吗？';
+        if(value>0) {
+            msg='您确定要下架“'+remark+'”吗？';
+        }
+
+        layer.confirm(msg, {
+            btn: ['确定','取消'] //按钮
+        }, function(){
+            chkdown_checked1(value);
+        }, function(){
+
+        });
+    }
+
+    //删除选中
+    function chkdown_checked1(value) {
+        var b = $(".activity_one");
+        var s = '';
+        if(value<1)
+        {
+            for (var i = 0; i < b.length; i++) {
+                if (b[i].checked) {
+                    s += b[i].value + ',';
+                }
+            }
+            s = s.substr(0, s.length - 1);
+        }
+        else
+        {
+            s=value;
+        }
+        $.ajax({
+            url:"/{$sitecode}/activitychkdown",
+            data:{"id":s,'idsite':"{$idsite}"},
+            type:"post",
+            dataType:"json",
+            success:function(msg) {
+                if (msg.status == "success") {
+                    layer.alert(msg.msg, {icon:1});
+                    $(".activity_one").attr("checked", false);
+                    $('#checked').attr("checked", false)
+                }
+                else
+                {
+                    layer.alert(msg.msg, {icon: 2});
+                }
+            }
+        })
+    }
+</script>
+
+</body>
+</html>

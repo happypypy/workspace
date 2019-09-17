@@ -1,0 +1,18 @@
+{volist name="datalist" id="vo"}
+<li>
+    <div class="flex">
+        <div class="pic"><img src="{$vo['goods_thumb']}" /></div>
+        <div class="txt">
+            <div class="title" onclick="javascript:goinfo({$vo['id']})">{$vo['goods_name']}</div>
+            <div class="price"><i class="iconfont price">&#xe620;</i><span>订单号：{$vo['order_no']}</span></div>
+            <div class="state"><i class="iconfont laiyuan">&#xe60e;</i>所需积分：<span>{$vo['integral']}</span</div>
+            <div class="time"><i class="iconfont clock">&#xe602;</i><span>兑换数量：{$vo['exchange_number']}</span></div>
+            <div class="time"><i class="iconfont clock">&#xe602;</i><span>兑换时间：{$vo['create_time']|date="Y-m-d H：",###}</span></div>
+            <div class="time"><i class="iconfont clock">&#xe602;</i><span>状态：{$vo['create_time']|date="Y-m-d H：",###}</span></div>
+            <div class="btn">
+                <a href="/{$sitecode}/integralexchangemanagedetail/{$vo['id']}" style="background: #d98bb3;">订单详情</a>
+            </div>
+        </div>
+    </div>
+</li>
+{/volist}

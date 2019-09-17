@@ -1,0 +1,406 @@
+<!--
+ * @Descripttion: 
+ * @version: 
+ * @Author: ChenJie
+ * @Date: 2019-07-16 10:23:06
+ * @LastEditors: ChenJie
+ * @LastEditTime: 2019-09-06 11:45:29
+ -->
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+ <html xmlns="http://www.w3.org/1999/xhtml">
+ 
+ <head>
+   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   <title>新增门店</title>
+   <link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
+   <link href="__PUBLIC__/static/css/page.css" rel="stylesheet" type="text/css" />
+   <link rel="stylesheet" href="__PUBLIC__/static/css/bootstrap.min.css">
+   <script type="text/javascript" src="__PUBLIC__/static/js/jquery-3.2.1.min.js"></script>
+   <script type="text/javascript" src="__PUBLIC__/static/js/del-checked.js"></script>
+   <script type="text/javascript" src="__PUBLIC__/static/js/layer/layer.js"></script>
+   <script type="text/javascript" src="__PUBLIC__/static/js/ContorlValidator.js"></script>
+   <script type="text/javascript" src="__PUBLIC__/static/js/CostomLinkOpenSw.js"></script>
+   <link href="__PUBLIC__/static/js/daterangepicker/daterangepicker-bs3.css" rel="stylesheet" type="text/css" />
+   <script type="text/javascript" src="__PUBLIC__/static/js/daterangepicker/moment.min.js"></script>
+   <script type="text/javascript" src="__PUBLIC__/static/js/daterangepicker/daterangepicker.js"></script>
+   <script type="text/javascript" src="__PUBLIC__/static/js/lhgdialog.js?skin=aero"></script>
+   <link type="text/css" href="__PUBLIC__/static/plugins/layui/css/layui.css" rel="stylesheet" />
+   <script type="text/javascript" src="__PUBLIC__/static/plugins/layui/layui.js"></script>
+   <style>
+     .layui-layer.layui-layer-page.layui-layer-rim.layer-anim .layui-layer-content {
+       padding: 10px;
+     }
+ 
+     .layui-layer.layui-layer-page.layui-layer-rim.layer-anim * {
+       max-width: 100% !important;
+       box-sizing: border-box;
+     }
+ 
+     .layui-layer.layui-layer-page.layui-layer-rim.layer-anim img {
+       height: auto !important;
+     }
+     .business_hours_list{
+         width: 800px;
+         margin-top: 10px;
+     }
+     .business_hours_list .layui-btn{
+         margin-left: 0;
+         margin-right: 10px;
+         margin-bottom: 10px;
+     }
+   </style>
+ 
+ 
+   <script type="text/javascript">
+     window.UEDITOR_Admin_URL = "/public/plugins/Ueditor/";
+     var URL_upload = "/index.php/Admin/Ueditor/imageUp/savepath/article";
+     var URL_fileUp = "/index.php/Admin/Ueditor/fileUp/savepath/article";
+     var URL_scrawlUp = "/index.php/Admin/Ueditor/scrawlUp/savepath/article";
+     var URL_getRemoteImage = "/index.php/Admin/Ueditor/getRemoteImage/savepath/article";
+     var URL_imageManager = "/index.php/Admin/Ueditor/imageManager/savepath/article";
+     var URL_imageUp = "/index.php/Admin/Ueditor/imageUp/savepath/article";
+     var URL_getMovie = "/index.php/Admin/Ueditor/getMovie/savepath/article";
+     var URL_home = "";
+   </script>
+   <!--
+     <script>
+         KindEditor.ready(function(K) {
+             window.editor = K.create('#editor_id');
+         });
+     </script>
+ -->
+   <script language="javascript">
+     //具体参数配置在  editor_config.js 中
+     var options = {
+       zIndex: 999,
+       initialFrameWidth: 800, //初化宽度
+       initialFrameHeight: 200, //初化高度
+       focus: false, //初始化时，是否让编辑器获得焦点true或false
+       maximumWords: 99999, removeFormatAttributes: 'class,style,lang,width,height,align,hspace,valign',//允许的最大字符数 'fullscreen',
+       pasteplain: false, //是否默认为纯文本粘贴。false为不使用纯文本粘贴，true为使用纯文本粘贴
+       autoHeightEnabled: false
+       /*   autotypeset: {
+        mergeEmptyline: true,        //合并空行
+        removeClass: true,           //去掉冗余的class
+        removeEmptyline: false,      //去掉空行
+        textAlign: "left",           //段落的排版方式，可以是 left,right,center,justify 去掉这个属性表示不执行排版
+        imageBlockLine: 'center',    //图片的浮动方式，独占一行剧中,左右浮动，默认: center,left,right,none 去掉这个属性表示不执行排版
+        pasteFilter: false,          //根据规则过滤没事粘贴进来的内容
+        clearFontSize: false,        //去掉所有的内嵌字号，使用编辑器默认的字号
+        clearFontFamily: false,      //去掉所有的内嵌字体，使用编辑器默认的字体
+        removeEmptyNode: false,      //去掉空节点
+        //可以去掉的标签
+        removeTagNames: {"font": 1},
+        indent: false,               // 行首缩进
+        indentValue: '0em'           //行首缩进的大小
+        }*/
+     };
+   </script>
+   <script type="text/javascript" src="__PUBLIC__/static/plugins/Ueditor/ueditor.config.js"></script>
+   <script type="text/javascript" src="__PUBLIC__/static/plugins/Ueditor/ueditor.all.js"></script>
+ </head>
+ 
+ <body>
+   <div class="oa_pop">
+     <div class="oa_pop-main">
+       <div style="height: 6px"></div>
+       <div class="oa_title clearfix">
+         <span class="oa_ico-right"></span>
+         <span class="oa_title-btn"></span>
+         <span class="oa_ico-left"></span>
+         {$param.id ? '修改' : '新建'}门店
+       </div>
+       <div class="oa_edition">
+         <form id="frm" action="" method="post" onsubmit="return checkdata()">
+           <input type="hidden" name="id" value="{$datainfo.id ?? 0}" />
+           <input type="hidden" name="siteid" value="{$siteid}" />
+ 
+           <table id="tabcontent" width="100%" border="0" cellspacing="1" cellpadding="0" class="oa_edition"
+             style="border-bottom: #e0e0e0 solid 1px">
+             <tr>
+               <td width="150" class="oa_cell-left"><span style="color:#ff0000">*</span>门店名称：</td>
+               <td class="oa_cell-right"><input name="store_name" id="store_name" type="text"
+                   value="{$datainfo.store_name ?? ''}" class="form-control " style="width:600px;" />
+               </td>
+             </tr>
+             <tr>
+                <td width="150" class="oa_cell-left"><span style="color:#ff0000">*</span>商家电话：</td>
+                <td class="oa_cell-right"><input name="store_phone" id="store_phone" type="text"
+                    value="{$datainfo.store_phone ?? ''}" class="form-control " style="width:250px;" />
+                </td>
+             </tr>
+             <tr>
+                <td width="150" class="oa_cell-left"><span style="color:#ff0000">*</span>门店地址：</td>
+                <td class="oa_cell-right">
+                    <input name="store_address" id="store_address" type="text" value="{$datainfo.store_address ?? ''}" readonly="readonly" class="form-control" style="display: inline; width:500px;" >
+                    <input name="longitude" id="longitude" type="hidden" value="{$datainfo.longitude ?? ''}" class="form-control " style="width:800px;" >
+                    <input name="latitude" id="latitude" type="hidden" value="{$datainfo.latitude ?? ''}" class="form-control " style="width:800px;">
+                    <input name="openmap" id="openmap" type="button" class="layui-btn layui-btn-normal" value="选择地址" onclick="selectAddress();">
+                </td>
+             </tr>
+             <tr>
+                <td width="150" class="oa_cell-left"><span style="color:#ff0000">*</span>时间段类型：</td>
+                <td class="oa_cell-right">
+                  <select name="time_type" id="time_type" class="form-control" style="width: auto; height: 40px">
+                    <option value="-1">==请选择==</option>
+                    {volist name="time_type_list" id="time_type"}
+                    <option value="{$key}" {$key==$datainfo.time_type ? 'selected' : '' }>{$time_type}</option>
+                    {/volist}
+                  </select>
+                </td>
+            </tr>
+            <tr class="business_hours" {$datainfo.time_type==-1 ? 'style="display: none"' : ''}>
+                <td width="150" class="oa_cell-left"><span style="color:#ff0000">*</span>营业时间：</td>
+                <td class="oa_cell-right">
+                    <input type="hidden" id="business_hours" name="business_hours" value="{$datainfo.business_hours}" />
+                    <div class="business_hours_list" id="one_businnes_hours" {$datainfo.time_type==0 ? '' : 'style="display: none"'} >
+                        {volist name="$businnes_hours_list[1]" id="businnes_hours"}
+                            {if condition="in_array($businnes_hours,$datainfo.business_hours_decode)"}
+                                <button type="button" class="layui-btn layui-btn-normal">{$businnes_hours}</button>
+                            {else}
+                                <button type="button" class="layui-btn layui-btn-primary">{$businnes_hours}</button>
+                            {/if}
+                        {/volist}
+                    </div>
+                    <div class="business_hours_list" id="two_businnes_hours" {$datainfo.time_type==1 ? '' : 'style="display: none"'}>
+                        {volist name="$businnes_hours_list[2]" id="businnes_hours"}
+                            {if condition="in_array($businnes_hours,$datainfo.business_hours_decode)"}
+                                <button type="button" class="layui-btn layui-btn-normal">{$businnes_hours}</button>
+                            {else}
+                                <button type="button" class="layui-btn layui-btn-primary">{$businnes_hours}</button>
+                            {/if}
+                        {/volist}
+                    </div>
+                    <style type="text/css">
+                        .layui-laydate-content>.layui-laydate-list {
+                            padding-bottom: 0px;
+                            overflow: hidden;
+                        }
+                        .layui-laydate-content>.layui-laydate-list>li{
+                            width:50%
+                        }
+                        .laydate-time-list ol li{
+                            padding-left: 0;
+                            text-align: center;
+                            width: 100%;
+                        }
+                        .merge-box .scrollbox .merge-list {
+                            padding-bottom: 5px;
+                        }
+                    </style>
+                    <div class="business_hours_list" id="diy_businnes_hours" {$datainfo.time_type==2 ? '' : 'style="display: none"'}>
+                        {volist name="$datainfo.business_hours_decode" id="businnes_hours"}
+                            <button type="button" class="layui-btn layui-btn-normal">{$businnes_hours}</button>
+                        {/volist}
+                    </div>
+                    <div id="diy_hours_form" {$datainfo.time_type==2 ? '' : 'style="display: none"'}>
+                        <div class="layui-input-inline">
+                            <input type="text" class="layui-input" id="start_hours" style="width: 60px;margin:0;" placeholder="HH:mm" lay-key="1">
+                        </div>
+                        <div style="display: inline;margin: 0 5px;">到</div>
+                        <div class="layui-input-inline">
+                            <input type="text" class="layui-input" id="end_hours" style="width: 60px;margin:0;" placeholder="HH:mm" lay-key="2">
+                        </div>
+                        <div class="layui-input-inline">
+                            <button type="button" class="layui-btn layui-btn-normal" style="margin: 0 0 0 10px" onclick="addBusinessHours()">添加营业时间</button>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td width="150" class="oa_cell-left">可预约人数：</td>
+                <td class="oa_cell-right"><input name="reserve_number" id="reserve_number" type="text"
+                    value="{$datainfo.reserve_number ?? 0}" class="form-control " style="width:250px;" />
+                </td>
+            </tr>
+            <tr>
+                <td width="150" class="oa_cell-left">营业状态：</td>
+                <td class="oa_cell-right">
+                    <input name="business_status" id="business_status" type="radio" value="1" {$datainfo.business_status==1 ? 'checked' : ''} />营业
+                    <input name="business_status" id="business_status" type="radio" value="0" {$datainfo.business_status==0 ? 'checked' : ''} />歇业
+                </td>
+            </tr>
+             <tr class="paytypecontent2">
+               <td width="150" class="oa_cell-left"> </td>
+               <td class="table_head">
+                 <div id="spec_table2">
+                 </div>
+               </td>
+             </tr>
+             <tr id="save">
+               <td colspan="2" style="padding:10px;">
+                 <input type="submit" value="保存"
+                   style="-webkit-appearance: button;cursor: pointer;font-family: inherit;font-size: inherit;line-height: inherit;padding: 1px 6px;">
+               </td>
+             </tr>
+           </table>
+         </form>
+       </div>
+       <div style="height: 30px"></div>
+     </div>
+   </div>
+ 
+ </body>
+ <script>
+     var businnes_hours = {$datainfo.business_hours};
+     // 时间选择控件
+     layui.use('laydate', function(){
+        var laydate = layui.laydate;
+        laydate.render({
+            elem: '#start_hours'
+            ,type: 'time'
+            ,format: 'HH:mm'
+            ,ready: formatminutes
+        });
+        laydate.render({
+            elem: '#end_hours'
+            ,type: 'time'
+            ,format: 'HH:mm'
+            ,ready: formatminutes
+        });
+     });
+    // 清空秒
+    function  formatminutes(date) {
+        var aa = $(".laydate-time-list li ol")[1];
+        var showtime = $($(".laydate-time-list li ol")[1]).find("li");
+        for (var i = 0; i < showtime.length; i++) {
+            var t00 = showtime[i].innerText;
+            if (t00 != "00" && t00 != "10" && t00 != "20" && t00 != "30" && t00 != "40" && t00 != "50") {
+                showtime[i].remove()
+            }
+        }
+        $($(".laydate-time-list li ol")[2]).find("li").remove();  //清空秒
+    }
+     // 选择营业时间
+     $('.business_hours_list').on('click','[type="button"]',function(){
+         var selectTime = $(this).text();
+         var businnes_hours_position = businnes_hours.indexOf(selectTime);
+         if(businnes_hours_position == -1){
+            businnes_hours.push(selectTime);
+         }else{
+             businnes_hours.splice(businnes_hours_position,1);
+         }
+         $('#business_hours').val(JSON.stringify(businnes_hours));
+         $(this).toggleClass("layui-btn-primary").toggleClass("layui-btn-normal");
+     });
+     // 选择时间类型
+     $('#time_type').change(function(){
+        var selectIndex = $(this).val();
+        $('.business_hours_list').hide();
+        $('#diy_hours_form').hide();
+        if(selectIndex == -1){
+            $('.business_hours').hide();
+            return;
+        }
+        if(selectIndex == 0){
+            $('#one_businnes_hours').show();
+        }else if(selectIndex == 1){
+            $('#two_businnes_hours').show();
+        }else if(selectIndex == 2){
+            $('#diy_businnes_hours').show();
+            $('#diy_hours_form').show();
+        }
+        businnes_hours = [];
+        $('.business_hours').show();
+     });
+     // 添加营销时间
+     function addBusinessHours(){
+        var start_hours = $('#start_hours').val();            // 开始时间
+        var end_hours = $('#end_hours').val();                // 结束时间
+        var businnes_hours = start_hours + ' - ' + end_hours; // 营业时间
+        var isRepeat = false;   // 是否重复
+
+        if(start_hours.length <= 0 || end_hours.length <= 0){
+            layer.msg("请选择开始或结束时间!");
+            return;
+        }
+
+        if(end_hours <= start_hours){
+            layer.msg("结束时间不能大于开始时间!");
+            return;
+        }
+
+        $('#diy_businnes_hours button').each(function(item){
+            var tmp_businnes_hours = $(this).text();
+            if(businnes_hours == tmp_businnes_hours){
+                isRepeat = true;
+                return;
+            }
+        });
+
+        if(isRepeat){
+            layer.msg("营业时间已经存在，请勿重复添加!");
+            return;
+        }
+        $('#diy_businnes_hours').append('<button type="button" class="layui-btn layui-btn-primary">'+start_hours+' - '+end_hours+'</button>');
+     }
+     // 选择地址
+     function selectAddress(){
+        var longitude=$("#longitude").val();
+        var latitude=$("#latitude").val();
+        CustomOpen("/static/map/selectAdr.php?lng="+longitude+"&lat="+latitude,"sel_address","选择地址",950,680);
+     }
+     // 选择地址后回调
+     function submitAddress(longitude,latitude,address){
+        $("#longitude").val(longitude);
+        $("#latitude").val(latitude);
+        $("#store_address").val(address);
+     }
+     // 表单验证
+     function checkdata(){
+        var store_name = $('#store_name').val();
+        var store_phone = $('#store_phone').val();
+        var store_address = $('#store_address').val();
+        var time_type = $('#time_type').val();
+        var business_hours = $('#business_hours').val();
+
+        if(store_name.length <= 0){
+            layer.msg("请输入门店名称!");
+            return false;
+        }
+
+        if(store_phone.length <= 0){
+            layer.msg("请输入商家电话!");
+            return false;
+        }
+        
+        var isMobile = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1})|(17[0-9]{1})|(14[0-9]{1})|(19[0-9]{1}))+\d{8})$/;
+        var isPhone = /^(?:(?:0\d{2,3})-)?(?:\d{7,8})(-(?:\d{3,}))?$/;
+        if(isMobile.test(store_phone)==false && isPhone.test(store_phone)==false)
+        {
+            layer.msg('商家电话格式不正确');
+            return false;
+        }
+
+        if(store_address.length <= 0){
+            layer.msg("请选择门店地址!");
+            return false;
+        }
+        if(time_type == -1){
+            layer.msg("请输入时间段类型!");
+            return false;
+        }
+        debugger;
+        if(time_type == 0){
+            if($('#one_businnes_hours .layui-btn-normal').length <= 0){
+                layer.msg("请选择营业时间!");
+                return false;
+            }
+        }else if(time_type == 1){
+            if($('#two_businnes_hours .layui-btn-normal').length <= 0){
+                layer.msg("请选择营业时间!");
+                return false;
+            }
+        }else if(time_type == 2){
+            if($('#diy_businnes_hours .layui-btn').length <= 0){
+                layer.msg("请先添加营业时间!");
+                return false;
+            }
+            if($('#diy_businnes_hours .layui-btn-normal').length <= 0){
+                layer.msg("请选择营业时间!");
+                return false;
+            }
+        }
+     }
+ </script>
+ </html>

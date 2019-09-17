@@ -1,0 +1,10 @@
+<div class="copyright-wrap">
+  <div class="copyright">
+    <div>{$cms->GetConfigVal('webset','webname',$idsite);}</div>
+    <div>{:str_replace("\r\n","<br>", $cms->GetConfigVal('webset','copyright',$idsite))}</div>
+  </div>
+  <div class="support" onclick="location='https://www.tongxiang123.cn/tongxiang'">
+    <div>童享云提供技术支持</div>
+    <div>www.tongxiang123.com</div>
+  </div>
+</div>

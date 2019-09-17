@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:32:"template/M1/mine/order_list.html";i:1562315896;s:53:"D:\workspace\work\public\template\M1\lib\footer0.html";i:1561691693;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:32:"template/M1/mine/order_list.html";i:1565160274;s:53:"D:\workspace\work\public\template\M1\lib\footer0.html";i:1561691693;}*/ ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -49,7 +49,8 @@
         <ul id="data">
             <?php if(empty($list)) { ?>
                 <li>没找到相关报名信息</li>
-            <?php } foreach($list as $k=>$vo) {?>
+            <?php }
+             foreach($list as $k=>$vo) {  ?>
             <li>
                 <div class="flex">
                     <div class="pic"><img  src="<?php echo $vo['chrimg']; ?>" /></div>
@@ -76,7 +77,7 @@
                             <?php } ?>
 
                                 <!-- 拼团 -->
-                                <?php if(checkedMarketingPackage($idsite, 'group_buy') && !empty($vo['group_buy_order_id']) && $vo['group_buy_order_state'] != 0): ?>
+                                <?php if(checkedMarketingPackage($idsite, 'group_buy') && !empty($vo['group_buy_order_id']) && $vo['group_buy_order_state'] != 0 && $vo['group_buy_order_state'] != 4): ?>
                                     <a href="/<?php echo $sitecode; ?>/group_buy_share/<?php echo $vo['group_buy_order_id']; ?>/<?php echo $userid; ?>" style="background: #d9b38b; ">拼团情况</a>
                                 <?php endif; ?>
                             <!--待支付可以手动改为终止服务-->

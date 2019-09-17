@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:40:"template/M1/assemble/assemble_share.html";i:1563268077;s:52:"D:\workspace\work\public\template\M1\lib\header.html";i:1561691693;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:40:"template/M1/assemble/assemble_share.html";i:1565317940;s:52:"D:\workspace\work\public\template\M1\lib\header.html";i:1561691693;}*/ ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -47,7 +47,7 @@
     <div class="site-section clearfix bg">
         <div class="pintuan-img">
             <div class="pintuan-img-l">
-                <img src="<?php echo $data['imgs'][0]['userimg']; ?>" alt="">
+                <img src="<?php echo $data['userimg']; ?>" alt="">
             </div>
             <div class="pintuan-img-r">
                 <p>我是<span><?php echo $data['username']; ?></span></p>
@@ -76,7 +76,7 @@
 
             <div class="ass-share-item">
                 <a href="">
-                    <div class="pic"><img src="<?php echo $data['imgs'][0]['userimg']; ?>" alt=""></div>
+                    <div class="pic"><img src="<?php echo $data['chrimg_m']; ?>" alt=""></div>
                     <div class="txt">
                         <div class="tit"><?php echo $data['chrtitle']; ?></div>
                         <div class="time"><?php echo $data['package_name']; ?></div>
@@ -84,9 +84,9 @@
                     </div>
                 </a>
             </div>
-
+            <?php if($data['state'] != 4 && $pintuan == 1){  ?>
             <div class="present-box">
-                <?php if($data['left'] > 0): ?>
+                <?php if($data['left'] > 0 && $data['state'] !=2): ?>
                     <div>需拼团数：<span><?php echo $data['group_num']; ?></span>&nbsp;&nbsp;<span>还差<?php echo $data['left']; ?></span></div>
                 <?php else: ?>
                     <div><span>已成团</span></div>
@@ -97,6 +97,7 @@
                 <?php endforeach; ?>
                 </div>
             </div>
+            <?php } ?>
             <div class="share-btn-box">
                 <!-- 拼团有效期和拼团状态 -->
                 <?php if($data['state'] == 2): ?>
@@ -118,7 +119,7 @@
                 <p>3.参团人数在有效期内达到拼团人数（成团人数要求请看对应活动拼团说明），即拼团成功。拼团时间到期后，若未达到拼团人数，即拼团失败，拼团订单于24小时内全额原路退款。</p>
                 <p>4.发起拼团或参与拼团，或许有次数限制，限制规则由具体活动而定，请参考拼团说明信息。</p>
                 <p>5.当前活动专用优惠券不能用于拼团支付。</p>
-                <p>最终解析权归蜗牛童行所有。</p>
+                <p>最终解析权归本机构所有。</p>
             </div>
         </div>
         
@@ -209,7 +210,7 @@
             wx.onMenuShareTimeline({
                 title: '<?php echo $data["username"]; ?>分享了<?php echo $data["package_name"]; ?>拼团，还剩<?php echo $data["left"]; ?>份，先抢先得!', // 分享标题
                 link: '<?php echo $shareUrl; ?>', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-                imgUrl: '<?php echo $roottpl; ?>/static/images/wx_20190619175904.jpg', // 分享图标
+                imgUrl: "{<?php echo $root_url; ?><?php echo $data['chrimg_m']; ?>", // 分享图标
                 success: function () {
                     // alert('已分享');
                 }
@@ -218,9 +219,10 @@
             //获取“分享给朋友”按钮点击状态及自定义分享内容接口（即将废弃）
             wx.onMenuShareAppMessage({
                 title: '<?php echo $data["username"]; ?>分享了<?php echo $data["package_name"]; ?>拼团，还剩<?php echo $data["left"]; ?>份，先抢先得!', // 分享标题
-                desc: '<?php echo $data["username"]; ?>' + "<?php echo !empty($data['isStarter'])?'发起' : '参与'; ?>" + '了“交易分享现金券福利”，与你分享', // 分享描述
+                //desc: '<?php echo $data["username"]; ?>' + "<?php echo !empty($data['isStarter'])?'发起' : '参与'; ?>" + '了“交易分享现金券福利”，与你分享', // 分享描述
+                desc:"【仅剩<?php echo $data['left']; ?>个名额】我<?php echo $data['group_buy_price']; ?>元拼了<?php echo $data['package_name']; ?>！",
                 link: '<?php echo $shareUrl; ?>', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-                imgUrl: '<?php echo $roottpl; ?>/static/images/wx_20190619175904.jpg', // 分享图标
+                imgUrl: "<?php echo $root_url; ?><?php echo $data['chrimg_m']; ?>", // 分享图标
                 type: 'link', // 分享类型,music、video或link，不填默认为link
                 dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
                 success: function () {

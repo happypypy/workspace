@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+<title>活动详情</title>
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+
+	<script type="text/javascript" src="/static/modules/js/jquery.min.js"></script>
+	<script type="text/javascript" src="/static/modules/js/swiper.min.js"></script>
+	<script type="text/javascript" src="/static/modules/js/common.js"></script>
+	<link rel="stylesheet" type="text/css" href="/static/modules/style/css/swiper.min.css">
+	<link rel="stylesheet" type="text/css" href="/static/modules/style/css/common.css">
+	<link rel="stylesheet" type="text/css" href="/static/modules/style/css/pc.css">
+</head>
+<body>
+	{include file="modules/lib/header" /}
+	<div class="site-section clearfix">
+		<div class="where jigou">
+			<p>活动详情</p>
+			<a href="/{$sitecode}" class="iconfont">&#xe617;</a>
+		</div>
+
+		<?php if(empty($info)){ ?>
+		<ul class="students-list" id="data">
+			<li>
+				<div>活动不存在或已下架。</div>
+			</li>
+		</ul>
+		<?php } else { ?>
+		<div class="camp-area">
+			<h3 class="camp-title">{$info['title']}</h3>
+			<div class="sub-h3">活动时间：{:date('Y-m-d',$info['start_time'])} 到 {:date('Y-m-d',$info['end_time'])}</div>
+			<div class="teacher-content">
+				<div class="teacher-info">老师信息</div>
+				<ul class="teacher-list">
+					<?php if(empty($teacher)){ ?>
+					<li>
+						<div>没有登记老师信息。</div>
+					</li>
+					<?php } foreach($teacher as $k=>$val){ ?>
+					<li>
+						<div class="user"><img src="{$val['pic']}"></div>
+						<div class="info">
+							<div class="info1">{$val['name']}</div>
+							<div class="info2">
+								<div class="phone">{$val['position']}</div>
+								<a href="tel:13602651040" class="num">联系电话：{$val['phone']}</a>
+							</div>
+						</div>
+						<div class="code">
+							<img src="{$val['qrcode']}">
+						</div>
+					</li>
+					<?php } ?>
+				</ul>
+			</div>
+			<div class="camp-link-div">
+				<div class="camp-photo-link">
+					<a href="/{$sitecode}/photolist/{$album_id}">
+						<div class="iconfont photo">&#xe7a5;</div>
+						<div>活动相册</div>
+					</a>
+				</div>
+				<div class="camp-video-link gray">
+					<a href="javascript:;" >
+						<div class="iconfont video">&#xe656;</div>
+						<div>活动视频</div>
+					</a>
+				</div>
+			</div>
+			<div class="teacher-comment-content">
+				<div class="teacher-comment-title">老师点评</div>
+				<ul class="teacher-comment-list">
+					<?php if(empty($Comment)){ ?>
+					<li>
+						<div>老师还没有做点评。</div>
+					</li>
+					<?php } foreach($Comment as $k=>$val){ ?>
+					<li>
+						<a href="/{$sitecode}/act/commentdetail/{$val['id']}">
+							<div class="img-div">
+								<img src="/static/images/avatar.png" alt="">
+							</div>
+							<div class="info">
+								<div class="time"> {:date('Y-m-d',$val['comment_time'])}</div>
+								<div class="yelp">{$val['title']}</div>
+							</div>
+						</a>
+					</li>
+					<?php } ?>
+				</ul>
+			</div>
+			<div class="teacher-comment-content">
+				<div class="teacher-comment-title">每日回顾</div>
+				<ul class="teacher-comment-list">
+					<?php if(empty($Summary)){ ?>
+					<li>
+						<div>老师还没有做点评。</div>
+					</li>
+					<?php } foreach($Summary as $k=>$val){ ?>
+					<li>
+						<a href="/{$sitecode}/act/summarydetail/{$val['id']}">
+							<div class="img-div">
+								<img src="/static/images/avatar.png" alt="">
+							</div>
+							<div class="info">
+								<div class="time">{:date('Y-m-d',$val['ctime'])}</div>
+								<div class="yelp">{$val['title']}</div>
+							</div>
+						</a>
+					</li>
+					<?php } ?>
+			</div>
+		</div>
+		<?php } ?>
+
+
+		<div id="dataload" class="iconfont iconload" style="display: none">&#xe72f;</div>
+		{include file="modules/lib/footer0" /}
+	</div>
+</body>
+<script type="text/javascript" src="/static/js/layer/layer.js"></script>
+
+</html>

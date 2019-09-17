@@ -1,0 +1,400 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>预约对象</title>
+    <link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
+    <link href="__PUBLIC__/static/css/page.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="__PUBLIC__/static/css/bootstrap.min.css">
+    <script type="text/javascript" src="__PUBLIC__/static/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/del-checked.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/layer/layer.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/ContorlValidator.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/CostomLinkOpenSw.js"></script>
+    <link href="__PUBLIC__/static/js/daterangepicker/daterangepicker-bs3.css" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="__PUBLIC__/static/js/daterangepicker/moment.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/daterangepicker/daterangepicker.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/lhgdialog.js?skin=aero"></script>
+    <link rel="stylesheet" href="__PUBLIC__/static/plugins/layui/css/layui.css"  media="all">
+    <style>
+    .layui-layer.layui-layer-page.layui-layer-rim.layer-anim .layui-layer-content{
+            padding: 10px;
+        }
+   .layui-layer.layui-layer-page.layui-layer-rim.layer-anim *{
+        max-width : 100%!important;
+        box-sizing: border-box;
+    }
+    .layui-layer.layui-layer-page.layui-layer-rim.layer-anim img{
+        height: auto!important;
+    }
+    </style>
+    
+
+    <script type="text/javascript">
+        window.UEDITOR_Admin_URL = "/public/plugins/Ueditor/";
+        var URL_upload = "/index.php/Admin/Ueditor/imageUp/savepath/article";
+        var URL_fileUp = "/index.php/Admin/Ueditor/fileUp/savepath/article";
+        var URL_scrawlUp = "/index.php/Admin/Ueditor/scrawlUp/savepath/article";
+        var URL_getRemoteImage = "/index.php/Admin/Ueditor/getRemoteImage/savepath/article";
+        var URL_imageManager = "/index.php/Admin/Ueditor/imageManager/savepath/article";
+        var URL_imageUp = "/index.php/Admin/Ueditor/imageUp/savepath/article";
+        var URL_getMovie = "/index.php/Admin/Ueditor/getMovie/savepath/article";
+        var URL_home = "";
+    </script>
+    <!--
+    <script>
+        KindEditor.ready(function(K) {
+            window.editor = K.create('#editor_id');
+        });
+    </script>
+-->
+    <script language="javascript">
+        //具体参数配置在  editor_config.js 中
+        var options = {
+            zIndex: 999,
+            initialFrameWidth: 800, //初化宽度
+            initialFrameHeight: 400, //初化高度
+            focus: false, //初始化时，是否让编辑器获得焦点true或false
+            maximumWords: 99999, removeFormatAttributes: 'class,style,lang,width,height,align,hspace,valign',//允许的最大字符数 'fullscreen',
+            pasteplain:false, //是否默认为纯文本粘贴。false为不使用纯文本粘贴，true为使用纯文本粘贴
+            autoHeightEnabled: false
+            /*   autotypeset: {
+             mergeEmptyline: true,        //合并空行
+             removeClass: true,           //去掉冗余的class
+             removeEmptyline: false,      //去掉空行
+             textAlign: "left",           //段落的排版方式，可以是 left,right,center,justify 去掉这个属性表示不执行排版
+             imageBlockLine: 'center',    //图片的浮动方式，独占一行剧中,左右浮动，默认: center,left,right,none 去掉这个属性表示不执行排版
+             pasteFilter: false,          //根据规则过滤没事粘贴进来的内容
+             clearFontSize: false,        //去掉所有的内嵌字号，使用编辑器默认的字号
+             clearFontFamily: false,      //去掉所有的内嵌字体，使用编辑器默认的字体
+             removeEmptyNode: false,      //去掉空节点
+             //可以去掉的标签
+             removeTagNames: {"font": 1},
+             indent: false,               // 行首缩进
+             indentValue: '0em'           //行首缩进的大小
+             }*/
+        };
+    </script>
+    <script type="text/javascript" src="__PUBLIC__/static/plugins/Ueditor/ueditor.config.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/plugins/Ueditor/ueditor.all.js"></script>
+</head>
+<body>
+<div class="oa_pop">
+    <div class="oa_pop-main">
+        <div style="height: 6px"></div>
+        <div class="oa_title clearfix">
+            <span class="oa_ico-right"></span>
+            <span class="oa_title-btn"></span>
+            <span class="oa_ico-left"></span>
+            {$param.id ? '修改' : '新建'}预约项目
+        </div>
+        <div class="oa_edition">
+            <form id="frm" action="" method="post" onsubmit="return checkdata()">
+                <input type="hidden" name="id" value="{$datainfo.id ?? 0}" />
+                <input type="hidden" name="siteid" value="{$siteid}" />
+                
+                <table id="tabcontent" width="100%" border="0" cellspacing="1" cellpadding="0" class="oa_edition" style="border-bottom: #e0e0e0 solid 1px">
+                    <tr>
+                        <td width="150"class="oa_cell-left"><span style="color:#ff0000">*</span>分类：</td>
+                        <td class="oa_cell-right">
+                            <input type="hidden" name="category_name" id="category_name" value="{$datainfo.category_name}" />
+                            <select name="category_id" id="category_id" class="form-control" style="width: auto; height: 40px">
+                                <option value="">==请选择==</option>
+                                {volist name="subscribe_object_category" id="vo"}
+                                <option value="{$vo.id}" {$vo.id==$datainfo.category_id ? 'selected' : '' }>{$vo.name}</option>
+                                {/volist}
+                            </select>
+                            <span style="color: red;">&nbsp;&nbsp;&nbsp;&nbsp;分类添加：[系统管理] -> [字段管理] -> [预约分类]</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="150"class="oa_cell-left"><span style="color:#ff0000">*</span>项目名称：</td>
+                        <td class="oa_cell-right"><input name="object_name" id="object_name" type="text" value="{$datainfo.object_name ?? ''}" class="form-control "  style="width:600px;"   chname="对象名称"  /> </td>
+                    </tr>
+                    <tr>
+                        <td width="150" class="oa_cell-left"><span style="color:#ff0000">*</span>项目描述：</td>
+                        <td class="oa_cell-right">
+                            <div >
+                                <textarea id="description" name="description" is_null="1" cols="50" rows="3"   class="form-control input oa_input-200"  style="width:600px;height:80px;">{$datainfo.description ?? ''}</textarea>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="150" class="oa_cell-left"><span style="color:#ff0000">*</span>开始时间：</td>
+                        <td class="oa_cell-right">
+                            <div style="width:250px" class="input-prepend input-group"><span class="add-on input-group-addon"><i class="glyphicon glyphicon-calendar fa fa-calendar"></i></span>
+                            <input type="text" is_null="0" id="start_time" name="start_time" class="form-control"  value="{$datainfo.start_time ? date('Y-m-d H:i:s', $datainfo.start_time) : ''}"></div>
+                            <script language='JavaScript'>seltime("start_time","YYYY-MM-DD HH:mm:ss")</script>                               <!-- -->
+                            <span style="color: red;display: none;" class="dtbirthday_null">(不能为空)</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="150" class="oa_cell-left"><span style="color:#ff0000">*</span>结束时间：</td>
+                        <td class="oa_cell-right">
+                            <div style="width:250px" class="input-prepend input-group"><span class="add-on input-group-addon"><i class="glyphicon glyphicon-calendar fa fa-calendar"></i></span>
+                            <input type="text" is_null="0" id="end_time" name="end_time" class="form-control"  value="{$datainfo.end_time ? date('Y-m-d H:i:s', $datainfo.end_time) : ''}"></div><script language='JavaScript'>seltime("end_time","YYYY-MM-DD HH:mm:ss")</script>                               <!-- -->
+                            <span style="color: red;display: none;" class="dtbirthday_null">(不能为空)</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="150"class="oa_cell-left">提前天数：</td>
+                        <td class="oa_cell-right"><input name="advance_day" id="advance_day" type="text" value="{$datainfo.advance_day ? $datainfo.advance_day : 0}" class="form-control "  style="width:100px;"   chname="提前天数"  /> </td>
+                    </tr>
+                    <style>
+                    .session_button_box{
+                        display: inline-block;
+                        height: 32px;
+                    }
+                    .session_button{
+                        display: inline-block;
+                        border-radius: 3px;
+                        background-color: #d2d2d2;
+                        height: 32px;
+                        line-height: 32px;
+                        color: #fff;
+                        padding: 0 5px;
+                        margin: 0 5px;
+                    }
+                    .session_button_active{
+                        background-color: #5FB878;
+                    }
+                    .session_delete:hover{
+                        background-color: #ff0000;
+                        color: #fff;
+                    }
+                    .spec_item{
+                        display: inline-block;
+                    }
+                    </style>
+                    {volist name="$Spec" id="vo"}
+                    <tr>
+                        <td width="150" class="oa_cell-left">{$vo.name}</td>
+                        <td class="oa_cell-right">
+                            <input type="hidden" id="column_{$vo.id}" value="{:isset($SpecItem[$vo['id']]) ? count($SpecItem[$vo['id']]) : 0}" />
+                            <div class="session_button_box" id="spec_list_{$vo.id}">
+                                {present name="$SpecItem[$vo['id']]"}
+                                {volist name="$SpecItem[$vo['id']]" id="vo1"}
+                                <div class="spec_item" id="spec_item_{$vo1.id}">
+                                    <div class="session_button {$vo1.is_selected ? 'session_button_active' : ''}" data-item_id="{$vo1.id}" data-spec_id="{$vo.id}" data-column_id="{$key}">
+                                        {$vo1.name}
+                                    </div>
+                                    {if condition="$vo.id != 2"}
+                                    <i class="layui-icon layui-icon-edit session_delete" onclick="editSpecItem({$vo1.id},'{$vo.name}')"></i>
+                                    <i class="layui-icon layui-unselect layui-tab-close session_delete" onclick="delSpecItem({$vo1.id})">ဆ</i>
+                                    {/if}
+                                </div>
+                                {/volist}
+                                {/present}
+                            </div>
+                            {if condition="$vo.id != 2"}
+                            <input name="spec_{$vo.id}" id="spec_{$vo.id}" type="text" value=""  class="form-control "  style="width:60px;"   chname="{$vo.name}"  />
+                            <a href="javascript:addSpec({$vo.id},'{$vo.name}')" style="font-size: 14px; text-decoration: none">添加</a>
+                            {/if}
+                            <span style="color: red">&nbsp;&nbsp;&nbsp;&nbsp;点击按钮选择{$vo.name}</span>
+                        </td>
+                    </tr>
+                    {/volist}
+                    <tr class="paytypecontent2">
+                        <td width="150" class="oa_cell-left"> </td>
+                        <td class="table_head">
+                            <div id="spec_table2">
+                            </div>
+                        </td>
+
+                    </tr>
+                    <tr id="save">
+                        <td colspan="2" style="padding:10px;">
+                            <input type="hidden" name="session_hash" id="session_hash" value="{$session_hash}" />
+                            <input type="submit" value="保存" style="-webkit-appearance: button;cursor: pointer;font-family: inherit;font-size: inherit;line-height: inherit;padding: 1px 6px;">
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+        <div style="height: 30px"></div>
+    </div>
+</div>
+
+<script language="JavaScript">
+    /**
+     *  点击规格触发 下面输入框显示
+     */
+    function ajaxGetSpecInput()
+    {
+        var spec_arr = {};// 用户选择的规格数组
+        // 选中了哪些属性
+        $(".session_button_box  div").each(function(){
+            
+            if($(this).hasClass('session_button_active'))
+            {
+                var spec_id = $(this).data('spec_id');
+                var item_id = $(this).data('item_id');
+                if(!spec_arr.hasOwnProperty(spec_id))
+                    spec_arr[spec_id] = [];
+                spec_arr[spec_id].push(item_id);
+            }
+        });
+        ajaxGetSpecInput2(JSON.stringify(spec_arr)); // 显示下面的输入框
+    }
+
+    /**
+     * 根据用户选择的不同规格选项
+     * 返回 不同的输入框选项
+     */
+    function ajaxGetSpecInput2(spec_arr)
+    {
+        var session_hash = "{$session_hash}";
+        var object_id = "{$datainfo.id}";
+        $.ajax({
+            type:'POST',
+            data:{'spec_arr':spec_arr,'object_id':object_id,"session_hash":session_hash},
+            url:"/admin/subscribe/getspecinput",
+            success:function(data){
+                $("#spec_table2").html('')
+                $("#spec_table2").append(data);
+            }
+        });
+    }
+    ajaxGetSpecInput();
+    // 合并单元格
+    function hbdyg() {
+        var tab = document.getElementById("spec_input_tab"); //要合并的tableID
+        var maxCol = 3, val, count, start;  //maxCol：合并单元格作用到多少列
+        if (tab != null) {
+            for (var col = maxCol - 1; col >= 0; col--) {
+                count = 1;
+                val = "";
+                for (var i = 0; i < tab.rows.length; i++) {
+                    if (val == tab.rows[i].cells[col].innerHTML) {
+                        count++;
+                    } else {
+                        if (count > 1) { //合并
+                            start = i - count;
+                            tab.rows[start].cells[col].rowSpan = count;
+                            for (var j = start + 1; j < i; j++) {
+                                tab.rows[j].cells[col].style.display = "none";
+                            }
+                            count = 1;
+                        }
+                        val = tab.rows[i].cells[col].innerHTML;
+                    }
+                }
+                if (count > 1) { //合并，最后几行相同的情况下
+                    start = i - count;
+                    tab.rows[start].cells[col].rowSpan = count;
+                    for (var j = start + 1; j < i; j++) {
+                        tab.rows[j].cells[col].style.display = "none";
+                    }
+                }
+            }
+        }
+    }
+</script>
+
+<script type="text/javascript" src="__PUBLIC__/static/js/layer/layer.js"></script>
+<script>
+    // 绑定按钮事件
+    $(function(){
+        // 分类选择
+        $('#category_id').change(function(){
+            var selectText = $(this).find("option:selected").text();
+            $('#category_name').val(selectText);
+        });
+        // 场次选择
+        $('.session_button_box').on("click",".session_button",function(){
+            $(this).toggleClass("session_button_active");
+            ajaxGetSpecInput();
+        })
+    });
+
+    // 表单验证
+    function  checkdata(flag) {
+        if($("#category_id").val().length <= 0){
+            layer.msg("请选择分类");
+            return false;
+        }
+        if($("#object_name").val().length <= 0){
+            layer.msg("请输入项目名称");
+            return false;
+        }
+        if($("#description").val().length <= 0){
+            layer.msg("请输入项目描述");
+            return false;
+        }
+        if($("#start_time").val().length <= 0){
+            layer.msg("请输入开始时间");
+            return false;
+        }
+        if($("#end_time").val().length <= 0){
+            layer.msg("请输入结束时间");
+            return false;
+        }
+        return true;
+    }
+
+    // 增加规格
+    function addSpec(specid,name){
+        var spec = $('#spec_'+specid).val();
+        var column = parseInt($('#column_'+specid).val());
+        if(spec.length <= 0){
+            layer.msg('请输入'+name);return;
+        }
+        if(spec.length > 10){
+            layer.msg(name+'不能大于10个字');return;
+        }
+        addSpecItem(specid,spec,column);
+        column++;
+        $('#column_'+specid).val(column);
+    }
+    // 增加规格项
+    function addSpecItem(specid,spec,column){
+        var session_hash = $('#session_hash').val();
+        var object_id = "{$datainfo.id}";
+        $.ajax({
+            url: "{:url('subscribe/addspecitem')}",
+            type: "post",
+            data: {object_id:object_id, session_hash:session_hash,specid:specid,column:column,name:spec},
+            success: function(item_id){
+                var spec_html = '<div class="spec_item" id="spec_item_'+item_id+'"><div class="session_button" data-item_id="'+item_id+'" data-spec_id="'+specid+'">'+ spec +'</div><i class="layui-icon layui-icon-edit session_delete" onclick="editSpecItem('+item_id+',\''+spec+'\')"></i><i class="layui-icon layui-unselect layui-tab-close session_delete" onclick="delSpecItem('+ item_id +')">ဆ</i></div>';
+                $('#spec_list_'+specid).append(spec_html);
+                $('#spec_'+specid).val("");
+            }
+        })
+    }
+    // 删除规格项
+    function delSpecItem(item_id){
+        $.ajax({
+            url: "{:url('subscribe/delspecitem')}",
+            type: "post",
+            data: {item_id:item_id},
+            success: function(result){
+                $('#spec_item_'+item_id).remove();
+                $('#spec_item_'.item_id).remove();
+                ajaxGetSpecInput();
+            }
+        })
+    }
+    // 编辑规格项
+    function editSpecItem(item_id,spec_name){
+        var index = layer.prompt(
+            {
+                formType: 0,
+                title: '请输入修改的'+spec_name
+            }, 
+            function(value){
+                $.ajax({
+                    url: "{:url('subscribe/editspecitem')}",
+                    type: "post",
+                    data: {id:item_id,name:value},
+                    success: function(result){
+                        $('#spec_item_'+item_id).find("div:first").text(value);
+                        layer.close(index);
+                    }
+                })
+            }
+        );
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>预约记录</title>
+    <link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
+    <link href="__PUBLIC__/static/css/page.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="__PUBLIC__/static/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/layer/layer.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/ContorlValidator.js"></script>
+
+</head>
+<body>
+<div class="oa_pop">
+    <div class="oa_pop-main">
+        <div style="height: 6px"></div>
+        <div class="oa_title clearfix">
+            <span class="oa_ico-right"><div  style="padding-right:10px;"></div></span>
+            <span class="oa_title-btn"></span>
+            <span class="oa_ico-left"></span>
+            预约记录        
+        </div>
+        <div class="oa_edition" style="margin-bottom: 5px">
+            <table width="100%" border="0" cellspacing="1" cellpadding="0" class="oa_edition" style="border-bottom: #e0e0e0 solid 1px">
+                <tr>
+                    <td width="150" class="oa_cell-left">预约编号：</td>
+                    <td class="oa_cell-right">{$datainfo.subscribe_no}</td>
+                </tr>
+                <tr>
+                    <td width="150" class="oa_cell-left">会员卡名称：</td>
+                    <td class="oa_cell-right">{$datainfo.member_cart_name}</td>
+                </tr>
+                <tr>
+                    <td width="150" class="oa_cell-left">用户名称：</td>
+                    <td class="oa_cell-right">{$datainfo.member_nickanme}</td>
+                </tr>
+                <tr>
+                    <td width="150" class="oa_cell-left">预约对象名称：</td>
+                    <td class="oa_cell-right">{$datainfo.subscribe_object_name}</td>
+                </tr>
+                <tr>
+                    <td width="150" class="oa_cell-left">预约场次名称：</td>
+                    <td class="oa_cell-right">{$datainfo.subscribe_session_name}</td>
+                </tr>
+                <tr>
+                    <td width="150" class="oa_cell-left">预约次数：</td>
+                    <td class="oa_cell-right">{$datainfo.subscribe_number}</td>
+                </tr>
+                <tr>
+                    <td width="150" class="oa_cell-left">创建时间：</td>
+                    <td class="oa_cell-right">{$datainfo.create_time | date="Y-m-d H:i",###}</td>
+                </tr>
+            </table>
+        </div>
+        <div class="oa_title clearfix">
+            <span class="oa_ico-right"><div  style="padding-right:10px;"></div></span>
+            <span class="oa_title-btn"></span>
+            <span class="oa_ico-left"></span>
+            签到信息        
+        </div>
+        <div class="oa_edition" style="margin-bottom: 5px">
+            <table width="100%" border="0" cellspacing="1" cellpadding="0" class="oa_edition" style="border-bottom: #e0e0e0 solid 1px">
+                <tr>
+                    <td width="150" class="oa_cell-left">是否签到：</td>
+                    <td class="oa_cell-right">{$datainfo.is_signin ? '是' : '否'}</td>
+                </tr>
+                <tr>
+                    <td width="150" class="oa_cell-left">签到用户ID：</td>
+                    <td class="oa_cell-right">{$datainfo.signin_member_id}</td>
+                </tr>
+                <tr>
+                    <td width="150" class="oa_cell-left">签到用户昵称：</td>
+                    <td class="oa_cell-right">{$datainfo.signin_member_nickname}</td>
+                </tr>
+                <tr>
+                    <td width="150" class="oa_cell-left">签到方式：</td>
+                    <td class="oa_cell-right">
+                        {if condition="$datainfo.signin_way == 1"}
+                        扫码签到
+                        {elseif condition="$datainfo.signin_way == 2"}
+                        输码签到
+                        {elseif condition="$datainfo.signin_way == 3"}
+                        电脑签到
+                        {/if}
+                    </td>
+                </tr>
+                <tr>
+                    <td width="150" class="oa_cell-left">签到备注：</td>
+                    <td class="oa_cell-right">{$datainfo.signin_remark}</td>
+                </tr>
+                <tr>
+                    <td width="150" class="oa_cell-left">签到时间：</td>
+                    <td class="oa_cell-right">{$datainfo.signin_time | date="Y-m-d H:i",###}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

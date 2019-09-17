@@ -1,0 +1,97 @@
+Array
+(
+    [package_id] => 123
+    [paynum] => 1
+    [payname] => abc1 件(6.00元)
+    [price] => 6
+    [txtfield] => 姓名∫9☆联系电话∫10
+    [txtdata] => 杨洁☆13269019846
+    [txtfield1] => 
+    [txtdata1] => 
+    [transaction_id] => 20190730151857371472
+    [group_buy_order_id] => 
+    [fiduser] => 54
+    [wechatid] => oZS4v1WWxE2vzQKc6vjUNJmnmlp8
+    [chrusername] => 杨洁
+    [idsite] => 7
+    [chrtitle] => 测试活动
+    [ischarge] => 2
+    [chrimg] => 
+    [chraddress] => 
+    [dtstart] => 2019-07-17 11:33:00
+    [dtend] => 2024-07-24 11:33:00
+    [pusilhid] => 
+    [pusilhname] => 
+    [marketid] => 0
+    [marketname] => 
+    [isrefund] => 0
+    [lock_stock_at] => 1564471137
+    [stock_locked] => 1
+    [dtcreatetime] => 2019-07-30 15:18:57
+    [dataid] => 103
+)
+Array
+(
+    [package_id] => 123
+    [paynum] => 1
+    [payname] => abc1 件(6.00元)
+    [price] => 6
+    [txtfield] => 姓名∫9☆联系电话∫10
+    [txtdata] => 杨洁☆13269019846
+    [txtfield1] => 
+    [txtdata1] => 
+    [transaction_id] => 20190730152058781701
+    [group_buy_order_id] => 
+    [fiduser] => 54
+    [wechatid] => oZS4v1WWxE2vzQKc6vjUNJmnmlp8
+    [chrusername] => 杨洁
+    [idsite] => 7
+    [chrtitle] => 测试活动
+    [ischarge] => 2
+    [chrimg] => 
+    [chraddress] => 
+    [dtstart] => 2019-07-17 11:33:00
+    [dtend] => 2024-07-24 11:33:00
+    [pusilhid] => 
+    [pusilhname] => 
+    [marketid] => 0
+    [marketname] => 
+    [isrefund] => 0
+    [lock_stock_at] => 1564471258
+    [stock_locked] => 1
+    [dtcreatetime] => 2019-07-30 15:20:58
+    [dataid] => 103
+)
+UPDATE `cms_order`  SET `package_id`=123,`paynum`=1,`payname`='abc1 件(6.00元)',`price`=6,`txtfield`='姓名∫9☆联系电话∫10',`txtdata`='杨洁☆13269019846',`txtfield1`='',`txtdata1`='',`transaction_id`='20190730152058781701',`group_buy_order_id`=0,`fiduser`=54,`wechatid`='oZS4v1WWxE2vzQKc6vjUNJmnmlp8',`chrusername`='杨洁',`idsite`=7,`chrtitle`='测试活动',`ischarge`=2,`chrimg`='',`chraddress`='',`dtstart`='2019-07-17 11:33:00',`dtend`='2024-07-24 11:33:00',`pusilhid`=NULL,`pusilhname`=NULL,`marketid`=0,`marketname`='',`isrefund`=0,`lock_stock_at`=1564471258,`stock_locked`=1,`dtcreatetime`='2019-07-30 15:20:58',`dataid`=103  WHERE  `id` = 2.0190730152055E+19Array
+(
+    [package_id] => 123
+    [paynum] => 1
+    [payname] => abc1 件(6.00元)
+    [price] => 6
+    [txtfield] => 姓名∫9☆联系电话∫10
+    [txtdata] => 杨洁☆13269019846
+    [txtfield1] => 
+    [txtdata1] => 
+    [transaction_id] => 20190730152510343072
+    [group_buy_order_id] => 
+    [fiduser] => 54
+    [wechatid] => oZS4v1WWxE2vzQKc6vjUNJmnmlp8
+    [chrusername] => 杨洁
+    [idsite] => 7
+    [chrtitle] => 测试活动
+    [ischarge] => 2
+    [chrimg] => 
+    [chraddress] => 
+    [dtstart] => 2019-07-17 11:33:00
+    [dtend] => 2024-07-24 11:33:00
+    [pusilhid] => 
+    [pusilhname] => 
+    [marketid] => 0
+    [marketname] => 
+    [isrefund] => 0
+    [lock_stock_at] => 1564471510
+    [stock_locked] => 1
+    [dtcreatetime] => 2019-07-30 15:25:10
+    [dataid] => 103
+)
+UPDATE `cms_order`  SET `package_id`=123,`paynum`=1,`payname`='abc1 件(6.00元)',`price`=6,`txtfield`='姓名∫9☆联系电话∫10',`txtdata`='杨洁☆13269019846',`txtfield1`='',`txtdata1`='',`transaction_id`='20190730152510343072',`group_buy_order_id`=0,`fiduser`=54,`wechatid`='oZS4v1WWxE2vzQKc6vjUNJmnmlp8',`chrusername`='杨洁',`idsite`=7,`chrtitle`='测试活动',`ischarge`=2,`chrimg`='',`chraddress`='',`dtstart`='2019-07-17 11:33:00',`dtend`='2024-07-24 11:33:00',`pusilhid`=NULL,`pusilhname`=NULL,`marketid`=0,`marketname`='',`isrefund`=0,`lock_stock_at`=1564471510,`stock_locked`=1,`dtcreatetime`='2019-07-30 15:25:10',`dataid`=103  WHERE  `id` = 2.0190730152055E+19

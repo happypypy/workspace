@@ -29,144 +29,149 @@
     <session id="1216827332">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
+          <entry key="project.closed" value="1" />
+          <entry key="project.open.time.10" value="1" />
           <entry key="project.open.time.15" value="1" />
-          <entry key="project.open.time.19" value="1" />
+          <entry key="project.open.time.19" value="3" />
           <entry key="project.open.time.2" value="1" />
-          <entry key="project.open.time.20" value="1" />
-          <entry key="project.open.time.21" value="2" />
-          <entry key="project.open.time.22" value="1" />
-          <entry key="project.open.time.23" value="3" />
-          <entry key="project.open.time.24" value="2" />
-          <entry key="project.open.time.26" value="1" />
-          <entry key="project.open.time.33" value="1" />
-          <entry key="project.opened" value="14" />
+          <entry key="project.open.time.20" value="6" />
+          <entry key="project.open.time.21" value="7" />
+          <entry key="project.open.time.22" value="6" />
+          <entry key="project.open.time.23" value="12" />
+          <entry key="project.open.time.24" value="6" />
+          <entry key="project.open.time.25" value="5" />
+          <entry key="project.open.time.26" value="3" />
+          <entry key="project.open.time.28" value="3" />
+          <entry key="project.open.time.3" value="1" />
+          <entry key="project.open.time.30" value="1" />
+          <entry key="project.open.time.31" value="1" />
+          <entry key="project.open.time.33" value="3" />
+          <entry key="project.open.time.35" value="1" />
+          <entry key="project.open.time.38" value="1" />
+          <entry key="project.open.time.43" value="1" />
+          <entry key="project.open.time.7" value="1" />
+          <entry key="project.open.time.9" value="1" />
+          <entry key="project.opened" value="65" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="bak" value="1" />
-          <entry key="html" value="159" />
-          <entry key="jpg" value="11" />
-          <entry key="js" value="3" />
-          <entry key="log" value="22" />
-          <entry key="php" value="128" />
-          <entry key="ts" value="1" />
-          <entry key="txt" value="1" />
+          <entry key="bak" value="2" />
+          <entry key="config" value="1" />
+          <entry key="css" value="14" />
+          <entry key="html" value="909" />
+          <entry key="jpeg" value="1" />
+          <entry key="jpg" value="36" />
+          <entry key="js" value="65" />
+          <entry key="json" value="1" />
+          <entry key="less" value="1" />
+          <entry key="log" value="49" />
+          <entry key="php" value="483" />
+          <entry key="png" value="3" />
+          <entry key="rnc" value="1" />
+          <entry key="sql" value="3" />
+          <entry key="ts" value="8" />
+          <entry key="txt" value="3" />
+          <entry key="url" value="1" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="HTML" value="159" />
-          <entry key="Image" value="11" />
-          <entry key="JavaScript" value="3" />
-          <entry key="PHP" value="128" />
-          <entry key="PLAIN_TEXT" value="24" />
-          <entry key="TypeScript" value="1" />
+          <entry key="CSS" value="14" />
+          <entry key="HTML" value="909" />
+          <entry key="Image" value="40" />
+          <entry key="JSON" value="1" />
+          <entry key="JavaScript" value="65" />
+          <entry key="Less" value="1" />
+          <entry key="PHP" value="476" />
+          <entry key="PLAIN_TEXT" value="63" />
+          <entry key="RNG Compact" value="1" />
+          <entry key="SQL" value="3" />
+          <entry key="TypeScript" value="8" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="html" value="4028" />
-          <entry key="js" value="6" />
-          <entry key="php" value="5945" />
+          <entry key="css" value="67" />
+          <entry key="html" value="27889" />
+          <entry key="js" value="744" />
+          <entry key="log" value="13" />
+          <entry key="php" value="38691" />
+          <entry key="rnc" value="1" />
+          <entry key="sql" value="3" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="HTML" value="4028" />
-          <entry key="JavaScript" value="6" />
-          <entry key="PHP" value="5945" />
+          <entry key="CSS" value="67" />
+          <entry key="HTML" value="27888" />
+          <entry key="JavaScript" value="744" />
+          <entry key="PHP" value="38641" />
+          <entry key="PLAIN_TEXT" value="64" />
+          <entry key="RNG Compact" value="1" />
+          <entry key="SQL" value="3" />
         </counts>
       </usages-collector>
     </session>
   </component>
+  <component name="FavoritesManager">
+    <favorites_list name="work" />
+  </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/application/home/controller/Index.php">
+        <entry file="file://$PROJECT_DIR$/application/admin/module/act.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="257">
-              <caret line="1277" column="42" selection-start-line="1277" selection-start-column="42" selection-end-line="1277" selection-end-column="42" />
+            <state relative-caret-position="1323">
+              <caret line="660" selection-start-line="660" selection-end-line="660" />
               <folding>
-                <element signature="e#117#137#0#PHP" expanded="true" />
+                <element signature="e#473#486#0#PHP" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/application/admin/view/order/refund.html">
+        <entry file="file://$PROJECT_DIR$/application/route.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="263">
-              <caret line="285" column="35" selection-start-line="285" selection-start-column="35" selection-end-line="285" selection-end-column="35" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/application/admin/controller/Api.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="614">
-              <caret line="316" column="25" lean-forward="true" selection-start-line="316" selection-start-column="25" selection-end-line="316" selection-end-column="25" />
-              <folding>
-                <element signature="e#10902#12690#0#PHP" />
-                <element signature="e#12713#12940#0#PHP" />
-              </folding>
+            <state relative-caret-position="280">
+              <caret line="60" column="59" selection-start-line="60" selection-start-column="49" selection-end-line="60" selection-end-column="59" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/application/common.php">
+        <entry file="file://$PROJECT_DIR$/application/home/controller/Index.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="243">
-              <caret line="1209" column="60" selection-start-line="1209" selection-start-column="60" selection-end-line="1209" selection-end-column="60" />
-              <folding>
-                <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#input#1;n#div#0;n#!!top" expanded="true" />
-              </folding>
+            <state relative-caret-position="265">
+              <caret line="15" column="13" selection-start-line="15" selection-start-column="10" selection-end-line="15" selection-end-column="13" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/application/home/model/GroupBuyOrder.php">
+        <entry file="file://$PROJECT_DIR$/application/admin/controller/Act.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2296">
-              <caret line="445" column="32" lean-forward="true" selection-start-line="445" selection-start-column="32" selection-end-line="445" selection-end-column="32" />
+            <state relative-caret-position="226">
+              <caret line="669" column="74" selection-start-line="669" selection-start-column="70" selection-end-line="669" selection-end-column="74" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/application/home/controller/GroupBuy.php">
-          <provider selected="true" editor-type-id="text-editor" />
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/application/home/model/GroupBuy.php">
+        <entry file="file://$PROJECT_DIR$/application/admin/view/act/comment_summary.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="27">
-              <caret line="72" selection-start-line="72" selection-end-line="72" />
+            <state relative-caret-position="467">
+              <caret line="117" column="74" selection-start-line="117" selection-start-column="62" selection-end-line="117" selection-end-column="74" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/thinkphp/library/think/wx/Api.php">
+        <entry file="file://$PROJECT_DIR$/application/admin/view/act/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1091">
-              <caret line="2721" column="63" selection-start-line="2721" selection-start-column="57" selection-end-line="2721" selection-end-column="63" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/runtime/log/201907/18.log">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="594">
-              <caret line="46" column="18" selection-start-line="46" selection-start-column="10" selection-end-line="46" selection-end-column="18" />
+            <state relative-caret-position="170">
+              <caret line="150" column="95" selection-start-line="150" selection-start-column="95" selection-end-line="150" selection-end-column="95" />
             </state>
           </provider>
         </entry>
@@ -175,95 +180,108 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>hyfl</find>
-      <find>58</find>
-      <find>Log</find>
-      <find>pack</find>
-      <find>join</find>
-      <find>sendJoinGroupBuyWechatMsg</find>
-      <find>template_send</find>
-      <find>'idsite'</find>
-      <find>小时</find>
-      <find>团购价格</find>
-      <find>拼团成功</find>
-      <find>visitlist</find>
-      <find>group_buy_l</find>
-      <find>stateMap</find>
-      <find>groupBuyList</find>
-      <find>chrtitle</find>
-      <find>activity()</find>
-      <find>11</find>
-      <find>ajax</find>
-      <find>group</find>
-      <find>group_buy_list</find>
-      <find>groupBuyL</find>
-      <find>a2</find>
-      <find>groupBuyList()</find>
-      <find>session</find>
-      <find>Session</find>
-      <find>Session:</find>
-      <find>detail()</find>
-      <find>err_code_des</find>
-      <find>refund()</find>
+      <find>layer.open</find>
+      <find>response</find>
+      <find>page</find>
+      <find>hand</find>
+      <find>chose</find>
+      <find>|</find>
+      <find>href</find>
+      <find>addVisitRecord</find>
+      <find>detai</find>
+      <find>visitflag</find>
+      <find>评论</find>
+      <find>content</find>
+      <find>detail</find>
+      <find>summary</find>
+      <find>summa</find>
+      <find>searchable-select-item</find>
+      <find>buildItems</find>
+      <find>searchable-select-holder</find>
+      <find>onc</find>
+      <find>add</find>
+      <find>chose_p</find>
+      <find>chose_p()</find>
+      <find>commentlist</find>
+      <find>cancel_order</find>
+      <find>footer3</find>
+      <find>add_comment1</find>
+      <find>footer-comment-form</find>
+      <find>产品使用时间</find>
+      <find>search-bar-span</find>
+      <find>signuplist</find>
     </findStrings>
+    <replaceStrings>
+      <replace />
+      <replace>div</replace>
+      <replace>tit</replace>
+      <replace>activity_checkbox</replace>
+      <replace>产品使用时间</replace>
+      <replace>代言的产品</replace>
+      <replace>免费产品</replace>
+      <replace>该产品</replace>
+      <replace>产品使用</replace>
+      <replace>产品</replace>
+    </replaceStrings>
     <dirStrings>
       <dir>D:\workspace\work\runtime\log\201907</dir>
+      <dir>D:\workspace\work\public\template\modules\lib</dir>
     </dirStrings>
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/application/admin/controller/Node.php" />
-        <option value="$PROJECT_DIR$/public/template/M2/node/detail.html" />
-        <option value="$PROJECT_DIR$/public/template/M3/node/detail.html" />
-        <option value="$PROJECT_DIR$/public/template/M4/node/detail.html" />
-        <option value="$PROJECT_DIR$/public/template/M5/node/detail.html" />
-        <option value="$PROJECT_DIR$/public/template/M6/node/detail.html" />
-        <option value="$PROJECT_DIR$/public/template/M7/node/detail.html" />
-        <option value="$PROJECT_DIR$/public/template/M1/node/detail.html" />
-        <option value="$PROJECT_DIR$/application/admin/controller/Activity.php" />
-        <option value="$PROJECT_DIR$/application/admin/module/activity.php" />
-        <option value="$PROJECT_DIR$/public/template/M1/order/signup.html" />
-        <option value="$PROJECT_DIR$/public/template/M7/order/signup.html" />
-        <option value="$PROJECT_DIR$/public/template/M6/order/signup.html" />
-        <option value="$PROJECT_DIR$/public/template/M5/order/signup.html" />
-        <option value="$PROJECT_DIR$/public/template/M4/order/signup.html" />
-        <option value="$PROJECT_DIR$/public/template/M3/order/signup.html" />
-        <option value="$PROJECT_DIR$/public/template/M2/order/signup.html" />
-        <option value="$PROJECT_DIR$/thinkphp/library/think/Cms.php" />
-        <option value="$PROJECT_DIR$/application/common.php" />
-        <option value="$PROJECT_DIR$/application/home/model/GroupBuyOrder.php" />
-        <option value="$PROJECT_DIR$/public/template/M1/assemble/assemble_join.html" />
-        <option value="$PROJECT_DIR$/public/template/M2/assemble/assemble_join.html" />
-        <option value="$PROJECT_DIR$/public/template/M2/assemble/assemble_share.html" />
-        <option value="$PROJECT_DIR$/public/template/M3/assemble/assemble_join.html" />
-        <option value="$PROJECT_DIR$/public/template/M3/assemble/assemble_share.html" />
-        <option value="$PROJECT_DIR$/public/template/M4/assemble/assemble_join.html" />
-        <option value="$PROJECT_DIR$/public/template/M4/assemble/assemble_share.html" />
-        <option value="$PROJECT_DIR$/public/template/M5/assemble/assemble_join.html" />
-        <option value="$PROJECT_DIR$/public/template/M5/assemble/assemble_share.html" />
-        <option value="$PROJECT_DIR$/public/template/M6/assemble/assemble_join.html" />
-        <option value="$PROJECT_DIR$/public/template/M6/assemble/assemble_share.html" />
-        <option value="$PROJECT_DIR$/public/template/M7/assemble/assemble_join.html" />
-        <option value="$PROJECT_DIR$/public/template/M7/assemble/assemble_share.html" />
+        <option value="$PROJECT_DIR$/application/admin/view/Act/edit.html" />
+        <option value="$PROJECT_DIR$/application/admin/view/Act/index.html" />
+        <option value="$PROJECT_DIR$/application/admin/view/Act/add_parents.html" />
+        <option value="$PROJECT_DIR$/public/template/M1/index.html" />
         <option value="$PROJECT_DIR$/application/admin/controller/Order.php" />
-        <option value="$PROJECT_DIR$/public/template/M1/assemble/assemble_share.html" />
-        <option value="$PROJECT_DIR$/application/admin/view/node/visitlist.html" />
-        <option value="$PROJECT_DIR$/application/admin/view/activity/modi.html" />
-        <option value="$PROJECT_DIR$/public/template/M1/activity/detail.html" />
-        <option value="$PROJECT_DIR$/public/template/M1/assemble/ajax_list.html" />
+        <option value="$PROJECT_DIR$/application/admin/view/activity/index.html" />
+        <option value="$PROJECT_DIR$/application/admin/module/Order.php" />
         <option value="$PROJECT_DIR$/application/home/model/GroupBuy.php" />
-        <option value="$PROJECT_DIR$/public/template/M1/assemble/assemble_list.html" />
-        <option value="$PROJECT_DIR$/public/template/M2/assemble/assemble_list.html" />
-        <option value="$PROJECT_DIR$/public/template/M3/assemble/assemble_list.html" />
-        <option value="$PROJECT_DIR$/public/template/M4/assemble/assemble_list.html" />
-        <option value="$PROJECT_DIR$/public/template/M5/assemble/assemble_list.html" />
-        <option value="$PROJECT_DIR$/public/template/M6/assemble/assemble_list.html" />
-        <option value="$PROJECT_DIR$/public/template/M7/assemble/assemble_list.html" />
+        <option value="$PROJECT_DIR$/application/admin/module/activity.php" />
+        <option value="$PROJECT_DIR$/application/admin/view/Act/chose_colum.html" />
+        <option value="$PROJECT_DIR$/application/admin/view/Act/order_addstu.html" />
+        <option value="$PROJECT_DIR$/application/admin/view/Act/order_addstus.html" />
+        <option value="$PROJECT_DIR$/application/admin/view/Act/chose_parent.html" />
+        <option value="$PROJECT_DIR$/application/admin/view/Act/hand_addstu.html" />
+        <option value="$PROJECT_DIR$/application/admin/view/Act/add_comment_stu.html" />
+        <option value="$PROJECT_DIR$/application/admin/view/Act/comment_stu.html" />
+        <option value="$PROJECT_DIR$/application/admin/view/Act/add_teacher.html" />
+        <option value="$PROJECT_DIR$/application/admin/view/Act/ajax_studentlist.html" />
+        <option value="$PROJECT_DIR$/application/admin/view/Act/act_info.html" />
+        <option value="$PROJECT_DIR$/application/admin/view/act/ajax_studentlist.html" />
+        <option value="$PROJECT_DIR$/application/admin/view/act/ajax_visitlist.html" />
+        <option value="$PROJECT_DIR$/application/admin/controller/Activity.php" />
+        <option value="$PROJECT_DIR$/application/admin/view/act/visit.html" />
+        <option value="$PROJECT_DIR$/application/admin/view/comment/index.html" />
+        <option value="$PROJECT_DIR$/application/admin/view/act/comment_summary.html" />
+        <option value="$PROJECT_DIR$/thinkphp/library/think/Page.php" />
+        <option value="$PROJECT_DIR$/application/admin/view/act/comment_stu.html" />
+        <option value="$PROJECT_DIR$/application/admin/view/act/add_comment_stu.html" />
+        <option value="$PROJECT_DIR$/application/admin/view/act/add_summary.html" />
+        <option value="$PROJECT_DIR$/application/admin/view/act/response.html" />
+        <option value="$PROJECT_DIR$/application/admin/view/act/act_info.html" />
+        <option value="$PROJECT_DIR$/application/admin/view/act/get_summary.html" />
+        <option value="$PROJECT_DIR$/application/admin/view/act/hand_addstu.html" />
+        <option value="$PROJECT_DIR$/public/template/modules/activities/pinfo.html" />
         <option value="$PROJECT_DIR$/application/home/controller/Index.php" />
-        <option value="$PROJECT_DIR$/thinkphp/library/think/wx/Api.php" />
-        <option value="$PROJECT_DIR$/application/admin/view/order/refund.html" />
-        <option value="$PROJECT_DIR$/application/admin/controller/Api.php" />
+        <option value="$PROJECT_DIR$/application/route.php" />
+        <option value="$PROJECT_DIR$/application/home/controller/Activities.php" />
+        <option value="$PROJECT_DIR$/public/template/modules/activities/detail.html" />
+        <option value="$PROJECT_DIR$/public/template/modules/lib/footer4.html" />
+        <option value="$PROJECT_DIR$/public/template/modules/activities/summarydetail.html" />
+        <option value="$PROJECT_DIR$/public/template/modules/activities/commentdetail.html" />
+        <option value="$PROJECT_DIR$/application/admin/view/act/edit.html" />
+        <option value="$PROJECT_DIR$/application/admin/view/act/index.html" />
+        <option value="$PROJECT_DIR$/application/admin/controller/Act.php" />
+        <option value="$PROJECT_DIR$/public/static/js/jquery.searchableSelect.js" />
+        <option value="$PROJECT_DIR$/application/admin/view/act/chose_parent.html" />
+        <option value="$PROJECT_DIR$/application/admin/module/act.php" />
+        <option value="$PROJECT_DIR$/public/template/modules/mine/order_list.html" />
+        <option value="$PROJECT_DIR$/public/template/modules/mine/ajax_mine_order_list.html" />
+        <option value="$PROJECT_DIR$/public/template/modules/node/detail.html" />
+        <option value="$PROJECT_DIR$/public/template/modules/mine/ajax_order_list.html" />
       </list>
     </option>
   </component>
@@ -280,10 +298,11 @@
       <path value="$PROJECT_DIR$/vendor/composer" />
     </include_path>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
-    <option name="x" value="-64" />
-    <option name="width" value="1038" />
-    <option name="height" value="1047" />
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="520" />
+    <option name="y" value="116" />
+    <option name="width" value="1286" />
+    <option name="height" value="859" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -321,7 +340,7 @@
               <item name="application" type="462c0819:PsiDirectoryNode" />
               <item name="admin" type="462c0819:PsiDirectoryNode" />
               <item name="view" type="462c0819:PsiDirectoryNode" />
-              <item name="order" type="462c0819:PsiDirectoryNode" />
+              <item name="node" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="work" type="b2602c69:ProjectViewProjectNode" />
@@ -352,6 +371,12 @@
               <item name="work" type="b2602c69:ProjectViewProjectNode" />
               <item name="work" type="462c0819:PsiDirectoryNode" />
               <item name="public" type="462c0819:PsiDirectoryNode" />
+              <item name="static" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="work" type="b2602c69:ProjectViewProjectNode" />
+              <item name="work" type="462c0819:PsiDirectoryNode" />
+              <item name="public" type="462c0819:PsiDirectoryNode" />
               <item name="template" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -359,14 +384,22 @@
               <item name="work" type="462c0819:PsiDirectoryNode" />
               <item name="public" type="462c0819:PsiDirectoryNode" />
               <item name="template" type="462c0819:PsiDirectoryNode" />
-              <item name="M1" type="462c0819:PsiDirectoryNode" />
+              <item name="modules" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="work" type="b2602c69:ProjectViewProjectNode" />
               <item name="work" type="462c0819:PsiDirectoryNode" />
               <item name="public" type="462c0819:PsiDirectoryNode" />
               <item name="template" type="462c0819:PsiDirectoryNode" />
-              <item name="M1" type="462c0819:PsiDirectoryNode" />
+              <item name="modules" type="462c0819:PsiDirectoryNode" />
+              <item name="activities" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="work" type="b2602c69:ProjectViewProjectNode" />
+              <item name="work" type="462c0819:PsiDirectoryNode" />
+              <item name="public" type="462c0819:PsiDirectoryNode" />
+              <item name="template" type="462c0819:PsiDirectoryNode" />
+              <item name="modules" type="462c0819:PsiDirectoryNode" />
               <item name="activity" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -374,120 +407,24 @@
               <item name="work" type="462c0819:PsiDirectoryNode" />
               <item name="public" type="462c0819:PsiDirectoryNode" />
               <item name="template" type="462c0819:PsiDirectoryNode" />
-              <item name="M1" type="462c0819:PsiDirectoryNode" />
-              <item name="assemble" type="462c0819:PsiDirectoryNode" />
+              <item name="modules" type="462c0819:PsiDirectoryNode" />
+              <item name="lib" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="work" type="b2602c69:ProjectViewProjectNode" />
               <item name="work" type="462c0819:PsiDirectoryNode" />
               <item name="public" type="462c0819:PsiDirectoryNode" />
               <item name="template" type="462c0819:PsiDirectoryNode" />
-              <item name="M2" type="462c0819:PsiDirectoryNode" />
+              <item name="modules" type="462c0819:PsiDirectoryNode" />
+              <item name="mine" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="work" type="b2602c69:ProjectViewProjectNode" />
               <item name="work" type="462c0819:PsiDirectoryNode" />
               <item name="public" type="462c0819:PsiDirectoryNode" />
               <item name="template" type="462c0819:PsiDirectoryNode" />
-              <item name="M2" type="462c0819:PsiDirectoryNode" />
-              <item name="assemble" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="work" type="b2602c69:ProjectViewProjectNode" />
-              <item name="work" type="462c0819:PsiDirectoryNode" />
-              <item name="public" type="462c0819:PsiDirectoryNode" />
-              <item name="template" type="462c0819:PsiDirectoryNode" />
-              <item name="M3" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="work" type="b2602c69:ProjectViewProjectNode" />
-              <item name="work" type="462c0819:PsiDirectoryNode" />
-              <item name="public" type="462c0819:PsiDirectoryNode" />
-              <item name="template" type="462c0819:PsiDirectoryNode" />
-              <item name="M3" type="462c0819:PsiDirectoryNode" />
-              <item name="assemble" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="work" type="b2602c69:ProjectViewProjectNode" />
-              <item name="work" type="462c0819:PsiDirectoryNode" />
-              <item name="public" type="462c0819:PsiDirectoryNode" />
-              <item name="template" type="462c0819:PsiDirectoryNode" />
-              <item name="M4" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="work" type="b2602c69:ProjectViewProjectNode" />
-              <item name="work" type="462c0819:PsiDirectoryNode" />
-              <item name="public" type="462c0819:PsiDirectoryNode" />
-              <item name="template" type="462c0819:PsiDirectoryNode" />
-              <item name="M4" type="462c0819:PsiDirectoryNode" />
-              <item name="assemble" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="work" type="b2602c69:ProjectViewProjectNode" />
-              <item name="work" type="462c0819:PsiDirectoryNode" />
-              <item name="public" type="462c0819:PsiDirectoryNode" />
-              <item name="template" type="462c0819:PsiDirectoryNode" />
-              <item name="M5" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="work" type="b2602c69:ProjectViewProjectNode" />
-              <item name="work" type="462c0819:PsiDirectoryNode" />
-              <item name="public" type="462c0819:PsiDirectoryNode" />
-              <item name="template" type="462c0819:PsiDirectoryNode" />
-              <item name="M5" type="462c0819:PsiDirectoryNode" />
-              <item name="assemble" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="work" type="b2602c69:ProjectViewProjectNode" />
-              <item name="work" type="462c0819:PsiDirectoryNode" />
-              <item name="public" type="462c0819:PsiDirectoryNode" />
-              <item name="template" type="462c0819:PsiDirectoryNode" />
-              <item name="M6" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="work" type="b2602c69:ProjectViewProjectNode" />
-              <item name="work" type="462c0819:PsiDirectoryNode" />
-              <item name="public" type="462c0819:PsiDirectoryNode" />
-              <item name="template" type="462c0819:PsiDirectoryNode" />
-              <item name="M6" type="462c0819:PsiDirectoryNode" />
-              <item name="assemble" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="work" type="b2602c69:ProjectViewProjectNode" />
-              <item name="work" type="462c0819:PsiDirectoryNode" />
-              <item name="public" type="462c0819:PsiDirectoryNode" />
-              <item name="template" type="462c0819:PsiDirectoryNode" />
-              <item name="M7" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="work" type="b2602c69:ProjectViewProjectNode" />
-              <item name="work" type="462c0819:PsiDirectoryNode" />
-              <item name="public" type="462c0819:PsiDirectoryNode" />
-              <item name="template" type="462c0819:PsiDirectoryNode" />
-              <item name="M7" type="462c0819:PsiDirectoryNode" />
-              <item name="assemble" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="work" type="b2602c69:ProjectViewProjectNode" />
-              <item name="work" type="462c0819:PsiDirectoryNode" />
-              <item name="runtime" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="work" type="b2602c69:ProjectViewProjectNode" />
-              <item name="work" type="462c0819:PsiDirectoryNode" />
-              <item name="runtime" type="462c0819:PsiDirectoryNode" />
-              <item name="log" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="work" type="b2602c69:ProjectViewProjectNode" />
-              <item name="work" type="462c0819:PsiDirectoryNode" />
-              <item name="thinkphp" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="work" type="b2602c69:ProjectViewProjectNode" />
-              <item name="work" type="462c0819:PsiDirectoryNode" />
-              <item name="thinkphp" type="462c0819:PsiDirectoryNode" />
-              <item name="library" type="462c0819:PsiDirectoryNode" />
+              <item name="modules" type="462c0819:PsiDirectoryNode" />
+              <item name="node" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -500,17 +437,22 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="settings.editor.selected.configurable" value="preferences.fileTypes" />
   </component>
   <component name="ReadonlyStatusHandler">
     <option name="SHOW_DIALOG" value="false" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\workspace\work\public\template\M7\assemble" />
-      <recent name="D:\workspace\work\public\template\M6\assemble" />
-      <recent name="D:\workspace\work\public\template\M5\assemble" />
-      <recent name="D:\workspace\work\public\template\M4\assemble" />
-      <recent name="D:\workspace\work\public\template\M3\assemble" />
+      <recent name="D:\workspace\work\application\admin\controller" />
+      <recent name="D:\workspace\work\application\home\controller" />
+      <recent name="D:\workspace\work\public\static\css" />
+      <recent name="D:\workspace\work\public\static\plugins\photoCut\js" />
+      <recent name="D:\workspace\work\public\static\js" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\workspace\work\public\static\plugins" />
+      <recent name="D:\workspace\work\public\template\modules" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -549,22 +491,72 @@
       <workItem from="1563152613265" duration="21159000" />
       <workItem from="1563237607648" duration="22920000" />
       <workItem from="1563325200931" duration="27493000" />
-      <workItem from="1563412232942" duration="15406000" />
+      <workItem from="1563412232942" duration="20430000" />
+      <workItem from="1563498758329" duration="21260000" />
+      <workItem from="1563584176474" duration="21303000" />
+      <workItem from="1563757408611" duration="23794000" />
+      <workItem from="1563843732277" duration="23763000" />
+      <workItem from="1563931450347" duration="20087000" />
+      <workItem from="1564016718513" duration="22923000" />
+      <workItem from="1564102610059" duration="28385000" />
+      <workItem from="1564189307091" duration="22809000" />
+      <workItem from="1564363369244" duration="22382000" />
+      <workItem from="1564449268393" duration="18429000" />
+      <workItem from="1564534708702" duration="23101000" />
+      <workItem from="1564621507836" duration="20441000" />
+      <workItem from="1564708184802" duration="23615000" />
+      <workItem from="1564794465314" duration="21769000" />
+      <workItem from="1564967162811" duration="28786000" />
+      <workItem from="1565053633621" duration="21985000" />
+      <workItem from="1565140740799" duration="28013000" />
+      <workItem from="1565225514405" duration="27031000" />
+      <workItem from="1565313271850" duration="14617000" />
+      <workItem from="1565398890319" duration="20908000" />
+      <workItem from="1565570305753" duration="26218000" />
+      <workItem from="1565657462375" duration="10761000" />
+      <workItem from="1565744481483" duration="17430000" />
+      <workItem from="1565830905020" duration="23215000" />
+      <workItem from="1565917359217" duration="24077000" />
+      <workItem from="1566177006337" duration="21480000" />
+      <workItem from="1566264120121" duration="17734000" />
+      <workItem from="1566350081522" duration="21807000" />
+      <workItem from="1566435333000" duration="26161000" />
+      <workItem from="1566522282452" duration="28739000" />
+      <workItem from="1566610087463" duration="21111000" />
+      <workItem from="1566781921558" duration="21199000" />
+      <workItem from="1566868610140" duration="19376000" />
+      <workItem from="1566955171642" duration="19560000" />
+      <workItem from="1567041619528" duration="20549000" />
+      <workItem from="1567127586290" duration="24770000" />
+      <workItem from="1567214368315" duration="17402000" />
+      <workItem from="1567386431310" duration="16759000" />
+      <workItem from="1567472831648" duration="21350000" />
+      <workItem from="1567558734340" duration="6022000" />
+      <workItem from="1567579826118" duration="9511000" />
+      <workItem from="1567646592732" duration="9229000" />
+      <workItem from="1567663948094" duration="10225000" />
+      <workItem from="1567731746462" duration="27094000" />
+      <workItem from="1567819222623" duration="21276000" />
+      <workItem from="1567991881354" duration="20593000" />
+      <workItem from="1568077900432" duration="28102000" />
+      <workItem from="1568164422179" duration="27144000" />
+      <workItem from="1568251329632" duration="17463000" />
+      <workItem from="1568596211005" duration="28271000" />
+      <workItem from="1568683527953" duration="11121000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="247728000" />
+    <option name="totallyTimeSpent" value="1323902000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="7" />
-    <editor active="true" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.4989154" visible="true" weight="0.1705757" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.4967462" visible="true" weight="0.15831557" />
       <window_info id="Structure" order="1" sideWeight="0.5010846" side_tool="true" weight="0.18976545" />
-      <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info id="Favorites" order="2" sideWeight="0.5032538" side_tool="true" weight="0.1652452" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.3286334" />
       <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
@@ -573,19 +565,19 @@
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Database Changes" order="8" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="9" />
-      <window_info anchor="bottom" id="Terminal" order="10" />
+      <window_info anchor="bottom" id="Terminal" order="10" weight="0.329718" />
       <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="right" id="Database" order="3" weight="0.32995737" />
+      <window_info anchor="right" id="Database" order="3" weight="0.32991454" />
     </layout>
     <layout-to-restore>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.4989154" visible="true" weight="0.16791044" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.4967462" visible="true" weight="0.15671642" />
       <window_info id="Structure" order="1" sideWeight="0.5010846" side_tool="true" weight="0.18976545" />
-      <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info id="Favorites" order="2" sideWeight="0.5032538" side_tool="true" weight="0.1652452" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.3286334" />
       <window_info anchor="bottom" id="Run" order="2" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
@@ -594,408 +586,401 @@
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Database Changes" order="8" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="9" />
-      <window_info anchor="bottom" id="Terminal" order="10" />
+      <window_info anchor="bottom" id="Terminal" order="10" weight="0.329718" />
       <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="right" id="Database" order="3" weight="0.32995737" />
+      <window_info anchor="right" id="Database" order="3" weight="0.32991454" />
     </layout-to-restore>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="*.log" />
+  </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/public/template/M2/assemble/assemble_join.html">
+    <entry file="file://$PROJECT_DIR$/application/admin/controller/Comment.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="188">
-          <caret line="40" selection-start-line="40" selection-end-line="40" />
+        <state relative-caret-position="3051">
+          <caret line="118" column="29" selection-start-line="118" selection-start-column="29" selection-end-line="118" selection-end-column="29" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/public/template/M2/assemble/assemble_share.html">
+    <entry file="file://$PROJECT_DIR$/application/admin/view/comment/re.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="44" selection-start-line="44" selection-end-line="44" />
+        <state relative-caret-position="486">
+          <caret line="18" selection-start-line="18" selection-end-line="69" selection-end-column="6" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/public/template/M3/assemble/assemble_share.html">
+    <entry file="file://$PROJECT_DIR$/application/admin/module/activity.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="297">
-          <caret line="44" selection-start-line="44" selection-end-line="44" />
+        <state relative-caret-position="459">
+          <caret line="1178" column="45" selection-start-line="1176" selection-start-column="12" selection-end-line="1178" selection-end-column="45" />
+          <folding>
+            <element signature="e#473#486#0#PHP" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/public/template/M4/assemble/assemble_join.html">
+    <entry file="file://$PROJECT_DIR$/application/admin/view/act/add_comment_stu.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="40" selection-start-line="40" selection-end-line="40" />
+        <state relative-caret-position="764">
+          <caret line="163" column="26" lean-forward="true" selection-start-line="163" selection-start-column="26" selection-end-line="163" selection-end-column="26" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/public/template/M4/assemble/assemble_share.html">
+    <entry file="file://$PROJECT_DIR$/application/admin/view/act/comment_stu.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="324">
-          <caret line="44" selection-start-line="44" selection-end-line="44" />
+        <state relative-caret-position="197">
+          <caret line="84" column="32" lean-forward="true" selection-start-line="84" selection-start-column="32" selection-end-line="84" selection-end-column="32" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/public/template/M3/assemble/assemble_join.html">
+    <entry file="file://$PROJECT_DIR$/application/admin/view/act/chose_colum.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="354">
-          <caret line="40" selection-start-line="40" selection-end-line="40" />
+        <state relative-caret-position="926">
+          <caret line="46" column="68" selection-start-line="46" selection-start-column="68" selection-end-line="46" selection-end-column="68" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/public/template/M5/assemble/assemble_join.html">
+    <entry file="file://$PROJECT_DIR$/application/admin/view/act/order_addstus.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="40" selection-start-line="40" selection-end-line="40" />
+        <state relative-caret-position="-60">
+          <caret line="218" column="85" selection-start-line="218" selection-start-column="85" selection-end-line="218" selection-end-column="85" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/public/template/M5/assemble/assemble_share.html">
+    <entry file="file://$PROJECT_DIR$/application/admin/view/act/order_addstu.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="405">
-          <caret line="44" selection-start-line="44" selection-end-line="44" />
+        <state relative-caret-position="1182">
+          <caret line="301" column="121" selection-start-line="301" selection-start-column="116" selection-end-line="301" selection-end-column="121" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/public/template/M6/assemble/assemble_join.html">
+    <entry file="file://$PROJECT_DIR$/application/admin/view/act/ajax_studentlist.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="351">
-          <caret line="40" selection-start-line="40" selection-end-line="40" />
+        <state relative-caret-position="810">
+          <caret line="30" selection-start-line="30" selection-end-line="30" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/public/template/M6/assemble/assemble_share.html">
+    <entry file="file://$PROJECT_DIR$/thinkphp/library/think/Page.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="405">
-          <caret line="44" selection-start-line="44" selection-end-line="44" />
+        <state relative-caret-position="162">
+          <caret line="14" column="11" selection-start-line="14" selection-start-column="11" selection-end-line="14" selection-end-column="11" />
+          <folding>
+            <element signature="e#34#40#0" expanded="true" />
+            <element signature="e#96#102#0" expanded="true" />
+            <element signature="n#style#0;n#a#0;n#li#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#form#0;n#li#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#input#0;n#form#0;n#li#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#a#0;n#li#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#input#0;n#li#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/public/template/M7/assemble/assemble_join.html">
+    <entry file="file://$PROJECT_DIR$/application/admin/view/act/act_info.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="40" selection-start-line="40" selection-end-line="40" />
+        <state relative-caret-position="8829">
+          <caret line="338" column="148" selection-start-line="338" selection-start-column="148" selection-end-line="338" selection-end-column="148" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/public/template/M7/assemble/assemble_share.html">
+    <entry file="file://$PROJECT_DIR$/application/admin/view/act/response.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="432">
-          <caret line="51" lean-forward="true" selection-start-line="51" selection-end-line="51" />
+        <state relative-caret-position="27">
+          <caret line="34" column="21" selection-start-line="34" selection-start-column="21" selection-end-line="34" selection-end-column="21" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/thinkphp/library/think/Config.php">
+    <entry file="file://$PROJECT_DIR$/application/admin/view/act/add_summary.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-107">
-          <caret line="119" column="27" selection-start-line="119" selection-start-column="27" selection-end-line="119" selection-end-column="27" />
+        <state relative-caret-position="521">
+          <caret line="30" column="12" selection-end-line="88" selection-end-column="7" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/thinkphp/helper.php">
+    <entry file="file://$PROJECT_DIR$/application/admin/view/act/get_summary.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="379">
-          <caret line="105" column="96" selection-start-line="105" selection-start-column="96" selection-end-line="105" selection-end-column="96" />
+        <state relative-caret-position="548">
+          <caret line="72" column="19" selection-start-line="72" selection-start-column="19" selection-end-line="72" selection-end-column="19" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/application/admin/view/order/group_buy_order_list.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="625">
-          <caret line="222" column="66" selection-start-line="222" selection-start-column="58" selection-end-line="222" selection-end-column="66" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/jsLanguageServicesImpl/external/lib.dom.d.ts">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="290">
-          <caret line="17106" column="17" selection-start-line="17106" selection-start-column="17" selection-end-line="17106" selection-end-column="17" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/admin/view/node/visitlist.html">
+    <entry file="file://$PROJECT_DIR$/application/admin/view/act/add_teacher.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="629">
-          <caret line="201" column="4" selection-start-line="201" selection-start-column="4" selection-end-line="201" selection-end-column="4" />
+          <caret line="118" column="6" selection-start-line="111" selection-start-column="4" selection-end-line="118" selection-end-column="6" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/application/admin/controller/GroupBuy.php">
+    <entry file="file://$PROJECT_DIR$/public/template/modules/activity/ajax_cashed_activity.html">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/template/modules/assemble/assemble_share.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="818">
-          <caret line="41" column="25" selection-start-line="41" selection-start-column="20" selection-end-line="41" selection-end-column="25" />
+        <state relative-caret-position="280">
+          <caret line="17" column="47" selection-start-line="17" selection-start-column="43" selection-end-line="17" selection-end-column="47" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/application/admin/module/Node.php">
+    <entry file="file://$PROJECT_DIR$/public/template/modules/mine/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-593">
-          <caret line="264" column="21" selection-start-line="264" selection-start-column="21" selection-end-line="264" selection-end-column="21" />
+        <state relative-caret-position="-810" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/template/modules/lib/footer2.html">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/template/modules/activities/pinfo.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="413">
+          <caret line="107" column="34" selection-start-line="107" selection-start-column="34" selection-end-line="107" selection-end-column="34" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/application/admin/controller/Node.php">
+    <entry file="file://$PROJECT_DIR$/public/static/js/visitrecorde.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="419">
-          <caret line="231" column="32" selection-start-line="231" selection-start-column="23" selection-end-line="231" selection-end-column="32" />
+        <state relative-caret-position="216">
+          <caret line="8" column="37" selection-start-line="8" selection-start-column="35" selection-end-line="8" selection-end-column="37" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/application/admin/controller/Order.php">
+    <entry file="file://$PROJECT_DIR$/public/template/modules/activities/detail.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="469">
-          <caret line="190" selection-start-line="190" selection-end-line="190" />
+        <state relative-caret-position="381">
+          <caret line="35" column="38" selection-start-line="35" selection-start-column="38" selection-end-line="35" selection-end-column="38" />
+          <folding>
+            <element signature="n#div#0;n#body#0;n#html#0;n#!!top" />
+            <element signature="n#div#1;n#div#0;n#body#0;n#html#0;n#!!top" />
+            <element signature="n#style#0;n#a#0;n#section#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/template/modules/lib/footer3.html">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/template/modules/lib/header.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="27">
+          <caret line="1" column="29" selection-start-line="1" selection-start-column="29" selection-end-line="1" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/template/modules/activities/commentdetail.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1466">
+          <caret line="75" column="42" selection-start-line="75" selection-start-column="42" selection-end-line="75" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/template/modules/lib/footer0.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="54">
+          <caret line="2" column="23" lean-forward="true" selection-start-line="2" selection-start-column="23" selection-end-line="2" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/template/modules/lib/footer1.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="351">
+          <caret line="13" column="24" selection-start-line="13" selection-start-column="24" selection-end-line="13" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/template/modules/activities/summarydetail.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1520">
+          <caret line="98" lean-forward="true" selection-start-line="98" selection-end-line="98" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/thinkphp/library/think/Request.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="298">
+          <caret line="558" column="20" selection-start-line="558" selection-start-column="20" selection-end-line="558" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/admin/view/act/edit.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3456">
+          <caret line="128" column="165" selection-start-line="128" selection-start-column="28" selection-end-line="128" selection-end-column="165" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/static/js/jquery.searchableSelect.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="329">
+          <caret line="178" column="96" selection-start-line="178" selection-start-column="96" selection-end-line="178" selection-end-column="96" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/admin/controller/Act.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="226">
+          <caret line="669" column="74" selection-start-line="669" selection-start-column="70" selection-end-line="669" selection-end-column="74" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/static/css/bootstrap.min.css">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/template/modules/lib/footer4.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="108">
+          <caret line="4" column="39" selection-start-line="4" selection-start-column="39" selection-end-line="4" selection-end-column="39" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/home/controller/Activities.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="815">
+          <caret line="144" column="35" selection-start-line="144" selection-start-column="35" selection-end-line="144" selection-end-column="35" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/admin/view/act/chose_parent.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="415">
+          <caret line="101" column="110" selection-start-line="101" selection-start-column="110" selection-end-line="101" selection-end-column="110" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/application/admin/view/act/hand_addstu.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="410">
+          <caret line="144" column="93" selection-start-line="144" selection-start-column="93" selection-end-line="144" selection-end-column="93" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/application/admin/view/activity/modi.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="388">
-          <caret line="475" column="115" selection-start-line="475" selection-start-column="105" selection-end-line="475" selection-end-column="115" />
+        <state relative-caret-position="486">
+          <caret line="236" column="37" selection-start-line="233" selection-start-column="27" selection-end-line="236" selection-end-column="37" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/public/template/M1/activity/ajax_index_list.html">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/template/M1/assemble/assemble_share.html">
+    <entry file="file://$PROJECT_DIR$/application/admin/view/act/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3132">
-          <caret line="157" column="18" selection-start-line="157" selection-start-column="16" selection-end-line="157" selection-end-column="18" />
-          <folding>
-            <element signature="n#div#3;n#div#1;n#div#1;n#body#0;n#html#0;n#!!top" />
-            <element signature="n#div#4;n#div#1;n#div#1;n#body#0;n#html#0;n#!!top" />
-            <element signature="n#div#5;n#div#1;n#div#1;n#body#0;n#html#0;n#!!top" />
-            <element signature="n#div#6;n#div#1;n#div#1;n#body#0;n#html#0;n#!!top" />
-          </folding>
+        <state relative-caret-position="170">
+          <caret line="150" column="95" selection-start-line="150" selection-start-column="95" selection-end-line="150" selection-end-column="95" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/public/template/M1/activity/detail.html">
+    <entry file="file://$PROJECT_DIR$/application/admin/view/act/comment_summary.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2532">
-          <caret line="291" column="82" selection-start-line="291" selection-start-column="82" selection-end-line="291" selection-end-column="82" />
-          <folding>
-            <element signature="n#style#0;n#div#2;n#div#0;n#div#1;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#span#0;n#p#0;n#div#2;n#div#0;n#div#1;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#span#0;n#p#2;n#div#2;n#div#0;n#div#1;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#0;n#div#0;n#div#0;n#div#4;n#div#0;n#div#1;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#span#0;n#div#1;n#div#0;n#div#0;n#div#0;n#div#4;n#div#0;n#div#1;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#4;n#div#0;n#div#1;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#span#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#4;n#div#0;n#div#1;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#1;n#div#2;n#div#0;n#div#4;n#div#0;n#div#1;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#1;n#div#2;n#div#0;n#div#1;n#section#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#a#0;n#section#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#a#0;n#div#3;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#span#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#img#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#script#5;n#!!top" />
-          </folding>
+        <state relative-caret-position="467">
+          <caret line="117" column="74" selection-start-line="117" selection-start-column="62" selection-end-line="117" selection-end-column="74" />
         </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/static/template/pub/css/main.less">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-21184" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/application/route.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="490">
-          <caret line="108" column="30" selection-start-line="108" selection-start-column="16" selection-end-line="108" selection-end-column="30" />
+        <state relative-caret-position="280">
+          <caret line="60" column="59" selection-start-line="60" selection-start-column="49" selection-end-line="60" selection-end-column="59" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/public/template/M2/assemble/ajax_list.html">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/template/M3/assemble/ajax_list.html">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/template/M4/assemble/ajax_list.html">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/template/M5/assemble/ajax_list.html">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/template/M6/assemble/ajax_list.html">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/template/M7/assemble/ajax_list.html">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/template/M1/assemble/ajax_list.html">
+    <entry file="file://$PROJECT_DIR$/public/template/modules/activity/detail.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="10" selection-start-column="10" selection-end-column="10" />
+        <state relative-caret-position="199">
+          <caret line="324" column="25" selection-start-line="324" selection-start-column="13" selection-end-line="324" selection-end-column="25" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/public/template/M7/assemble/assemble_list.html">
+    <entry file="file://$PROJECT_DIR$/public/template/modules/node/detail.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="426">
-          <caret line="76" column="81" selection-start-line="76" selection-start-column="81" selection-end-line="76" selection-end-column="81" />
+        <state relative-caret-position="413">
+          <caret line="133" column="24" selection-start-line="133" selection-start-column="24" selection-end-line="133" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/public/template/modules/mine/ajax_mine_order_list.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="467">
+          <caret line="26" column="10" selection-start-line="26" selection-start-column="10" selection-end-line="26" selection-end-column="10" />
           <folding>
-            <element signature="n#style#0;n#div#2;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="e#4344#4548#0" />
+            <element signature="n#style#0;n#span#1;n#div#2;n#div#1;n#div#0;n#li#0;n#!!top" expanded="true" />
+            <element signature="e#608#614#0" expanded="true" />
+            <element signature="e#614#620#0" expanded="true" />
+            <element signature="n#style#0;n#a#0;n#div#5;n#div#1;n#div#0;n#li#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#a#1;n#div#5;n#div#1;n#div#0;n#li#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#a#2;n#div#5;n#div#1;n#div#0;n#li#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#a#3;n#div#5;n#div#1;n#div#0;n#li#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#a#4;n#div#5;n#div#1;n#div#0;n#li#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#a#5;n#div#5;n#div#1;n#div#0;n#li#0;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/public/template/M6/assemble/assemble_list.html">
+    <entry file="file://$PROJECT_DIR$/public/template/modules/mine/ajax_order_list.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="513">
-          <caret line="76" column="81" selection-start-line="76" selection-start-column="81" selection-end-line="76" selection-end-column="81" />
+        <state relative-caret-position="162">
+          <caret line="6" column="10" selection-start-line="6" selection-start-column="10" selection-end-line="6" selection-end-column="10" />
           <folding>
-            <element signature="n#style#0;n#div#2;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="e#4288#4492#0" />
+            <element signature="n#style#0;n#a#3;n#div#5;n#div#1;n#div#0;n#li#0;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/public/template/M5/assemble/assemble_list.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="594">
-          <caret line="76" column="81" selection-start-line="76" selection-start-column="81" selection-end-line="76" selection-end-column="81" />
-          <folding>
-            <element signature="n#style#0;n#div#2;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="e#4288#4492#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/template/M4/assemble/assemble_list.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="675">
-          <caret line="76" column="81" selection-start-line="76" selection-start-column="81" selection-end-line="76" selection-end-column="81" />
-          <folding>
-            <element signature="n#style#0;n#div#2;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="e#4288#4492#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/template/M3/assemble/assemble_list.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="513">
-          <caret line="76" column="81" selection-start-line="76" selection-start-column="81" selection-end-line="76" selection-end-column="81" />
-          <folding>
-            <element signature="n#style#0;n#div#2;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="e#4288#4492#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/template/M2/assemble/assemble_list.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="521">
-          <caret line="76" column="81" selection-start-line="76" selection-start-column="81" selection-end-line="76" selection-end-column="81" />
-          <folding>
-            <element signature="n#style#0;n#div#2;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="e#4288#4492#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/public/template/M1/assemble/assemble_list.html">
+    <entry file="file://$PROJECT_DIR$/public/template/modules/mine/order_list.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="459">
-          <caret line="77" column="81" selection-start-line="77" selection-end-line="77" selection-end-column="81" />
+          <caret line="90" column="30" selection-start-line="90" selection-start-column="30" selection-end-line="90" selection-end-column="30" />
           <folding>
-            <element signature="n#div#3;n#div#1;n#body#0;n#html#0;n#!!top" />
-            <element signature="n#style#0;n#div#2;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="e#3693#4022#0" />
-            <element signature="e#4481#4685#0" />
+            <element signature="n#style#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#span#1;n#div#2;n#div#1;n#div#0;n#li#1;n#ul#0;n#div#2;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="e#3000#3006#0" expanded="true" />
+            <element signature="e#3006#3012#0" expanded="true" />
+            <element signature="n#style#0;n#a#0;n#div#6;n#div#1;n#div#0;n#li#1;n#ul#0;n#div#2;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#a#1;n#div#6;n#div#1;n#div#0;n#li#1;n#ul#0;n#div#2;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#a#2;n#div#6;n#div#1;n#div#0;n#li#1;n#ul#0;n#div#2;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#a#3;n#div#6;n#div#1;n#div#0;n#li#1;n#ul#0;n#div#2;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#a#4;n#div#6;n#div#1;n#div#0;n#li#1;n#ul#0;n#div#2;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#a#5;n#div#6;n#div#1;n#div#0;n#li#1;n#ul#0;n#div#2;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#a#6;n#div#6;n#div#1;n#div#0;n#li#1;n#ul#0;n#div#2;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#div#0;n#div#2;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/public/template/M1/activity/index.html">
+    <entry file="file://$PROJECT_DIR$/application/admin/module/act.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="350">
-          <caret line="139" column="71" selection-start-line="139" selection-start-column="22" selection-end-line="139" selection-end-column="71" />
+        <state relative-caret-position="1323">
+          <caret line="660" selection-start-line="660" selection-end-line="660" />
+          <folding>
+            <element signature="e#473#486#0#PHP" expanded="true" />
+          </folding>
         </state>
       </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/runtime/temp/0f6404abc068655e3eebe73b3925c36f.php">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/runtime/temp/0edcec1bfb3681598b0eb113acb4e6d4.php">
+      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/application/home/controller/Index.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="257">
-          <caret line="1277" column="42" selection-start-line="1277" selection-start-column="42" selection-end-line="1277" selection-end-column="42" />
-          <folding>
-            <element signature="e#117#137#0#PHP" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/runtime/log/201907/18.log">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="594">
-          <caret line="46" column="18" selection-start-line="46" selection-start-column="10" selection-end-line="46" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$APPLICATION_HOME_DIR$/plugins/php/lib/php.jar!/stubs/curl/curl.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="298">
-          <caret line="2324" column="9" selection-start-line="2324" selection-start-column="9" selection-end-line="2324" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/thinkphp/library/think/wx/Api.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1091">
-          <caret line="2721" column="63" selection-start-line="2721" selection-start-column="57" selection-end-line="2721" selection-end-column="63" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/admin/view/order/refund.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="263">
-          <caret line="285" column="35" selection-start-line="285" selection-start-column="35" selection-end-line="285" selection-end-column="35" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/home/controller/GroupBuy.php">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/home/model/GroupBuy.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="27">
-          <caret line="72" selection-start-line="72" selection-end-line="72" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/home/model/GroupBuyOrder.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2296">
-          <caret line="445" column="32" lean-forward="true" selection-start-line="445" selection-start-column="32" selection-end-line="445" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/admin/controller/Api.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="614">
-          <caret line="316" column="25" lean-forward="true" selection-start-line="316" selection-start-column="25" selection-end-line="316" selection-end-column="25" />
-          <folding>
-            <element signature="e#10902#12690#0#PHP" />
-            <element signature="e#12713#12940#0#PHP" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/application/common.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="243">
-          <caret line="1209" column="60" selection-start-line="1209" selection-start-column="60" selection-end-line="1209" selection-end-column="60" />
-          <folding>
-            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#input#1;n#div#0;n#!!top" expanded="true" />
-          </folding>
+        <state relative-caret-position="265">
+          <caret line="15" column="13" selection-start-line="15" selection-start-column="10" selection-end-line="15" selection-end-column="13" />
         </state>
       </provider>
     </entry>

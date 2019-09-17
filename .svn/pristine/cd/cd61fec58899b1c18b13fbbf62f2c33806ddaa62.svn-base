@@ -1,0 +1,120 @@
+<input type="hidden" id="echart_json" value='{$list.echart}'>
+<input type="hidden" id="search_user_count_activity_begintime" value='{$list.search.begintime}'>
+<input type="hidden" id="search_user_count_activity_endtime" value='{$list.search.endtime}'>
+    <div style="min-width:1350px;overflow-x:auto;white-space:nowrap;">
+        <div class="oa_text-list clearfix"
+            style="margin-bottom: 40px;border-left: 0;width: 35%;min-width: 580px;border-right: 1px solid grey;padding-right: 60px;float: left">
+            <div id="main_user_count_activity" style="height: 450px; "></div>
+        </div>
+        <div class="oa_text-list clearfix"
+            style="margin-bottom: 40px;border-left: 0;width: 40%;min-width: 620px;padding-left: 60px;float: left;">
+            <table width="100%" border="0" cellspacing="0" cellpadding="0" style="table-layout:fixed;margin-top: 40px">
+                <tr class="oa_text-list-title">
+                    <th><span class="oa_arr-text-list-title"></span>产品</th>
+                    <th width="60"><span class="oa_arr-text-list-title"></span>购买人数</th>
+                    <th width="60"><span class="oa_arr-text-list-title"></span>占比</th>
+                </tr>
+                <?php if(isset($list['echart_normal']['user_count_activity']) && !empty($list['echart_normal']['user_count_activity'])){
+                                                    foreach($list['echart_normal']['user_count_activity'][1] as $key=>$val){
+                        ?>
+                <tr>
+                    <td title="{$val}">{$val}</td>
+                    <td>
+                        <a
+                            href="javascript:CustomOpen('{:url('report/getUserList','start_time='.$list['search']['begintime'].'&end_time='.$list['search']['endtime'].'&origin=deal_data&product_id='.$list['user_count_id_activity'][$key],'')}','activity','用户列表',1000,600)">{$list['echart_normal']['user_count_activity'][2][0][$key]}</a>
+        
+                    </td>
+                    <td>
+                        <?php
+                                                    if($list['total_user_count_activity'] > 0){
+                                echo  round($list['echart_normal']['user_count_activity'][2][0][$key]/$list['total_user_count_activity'],4) * 100;
+                                }else{
+                                echo 0;
+                                }
+                                ?>%
+                    </td>
+                </tr>
+                <?php }} ?>
+            </table>
+        </div>
+    </div>
+        
+    <div style="clear:both;"></div>
+
+<!--产品类别-->
+<div style="min-width:1350px;overflow-x:auto;white-space:nowrap;">
+    <div class="oa_text-list clearfix"
+        style="margin-bottom: 40px;border-left: 0;width: 35%;min-width: 580px;border-right: 1px solid grey;padding-right: 60px;float: left">
+        <div id="main_user_count_class" style="height: 450px; "></div>
+    </div>
+    <div class="oa_text-list clearfix"
+        style="margin-bottom: 40px;border-left: 0;width: 40%;min-width: 620px;padding-left: 60px;float: left;">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" style="table-layout:fixed;margin-top: 40px">
+            <tr class="oa_text-list-title">
+                <th><span class="oa_arr-text-list-title"></span>产品类别</th>
+                <th width="60"><span class="oa_arr-text-list-title"></span>购买人数</th>
+                <th width="60"><span class="oa_arr-text-list-title"></span>占比</th>
+            </tr>
+            <?php if(isset($list['echart_normal']['user_count_class']) && !empty($list['echart_normal']['user_count_class'])){
+                                                foreach($list['echart_normal']['user_count_class'][1] as $key=>$val){
+            ?>
+            <tr>
+                <td title="{$val}">{$val}</td>
+                <td>
+                    {$list['echart_normal']['user_count_class'][2][0][$key]}
+                </td>
+                <td>
+                    <?php
+                                                if($list['total_user_count_class'] > 0){
+                    echo  round($list['echart_normal']['user_count_class'][2][0][$key]/$list['total_user_count_class'],4) * 100;
+                    }else{
+                    echo 0;
+                    }
+                    ?>%
+                </td>
+            </tr>
+            <?php }} ?>
+        </table>
+    </div>
+</div>
+
+<div style="clear:both;"></div>
+
+<!--产品标签-->
+<div style="min-width:1350px;overflow-x:auto;white-space:nowrap;">
+    <div class="oa_text-list clearfix"
+        style="margin-bottom: 40px;border-left: 0;width: 35%;min-width: 580px;border-right: 1px solid grey;padding-right: 60px;float: left">
+        <div id="main_user_count_chrtags" style="height: 450px; "></div>
+    </div>
+    <div class="oa_text-list clearfix"
+        style="margin-bottom: 40px;border-left: 0;width: 40%;min-width: 620px;padding-left: 60px;float: left;">
+        <table width="100%" border="0" cellspacing="0" cellpadding="0" style="table-layout:fixed;margin-top: 40px">
+            <tr class="oa_text-list-title">
+                <th><span class="oa_arr-text-list-title"></span>产品标签</th>
+                <th width="60"><span class="oa_arr-text-list-title"></span>购买人数</th>
+                <th width="60"><span class="oa_arr-text-list-title"></span>占比</th>
+            </tr>
+            <?php if(isset($list['echart_normal']['user_count_chrtags']) && !empty($list['echart_normal']['user_count_chrtags'])){
+                                                foreach($list['echart_normal']['user_count_chrtags'][1] as $key=>$val){
+            ?>
+            <tr>
+                <td title="{$val}">{$val}</td>
+                <td>
+                    {$list['echart_normal']['user_count_chrtags'][2][0][$key]}
+                </td>
+                <td>
+                    <?php
+                                                if($list['total_user_count_chrtags'] > 0){
+                    echo  round($list['echart_normal']['user_count_chrtags'][2][0][$key]/$list['total_user_count_chrtags'],4) * 100;
+                    }else{
+                    echo 0;
+                    }
+                    ?>%
+                </td>
+            </tr>
+            <?php }} ?>
+        </table>
+    </div>
+</div>
+
+<div style="clear:both;"></div>
