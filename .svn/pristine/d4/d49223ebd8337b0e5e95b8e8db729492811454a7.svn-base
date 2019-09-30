@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="yes" name="apple-mobile-web-app-capable">
+  <meta content="yes" name="apple-touch-fullscreen">
+  <meta content="telephone=no,email=no" name="format-detection">
+  <meta name="viewport"
+    content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+   <script src="__PUBLIC__/static/template/pub/js/common.js"></script>
+   <link rel="stylesheet" href="__PUBLIC__/static/template/pub/css/main.css?v={:time()}">
+   <link rel="stylesheet" href="__PUBLIC__/static/template/skin/M1/css/skin.css?v={:time()}">
+
+  <title>代言报名列表</title>
+</head>
+
+<body class="flexCol">
+    {include file="modules/common/header" /}
+  <section class="section">
+    <div class="select-bar">
+      <ul class="select-bar-tab select-bar-tab1 flex">
+        <li onclick="javascript:window.location='/{$sitecode}/endorsedata';">总览</li>
+        <li onclick="javascript:window.location='/{$sitecode}/spokesmanactivitylist';">产品</li>
+        <li class="on fontColor" onclick="javascript:window.location='/{$sitecode}/distributionorderlist';">订单</li>
+        <li onclick="javascript:window.location='/{$sitecode}/alreadyspokesmanactivitylist';">已代言</li>
+        {if condition="$user_info['is_balance'] == 1"}
+        <li onclick="javascript:window.location='/{$sitecode}/balancerecordlist';">结算</li>
+        {/if}
+      </ul>
+    </div>
+
+    <form action="" id="form1" method="post" >
+    <div class="search-bar">
+        <div class="search-bar-inner">
+            <div>
+            <span class="date-range">订单日期范围：</span>
+            <input type="text" id="beginTime" class="begintime" readonly value="{$search.begintime}">
+            <span class="date-range"> - </span>
+            <input type="text" id="endTime" class="endtime" readonly value="{$search.endtime}">
+            </div>
+            <div onclick="sub_form()">
+            <span class="iconfont search-bar-span"></span>
+            </div>
+        </div>
+    </div>
+    </form>
+    <div class="common-wrap">
+      <ul class="common-list">
+        {if condition="!$list"}
+        <li class="list-item no-data">暂无可报名信息~</li>
+        {else}
+        <li class="list-item ">
+          <a href="" class="flex">
+            <div class="list-item-txt">
+              <div class="info flex w64">
+                <div class="tit tit-w6 order-num">总购买数量</div>：
+                <div class="txt">{$pay_num_total}</div>
+              </div>
+              <div class="info flex w64">
+                <div class="tit tit-w6 amount-money">可获佣金总额</div>：
+                <div class="txt">{$commission_total}(元)</div>
+              </div>
+            </div>
+          </a>
+        </li>
+        {volist name="$list" id="vo"}
+        <li class="list-item ">
+          <a href="" class="flex">
+            <div class="list-item-txt">
+              <div class="info title fontColor">{$vo.chrtitle}</div>
+              <div class="info flex name">
+                <div class="tit tit-w5">购买人</div>：
+                <div class="txt">{$vo['chrusername']}</div>
+              </div>
+              <div class="info flex nums w64">
+                <div class="tit tit-w5">购买数量</div>：
+                <div class="txt">{$vo['paynum']}</div>
+              </div>
+              <div class="info flex price w64">
+                <div class="tit tit-w5">订单金额</div>：
+                <div class="txt">{$vo['price']}(元)</div>
+              </div>
+              <div class="info flex price w64">
+                <div class="tit tit-w5">可获佣金</div>：
+                <div class="txt">{if condition="$user_info['idmember'] == $vo.spokesman_user_id3"}
+                        {$vo.sell_commission}
+                        {elseif condition="$user_info['idmember'] == $vo.spokesman_user_id2"}
+                        {$vo.bounty_commission2}
+                        {/if}(元)</div>
+              </div>
+              <div class="info flex state w64">
+                <div class="tit tit-w5">订单状态</div>：
+                <div class="txt red">{$order_state[$vo['state']]}</div>
+              </div>
+              <div class="info flex time w64">
+                <div class="tit tit-w5">购买时间</div>：
+                <div class="txt">{$vo['dtcreatetime']}</div>
+              </div>
+            </div>
+          </a>
+        </li>
+        {/volist}
+        {/if}
+      </ul>
+    </div>
+  </section>
+
+  <footer class="footer">
+
+  </footer>
+  <script src="__PUBLIC__/static/template/pub/js/jquery.min.js"></script>
+  <script src="__PUBLIC__/static/template/pub/js/menu.js"></script>
+  <script src="__PUBLIC__/static/js/laydate/laydate.js"></script>
+  <script type="text/javascript" src="__PUBLIC__/static/js/layer/layer.js"></script>
+  <script>
+    //==============核心代码=============
+    var winH = $(window).height(); //页面可视区域高度
+
+    var ipage = 1;
+    var scrollHandler = function () {
+      var pageH = $(document).height();
+      var scrollT = $(window).scrollTop(); //滚动条top
+
+      if (pageH - winH - scrollT < 1) {
+        LoadData(ipage)
+        ipage++;
+      }
+    }
+    //定义鼠标滚动事件
+    $(window).scroll(scrollHandler);
+    //==============核心代码=============
+
+    function LoadData(ipage) {
+      $("#dataload").show();
+      $(window).unbind('scroll');
+      // var state = $('input[name="states"]').val();
+      $.ajax({
+        url: "/{$sitecode}/distributionorderlist?begintime={$search.begintime}&endtime={$search.endtime}",
+        type: 'POST',
+        cache: false,
+        data: { "ipage": ipage, "ajax": 1 },
+        success: function (data) {
+
+          if (data == 11) {
+            $("#dataload").hide();
+            // $("#loadmsg").html("已无更多数据");
+            return;
+          }
+          $("#dataload").hide();
+          $("#data").html($("#data").html() + data);
+          $(window).scroll(scrollHandler);
+        }
+      });
+
+    }
+
+    function sub_form() {
+      var st = $("#beginTime").val();
+      var et = $("#endTime").val();
+      if (st != "" && et != "") {
+        var start = new Date(st.replace("-", "/").replace("-", "/"));
+        var end = new Date(et.replace("-", "/").replace("-", "/"));
+        if (end < start) {
+          layer.alert("订单开始时间不能大于结束时间！")
+          return;
+        }
+      }
+      $('#form1').submit();
+    }
+
+    laydate.render({
+      elem: '#beginTime' //开始时间
+    })
+    laydate.render({
+      elem: '#endTime' //结束时间
+    })
+  </script>
+</body>
+
+</html>

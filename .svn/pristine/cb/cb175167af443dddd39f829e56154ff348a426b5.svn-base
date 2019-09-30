@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="yes" name="apple-mobile-web-app-capable">
+  <meta content="yes" name="apple-touch-fullscreen">
+  <meta content="telephone=no,email=no" name="format-detection">
+  <meta name="viewport"
+    content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+    <script src="__PUBLIC__/static/template/pub/js/common.js"></script>
+    <link rel="stylesheet" href="__PUBLIC__/static/template/pub/css/main.css?v={:time()}">
+    <link rel="stylesheet" href="__PUBLIC__/static/template/skin/M1/css/skin.css?v={:time()}">
+  
+  <title>订单详情</title>
+</head>
+
+<body class="flexCol">
+    {include file="modules/common/header" /}
+  <section class="section">
+    <ul class="textbox-wrap">
+      <li class="border-line">
+        <div class="head">基本信息</div>
+      </li>
+      <li class="border-line">
+        <div class="tit">报名对象：</div>
+        <div class="txt">
+          <span class="name fontColor"
+            onclick="javascript:window.location='/{$sitecode}/detail/{$orderinfo['dataid']}'">{$orderinfo['chrtitle']}</span>
+        </div>
+      </li>
+      <li class="border-line">
+        <div class="tit">购买时间：</div>
+        <div class="txt">
+            {$orderinfo['dtcreatetime']}
+        </div>
+      </li>
+      <li class="border-line">
+        <div class="tit">使用时间：</div>
+        <div class="txt">
+            {$orderinfo['dtstart']} 至 {$orderinfo['dtend']}
+        </div>
+      </li>
+      <li class="border-line">
+        <div class="tit">订单号：</div>
+        <div class="txt">
+            {$orderinfo['ordersn']}
+        </div>
+      </li>
+      <li class="border-line">
+        <div class="tit">套餐：</div>
+        <div class="txt">
+            {$orderinfo['payname']} × {$orderinfo['paynum']}
+        </div>
+      </li>
+      <li class="border-line">
+        <div class="tit">总金额：</div>
+        <div class="txt">
+            {$orderinfo['price']}(元)
+        </div>
+      </li>
+      {if condition="$is_cashed && $orderinfo['cashed_amount'] > 0"}
+      <li class="border-line">
+          <div class="tit">现金券抵扣：</div>
+          <div class="txt">
+              <div class="info">{$orderinfo['cashed_amount']}(元)</div>
+          </div>
+      </li>
+      {/if}
+      <li class="border-line">
+        <div class="tit">方式：</div>
+        <div class="txt">{$order_paytype1[$orderinfo['paytype1']]}</div>
+      </li>
+      <li class="border-line">
+        <div class="tit">状态：</div>
+        <div class="txt">
+            {$order_state[$orderinfo['state']]}
+            {if condition="$orderinfo['state'] == 12"}
+                <a href="/{$sitecode}/againorder/{$orderinfo['id']}" class="pay-btn">继续付费</a>
+            {/if}
+        </div>
+      </li>
+      {if condition="checkedMarketingPackage($idsite, 'group_buy') && isset($groupBuyInfo) && !empty($groupBuyInfo)"}
+        <li class="border-line">
+            <div class="tit">拼团状态：</div>
+            <div class="txt">
+                <div class="info">
+                    {$groupBuyInfo['state']}
+                    {if condition="($orderinfo['state']==4 || $orderinfo['state']==5 || $orderinfo['state']==6 || $orderinfo['state']==7 || $orderinfo['state']==8) && $groupBuyInfo['state'] == '拼团中'"}
+                    <a href="/{$sitecode}/group_buy_share/{$groupBuyInfo['group_buy_order_id']}/{$orderinfo['fiduser']}" style="background: #d9b38b; margin-left: 20px; padding: 4px 10px;background: #ccc;margin-right: 8px;margin-bottom: 2px;border-radius: 3px;color: #fff;	font-size: 14px; background: #d98bb3" >分享</a>
+                    {/if}
+                </div>
+            </div>
+
+        </li>
+        {/if}
+        <li class="border-line">
+            <div class="head">报名详情</div>
+        </li>
+        {volist name="$frmdata" id="vo"}
+        <li class="border-line">
+            <div class="tit">{$key}：</div>
+            <div class="txt">{$vo}</div>
+        </li>
+        {/volist}
+        <li class="border-line">
+            <div class="head">更多报名信息</div>
+        </li>
+        {if condition="$frmdatasub"}
+            {volist name="$frmdatasub" id="vo1" key="k1"}
+                {volist name="$vo1" id="vo"}
+                <li class="border-line">
+                    <div class="tit">{$key}{$k1+1}：</div>
+                    <div class="txt">{$vo}</div>
+                </li>
+                {/volist}
+            {/volist}
+        {/if}
+        {if condition="!empty($orderinfo['refundsn']) || !empty($orderinfo['refundremark'])"}
+        <li class="border-line">
+            <div class="head">退款记录</div>
+        </li>
+        
+        <li class="border-line">
+            <div class="tit">退款单号：</div>
+            <div class="txt">{$orderinfo['refundsn']?$orderinfo['refundsn']:""}</div>
+        </li>
+        {if condition="!empty($orderinfo['dtwxrefundtime'])"}
+        <li class="border-line">
+            <div class="tit">退款时间：</div>
+            <div class="txt">{$orderinfo['dtwxrefundtime']}</div>
+        </li>
+        {/if}
+        {if condition="!empty($orderinfo['refundprice'])"}
+        <li class="border-line">
+            <div class="tit">退款金额：</div>
+            <div class="txt">{$orderinfo['refundprice']}</div>
+        </li>
+        {/if}
+        {if condition="!empty($orderinfo['refundremark'])"}
+        <li class="border-line">
+            <div class="tit">退款原因：</div>
+            <div class="txt">{$orderinfo['refundremark']}</div>
+        </li>
+        {/if}
+        {if condition="!empty($orderinfo['refundpic'])"}
+        <li class="border-line">
+            <div class="tit">图片：</div>
+            <div class="txt">
+            <img src="{$orderinfo['refundpic']}" alt="" width="60">
+            </div>
+        </li>
+        {/if}
+        {if condition="!empty($orderinfo['refundsn2'])  || !empty($orderinfo['refundmsg2'])"}
+            <li class="border-line">
+                <div class="tit">退款单号2：</div>
+                <div class="txt">{$orderinfo['refundsn2']?$orderinfo['refundsn2']:"<span style='color: red'>申请中</span>"}</div>
+            </li>
+            {if condition="!empty($orderinfo['dtwxrefundtime2'])"}
+            <li class="border-line">
+                <div class="tit">退款时间2：</div>
+                <div class="txt">{$orderinfo['dtwxrefundtime2']}</div>
+            </li>
+            {/if}
+            {if condition="!empty($orderinfo['refundprice2'])"}
+            <li class="border-line">
+                <div class="tit">退款金额2：</div>
+                <div class="txt">{$orderinfo['refundprice2']}</div>
+            </li>
+            {/if}
+            {if condition="!empty($orderinfo['refundmsg2'])"}
+            <li class="border-line">
+                <div class="tit">退款原因2：</div>
+                <div class="txt">{$orderinfo['refundmsg2']}</div>
+            </li>
+            {/if}
+            {if condition="!empty($orderinfo['refundpic'])"}
+            <li class="border-line">
+                <div class="tit">图片2：</div>
+                <div class="txt">
+                <img src="{$orderinfo['refundpic']}" alt="" width="60">
+                </div>
+            </li>
+            {/if}
+        {/if}
+      {/if}
+      {if condition="$orderinfo['state']>=3 && $orderinfo['state']<=8 && $orderinfo['state']!=5"}
+        {if condition="$orderinfo['issign'] != 1"}
+        <li class="border-line">
+            <div class="head">签到二维码</div>
+        </li>
+        {/if}
+        {if condition="$orderinfo['issign'] == 1"}
+        <li class="border-line">
+            <div class="tit">签到时间：</div>
+            <div class="txt">{$orderinfo['dtsigntime']}</div>
+        </li>
+        {else/}
+        <li class="border-line">
+            <img class="order-qrcode" src="/admin/Qrcode/signin/code/{$sitecode}/id/{$orderinfo['ordersn']}" alt="">
+        </li>
+        {/if}
+      {/if}
+    </ul>
+
+  </section>
+  
+  <footer class="footer">
+        {include file="modules/common/footer3" /}
+  </footer>
+
+  <script src="__PUBLIC__/static/template/pub/js/jquery.min.js"></script>
+  <script src="__PUBLIC__/static/template/pub/js/menu.js"></script>
+</body>
+
+</html>

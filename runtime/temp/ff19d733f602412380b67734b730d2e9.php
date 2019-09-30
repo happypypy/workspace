@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:69:"D:\workspace\work\public/../application/admin\view\activity\modi.html";i:1568631131;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:69:"D:\workspace\work\public/../application/admin\view\activity\modi.html";i:1569656032;}*/ ?>
 <!--
  * @Descripttion: 
  * @version: 
@@ -568,6 +568,9 @@
                                         <input name="distribution_img" id="distribution_img" type="text" value="<?php echo $datainfo['distribution_img']; ?>" chname="分销海报图片（720x1280）"   class="form-control "  style="width:800px;" />
                                         <input onclick="uploadimgcut('distribution_img','admin',720,1280);" type="button" value="上传图片"/>
                                         <input onclick="openimg('distribution_img')" type="button" value="查看图片"/>
+                                        <a href="/static/images/activity_man_tep.psd" download="activity_man_tep.psd" style="color: inherit;">
+                                            <input  type="button" value="下载模板"/>
+                                        </a>
                                     </td>
                                 </tr>
                                 <?php endif; ?>
@@ -1402,21 +1405,21 @@
         }
     });
 
-    function reserveCheck(){
-        var id = <?php echo $datainfo['idactivity']; ?>;
-        $.ajax({
-            type: "post",
-            url: "<?php echo url('activity/reservecheck'); ?>",
-            data: {"id":id},
-            dataType: "text",
-            success:function(result){
-                if(result == 1){
-                    $('#is_reserve').prop("checked",false);
-                    layer.msg("开启失败，套餐里不能包含拼团!");
-                }
-            }
-        });
-    }
+    // function reserveCheck(){
+    //     var id = <?php echo $datainfo['idactivity']; ?>;
+    //     $.ajax({
+    //         type: "post",
+    //         url: "<?php echo url('activity/reservecheck'); ?>",
+    //         data: {"id":id},
+    //         dataType: "text",
+    //         success:function(result){
+    //             if(result == 1){
+    //                 $('#is_reserve').prop("checked",false);
+    //                 layer.msg("开启失败，套餐里不能包含拼团!");
+    //             }
+    //         }
+    //     });
+    // }
 </script>
 
 <table class="ass-table" id="ass-table" style="margin-left:20px; display: none; ">

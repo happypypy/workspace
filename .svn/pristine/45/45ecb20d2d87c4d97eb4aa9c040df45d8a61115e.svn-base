@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+    <script src="__PUBLIC__/static/template/pub/js/common.js"></script>
+    <link rel="stylesheet" href="__PUBLIC__/static/template/pub/css/main.css?v={:time()}">
+    <link rel="stylesheet" href="__PUBLIC__/static/template/skin/M1/css/skin.css?v={:time()}">
+  
+    <title>预约记录</title>
+</head>
+
+<body class="flexCol">
+  {include file="modules/common/header" /}
+    <div class="common-wrap">
+      <ul id="data" class="common-list">
+        {empty name="$subscribe_record_list"}
+        <li class="list-item no-data">没找到可预约场次信息~</li>
+        {/empty}
+        {volist name="$subscribe_record_list" id="vo"}
+        <li class="list-item  flex">
+          <div class="list-item-txt flexCol">
+            <div class="info flex">
+              <div class="tit tit-w5">预约编号</div>：
+              <div class="txt">{$vo.subscribe_no}</div>
+            </div>
+            <div class="info flex">
+                <div class="tit tit-w5">会员卡名称</div>：
+                <div class="txt fontColor">{$vo.member_cart_name}</div>
+            </div>
+            <div class="info flex">
+              <div class="tit tit-w5">项目名称</div>：
+              <div class="txt">{$vo.subscribe_object_name}</div>
+            </div>
+            <div class="info flex">
+              <div class="tit tit-w5">预约次数</div>：
+              <div class="txt">{$vo.subscribe_number}</div>
+            </div>
+            <div class="info flex">
+                <div class="tit tit-w5">创建时间</div>：
+                <div class="txt">{$vo.create_time|date="Y-m-d H:i:s",###}</div>
+            </div>
+            <div class="info flex">
+                <div class="tit tit-w5">是否签到</div>：
+                <div class="txt">{$vo.is_signin ? '已签到' : '未签到'}</div>
+            </div>
+            <div class="info flex">
+                <div class="tit tit-w5">签到时间</div>：
+                <div class="txt">{notempty name="$vo.signin_time"}{$vo.signin_time|date="Y-m-d H:i:s",###}{/notempty}</div>
+            </div>
+            <div class="btns-right">
+              <input class="several-btn1" type="button" value="订单详情" onclick="location.href='/{$sitecode}/subscriberecorddetail/{$vo['id']}'">
+              {if condition="$vo.subscribe_status==0"}
+              <input class="several-btn2" type="button" value="取消订单" onclick="location.href='javascript:cancel_order({$vo['id']});'">
+              {else/}
+              <input class="several-btn2" type="button" value="已取消" onclick="javascript:;">
+              {/if}
+            </div>
+          </div>
+        </li>
+        {/volist}
+      </ul>
+      <div class="load"><span id="dataload" class="iconfont iconload">&#xe618;</span></div>
+    </div>
+  </section>
+  
+  <footer class="footer">
+        {include file="modules/common/footer" /}
+        {include file="modules/common/footer4" /}
+  </footer>
+
+  <script src="__PUBLIC__/static/template/pub/js/jquery.min.js"></script>
+  <script src="__PUBLIC__/static/template/pub/js/menu.js"></script>
+  <script src="__PUBLIC__/static/template/pub/js/layer/layer.js"></script>
+  <script type="text/javascript">
+    // 取消订单
+    function cancel_order(id){
+        var msg = "您确定要取消预约吗？";
+        layer.confirm(msg, {
+            btn: ['确定','取消'] //按钮
+        },function(){
+            $.ajax({
+            url: "/{$sitecode}/cancelsubscribe/"+id,
+            type: 'POST',
+            cache: false,
+            dataType:"json",
+                success : function(data) {
+                    layer.msg(data.msg);
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1000);
+                }
+            });
+        });
+    }
+
+    //==============核心代码=============
+    var winH = $(window).height(); //页面可视区域高度
+
+    var ipage = 2;
+    var totalPage = {$total_page};
+    var scrollHandler = function () {
+        var pageH = $(document).height();
+        var scrollT = $(window).scrollTop(); //滚动条top
+
+        if(pageH-winH-scrollT<1)
+        {
+            LoadData(ipage)
+            ipage++;
+        }
+    }
+    //定义鼠标滚动事件
+    $(window).scroll(scrollHandler);
+    //==============核心代码=============
+
+    function LoadData(ipage)
+    {
+        $("#dataload").show();
+        $ (window).unbind ('scroll');
+        // var state = $('input[name="states"]').val();
+        $.ajax({
+            url: "/{$sitecode}/subscriberecord",
+            type: 'POST',
+            cache: false,
+            data:{"ipage":ipage,"ajax":1} ,
+            success : function(data) {
+
+                if(ipage > totalPage)
+                {
+                    $("#dataload").hide();
+                    // $("#loadmsg").html("已无更多数据");
+                    return;
+                }
+                $("#dataload").hide();
+                $("#data").html($("#data").html()+data);
+                $(window).scroll(scrollHandler);
+            }
+        });
+
+    }
+</script>
+</body>
+
+</html>

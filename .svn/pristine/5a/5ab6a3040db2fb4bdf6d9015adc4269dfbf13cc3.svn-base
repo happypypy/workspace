@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="yes" name="apple-mobile-web-app-capable">
+  <meta content="yes" name="apple-touch-fullscreen">
+  <meta content="telephone=no,email=no" name="format-detection">
+  <meta name="viewport"
+    content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+  <script src="__PUBLIC__/static/template/pub/js/common.js"></script>
+  <link rel="stylesheet" href="__PUBLIC__/static/template/pub/css/main.css?v={:time()}">
+  <link rel="stylesheet" href="__PUBLIC__/template/M5/css/index.css">
+  <link rel="stylesheet" href="__PUBLIC__/static/template/skin/M1/css/skin.css">
+  <script src="__PUBLIC__/static/template/pub/js/jquery.min.js"></script>
+  <script src="__PUBLIC__/static/template/pub/js/swiper.min.js"></script>
+  <script src="__PUBLIC__/static/template/pub/js/menu.js"></script>
+  <title>童享云</title>
+</head>
+
+<body class="flexCol">
+{include file="modules/common/header" /}
+<section class="section index-section">
+    <div class="nav">
+      <ul class="flex navbar">
+        <?php foreach($result as $k=>$v){
+        $jumpUrl ="/". $sitecode.$v["url"];
+        if(substr( $v["url"],0,4 ) == "http"){
+        $jumpUrl = $v["url"];
+        }
+        ?>
+        <li><a class="flexCol navbar-link" href="{$jumpUrl}">
+          <img src="{$v['nodepicurl']}" alt="">
+          <p>{$v['nodename']}</p>
+        </a></li>
+        <?php }?>
+      </ul>
+    </div>
+    <div class="banner">
+      <div class="swiper-container swiper1 swiper-container1">
+        <ul class="swiper-wrapper">
+          {php} $result1=$cms->getAD($idsite,51325,6);{/php}
+          {empty name="$result1"}
+          <div class="swiper-slide"><a href="javascript:;"><img src="__PUBLIC__/static/modules/images/banner_01.jpg"></a></div>
+          {else /}
+          {volist name="$result1" id="v"}
+          <div class="swiper-slide"><a href="{$v['ad_link']==''?'javascript:;':$v['ad_link']}"><img src="{$v['ad_code']}"></a></div>
+          {/volist}
+          {/empty}
+        </ul>
+        <ol class="swiper-pagination"></ol>
+      </div>
+    </div>
+
+  {if condition="checkedMarketingPackage($idsite, 'group_buy') &&  $groupBuys"}
+  <div class="index-common-wrap">
+    <div class="index-wrap-title">限时拼团<a href="/{$sitecode}/group_buy_list" class="more">更多&gt;&gt;</a></div>
+    <ul class="index-common-list">
+      {empty name="groupBuys"}
+      <li class="index-list-item no-data">抱歉，当前没有拼团活动信息~</li>
+      {else /}
+      {volist name="groupBuys" id="groupBuy"}
+      <li class="index-list-item ">
+        <a href="/{$sitecode}/detail/{$groupBuy['activity_id']}" class="flexCol">
+          <div class="flex">
+            <div class="index-list-item-img"><img src="{$groupBuy['chrimg_m']}"></div>
+            <div class="index-list-item-txt flexCol">
+              <div class="info title fontColor flex">
+                {$groupBuy['chrtitle']}
+              </div>
+              <div class="info age flex">
+                <div class="tit">适合年龄</div>：
+                <div class="txt"><?php echo $groupBuy['minage'] == $groupBuy['maxage'] && $groupBuy['maxage'] == 0 ? '不限年龄' : $groupBuy['minage'] . ' ~ ' . $groupBuy['maxage']; ?></div>
+              </div>
+              <div class="info time flex">
+                <div class="tit">使用时间</div>：
+                <div class="txt">{:date('Y-m-d', $groupBuy['start_at'])} ~ {:date('Y-m-d', $groupBuy['end_at'])}</div>
+              </div>
+            </div>
+          </div>
+          <div class="index-list-item-price">
+            <div class="txt1">单购:￥<del>{$groupBuy['member_price']}</del></div>
+            <div class="txt2 red">{$groupBuy['group_num']}人拼团:￥<span>{$groupBuy['group_buy_price']}</span></div>
+            <input class="normal-btn fr" type="button" value="我要拼团" onclick="">
+          </div>
+        </a>
+      </li>
+      {/volist}
+      {/empty}
+
+    </ul>
+  </div>
+  {/if}
+
+  {if condition="$tmp_style eq ''"}
+  <!-- 小图 -->
+  <!--热门推荐-->
+  <div class="index-activity-wrap">
+    <div class="index-wrap-title">热门推荐</div>
+    <ul class="index-activity-list flex">
+      <?php  $re = $cms->GetActivity($idsite,array('chkdown'=>array('neq',1)),'','idactivity,chkisindex,chrtitle,chrimg_m,chrurl,chrsummary,dtstart,dtpublishtime,hits,s.is_receive_cashed,min_price',10);
+      $index=0;
+      foreach($re as $k=>$val){
+      if($val['chkisindex']==1) {
+      $index++;
+      ?>
+
+      <li class="index-activity-item-s">
+        <a href="<?php echo (empty($val['chrurl'])?'/'.$sitecode.'/detail/'.$val['idactivity']:$val['chrurl']) ?>" class="flex">
+          <div class="index-activity-item-img"><img src="{$val['chrimg_m']}"><span style="display: none"
+                                                                                   class="index-activity-addr">车公庙</span></div>
+          <div class="index-activity-item-txt flexCol">
+            <div class=" index-activity-item-title">{if condition="$val['is_receive_cashed'] == 1 && $is_cashed"}<span
+                    class="iconfont fontColor">&#xe624;</span>{/if}{$val['chrtitle']}
+            </div>
+            <div class=" index-activity-item-view">
+              <div class="index-activity-price"><span class="red">￥<em>{$val['min_price']}</em>起</span></div>
+              <div class="eyes">{$val['hits']}</div>
+              <div class="time">{:date('m-d',strtotime($val['dtpublishtime']))}</div>
+            </div>
+            <!-- <div class=" index-activity-item-tag bgColor flex">
+              <span class="tag">活动标标</span>|
+              <span class="tag">活动标标</span>|
+              <span class="age">参与龄标</span>
+            </div> -->
+          </div>
+        </a>
+      </li>
+      <?php }}
+                if($index==0){ ?>
+      <li style="height:0.3rem;">
+        <div class="t9">抱歉，当前没有最新产品信息</div>
+      </li>
+      <?php }?>
+    </ul>
+  </div>
+  <!--广告位-->
+  <div class="sup-banner banner">
+    <div class="swiper-container swiper2 swiper-container1">
+      <ul class="swiper-wrapper">
+        {php}$result1=$cms->getAD($idsite,51327,3);{/php}
+        {empty name="result1"}
+        <li class="swiper-slide"><a href="javascript:;"><img class="swiper-slideImg" src="__PUBLIC__/static/modules/images/bar_03.jpg"></a></li>
+        {else /}
+        {volist name="result1" id="v"}
+        <li class="swiper-slide"><a href="{$v['ad_link']==''?'javascript:;':$v['ad_link']}"><img src="{$v['ad_code']}"></a></li>
+        {/volist}
+        {/empty}
+      </ul>
+      <ol class="swiper-pagination"></ol>
+    </div>
+  </div>
+  <!--动态信息-->
+  <div class="index-activity-wrap">
+    <div class="index-wrap-title">动态信息</div>
+    <ul class="index-activity-list flex">
+      <?php $re = $cms->GetContentsIndex($idsite,10);
+      if(empty($re)){ ?>
+      <li style="height:0.3rem;">
+      <li class="no-data">抱歉，当前没有最新动态信息</li>
+      </li>
+      <?php }
+                foreach($re as $ke=>$val){ ?>
+
+      <li class="index-activity-item-s">
+        <a href="<?php echo (empty($val['linkurl'])?'/'.$sitecode.'/content/'.$val['contentid']:$val['linkurl']) ?>" class="flex">
+          <div class="index-activity-item-img"><img src="{$val['picurl']}">
+          </div>
+          <div class="index-activity-item-txt flexCol">
+            <div class=" index-activity-item-title">
+              {$val['title']}
+            </div>
+            <div class=" index-activity-item-view">
+              <div class="eyes">{$val['hits']}</div>
+              <div class="time">{:date('m-d',strtotime($val['sys00003']))}</div>
+            </div>
+          </div>
+        </a>
+      </li>
+      <?php } ?>
+    </ul>
+  </div>
+  {/if}
+  <!-- 中图 -->
+  {if condition="$tmp_style eq 'm'"}
+  <!--热门推荐-->
+  <div class="index-activity-wrap">
+    <div class="index-wrap-title">热门推荐</div>
+    <ul class="index-activity-list flex">
+      <?php  $re = $cms->GetActivity($idsite,array('chkdown'=>array('neq',1)),'','idactivity,chkisindex,chrtitle,chrimg,chrurl,chrsummary,dtstart,dtpublishtime,hits,s.is_receive_cashed,min_price',10);
+      $index=0;
+      foreach($re as $k=>$val){
+      if($val['chkisindex']==1) {
+      $index++;
+      if($k/2 == 0){
+      ?>
+      <li class="index-activity-item-m">
+        <a href="<?php echo (empty($val['chrurl'])?'/'.$sitecode.'/detail/'.$val['idactivity']:$val['chrurl']) ?>" class="flexCol">
+          <div class="index-activity-item-img"><img src="{$val['chrimg']}"><span style="display: none"
+                                                                                 class="index-activity-addr">车公庙</span>
+            <div class="index-activity-price"><span class="red">￥<em>{$val['min_price']}</em>起</span></div>
+          </div>
+          <div class="index-activity-item-txt flexCol">
+            <div class=" index-activity-item-title flex"> {if condition="$val['is_receive_cashed'] == 1 && $is_cashed"}<span
+                    class="iconfont fontColor">&#xe624;</span>{/if}{$val['chrtitle']}
+            </div>
+          </div>
+          <div class="index-activity-item-view flex">
+            <div class="eyes">{$val['hits']}</div>
+            <div class="time">{:date('m-d',strtotime($val['dtpublishtime']))}</div>
+          </div>
+        </a>
+      </li>
+
+      <?php }else{ ?>
+      <li class="index-activity-item-m">
+        <a href="<?php echo (empty($val['chrurl'])?'/'.$sitecode.'/detail/'.$val['idactivity']:$val['chrurl']) ?>" class="flexCol">
+          <div class="index-activity-item-img"><img src="{$val['chrimg']}"><span style="display: none"
+                                                                                 class="index-activity-addr">车公庙</span>
+            <div class="index-activity-price"><span class="red">￥<em>{$val['min_price']}</em>起</span></div>
+          </div>
+          <div class="index-activity-item-txt flexCol">
+            <div class=" index-activity-item-title flex"> {if condition="$val['is_receive_cashed'] == 1 && $is_cashed"}<span
+                    class="iconfont fontColor">&#xe624;</span>{/if}{$val['chrtitle']}
+            </div>
+          </div>
+          <div class="index-activity-item-view flex">
+            <div class="eyes">{$val['hits']}</div>
+            <div class="time">{:date('m-d',strtotime($val['dtpublishtime']))}</div>
+          </div>
+        </a>
+      </li>
+
+      <?php }}}
+                if($index==0){ ?>
+      <li style="height:0.3rem;">
+        <div class="t9">抱歉，当前没有最新产品信息</div>
+      </li>
+      <?php }?>
+    </ul>
+  </div>
+  <!--广告位-->
+  <div class="sup-banner banner">
+    <div class="swiper-container swiper2 swiper-container1">
+      <ul class="swiper-wrapper">
+        {php}$result1=$cms->getAD($idsite,51327,3);{/php}
+        {empty name="result1"}
+        <li class="swiper-slide"><a href="javascript:;"><img class="swiper-slideImg" src="__PUBLIC__/static/modules/images/bar_03.jpg"></a></li>
+        {else /}
+        {volist name="result1" id="v"}
+        <li class="swiper-slide"><a href="{$v['ad_link']==''?'javascript:;':$v['ad_link']}"><img src="{$v['ad_code']}"></a></li>
+        {/volist}
+        {/empty}
+      </ul>
+      <ol class="swiper-pagination"></ol>
+    </div>
+  </div>
+  <!--动态信息-->
+  <div class="index-activity-wrap">
+    <div class="index-wrap-title">动态信息</div>
+    <ul class="index-activity-list flex">
+      <?php $re = $cms->GetContentsIndex($idsite,10);
+      if(empty($re)){ ?>
+      <li style="height:0.3rem;">
+      <li class="no-data">抱歉，当前没有最新动态信息</li>
+      </li>
+      <?php }
+                foreach($re as $ke=>$val){
+      if($k/2 == 0){
+      ?>
+      <li class="index-activity-item-m">
+        <a href="<?php echo (empty($val['linkurl'])?'/'.$sitecode.'/content/'.$val['contentid']:$val['linkurl']) ?>" class="flexCol">
+          <div class="index-activity-item-img">
+            <img src="{$val['fieldspare6']}">
+          </div>
+          <div class="index-activity-item-txt flexCol">
+            <div class=" index-activity-item-title">{$val['title']}
+            </div>
+          </div>
+          <div class="index-activity-item-view flex">
+            <div class="eyes">{$val['hits']}</div>
+            <div class="time">{:date('m-d',strtotime($val['sys00003']))}</div>
+          </div>
+        </a>
+      </li>
+      <?php }else{ ?>
+      <li class="index-activity-item-m">
+        <a href="<?php echo (empty($val['linkurl'])?'/'.$sitecode.'/content/'.$val['contentid']:$val['linkurl']) ?>" class="flexCol">
+          <div class="index-activity-item-img">
+            <img src="{$val['fieldspare6']}">
+          </div>
+          <div class="index-activity-item-txt flexCol">
+            <div class=" index-activity-item-title">{$val['title']}
+            </div>
+          </div>
+          <div class="index-activity-item-view flex">
+            <div class="eyes">{$val['hits']}</div>
+            <div class="time">{:date('m-d',strtotime($val['sys00003']))}</div>
+          </div>
+        </a>
+      </li>
+
+      <?php }} ?>
+    </ul>
+  </div>
+  {/if}
+  <!-- 大图 -->
+  {if condition="$tmp_style eq 'b'"}
+  <!--热门推荐-->
+  <div class="index-activity-wrap">
+    <div class="index-wrap-title">热门推荐</div>
+    <ul class="index-activity-list flex">
+      <?php  $re = $cms->GetActivity($idsite,array('chkdown'=>array('neq',1)),'','idactivity,chkisindex,chrtitle,chrimg,chrurl,chrsummary,dtstart,dtpublishtime,hits,s.is_receive_cashed,min_price',10);
+      $index=0;
+      foreach($re as $k=>$val){
+      if($val['chkisindex']==1) {
+      $index++;
+      ?>
+      <li class="index-activity-item-b">
+        <a href="<?php echo (empty($val['chrurl'])?'/'.$sitecode.'/detail/'.$val['idactivity']:$val['chrurl']) ?>" class="flexCol">
+          <div class="index-activity-item-img">
+            <img src="{$val['chrimg']}">
+            <span class="index-activity-addr" style="display: none">车公庙</span>
+            <div class="index-activity-price"><span class="red">￥<em>{$val['min_price']}</em>起</span></div>
+          </div>
+          <div class="index-activity-item-txt flexCol">
+            <div class=" index-activity-item-title">{if condition="$val['is_receive_cashed'] == 1 && $is_cashed"} <span class="index-activity-token iconfont fontColor">&#xe624;</span>{/if}{$val['chrtitle']}
+              <!-- <div class=" index-activity-item-tag flex">
+                    <span class="tag">活动签签</span>
+                    <span class="tag">活动签</span>
+                    <span class="age">参与年龄动签</span>
+                  </div> -->
+            </div>
+            <div class="index-activity-item-view flex">
+              <div class="eyes">{$val['hits']}</div>
+              <div class="time">{:date('m-d',strtotime($val['dtpublishtime']))}</div>
+            </div>
+          </div>
+        </a>
+      </li>
+      <?php }}
+                if($index==0){ ?>
+      <li style="height:0.3rem;">
+        <div class="t9">抱歉，当前没有最新产品信息</div>
+      </li>
+      <?php }?>
+    </ul>
+  </div>
+  <!--广告位-->
+  <div class="sup-banner banner">
+    <div class="swiper-container swiper2 swiper-container1">
+      <ul class="swiper-wrapper">
+        {php}$result1=$cms->getAD($idsite,51327,3);{/php}
+        {empty name="result1"}
+        <li class="swiper-slide"><a href="javascript:;"><img class="swiper-slideImg" src="__PUBLIC__/static/modules/images/bar_03.jpg"></a></li>
+        {else /}
+        {volist name="result1" id="v"}
+        <li class="swiper-slide"><a href="{$v['ad_link']==''?'javascript:;':$v['ad_link']}"><img src="{$v['ad_code']}"></a></li>
+        {/volist}
+        {/empty}
+      </ul>
+      <ol class="swiper-pagination"></ol>
+    </div>
+  </div>
+  <!--动态信息-->
+  <div class="index-activity-wrap">
+    <div class="index-wrap-title">动态信息</div>
+    <ul class="index-activity-list flex">
+      <?php $re = $cms->GetContentsIndex($idsite,10);
+      if(empty($re)){ ?>
+      <li style="height:0.3rem;">
+      <li class="no-data">抱歉，当前没有最新动态信息</li>
+      </li>
+      <?php }
+                foreach($re as $ke=>$val){ ?>
+      <li class="index-activity-item-b">
+        <a href="<?php echo (empty($val['linkurl'])?'/'.$sitecode.'/content/'.$val['contentid']:$val['linkurl']) ?>" class="flexCol">
+          <div class="index-activity-item-img"><img src="{$val['fieldspare6']}"></div>
+          <div class="index-activity-item-txt">
+            <div>
+              <div class=" index-activity-item-title flex">{$val['title']}</div>
+            </div>
+            <div class="index-activity-item-view index-node-item-view">
+              <div class="index-activity-view-inner flex" >
+                <div class="eyes">{$val['hits']}</div>
+                <div class="time">{:date('m-d',strtotime($val['sys00003']))}</div>
+              </div>
+            </div>
+          </div>
+        </a>
+      </li>
+      <?php } ?>
+    </ul>
+  </div>
+  {/if}
+
+    <div class="register-wrap">
+      <div class="register-link bgColor flex">
+        <div class="iconfont retrac">&#xe881;</div>
+        <div class="link-signin"><a href="/{$sitecode}/dailysignin">签到</a></div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+
+  </footer>
+{include file="modules/common/footer" /}
+
+  <script>
+    $(function () {
+      var mySwiper1 = new Swiper('.swiper-container.swiper1', {
+        pagination: {
+          el: '.swiper-pagination',
+        },
+        autoplay: {
+          delay: 2000,
+        },
+        loop: true,
+        watchOverflow: true,
+      });
+
+      var mySwiper2 = new Swiper('.swiper-container.swiper2', {
+        pagination: {
+          el: '.swiper-pagination',
+        },
+        autoplay: {
+          delay: 3000,
+        },
+        loop: true,
+        watchOverflow: true,
+        effect: 'fade',
+      });
+
+    })
+  </script>
+
+  <script>
+    $(function () {
+      var flag = 1;
+      $('.retrac').on('click', function () {
+        if (flag == 1) {
+          $(this).html('&#xe65a;').parents('.register-wrap').addClass('on');
+          flag = 0;
+        } else {
+          $(this).html('&#xe881;').parents('.register-wrap').removeClass('on');
+          flag = 1;
+        }
+
+      })
+    })
+  </script>
+</body>
+
+</html>

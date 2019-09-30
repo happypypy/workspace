@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="yes" name="apple-mobile-web-app-capable">
+  <meta content="yes" name="apple-touch-fullscreen">
+  <meta content="telephone=no,email=no" name="format-detection">
+  <meta name="viewport"
+    content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+    <script src="__PUBLIC__/static/template/pub/js/common.js"></script>
+    <link rel="stylesheet" href="__PUBLIC__/static/template/pub/css/main.css?v={:time()}">
+    <link rel="stylesheet" href="__PUBLIC__/static/template/skin/M1/css/skin.css?v={:time()}">
+  
+  <title>拼团活动列表</title>
+</head>
+
+<body class="flexCol">
+    {include file="modules/common/header" /}
+  <section class="section">
+    <div class="pintuan-img">
+      <div class="pintuan-img-l">
+        <img src="{$data['userimg']}" alt="">
+      </div>
+      <div class="pintuan-img-r">
+        <p>我是<span>{$data['username']}</span></p>
+        <p>{$data['isStarter'] ? '我发起了拼团，赶快来参与吧' : '我参加了拼团，赶快来参与吧'}</p>
+      </div>
+    </div>
+    <div class="ass-share-info">
+        {if condition="$data['state'] == 2"}
+        <div class="ass-timebox">很遗憾，拼团已解散！</div>
+        {elseif condition="$data['state'] == 4"}
+        <div class="ass-timebox">恭喜您，已成团！</div>
+        {else/}
+        <div class="ass-timebox border-line red">
+          <div>
+            <span>距离结束拼团还有：</span>
+              <span class="count-down">
+      <span class="day">0</span> 天 <span class="hour">0</span> 时 <span class="minute">0</span> 分 <span class="sec">0</span> 秒
+  </span>
+            <!-- <span>拼团已结束</span> -->
+          </div>
+        </div>
+        {/if}
+        <div class="ass-share-item border-line">
+            <a href="/{$sitecode}/detail/{$activityId}">
+              <div class="pic"><img src="{$data['chrimg_m']}" alt=""></div>
+              <div class="txt">
+                <div class="tit fontColor">{$data['chrtitle']}</div>
+                <div class="time">拼团套餐：<span>{$data['package_name']}</span></div>
+                <div class="source">单购价：<del>{$data['original_price']}元</del> &nbsp;&nbsp;<span class="red">拼团价：{$data['group_buy_price']}元</span></div>
+              </div>
+            </a>
+        </div>
+
+        {if condition="$data['state'] != 4 && $pintuan == 1"}
+        <div class="present-box">
+          {if condition="$data['left'] > 0 && $data['state'] !=2"}
+          <div>需拼团人数：<span>{$data['group_num']}人</span>&nbsp;&nbsp;<span>还差{$data['left']}人</span></div>
+          {else/}
+          <div><span>已成团</span></div>
+          {/if}
+          <div>已参团用户：
+            {volist name="$data['imgs']" id="img"}
+            <img class="user" src="{$img['userimg']}" alt="">{$img['nickname']},
+            {/volist}
+          </div>
+        </div>
+        {/if}
+      <div class="btns-center">
+            {if condition="$data['state'] == 2"}
+            <button class="spread-btn gray">已成团</button>
+            {elseif condition="$data['state'] == 4"}
+            <button class="spread-btn gray">拼团解散</button>
+            {elseif condition="$data['state'] == 0"}
+            <button class="spread-btn gray">拼团未支付</button>
+            {elseif condition="$data['expiration'] > time()"}
+            <button class="spread-btn joingroup">我要参团</button>
+            {else/}
+             <button class="spread-btn gray">拼团已结束</button>
+          {/if}
+      </div>
+      <div class="ass-rule">
+        <p>拼团规则说明：</p>
+        <p>1.点击活（或产品）进入详情介绍页面，通过“我要开团”入口进入订单支付页面，付款成功后，按页面提示分享给微信好友参团。</p>
+        <p>2.好友通过拼团发起者的拼团详情页面，点击“我要参团”进入订单支付页面，付款成功后，按页面提示分享给微信好友。如果详情页面显示已经满员，可点击“我要开团”发起新的拼团。</p>
+        <p>3.参团人数在有效期内达到拼团人数（成团人数要求请看对应活动拼团说明），即拼团成功。拼团时间到期后，若未达到拼团人数，即拼团失败，拼团订单于24小时内全额原路退款。</p>
+        <p>4.发起拼团或参与拼团，或许有次数限制，限制规则由具体活动而定，请参考拼团说明信息。</p>
+        <p>5.当前活动专用优惠券不能用于拼团支付。</p>
+        <p>最终解析权归蜗牛童行所有。</p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer"></footer>
+  <script src="__PUBLIC__/static/template/pub/js/jquery.min.js"></script>
+  <script src="__PUBLIC__/static/template/pub/js/menu.js"></script>
+  <script>
+        (function ($) {
+            $.fn.extend({
+                countDown: function (options) {
+                    var defaults = {
+                        day: '.day',
+                        hour: '.hour',
+                        minute: '.minute',
+                        sec: '.sec'
+                    },
+                        opts = $.extend({}, defaults, options); //对象扩展到opts
+                    this.each(function () {     //遍历
+                        var $this = $(this);
+                        times();    //先执行一次，防止刷新时数字都显示为0
+                        var timer = setInterval(times, 1000);   //定时器执行
+
+                        function times() {
+                            var nowDate = Math.round(new Date().getTime() / 1000).toString();
+                            endDate = '{$data["expiration"]}';
+                            tms = endDate - nowDate,    //时间差
+                                days = Math.floor(tms / 60 / 60 / 24),
+                                hours = Math.floor(tms / 60 / 60 % 24),
+                                minutes = Math.floor(tms / 60 % 60),
+                                secs = Math.floor(tms % 60);
+
+                            if (tms > 0) {  //如果时间差大于0，显示倒计时
+                                $this.find(opts.day).text(addZero(days));
+                                $this.find(opts.hour).text(addZero(hours));
+                                $this.find(opts.minute).text(addZero(minutes));
+                                $this.find(opts.sec).text(addZero(secs));
+                            } else {    //否则清除定时器，倒计时结束
+                                clearInterval(timer);
+                                $this.html('拼团已结束')
+                            }
+                        }
+                    });
+
+
+                    function addZero(t) {  //一位数加0
+                        if (t < 10) {
+                            return t = '0' + t;
+                        } else {
+                            return t;
+                        }
+                    }
+                    return this; //返回this方便链式调用
+                }
+            });
+            $('.count-down').countDown(); //默认调用方法
+            $('.a2').countDown();
+        })(jQuery);
+
+        $(".goingroup").click(function(){
+            window.location.href="/{$sitecode}/signup/{$activityId}/{$groupBuyId}/{$groupBuyOrderId}"
+        })
+  </script>
+</body>
+
+</html>

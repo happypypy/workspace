@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:68:"D:\workspace\work\public/../application/admin\view\column\index.html";i:1561691685;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:68:"D:\workspace\work\public/../application/admin\view\column\index.html";i:1569815464;}*/ ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -152,13 +152,13 @@
                                                         <?php echo $vo['nodename']; ?>
                                                     </td>
                                                     <td><?php echo $vo['modelname']; ?></td>
-                                                    <td><?php echo $vo['nodetype']==1?"资讯":"产品" ?></td>
+                                                    <td><?php if($vo['nodetype']==1){ echo "资讯" ;}elseif($vo['nodetype']==2){ echo "产品"; }else{ echo '相册';} ?></td>
                                                     <td><?php echo $vo['idorder']; ?></td>
                                                     <td width="100">
                                                         <?php if($cms->CheckPurview('columnmanage','edit')){ ?>
                                                         <a href="javascript:CustomOpen('<?php echo url('Column/modi','id='.$vo['nodeid'].'&action=edit',''); ?>','node','栏目修改',600,400)">修改</a>
                                                         <?php } if($cms->CheckPurview('columnmanage','del')){ ?>
-                                                        <a onclick="javascript:if(confirm('确定删除吗？')){return true;}else{return false;}" href="<?php echo url('Admin/Column/columndel','id='.$vo['nodeid']); ?>">删除</a>
+                                                        <a onclick="javascript:if(confirm('确定删除吗？')){return true;}else{return false;}" href="<?php echo url('Admin/Column/columndel',array('id'=>$vo['nodeid'],'nodetype'=>$vo['nodetype'])); ?>">删除</a>
                                                         <?php } ?>
                                                     </td>
                                                 </tr>
@@ -177,7 +177,7 @@
                                                     <?php } ?>
                                                 </ul>
                                               </span>
-                                            <span class="oa_ico-left"></span>活动栏目列表</div>
+                                            <span class="oa_ico-left"></span>产品栏目列表</div>
                                         <div class="oa_text-list" style="display: none">
                                             <table width="100%" id="table" border="0" cellspacing="0" cellpadding="0" style="table-layout:fixed">
                                                 <tr class="oa_text-list-title">

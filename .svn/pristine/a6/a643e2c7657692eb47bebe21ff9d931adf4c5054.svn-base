@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="yes" name="apple-mobile-web-app-capable">
+  <meta content="yes" name="apple-touch-fullscreen">
+  <meta content="telephone=no,email=no" name="format-detection">
+  <meta name="viewport"
+    content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+  <script src="__PUBLIC__/static/template/pub/js/common.js"></script>
+  <link rel="stylesheet" href="__PUBLIC__/static/template/pub/css/main.css?v={:time()}">
+  <link rel="stylesheet" href="__PUBLIC__/static/template/skin/M1/css/skin.css?v={:time()}">
+  
+  <title>已代言活动</title>
+</head>
+
+<body class="flexCol">
+    {include file="modules/common/header" /}
+  <section class="section">
+    <div class="select-bar">
+      <ul class="select-bar-tab select-bar-tab1 flex">
+            <li onclick="javascript:window.location='/{$sitecode}/endorsedata';">总览</li>
+            <li onclick="javascript:window.location='/{$sitecode}/spokesmanactivitylist';">产品</li>
+            <li onclick="javascript:window.location='/{$sitecode}/distributionorderlist';">订单</li>
+            <li class="on fontColor" onclick="javascript:window.location='/{$sitecode}/alreadyspokesmanactivitylist';">已代言</li>
+            {if condition="$user_info['is_balance'] == 1"}
+            <li onclick="javascript:window.location='/{$sitecode}/balancerecordlist';">结算</li>
+            {/if}
+      </ul>
+    </div>
+    <div class="common-wrap">
+      <ul class="common-list">
+        {if condition="!$list"}
+        <li class="no-data list-item">您还没有代言活动哦~</li>
+        {else/}
+        {volist name="$list" id="vo"}
+        <li class="list-item ">
+          <a href="" class="flex">
+            <div class="list-item-img"><img src="{$vo.chrimg}" alt=""></div>
+            <div class="list-item-txt">
+              <div class="info title fontColor">{$vo.chrtitle}</div>
+              <div class="info flex nums">
+                <div class="tit tit-w5">报名总数</div>：
+                <div class="txt">{$vo['total']}</div>
+              </div>
+              <div class="info flex nums">
+                <div class="tit tit-w5">代付款数</div>：
+                <div class="txt">{$vo['no_pay']}</div>
+              </div>
+              <div class="info flex nums">
+                <div class="tit tit-w5">已付款数</div>：
+                <div class="txt">{$vo['spokesman_pay_num']}</div>
+              </div>
+              <div class="info flex nums">
+                <div class="tit tit-w5">已退款数</div>：
+                <div class="txt">{$vo['refund']}</div>
+              </div>
+              <div class="info flex price">
+                <div class="tit tit-w5">已获得佣金</div>：
+                <div class="txt">{$vo['get_commission']}(元)</div>
+              </div>
+            </div>
+          </a>
+          <div class="btns-right">
+            <input class="several-btn1" type="button" value="查看报名" onclick="javascript:window.location='/{$sitecode}/spokesmanorderlist?type=5&activity_id={$vo.activity_id}';">
+            <input class="several-btn2 emdorse-detailed" type="button" value="佣金明细">
+          </div>
+          <!-- 俑金明细弹窗 -->
+          <div class="emdorse-detailed-content flex">
+                <div class="common-wrap">
+                    <ul class="common-list">
+                    <li class="list-item title fontColor">产品套餐对应的价格及佣金明细</li>
+                    {if condition="!$vo['package']"}
+                    <li class="empty">暂无佣金明细~</li>
+                    {else}
+                    {volist name="$vo.package" id="vo"}
+                    <li class="list-item ">
+                        <div class="info flex"><div>{$vo['keyword1']}:</div><div class="red">￥{$vo['member_price']}</div></div>
+                        <div class="info flex">
+                            <div>可获销售佣金:</div><div class="red">￥{$vo['sell_commission']}</div>
+                        </div>
+                        <div class="info flex">
+                            <div>奖励金:</div><div class="red">￥{$vo['bounty_commission']}</div>
+                        </div>
+                    </li>
+                    {/volist}
+                    {/if}
+                    </ul>
+                    <div class="btns-center">
+                    <input type="button" value="我知道了" class="sub-btn">
+                    </div>
+                </div>
+            </div>
+        </li>
+        {/volist}
+        {/if}
+      </ul>
+    </div>
+  </section>
+
+  <footer class="footer">
+    
+  </footer>
+  <script src="__PUBLIC__/static/template/pub/js/jquery.min.js"></script>
+  <script src="__PUBLIC__/static/template/pub/js/menu.js"></script>
+  <script>
+     $('.emdorse-detailed-content').hide(0);
+      //打开弹窗
+      $('.emdorse-detailed').click(function () {
+        $(this).parent().parent().find('.emdorse-detailed-content').show();
+      })
+      //关闭弹窗
+      $('.btns-center>.sub-btn').click(function () {
+        $('.emdorse-detailed-content').hide();
+      })
+
+    //==============核心代码=============
+    var winH = $(window).height(); //页面可视区域高度
+
+    var ipage = 1;
+    var scrollHandler = function () {
+        var pageH = $(document).height();
+        var scrollT = $(window).scrollTop(); //滚动条top
+
+        if (pageH - winH - scrollT < 1) {
+            LoadData(ipage)
+            ipage++;
+        }
+    }
+    //定义鼠标滚动事件
+    $(window).scroll(scrollHandler);
+    //==============核心代码=============
+
+    function LoadData(ipage) {
+        $("#dataload").show();
+        $(window).unbind('scroll');
+        // var state = $('input[name="states"]').val();
+        $.ajax({
+            url: "/{$sitecode}/alreadyspokesmanactivitylist",
+            type: 'POST',
+            cache: false,
+            data: { "ipage": ipage, "ajax": 1 },
+            success: function (data) {
+
+                if (data == 11) {
+                    $("#dataload").hide();
+                    // $("#loadmsg").html("已无更多数据");
+                    return;
+                }
+                $("#dataload").hide();
+                $("#data").html($("#data").html() + data);
+                $(window).scroll(scrollHandler);
+            }
+        });
+
+    }
+  </script>
+</body>
+
+</html>

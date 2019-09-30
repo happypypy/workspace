@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="yes" name="apple-mobile-web-app-capable">
+  <meta content="yes" name="apple-touch-fullscreen">
+  <meta content="telephone=no,email=no" name="format-detection">
+  <meta name="viewport"
+    content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+    <script src="__PUBLIC__/static/template/pub/js/common.js"></script>
+    <link rel="stylesheet" href="__PUBLIC__/static/template/pub/css/main.css?v={:time()}">
+    <link rel="stylesheet" href="__PUBLIC__/static/template/skin/M1/css/skin.css?v={:time()}">
+  
+  <title>积分商品详情</title>
+</head>
+
+<body class="flexCol">
+    {include file="modules/common/header" /}
+  <section class="section">
+    <div class="score-wrap">
+      <div class="qiandao-user flex">
+        <div class="pic"><img src="../../../static/pub/images/qiandao_06.png"></div>
+        <div class="txt">
+          <div class="name">{$userinfo.nickname},欢迎您！</div>
+          <div class="score flex">
+            <span>积分：</span>
+            <p>{$userinfo.integral}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="common-wrap flexCol">
+      <div class="common-list">
+        <div class="list-item  flex">
+          <div class="list-item-img">
+            <img src="{$integral_mall_goods.goods_thumb}">
+          </div>
+          <div class="list-item-txt">
+            <input type="hidden" id="goods_number" value="{$integral_mall_goods.goods_number}" />
+            <div class="info title">{$integral_mall_goods.goods_name}</div>
+            <div class="info time"><span>所需积分：</span><span>{$integral_mall_goods.integral}分</span></div>
+            <div class="info nums"><span>剩余数量：</span><span>{$integral_mall_goods.goods_number}</span></div>
+            <div class="btns-right">
+                {if condition="$userinfo.integral < $integral_mall_goods.integral"}
+                <a href="javascript:;" class="normal-btn gray">积分不足</a>
+                {elseif condition="$integral_mall_goods.goods_number == 0"}
+                <a href="javascript:;" class="normal-btn gray">已兑完</a>
+                {else /}
+                <a href="javascript:exchange()" class="normal-btn">我要兑换</a>
+                {/if}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="score-detail-wrap">
+
+      <div class="score-title border-line">
+        <p class="fontColor">详情内容</p>
+      </div>
+      <div class="inner">
+        <div class="docs-picture">
+            {$integral_mall_goods.goods_content}
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <footer class="footer">
+        {include file="modules/common/footer5" /}
+  </footer>
+
+  <script src="__PUBLIC__/static/template/pub/js/jquery.min.js"></script>
+  <script src="__PUBLIC__/static/template/pub/js/menu.js"></script>
+  <script src="__PUBLIC__/static/template/pub/js/layer/layer.js"></script>
+
+  <script>
+  // 我要兑换
+  function exchange(){
+    var goods_number = parseInt($('#goods_number').val());
+    if(goods_number == 0){
+      layer.msg('库存不足');
+      return;
+    }
+    location.href = '/{$sitecode}/integralexchange/{$integral_mall_goods.id}';
+  }
+  </script>
+</body>
+
+</html>

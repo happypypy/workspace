@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="yes" name="apple-mobile-web-app-capable">
+  <meta content="yes" name="apple-touch-fullscreen">
+  <meta content="telephone=no,email=no" name="format-detection">
+  <meta name="viewport"
+    content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+  <script src="__PUBLIC__/static/template/pub/js/common.js"></script>
+  <link rel="stylesheet" href="__PUBLIC__/static/template/pub/css/main.css?v={:time()}">
+  <link rel="stylesheet" href="__PUBLIC__/static/template/skin/M1/css/skin.css?v={:time()}">
+  
+  <title>佣金结算</title>
+</head>
+
+<body class="flexCol">
+    {include file="modules/common/header" /}
+  <section class="section">
+    <ul class="textbox-wrap">
+      <li class="border-line">
+        <div class="tit">总佣金：</div>
+        <div class="txt">{$user_info.total_commission}元</div>
+      </li>
+      <li class="border-line">
+        <div class="tit">已提现：</div>
+        <div class="txt">{$user_info.already_commission}元</div>
+      </li>
+      <li class="border-line flex">
+        <div>
+          <div class="tit">活动冻结金额：</div>
+          <div class="txt">{$user_info.freeze_commission}元</div>
+        </div>
+        <div class="explain fontColor">查看说明</div>
+      </li>
+      <li class="border-line">
+        <div class="tit">可结算金额：</div>
+        <div class="txt">{$user_info.can_commission}元</div>
+      </li>
+    </ul>
+    <form action="" method="POST" id="form1" class="commission-exchange-form" onsubmit="return sub_form()">
+      <ul class="textbox-wrap">
+        <li class="border-line">
+          <div class="tit">申请金额：</div>
+          <div class="txt" >
+            <input type="text" width="100%" name="balance_amount" placeholder="请填写要结算的金额，单位(元)">
+          </div>
+        </li>
+        <li class="border-line">
+          <div class="tit">真实姓名：</div>
+          <div class="txt">{$user_info.u_chrname}</div>
+        </li>
+        <li class="border-line">
+          <div class="tit">微信号：</div>
+          <div class="txt">{$user_info.wechat_number}</div>
+        </li>
+        <li class="border-line">
+          <div class="tit">手机号：</div>
+          <div class="txt">{$user_info.u_chrtel}</div>
+        </li>
+        <li class="btns-center">
+          {if condition="$user_info.can_commission > 0"}
+          <input type="submit" value="提交" class="sub-btn">
+          {/if}
+          <input type="button" value="返回" class="cancel-btn" onclick="javascript:window.location='/{$sitecode}/balancerecordlist';">
+        </li>
+      </ul>
+    </form>
+  </section>
+
+  <footer class="footer">
+    <div class="fixed-pop flex">
+      <div class="fixed-pop-inner flex bgColor">
+        <span class="iconfont">&#xe65d;</span>
+        <p>佣金结算规则</p>
+      </div>
+    </div>
+  </footer>
+  <script src="__PUBLIC__/static/template/pub/js/jquery.min.js"></script>
+  <script src="__PUBLIC__/static/template/pub/js/menu.js"></script>
+  <script src="__PUBLIC__/static/js/layer/layer.js"></script>
+  <script>
+    $('.fixed-pop-inner,.explain').click(function () {
+      var html = '';
+      html += '<ul class="indent-ul">',
+        html += '<li>总佣金：所有活动通过代言获取到的总佣金额</li>',
+        html += '<li>已提现：历史提现的总金额；</li>',
+        html += '<li>活动冻结金额：当活动未开始时的订单佣金处于冻结状态，当活动开始后自动归为可结算金额中；</li>',
+        html += '<li>退款产生差额：当已提现的订单出现退款且总佣金小于已提现额时，会产生一个负数差额，后续代言产生的佣金会优先填补该差额，当差额为正数后可继续提现；</li>',
+        html += '<li>提交申请后，我们的客服会通过微信联系您，并通过微信红包或转账形式给您进行结算。</li>'
+        html += '<li>客服工作时间，周一至周五9:30-17:30。</li>',
+        html += '</ul>'
+      layer.open({
+        skin: 'my-layer',
+        title: '结算规则',
+        area: '100%',
+        content: html,
+        btn: '我知道了',
+        btnAlign: 'c',
+      })
+    })
+
+    function sub_form() {
+        var balance_amount = $('input[name="balance_amount"]').val();
+        var price = /^(([1-9]\d{0,6})|0)([.]{1}[0-9]{1,2})?$/; //金额
+        var can_commission = {$user_info.can_commission};
+        if(!price.test(balance_amount)){
+            layer.alert('申请金额格式不正确');
+            return false ;
+        }
+        if(parseFloat(balance_amount) > can_commission){
+            layer.alert('申请金额超过了可结算金额');
+            return false ;
+        }
+        // $('#form1').submit();
+        layer.load(1, {
+            shade: [0.1,'#fff'] //0.1透明度的白色背景
+        });
+        return true;
+    }
+  </script>
+</body>
+
+</html>

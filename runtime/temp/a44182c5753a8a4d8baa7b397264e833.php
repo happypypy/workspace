@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:70:"D:\workspace\work\public/../application/admin\view\rolesite\index.html";i:1561691683;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:70:"D:\workspace\work\public/../application/admin\view\rolesite\index.html";i:1568881787;}*/ ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -141,8 +141,8 @@ function del_checked() {
                                                 .pagination{
                                                     display: inline;
                                                     font-size: 14px;
-                                                    letter-spacing: 4px;
-                                                    font-family: "宋体", Gadget, sans-serif;
+                                                    letter-spacing:1px;
+                                                    font-family: "Microsoft YaHei", Gadget, sans-serif;
                                                 }
                                             </style>
                                         </div>

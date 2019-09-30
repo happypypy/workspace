@@ -1,0 +1,154 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+    <script src="__PUBLIC__/static/template/pub/js/common.js"></script>
+    <!-- <link rel="stylesheet" href="css/main.css"> -->
+    <link rel="stylesheet" href="__PUBLIC__/static/template/pub/css/main.css?v={:time()}">
+    <link rel="stylesheet" href="__PUBLIC__/static/template/skin/M1/css/skin.css?v={:time()}">
+
+    <title>每日总结详情</title>
+</head>
+
+<body class="flexCol">
+{include file="modules/common/header" /}
+<section class="section">
+    <div class="headtitle">-每日总结详情-</div>
+    <div class="rich-media clearfix">
+        <h3>{$data.title}</h3>
+        <div class="activity-info">
+            <ul>
+                <li>
+                    <span class="first">发布时间：</span>
+                    <span class="second">{php}if(!empty($data['ctime'])){echo date("Y-m-d",$data['ctime']);}{/php}</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="tab-bar">
+        <ul class="tabs flex">
+            <li class="active flexCol fontColor tabli">
+                <div class="iconfont">&#xe66e;</div>
+                <div>内容详情</div>
+            </li>
+            <li class="flexCol tabli">
+                <div class="iconfont">&#xe604;</div>
+                <div>查看评论</div>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div class="docs-picture content selected">
+                {$data.content}
+            </div>
+            <div class="content comment-list">
+                <?php $commentlist = $cms->GetComment($idsite,$su_id); ?>
+                {if condition="!$commentlist"}
+                <div class="comment-list-item no-data flex">
+                    暂无评论信息，赶快评论吧~
+                </div>
+                {else/}
+                {volist name="$commentlist" id="vo" key="k"}
+                <div class="comment-list-item flex">
+                    <div class="list-item-img">
+                        <img src="{:empty($vo['userimg']) ? '/static/images/userimg.jpg' : $vo['userimg']}">
+                    </div>
+                    <div class="list-item-txt">
+                        <div class="first">
+                            <div class="info flex">
+                                <div class="flexCol">
+                                    <div class="username">{$vo['username']}</div>
+                                    <div class="date">{:date('Y-m-d H:i:s',$vo['createtime'])}</div>
+                                </div>
+                                <!-- 点赞预留 -->
+                                <!-- <div class="comment-itemrtr">
+                                    <span>2019</span>
+                                  </div> -->
+                                <div class="floor">{$k}楼</div>
+                            </div>
+                            <div class="text">
+                                <div class="item">{$vo['content']}</div>
+                            </div>
+                        </div>
+                        {if condition="$vo['reid']>0"}
+                        <div class="second">
+                            <div class="info flex">
+                                <div class="flexCol">
+                                    <div class="username">回复</div>
+                                    <div class="date">{:date('Y-m-d H:i:s',$vo['retime'])}</div>
+                                </div>
+                                <!-- 点赞预留 -->
+                                <!-- <div class="comment-itemrtr">
+                                                    <span>2019</span>
+                                                  </div> -->
+                            </div>
+                            <div class="text">
+                                <div class="item">{$vo['recontent']}</div>
+                            </div>
+                        </div>
+                        {/if}
+                    </div>
+                </div>
+                {/volist}
+                {/if}
+
+                <div class="btns-center" style="display: none">
+                    <div class="spread-btn">查看全部<em>100</em>条评论</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+<footer class="footer">
+    {include file="modules/common/footer" /}
+    {include file="modules/common/footer6" /}
+</footer>
+<script src="__PUBLIC__/static/template/pub/js/jquery.min.js"></script>
+<script src="__PUBLIC__/static/template/pub/js/menu.js"></script>
+<script src="__PUBLIC__/static/template/pub/js/layer/layer.js"></script>
+<script type='text/javascript' src='/static/js/visitrecorde.js?t=<?php echo time() ?>'></script>
+
+
+</body>
+<script>
+    // tab栏切换
+    $('.tabli').click(function () {
+        var index = $(this).index();
+        $(this).addClass('active fontColor').siblings('li').removeClass('active fontColor');
+        $('.tab-content .content').eq(index).addClass('selected').siblings('.content').removeClass('selected');
+    });
+
+    // 点击评论
+    $('#show-comment').on('click', function () {
+        $('.footer-comment-form,.cover').show();
+    });
+    $('#close-comment').on('click', function () {
+        $('.footer-comment-form,.cover').hide();
+    });
+
+    visitdata("{$sitecode}",{$idsite},{$data['id']},"{$data['title']}",3);
+
+    function add_comment1()
+    {
+        var content=$("#content").val();
+        add_comment('{$sitecode}',{$idsite},{$data['id']},"{$data['title']}",content,3)
+    }
+    var visitflag="{}";
+    $(function(){
+        if(visitflag=="1")
+        {
+            $("#colle").css("color","#ff7902");
+        }
+    })
+
+</script>
+</html>

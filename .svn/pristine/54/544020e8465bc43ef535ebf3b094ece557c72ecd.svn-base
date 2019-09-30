@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="yes" name="apple-mobile-web-app-capable">
+  <meta content="yes" name="apple-touch-fullscreen">
+  <meta content="telephone=no,email=no" name="format-detection">
+  <meta name="viewport"
+    content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+    <script src="__PUBLIC__/static/template/pub/js/common.js"></script>
+    <link rel="stylesheet" href="__PUBLIC__/static/template/pub/css/main.css?v={:time()}">
+    <link rel="stylesheet" href="__PUBLIC__/static/template/skin/M1/css/skin.css?v={:time()}">
+  
+  <title>报名管理列表</title>
+</head>
+
+<body class="flexCol">
+    {include file="modules/common/header" /}
+  <section class="section">
+    <div class="select-bar">
+      <ul class="select-bar-tab flex">
+        <li {if condition="$order_status==3"}class="active on"{/if} onclick="javascript:sel(3)"><span>全部报名</span></li>
+        <li {if condition="$order_status==0"}class="active on"{/if} onclick="javascript:sel(0)"><span>未开始</span></li>
+        <li {if condition="$order_status==1"}class="active on"{/if} onclick="javascript:sel(1)"><span>已结束</span></li>
+        <li {if condition="$order_status==2"}class="active on"{/if} onclick="javascript:sel(2)"><span>已结束</span></li>
+      </ul>
+    </div>
+
+    <form id="search_frm"  method="post">
+      <div class="search-bar">
+        <div class="search-bar-inner">
+          <input class="search-bar-input" placeholder="订单号，真实姓名，手机" name="keyword" value="{$keyword}">
+          <span class="iconfont search-bar-span" onclick="sub_form()">&#xe61c;</span>
+        </div>
+      </div>
+    </form>
+
+    <div class="common-wrap">
+      <ul id="data" class="common-list">
+        {if condition="!$datalist"}
+        <li class="list-item no-data">没找到相关报名信息~</li>
+        {else/}
+        {volist name="$datalist" id="vo"}
+        <li class="list-item  flex">
+          <div class="list-item-img"><img src="{$vo['goods_thumb']}"></div>
+          <div class="list-item-txt flexCol">
+            <div class="info title fontColor flex" onclick="javascript:goinfo({$vo['id']})">{$vo['goods_name']}</div>
+            <div class="price info flex">
+              <div class="tit">订单号</div>：
+              <div class="txt">{$vo['order_no']}</div>
+            </div>
+            <div class="state info flex">
+              <div class="tit">所需积分</div>：
+              <div class="txt fontColor">{$vo['integral']}</div>
+            </div>
+            <div class="time info flex">
+              <div class="tit">兑换数量</div>：
+              <div class="txt">{$vo['exchange_number']}</div>
+            </div>
+            <div class="time info flex">
+              <div class="tit">兑换时间</div>：
+              <div class="txt">{$vo['create_time']|date="Y-m-d H：",###}</div>
+            </div>
+            <div class="time info flex">
+                <div class="tit">状态</div>：
+                <div class="txt">
+                    {if condition="$vo['order_status'] == 0"}
+                    <input class="several-btn2" type="button" value="待审核">
+                    {elseif condition="$vo['order_status'] == 1"}
+                    <input class="several-btn2" type="button" value="查看物流" onclick="window.location='https://m.kuaidihelp.com/express/queryResult?word={$vo.courier_number}'">
+                    {elseif condition="$vo['order_status'] == 2"}
+                    <input class="several-btn2" type="button" value="已取消">
+                    {/if}
+                </div>
+            </div>
+            <div class="btns-right">
+              <input class="several-btn1" type="button" value="订单详情" onclick="window.location='/{$sitecode}/integralexchangemanagedetail/{$vo['id']}'">
+            </div>
+          </div>
+        </li>
+        {/volist}
+        {/if}
+      </ul>
+      <div class="load"><span id="dataload" class="iconfont iconload">&#xe618;</span></div>
+    </div>
+  </section>
+  
+  <footer class="footer">
+        {include file="modules/common/footer4" /}
+  </footer>
+
+
+  <script src="__PUBLIC__/static/template/pub/js/jquery.min.js"></script>
+  <script src="__PUBLIC__/static/template/pub/js/menu.js"></script>
+  <script src="__PUBLIC__/static/template/pub/js/layer/layer.js"></script>
+  <script>
+    //tab栏下拉菜单
+    var optionHtml = $('.select-bar-tab li.active').html();
+    $('.select-bar-tab li').click(function () {
+      var index = $(this).index();
+      if ($(this).hasClass('active')) {
+        $(this).toggleClass('fontColor').addClass('on').siblings().removeClass('on');;
+        $('.select-list').stop().slideToggle().children('.select-item').stop().slideToggle();
+      } else {
+        $(this).addClass('on').siblings().removeClass('on');
+        $('.select-bar-tab li.active').removeClass('fontColor on').children('span').html(optionHtml);
+        $('.select-list').stop().slideUp().children('.select-item').stop().slideUp();
+      }
+    })
+
+    $('.select-item li').click(function () {
+      $(this).parents('.select-list,.select-item').slideUp(0);
+      $('.select-bar-tab li.active').removeClass('fontColor').children('span').html($(this).html());
+    })
+
+    // 页面滚动
+    //滚动条滚动到指定位置触发下面事件
+    var getDiv_md = $(".select-bar");
+    var offSet = getDiv_md.offset().top + 20;
+    // console.log(offSet);
+    $(document).scroll(function () {
+      if ($(document).scrollTop() > offSet) {
+        $(".select-bar").css({ "position": "fixed", "left": "0px", "top": "0px" });
+        $('header').slideUp(100);
+      } else {
+        $(".select-bar").css({ "position": "", "left": "0px", "top": "" });
+        $('header').slideDown(100);
+      }
+    })
+
+  </script>
+
+  <script>
+    function sub_form(){
+        $('#search_frm').submit();
+    }
+
+    function goinfo(id)
+    {
+        window.location="/{$sitecode}/detail/"+id;
+    }
+
+    //==============核心代码=============
+    var winH = $(window).height(); //页面可视区域高度
+
+    var ipage=1;
+    var scrollHandler = function () {
+        var pageH = $(document).height();
+        var scrollT = $(window).scrollTop(); //滚动条top
+
+        if(pageH-winH-scrollT<1)
+        {
+            LoadData(ipage)
+            ipage++;
+        }
+    }
+    //定义鼠标滚动事件
+    $(window).scroll(scrollHandler);
+    //==============核心代码=============
+
+    function LoadData(ipage)
+    {
+        $("#dataload").show();
+        $ (window).unbind ('scroll');
+        // var state = $('input[name="states"]').val();
+        $.ajax({
+            url: "/{$sitecode}/integralexchangemanage/3",
+            type: 'POST',
+            cache: false,
+            data:{"ipage":ipage,"ajax":1,"txtkey":$("#txtkey").val()} ,
+            success : function(data) {
+
+                if(data== 11)
+                {
+                    $("#dataload").hide();
+                    // $("#loadmsg").html("已无更多数据");
+                    return;
+                }
+                $("#dataload").hide();
+                $("#data").html($("#data").html()+data);
+                $(window).scroll(scrollHandler);
+            }
+        });
+
+    }
+
+    $(".select-bar-tab li.btn").each(function(e){
+        $(this).on("click",function(){
+            if($(this).hasClass("on")){
+                $(this).removeClass("on");
+                $(".select-main").removeClass("active");
+                $(".section-shade").hide();
+            }else{
+                $(this).addClass("on").siblings().removeClass("on");
+                $(".section-shade").show();
+                $(".select-main").eq(e).addClass("active").siblings(".select-main").removeClass("active");
+            }       
+        });
+    })
+    $(".select-left li").on("click",function(){
+        $(this).addClass("on").siblings().removeClass("on");
+    });
+    $(".select-right li").on("click",function(){
+        $(this).addClass("on").siblings().removeClass("on");
+        $(".section-shade").hide();
+        $(".select-main").removeClass("active");
+        $(".select-bar-tab li").removeClass("on");  
+    });     
+    $(".section-shade").on("click",function(){
+        if($(".select-main").hasClass("active")){
+            $(".section-shade").hide(); 
+            $(".select-main").removeClass("active");
+            $(".select-bar-tab li").removeClass("on");  
+        }
+    })
+
+    function sel(index) {
+        window.location='/{$sitecode}/integralexchangemanage/'+index;
+    }
+  </script>
+</body>
+
+</html>

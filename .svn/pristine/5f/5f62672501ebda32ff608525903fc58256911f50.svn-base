@@ -1,0 +1,913 @@
+<?php
+
+namespace app\admin\controller;
+use PHPExcel;
+use PHPExcel_IOFactory;
+use think\Exception;
+use think\Request;
+use think\Session;
+use think\wx\Utils\HttpCurl;
+use think\Page;
+
+class Act extends Basesite {
+    public function index(){
+        if ($this->CMS->CheckPurview('act') == false) {
+            $this->error('无权限');
+        }
+        $request = Request::instance()->param();
+        $idsite=session('idsite');
+        $stime='';$etime='';$title='';$leader='';
+
+        $state='';
+        if(isset($request['state']) && !empty($request['state']) )
+        {
+            $state=$request['state'];
+            $map['state']=$state;
+        }
+        if(!isset($request['state'])){
+            $state=1;
+            $map['state']=$state;
+        }
+
+        if(!empty($request['title'])){
+            $map['title']=['like','%'.trim($request['title'].'%')];
+            $title=$request['title'];
+        }
+        if(!empty($request['leader']))
+            $map['leader']=$leader=$request['leader'];
+        if(!empty($request['stime'])){
+            $map['start_time']=['egt',strtotime($request['stime'])];
+            $stime=$request['stime'];
+        }
+        if(!empty($request['etime'])){
+            $map['end_time']=['elt',strtotime($request['etime'])];
+            $etime=$request['etime'];
+        }
+        $map['id_site']=$idsite;
+
+        $leader_list=db('member')->field('idmember,nickname')->where(['idsite'=>$idsite])->select();
+
+        $count = db('activities')->where($map)->count();
+        $page = new Page($count,PAGE_SIZE);
+        $act_list=db('activities')->where($map)->limit($page->firstRow.','.$page->pageSize)->select();
+
+        foreach ($act_list as $k=>$v){
+            $act_list[$k]['stu_num']=db('activities_student')->where(['id_activities'=>$v['id']])->count();
+        }
+
+        $this->assign('page',$page);
+        $this->assign('title',$title);
+        $this->assign('leader',$leader);
+        $this->assign('state',$state);
+        $this->assign('leader_list',$leader_list);
+        $this->assign('stime',$stime);
+        $this->assign('etime',$etime);
+        $this->assign('act_list',$act_list);
+        return $this->fetch();
+    }
+
+    //添加或修改活动
+    public  function edit(){
+        if ($this->CMS->CheckPurview('act','actmanage') == false) {
+            $this->error('无权限');
+        }
+        $data = Request::instance()->param();
+        $act_info=[];
+        if(isset($data['actid'])){
+            $act_info=db('activities')->find($data['actid']);
+            $act_info['start_time']=date('Y-m-d',$act_info['start_time']);
+            $act_info['end_time']=date('Y-m-d',$act_info['end_time']);
+
+        }else{
+            $act_info=[
+                'id'=>'',
+                'title'=>'',
+                'start_time'=>'',
+                'end_time'=>'',
+                'pic'=>'',
+                'leader'=>'',
+                'state'=>''
+            ];
+        }
+
+        if (Request::instance()->isPost()) {
+            $obj = new \app\admin\module\act(session('idsite'));
+            $res = $obj->PostData($data);
+            if($res['flag'] == 2){
+                $this->error($res['msg']);
+            }elseif($res['flag'] == 1){
+                $this->success('操作成功', PUBLIC_URL . 'postsuccess.html');
+            }
+        }
+
+        $leader_list=db('member')->field('idmember,nickname')->where(['idsite'=>session('idsite')])->limit(15)->select();
+        $this->assign('leader_list',$leader_list);
+        $this->assign('act_info',$act_info);
+        return $this->fetch();
+    }
+
+    //删除活动
+    public function del(){
+        if ($this->CMS->CheckPurview('act','actmanage') == false) {
+           return 3;
+        }
+        if(isset($_GET['id'])){
+            $res=db('activities')->where(['id'=>$_GET['id'],'id_site'=>session('idsite')])->delete();
+            if($res){
+                return 1;
+            }else{
+                return 2;
+            }
+        }
+    }
+
+    //批量删除
+    public function del_acts(){
+        if ($this->CMS->CheckPurview('act','actmanage') == false) {
+            echo -1;
+        }
+        $request = Request::instance()->param();
+        $aid=$request['id'];
+        //dump($request);
+        $res=db('activities')->where(['id'=>['in',"{$aid}"]])->delete();
+        if($res){
+            echo 1;
+        }else{
+            echo 2;
+        }
+    }
+    //活动管理页面
+    public function act_info(){
+        if ($this->CMS->CheckPurview('act','actmanage') == false) {
+            $this->error('无权限');
+        }
+
+        $request = Request::instance()->param();
+        $aid=$request['actid'];
+        $act_info=db('activities')->find($aid);
+        if(empty($act_info)){
+            $this->error('未查询到活动信息');
+            exit;
+        }
+
+        //活动学员列表
+        $stu_list=db('activities_student')->where(['id_activities'=>$aid])->select();
+        //dump($stu_list);
+
+        foreach ($stu_list as $k=>$v){
+            $parents=[];
+            if(!empty($v['parent1_name'])){
+                $parents[1]['name']=$v['parent1_name'];
+                $parents[1]['phone']=$v['parent1_phone'];
+            }
+            if(!empty($v['parent2_name'])){
+                $parents[2]['name']=$v['parent2_name'];
+                $parents[2]['phone']=$v['parent2_phone'];
+            }
+            if(!empty($v['parent3_name'])){
+                $parents[3]['name']=$v['parent3_name'];
+                $parents[3]['phone']=$v['parent3_phone'];
+            }
+
+            $stu_list[$k]['parents']=$parents;
+        }
+
+
+        //老师列表
+        $teacher_list=db('activities_teacher')->where(['id_activities'=>$aid])->order(['order','order'=>'asc'])->select();
+
+        //每日总结列表
+
+        $count = db('activities_day_summary')->where(['id_activities'=>$aid])->count();
+        $page = new Page($count,PAGE_SIZE);
+        $summary_list=db('activities_day_summary')->where(['id_activities'=>$aid])->limit($page->firstRow.','.$page->pageSize)->select();
+        foreach ($summary_list as $k=>$v){
+            $summary_list[$k]['c_count']=db('comment')->where(['dataid'=>$v['id'],'idsite'=>$v['id_site'],'flag'=>3])->count();
+            $summary_list[$k]['response_count']=db('comment')->where(['dataid'=>$v['id'],'idsite'=>$v['id_site'],'flag'=>3,'intstate'=>4])->count();
+            $summary_list[$k]['unres_count']=$summary_list[$k]['c_count']-$summary_list[$k]['response_count'];
+        }
+        //查询该活动的相册
+        $album_info = db('album')->where(['site_id'=>session('idsite'),'activity_id'=>$act_info['id']])->find();
+        $this->assign('page',$page);
+        $this->assign('summary_list',$summary_list);
+        $this->assign('teacher_list',$teacher_list);
+        $this->assign('stu_list',$stu_list);
+        $this->assign('act_info',$act_info);
+        $this->assign('actid',$aid);
+        $this->assign('album_id',$album_info['id']?$album_info['id']:0);
+        return $this->fetch();
+    }
+
+    public function ajax_studentlist(){
+        if ($this->CMS->CheckPurview('act','actmanage') == false) {
+            $this->error('无权限');
+        }
+        $request = Request::instance()->param();
+        $tmp_arr=[];
+        if(!empty($request['stuname'])){
+            $tmp_arr['name']=['like','%'.$request['stuname'].'%'];
+        }
+        if(!empty($request['parentname'])){
+            $tmp_arr['parent1_name|parent2_name|parent3_name']=['like','%'.$request['parentname'].'%'];
+        }
+        if(!empty($request['parentphone'])){
+            $tmp_arr['parent1_phone|parent2_phone|parent3_phone']=$request['parentphone'];
+        }
+
+        $tmp_arr['id_activities']=$request['aid'];
+        //活动学员列表
+        $stu_list=db('activities_student')->where($tmp_arr)->select();
+        //dump($stu_list);
+
+        foreach ($stu_list as $k=>$v){
+            $parents=[];
+            if(!empty($v['parent1_name'])){
+                $parents[1]['name']=$v['parent1_name'];
+                $parents[1]['phone']=$v['parent1_phone'];
+            }
+            if(!empty($v['parent2_name'])){
+                $parents[2]['name']=$v['parent2_name'];
+                $parents[2]['phone']=$v['parent2_phone'];
+            }
+            if(!empty($v['parent3_name'])){
+                $parents[3]['name']=$v['parent3_name'];
+                $parents[3]['phone']=$v['parent3_phone'];
+            }
+
+            $stu_list[$k]['parents']=$parents;
+        }
+
+        $this->assign('stu_list',$stu_list);
+        return $this->fetch();
+    }
+    public function order_addstu(){
+        if ($this->CMS->CheckPurview('act','studentmanage') == false) {
+            $this->error('无权限');
+        }
+        $request = Request::instance()->param();
+        $aid=$request['actid'];
+        $objOrder = new \app\admin\module\Order();
+        $obj = new \app\admin\module\act(session('idsite'));
+        //其中参数中具有节点id
+        $intflag=$request['intflag']=2;
+        $arr = $obj->index($request);
+        $activity_list = $arr['data'];
+        $page = $arr['pager'];
+        $hdfl_arr = [];
+        $hdfl = $obj->getDic("hdfl");
+        foreach ($hdfl as $k => $vo) {
+            $hdfl_arr[$vo['code']] = $vo['name'];
+        }
+        foreach ($activity_list as $k => $vo) {
+            $activity_list[$k]['order_num'] = $objOrder->getOrderNum($vo['idactivity']);
+            $activity_list[$k]['typename'] = array_key_exists($vo['fidtype'], $hdfl_arr) ? $hdfl_arr[$vo['fidtype']] : "";
+        }
+        $hdbq = $obj->getDic("hdbq");
+        $this->assign('intflag', $intflag);
+        $this->assign('search', $arr['search']);
+        $this->assign('acount', $arr['acount']);
+        $this->assign('page', $page);
+        $this->assign('hdfl', $hdfl);
+        $this->assign('hdbq', $hdbq);
+        $this->assign('activity_list',$activity_list);
+        $this->assign('actid',$aid);
+        return $this->fetch();
+    }
+    public function order_addstus(){
+        if ($this->CMS->CheckPurview('act','studentmanage') == false) {
+            $this->error('无权限');
+        }
+        $request = Request::instance()->param();
+        $aid=$request['actid'];
+        $obj = new \app\admin\module\act(session('idsite'));
+
+        $selsignfrom=db('activity')->where(['idactivity'=>$request['id'],'siteid'=>session('idsite')])->value('selsignfrom');
+
+        if(!$selsignfrom){
+            $this->error("未找到报名模板");
+        }
+
+        $request['intflag']=5;
+
+        $arr = $obj->signupindex($request);
+        $data = $arr['data'];
+        $page = $arr['pager'];
+        $search = $arr['search'];
+        $this->assign('id_activities',$request['id']);
+        $this->assign('selsignfrom',$selsignfrom);
+        $this->assign('search', $search);
+        $this->assign('page', $page);
+        $this->assign('data', $data);
+        $this->assign('order_state',config('order_state'));
+        $this->assign('order_state_color',config('order_state_color'));
+        $this->assign('actid',$aid);
+        return $this->fetch();
+    }
+    public function chose_colum(){
+        if ($this->CMS->CheckPurview('act','studentmanage') == false) {
+            $this->error('无权限');
+        }
+        $request = Request::instance()->param();
+        if(!isset($request['id']) || empty($request['id'])){
+            $this->error('未选择订单');
+        }
+        $aid=$request['actid'];
+        $colum=db('signup_template_sub')->where(['pid'=>$request['selsignfrom'],'idsite'=>session('idsite')])->select();
+
+        //查找每一个订单的报名信息
+        if(isset($request['act'])){
+            $obj = new \app\admin\module\act(session('idsite'));
+            $res=$obj->addstu($request);
+            if($res['status']=='success'){
+                $this->success('操作成功', PUBLIC_URL . 'postsuccess.html');
+            }else{
+                $this->error($res['msg']);
+            }
+            exit();
+        }
+        $this->assign('selsignfrom',$request['selsignfrom']);
+        $this->assign('order',$request['id']);
+        $this->assign('colum',$colum);
+        $this->assign('actid',$aid);
+
+        return $this->fetch();
+    }
+    public function hand_addstu(){
+        if ($this->CMS->CheckPurview('act','studentmanage') == false) {
+            $this->error('无权限');
+        }
+        $request = Request::instance()->param();
+        $obj = new \app\admin\module\act(session('idsite'));
+        //dump($request);
+        if (Request::instance()->isPost()) {
+            $res = $obj->hand_addstu($request);
+            if ($res['state'] == 'success') {
+                $this->success('操作成功', PUBLIC_URL . 'postsuccess.html');
+            } else {
+                //dump($res['msg']);
+               $this->error($res['msg']);
+            }
+            exit();
+        }
+        $parents=[];
+        if(isset($request['sid'])){
+            $stu=db('activities_student')->find($request['sid']);
+            if(is_numeric($stu['age'])){
+                $stu['age']=date('Y-m-d',$stu['age']);
+            }else{
+                $stu['age']='';
+            }
+            if(!empty($stu['parent1_name'])){
+                $parents[1]['name']=$stu['parent1_name'];
+                $parents[1]['phone']=$stu['parent1_phone'];
+                $parents[1]['openid']=$stu['parent1_openid'];
+            }
+            if(!empty($stu['parent2_name'])){
+                $parents[2]['name']=$stu['parent2_name'];
+                $parents[2]['phone']=$stu['parent2_phone'];
+                $parents[2]['openid']=$stu['parent2_openid'];
+            }
+            if(!empty($stu['parent3_name'])){
+                $parents[3]['name']=$stu['parent3_name'];
+                $parents[3]['phone']=$stu['parent3_phone'];
+                $parents[3]['openid']=$stu['parent3_openid'];
+            }
+
+        }else{
+            $stu["id"] = '';
+            $stu["name"] = '';
+            $stu["age"] = '';
+            $stu["sex"] = '';
+            $stu["idcard"] = '';
+            $stu["phone"] =  '';
+            $stu["parent1_openid"] = '';
+            $stu["parent1_name"] = '';
+            $stu["parent1_phone"] = '';
+            $stu["parent2_openid"] = '';
+            $stu["parent2_name"] ='';
+            $stu["parent2_phone"] = '';
+            $stu["parent3_openid"] = '';
+            $stu["parent3_name"] ='';
+            $stu["parent3_phone"] ='';
+            $stu["id_activities"] = '';
+            $stu["id_site"] = '';
+        }
+        $this->assign('parents',$parents);
+        $this->assign('stu',$stu);
+        return $this->fetch();
+
+    }
+
+    public function chose_parent(){
+        if ($this->CMS->CheckPurview('act','studentmanage') == false) {
+            $this->error('无权限');
+        }
+        $request = Request::instance()->param();
+        $opid='';
+        //dump($request);
+        $act='';
+        $k=0;
+        $phone='';
+        if(isset($request['act'])){
+            //修改父母
+            $act='alt1()';
+            $k=$request['act'];
+            if(isset($request['opid']) && $request['opid']!=''){
+                $opid=$request['opid'];
+                $phone=db('member')->where(['openid'=>$opid])->value('chrtel');
+            }
+        }else{
+            $act='add()';
+        }
+
+        $pid=0;
+        $parent_list=db('member')->field('idmember,nickname,openid,chrtel')->where(['idsite'=>session('idsite')])->select();
+        //dump($parent_list);
+        //$this->assign('pid',$pid);
+        $this->assign('phone',$phone);
+        $this->assign('opid',$opid);
+        $this->assign('k',$k);
+        $this->assign('act',$act);
+        $this->assign('parent_list',$parent_list);
+        return $this->fetch();
+    }
+
+    public function del_stu(){
+        if ($this->CMS->CheckPurview('act','studentmanage') == false) {
+            echo 3;
+        }
+        $request = Request::instance()->param();
+        $sid=$request['sid'];
+        $res=db('activities_student')->delete($sid);
+        if($res){
+            echo 1;
+        }else{
+            echo 2;
+        }
+    }
+    public function comment_stu(){
+        if ($this->CMS->CheckPurview('act','studentmanage') == false) {
+            $this->error('无权限');
+        }
+
+        $request = Request::instance()->param();
+        $username=session('UserName');
+        $sid=$request['sid'];
+        $aid=$request['aid'];
+
+        $count = db('activities_stu_comment')->where(['id_stu'=>$sid])->count();
+        $page = new Page($count,PAGE_SIZE);
+
+        $stu_comment=db('activities_stu_comment')->where(['id_stu'=>$sid])->limit($page->firstRow.','.$page->pageSize)->select();
+
+        //dump($stu_comment);
+
+        $this->assign('page',$page);
+        $this->assign('username',$username);
+        $this->assign('sid',$sid);
+        $this->assign('aid',$aid);
+        $this->assign('stu',$stu_comment);
+        return $this->fetch();
+    }
+
+    public function add_comment_stu(){
+        if ($this->CMS->CheckPurview('act','studentmanage') == false) {
+            $this->error('无权限');
+        }
+        $request = Request::instance()->param();
+        $obj = new \app\admin\module\act(session('idsite'));
+        //dump($request);
+        if (Request::instance()->isPost()) {
+            $res = $obj->add_comment_stu($request);
+            if ($res['state'] == 'success') {
+                $this->success('操作成功', PUBLIC_URL . 'postsuccess.html');
+            } else {
+                //dump($res['msg']);
+                $this->error($res['msg']);
+            }
+            exit();
+        }
+        $info= $obj->get_comment_stu($request);
+        $this->assign('info',$info);
+        return $this->fetch();
+    }
+    public function del_comment(){
+        if ($this->CMS->CheckPurview('act','studentmanage') == false) {
+            echo 3;
+        }
+        $request = Request::instance()->param();
+        $cid=$request['cid'];
+        $res=db('activities_stu_comment')->delete($cid);
+        if($res){
+            echo 1;
+        }else{
+            echo 2;
+        }
+    }
+
+    //批量删除
+    public function del_comments(){
+        if ($this->CMS->CheckPurview('act','studentmanage') == false) {
+            echo -1;
+        }
+        $request = Request::instance()->param();
+        $cid=$request['id'];
+        //dump($request);
+        $res=db('activities_stu_comment')->where(['id'=>['in',"{$cid}"]])->delete();
+        if($res){
+            echo 1;
+        }else{
+            echo 2;
+        }
+    }
+
+    public function add_teacher(){
+        if ($this->CMS->CheckPurview('act','teachermanage') == false) {
+            $this->error('无权限');
+        }
+        $request = Request::instance()->param();
+        $obj = new \app\admin\module\act(session('idsite'));
+        //dump($request);
+        if (Request::instance()->isPost()) {
+            $res = $obj->add_teacher($request);
+            if ($res['state'] == 'success') {
+                $this->success('操作成功', PUBLIC_URL . 'postsuccess.html');
+            } else {
+                //dump($res['msg']);
+                $this->error($res['msg']);
+            }
+            exit();
+        }
+        $info= $obj->get_teacher($request);
+        $this->assign('info',$info);
+        return $this->fetch();
+    }
+
+
+    public function del_teacher(){
+        if ($this->CMS->CheckPurview('act','teachermanage') == false) {
+            echo 3;
+        }
+        $request = Request::instance()->param();
+        $tid=$request['tid'];
+        $res=db('activities_teacher')->delete($tid);
+        if($res){
+            echo 1;
+        }else{
+            echo 2;
+        }
+    }
+
+
+    public function add_summary(){
+        if ($this->CMS->CheckPurview('act','summarymanage') == false) {
+            $this->error('无权限');
+        }
+        $request = Request::instance()->param();
+        $obj = new \app\admin\module\act(session('idsite'));
+        //dump($request);
+        if (Request::instance()->isPost()) {
+            $res = $obj->add_summary($request);
+            if ($res['state'] == 'success') {
+                $this->success('操作成功', PUBLIC_URL . 'postsuccess.html');
+            } else {
+                //dump($res['msg']);
+                $this->error($res['msg']);
+            }
+            exit();
+        }
+        $info= $obj->get_summary($request);
+        $this->assign('info',$info);
+        return $this->fetch();
+    }
+
+    public function del_summary(){
+        if ($this->CMS->CheckPurview('act','summarymanage') == false) {
+            echo 3;
+        }
+        $request = Request::instance()->param();
+        $suid=$request['suid'];
+        $res=db('activities_day_summary')->delete($suid);
+        if($res){
+            echo 1;
+        }else{
+            echo 2;
+        }
+    }
+
+    //批量删除
+    public function del_sus(){
+        if ($this->CMS->CheckPurview('act','summarymanage') == false) {
+            echo -1;
+        }
+        $request = Request::instance()->param();
+        $suid=$request['id'];
+        //dump($request);
+        $res=db('activities_day_summary')->where(['id'=>['in',"{$suid}"]])->delete();
+        if($res){
+            echo 1;
+        }else{
+            echo 2;
+        }
+    }
+    public function visit()
+    {
+
+        if ($this->CMS->CheckPurview('act','summarymanage') == false) {
+            $this->error('无权限');
+        }
+        $search = [];
+        $search['istel'] = 0;
+        $search['isfollow'] = 0;
+        $search['readn'] = '';
+        $search['readl'] = '';
+        $search['regionkey'] = '';
+
+        $data = Request::instance()->param();
+        $obj = new \app\admin\module\act(session('idsite'));
+        $result = $obj->visitlist($data);
+
+        if (!empty($data['istel'])) {
+            $search['istel'] = $data['istel'];
+        }
+
+        if (!empty($data['isfollow'])) {
+            $search['isfollow'] = $data['isfollow'];
+        }
+
+        if (!empty($data['readn'])) {
+            $search['readn'] = $data['readn'];
+        }
+
+        if (!empty($data['readl'])) {
+            $search['readl'] = $data['readl'];
+        }
+
+        if (!empty($data['regionkey'])) {
+            $search['regionkey'] = $data['regionkey'];
+        }
+
+        $_account = $obj->getUser();
+        $account = [];
+        if ($_account) {
+            foreach ($_account as $k => $vo) {
+                $account[$vo['idaccount']] = $vo['chrname'];
+            }
+        }
+
+        $this->assign('search', $search);
+        $this->assign('account', $account);
+        $this->assign('data', $result);
+        $this->assign('suid', $data['suid']);
+
+        $this->assign('sitecode', getSiteCode(session('idsite')));
+        return $this->fetch();
+    }
+
+
+    public  function comment_summary(){
+        if ($this->CMS->CheckPurview('act', 'summarymanage') == false) {
+            $this->NoPurview();
+        }
+        $request = Request::instance()->param();
+        $su_info=db('activities_day_summary')->where(['id'=>$request['suid'],'id_site'=>session('idsite')])->find();
+        if(empty($su_info)){
+           die("未查询到该总结");
+        }
+        $obj = new \app\admin\module\act(session('idsite'));
+        $result = $obj->commentlist($request);
+        $comment_list = $result['comment_list'];
+        $page = $result['page'];
+        $search = $result['search'];
+
+        $this->assign('su_info',$su_info);
+        $this->assign('comment_list', $comment_list);
+        $this->assign('search', $search);
+        $this->assign('page', $page);
+        $this->assign('idsite', $result['idsite']);
+
+
+        return $this->fetch();
+    }
+
+    public function response(){
+        if ($this->CMS->CheckPurview('act', 'summarymanage') == false) {
+            $this->NoPurview();
+        }
+        $request = Request::instance()->param();
+        $id = $request['id'];
+        $row = [];
+        if ($id > 0) {
+            $idsite = session('idsite');
+            if (Request::instance()->isPost()) {
+                //如果是回复的话
+                if (empty($request['recontent']) && array_key_exists('sub1', $request)) {
+                    $this->error('回复内容不能为空');
+                }
+                $arr = [];
+                $arr['recontent'] = $request['recontent'];
+                $arr['rename'] = session('UserName');
+                $arr['reid'] = session('AccountID');
+                $arr['retime'] = time();
+                $arr['intstate'] = 4;
+
+                if (array_key_exists('sub2', $request)) {
+                    $arr['show'] = $request['show'];
+                }
+
+               // $comment = db('comment')->where(array('id' => $id, 'idsite' => $idsite))->find();
+
+                $bool = db('comment')->where(array('id' => $id, 'idsite' => $idsite))->update($arr);
+
+                if ($bool) {
+                    $this->success('操作成功', PUBLIC_URL . 'postsuccess.html');
+                } else {
+                    $this->error('操作失败');
+                }
+            }
+            $row = db('comment')->where(array('id' => $id, 'idsite' => $idsite))->find();
+
+        }
+        $this->assign('info', $row);
+        return $this->fetch();
+
+    }
+
+    public function get_summary(){
+        if ($this->CMS->CheckPurview('act','summarymanage') == false) {
+            $this->error('无权限');
+        }
+        $request = Request::instance()->param();
+        $obj = new \app\admin\module\act(session('idsite'));
+
+        $info= $obj->get_summary($request);
+        $this->assign('info',$info);
+        return $this->fetch();
+    }
+
+    /**
+     * 图片列表
+     * @return mixed
+     */
+    public function photo_list() {
+        if ($this->CMS->CheckPurview('act_photo_manage','view') == false) {
+            $this->error('无权限');
+        }
+        $request = Request::instance()->param();
+        if(empty($request['album_id'])) $this->error('该活动未创建相册');
+        $obj = new \app\admin\module\Album(session('idsite'));
+
+        //其中参数中具有节点id
+        $arr = $obj->photo_list($request);
+        $data = $arr['data'];
+        $page = $arr['pager'];
+
+        $this->assign('search', $arr['search']);
+        $this->assign('page', $page);
+        $this->assign('data', $data);
+        $this->assign('album_id', $request['album_id']);//相册id
+        $this->assign('actid', $request['actid']);//活动id
+        $this->assign('sitecode', getSiteCode(session('idsite')));
+        return $this->fetch();
+    }
+
+    /**
+     * 上传图片和添加图片的页面
+     * @return mixed
+     * @throws \think\Exception
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * @throws \think\exception\PDOException
+     */
+    public function add_photo(){
+        $obj = new \app\admin\module\Album(session('idsite'));
+        $data = Request::instance()->param();
+        if($this->CMS->CheckPurview('photo_manage','add_photo')==false){
+            $this->NoPurview();
+        }
+//        echo session("UserName");exit;
+        if (Request::instance()->isPost()) {
+            $bool = $obj->postAddPhoto($data);
+            if($bool){
+                return json(['code'=>0,'message'=>'执行成功']);
+            }else{
+                return json(['code'=>-1,'message'=>'执行失败']);
+            }
+        }
+        $this->assign('album_id', $data['album_id']);//相册id
+        return $this->fetch();
+    }
+
+    /**
+     * 暂时假删除图片
+     * @return int
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
+     */
+    public function false_del_photo()
+    {
+        if($this->CMS->CheckPurview('photo_manage','delete_photo')==false){
+            $this->error('无权限');
+        }
+        $request = Request::instance()->param();
+        $obj = new \app\admin\module\Album(session('idsite'));
+        $bool = $obj->false_del_photo($request);
+        if($bool){
+            return 1;
+        }else{
+            return -1;
+        }
+    }
+
+    /**
+     * 暂时假删除图片
+     * @return int
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
+     */
+    public function del_photo()
+    {
+        $request = Request::instance()->param();
+        $obj = new \app\admin\module\Album(session('idsite'));
+        $bool = $obj->del_photo($request);
+        if($bool){
+            return 1;
+        }else{
+            return -1;
+        }
+    }
+
+    /**
+     * 图片评论列表列表
+     * @return mixed
+     */
+    public function comment_list() {
+        if ($this->CMS->CheckPurview('photo_manage','photo_comment') == false) {
+            $this->error('无权限');
+        }
+        $request = Request::instance()->param();
+        $obj = new \app\admin\module\Album(session('idsite'));
+
+        //其中参数中具有节点id
+        $arr = $obj->comment_list($request);
+//        halt($arr);
+        $data = $arr['data'];
+        $page = $arr['pager'];
+
+        $this->assign('search', $arr['search']);
+        $this->assign('page', $page);
+        $this->assign('data', $data);
+        $this->assign('album_id', $request['album_id']);//相册id
+        $this->assign('actid', $request['actid']);//活动id
+        $this->assign('sitecode', getSiteCode(session('idsite')));
+        return $this->fetch();
+    }
+
+    /**
+     * 回复评论
+     * @return mixed
+     * @throws Exception
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     * @throws \think\exception\PDOException
+     */
+    public function reply()
+    {
+        //commentmanage
+        if ($this->CMS->CheckPurview('photo_manage','reply_comment') == false) {
+            $this->NoPurview();
+        }
+        $request = Request::instance()->param();
+        $id = $request['id'];
+        $row = [];
+        //        $row['recontent']="";
+        // var_dump($id, Request::instance()->isPost());die;
+        if ($id > 0) {
+            $idsite = session('idsite');
+            if (Request::instance()->isPost()) {
+                //如果是回复的话
+                if (empty($request['recontent']) && array_key_exists('sub1', $request)) {
+                    $this->error('回复内容不能为空');
+                }
+                $arr = [];
+                $arr['reply_content'] = $request['recontent'];
+                $arr['reply_name'] = session('UserName');
+                $arr['account_id'] = session('AccountID');
+                $arr['reply_time'] = date('Y-m-d H:i:s',time());
+                $bool = db('album_comment')->where(array('id' => $id, 'site_id' => $idsite))->update($arr);
+                // $bool = true;
+                if ($bool) {
+                    $this->success('操作成功', PUBLIC_URL . 'postsuccess.html');
+                } else {
+                    $this->error('操作失败');
+                }
+            }
+            $row = db('album_comment')->where(array('id' => $id, 'site_id' => $idsite))->find();
+        }
+        $this->assign('info', $row);
+        return $this->fetch();
+    }
+
+}

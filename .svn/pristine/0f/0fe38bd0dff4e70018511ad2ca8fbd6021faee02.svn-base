@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="yes" name="apple-mobile-web-app-capable">
+  <meta content="yes" name="apple-touch-fullscreen">
+  <meta content="telephone=no,email=no" name="format-detection">
+  <meta name="viewport"
+    content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+    <script src="__PUBLIC__/static/template/pub/js/common.js"></script>
+    <link rel="stylesheet" href="__PUBLIC__/static/template/pub/css/main.css?v={:time()}">
+    <link rel="stylesheet" href="__PUBLIC__/static/template/skin/M1/css/skin.css?v={:time()}">
+  
+  <title>优惠券列表</title>
+</head>
+
+<body class="flexCol">
+    {include file="modules/common/header" /}
+
+  <section class="section">
+    <div class="select-bar">
+      <ul class="select-bar-tab flex" id="select-bar-tab">
+        <li {if condition="$flag==1"}class="on"{/if} onclick="searchdata1(1)">未使用</li>
+        <li {if condition="$flag==5"}class="on"{/if} onclick="searchdata1(5)">已使用</li>
+        <li {if condition="$flag==10"}class="on"{/if} onclick="searchdata1(10)">已过期</li>
+        <li {if condition="$flag==15"}class="on"{/if} onclick="searchdata1(15)">冻结</li>
+      </ul>
+    </div>
+
+    <div class="coupon-list">
+      <ul>
+        {if condition="empty($list)"}
+        <li class="flex no-data">没有查询到活动卷信息</li>
+        {else/}
+        {volist name="$list" id="vo"}
+        <li class="flex">
+          <div class="tit fontColor">现金券</div>
+          <div class="txt flexCol">
+            <div class="title">{$vo['receive_cashed_name']}</div>
+            <div>金额：<span class="red">{$vo['cashed_amount']}</span> {if condition="$vo['used_status'] == 1" }<a href="/{$sitecode}/cashedactivity/{$vo['cashed_type']}/{$vo['receive_activity_id']}" class="use normal-btn">立即使用</a>{/if}</div>
+            {if condition="$vo['used_status'] == 5"}
+            <div>使用对象：<span class="fontColor" style="cursor: pointer"  onclick="javascript:window.location='/{$sitecode}/detail/{$vo['used_activity_id']}'">{$vo['used_activity_name']}</span></div>
+            {/if}
+            {if condition="$vo['used_status'] == 1 || $vo['used_status'] == 15"}
+            <div>过期时间：<span>{$vo['cashed_validity_time']}</span></div>
+            {elseif condition="$vo['used_status'] == 5"}
+            <div>使用时间：<span>{$vo['used_time']}</span></div>
+            {elseif condition="$vo['used_status'] == 10"}
+            <div>冻结时间：<span>{$vo['freeze_time']}</span></div>
+            {/if}
+          </div>
+        </li>
+        {/volist}
+        {/if}
+      </ul>
+      <div class="load"><span id="dataload" class="iconfont iconload">&#xe618;</span></div>
+    </div>
+  </section>
+
+  <footer class="footer">
+        {include file="modules/common/footer3" /}
+  </footer>
+
+  <script src="__PUBLIC__/static/template/pub/js/jquery.min.js"></script>
+  <script src="__PUBLIC__/static/template/pub/js/menu.js"></script>
+  <script src="__PUBLIC__/static/template/pub/js/layer/layer.js"></script>
+<!--site section end-->
+<script language="JavaScript">
+    function searchdata1(flag) {
+
+        window.location="/{$sitecode}/cashedlist/"+flag;
+    }
+
+    //==============核心代码=============
+    var winH = $(window).height(); //页面可视区域高度
+
+    var ipage=1;
+    var scrollHandler = function () {
+        var pageH = $(document).height();
+        var scrollT = $(window).scrollTop(); //滚动条top
+
+        if(pageH-winH-scrollT<1)
+        {
+            LoadData(ipage)
+            ipage++;
+        }
+    }
+    //定义鼠标滚动事件
+    $(window).scroll(scrollHandler);
+    //==============核心代码=============
+
+    function LoadData(ipage)
+    {
+        $("#dataload").show();
+        $ (window).unbind ('scroll');
+        // var state = $('input[name="states"]').val();
+        $.ajax({
+            url: "/{$sitecode}/cashedlist/{$flag}",
+            type: 'POST',
+            cache: false,
+            data:{"ipage":ipage,"ajax":1} ,
+            success : function(data) {
+
+                if(data== 11)
+                {
+                    $("#dataload").hide();
+                    // $("#loadmsg").html("已无更多数据");
+                    return;
+                }
+                $("#dataload").hide();
+                $("#data").html($("#data").html()+data);
+                $(window).scroll(scrollHandler);
+            }
+        });
+
+    }
+</script>
+<script>
+   //tab栏下拉菜单
+    $('.select-bar-tab li').click(function () {
+      var index = $(this).index();
+      $('.select-list').eq(index).siblings().stop().slideUp(0).children('.select-item').stop().slideUp(0);
+      $(this).addClass('on').siblings().removeClass('on');
+      $('.select-list').eq(index).stop().slideToggle().children('.select-item').stop().slideToggle();
+    })
+</script>
+</body>
+</html>

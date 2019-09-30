@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+    <script src="__PUBLIC__/static/template/pub/js/common.js"></script>
+    <link rel="stylesheet" href="__PUBLIC__/static/template/pub/css/main.css?v={:time()}">
+    <link rel="stylesheet" href="__PUBLIC__/static/template/skin/M1/css/skin.css?v={:time()}">
+
+    <title>搜索图片</title>
+</head>
+
+<body class="flexCol">
+{include file="modules/common/header" /}
+<section class="section">
+    <div class="headtitle">-图片列表-</div>
+    <div class="identify-wrap flex">
+        <div class="avatar">
+            <img src="{$face_url}" alt="">
+        </div>
+        <div class="avatar-txt">你认识Ta吗</div>
+    </div>
+    <div class="avatar-tit">Ta在本次活动中的照片</div>
+    <div class="flexCol photo-container">
+        <ul style="min-height: 75px;">
+            <?php  if(!$result_data) { ?>
+            <li class="no-data">没有相关的图片</li>
+            <?php }
+            foreach($result_data as $k=>$val){ ?>
+            <li id="20190920" data-time="20190920">
+                <a href="/{$sitecode}/searchphoto/<?php echo explode('_',$val['group_id'])[1]; ?>/<?php echo explode('_',$val['user_id'])[1]; ?>?key={$k}&face_url={$face_url}">
+                    <div class="pic"><img src="{$val.user_info}"></div>
+                </a>
+            </li>
+            <?php } ?>
+        </ul>
+    </div>
+    <div class="load"><span id="dataload" class="iconfont iconload">&#xe618;</span></div>
+</section>
+
+<footer class="footer">
+    {include file="modules/common/footer" /}
+</footer>
+
+<script src="__PUBLIC__/static/template/pub/js/jquery.min.js"></script>
+<script src="__PUBLIC__/static/template/pub/js/menu.js"></script>
+<script src="__PUBLIC__/static/template/pub/js/layer/layer.js"></script>
+<script>
+    function waterFall() {
+        // 1- 确定图片的宽度 - 滚动条宽度
+        pageWidth = $(".photo-container ul").width();//父盒子宽度
+        var columns = 2; //2列
+        var rowSpaces = 1; //每列的间隙
+        var colSpaces = 1; //每行的间隙
+        var itemWidth = parseInt((pageWidth - rowSpaces) / columns); //得到item的宽度
+        $(".photo-container ul li").innerWidth(itemWidth); //设置到item的宽度
+
+        var arr = [];
+
+        $(".photo-container ul li").each(function (i) {
+            var height = $(this).outerHeight();
+
+            var width = $(this).outerWidth();
+
+            var bi = itemWidth / width; //获取缩小的比值
+            var boxheight = parseInt(height * bi) + colSpaces; //图片的高度*比值 = item的高度。boxheight是下个item的top值
+            if (i < columns) {
+                // 2- 确定第一行
+                $(this).css({
+                    top: 0,
+                    left: (itemWidth) * i + rowSpaces * (i + 1)
+                });
+                arr.push(boxheight);
+
+            } else {
+                // 其他行
+                // 3- 找到数组中最小高度  和 它的索引
+                var minHeight = arr[0];
+                var index = 0;
+                for (var j = 0; j < arr.length; j++) {
+                    if (minHeight > arr[j]) {
+                        minHeight = arr[j];
+                        index = j;
+                    }
+                }
+                // 4- 设置下一行的第一个盒子位置
+                // top值就是最小列的高度
+                $(this).css({
+                    top: arr[index],
+                    left: $(".photo-container ul li").eq(index).css("left")
+                });
+
+                // 5- 修改最小列的高度
+                // 最小列的高度 = 当前自己的高度 + 拼接过来的高度
+                arr[index] = arr[index] + boxheight;
+            }
+            $('.photo-container ul').css('minHeight', Math.max.apply(null, arr));
+        });
+    }
+
+
+    //clientWidth 处理兼容性
+    function getClient() {
+        return {
+            width: window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth,
+            height: window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
+        }
+    }
+
+
+
+    // 页面尺寸改变时实时触发
+    window.onresize = function () {
+        //重新定义瀑布流
+        waterFall();
+    };
+
+    //初始化
+    window.onload = function () {
+        //实现瀑布流
+        waterFall();
+    }
+
+</script>
+</body>
+
+</html>

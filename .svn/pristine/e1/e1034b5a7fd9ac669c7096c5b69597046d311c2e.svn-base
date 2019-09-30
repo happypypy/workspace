@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="yes" name="apple-mobile-web-app-capable">
+  <meta content="yes" name="apple-touch-fullscreen">
+  <meta content="telephone=no,email=no" name="format-detection">
+  <meta name="viewport"
+    content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+    <script src="__PUBLIC__/static/template/pub/js/common.js"></script>
+    <link rel="stylesheet" href="__PUBLIC__/static/template/pub/css/main.css?v={:time()}">
+    <link rel="stylesheet" href="__PUBLIC__/static/template/skin/M1/css/skin.css?v={:time()}">
+  
+  <title>拼团活动列表</title>
+</head>
+
+<body class="flexCol">
+    {include file="modules/common/header" /}
+  <section class="section">
+    {php} $result1 = $cms->getAD($idsite,51328,3); {/php}
+    {if condition="$result1"}
+        <div class="sup-banner banner">
+        <div class="swiper-container swiper2">
+            <ul class="swiper-wrapper">
+            {volist name="$result1" id="vo"}
+            <li class="swiper-slide"><a href="{$vo['ad_link']=='' ? 'javascript:;' : $vo['ad_link']}"><img src="{$vo['ad_code']}"></a></li>
+            {/volist}
+            </ul>
+            <ol class="swiper-pagination"></ol>
+        </div>
+        </div>
+    {else/}
+        <div class="pintuan-img pintuan-list-img">
+        </div>
+    {/if}
+
+    <form id="frm">
+      <div class="search-bar">
+        <div class="search-bar-inner">
+          <input class="search-bar-input" placeholder="请输入关键字搜索" name="keyword" value="{$Think.session.keyword}">
+          <span class="iconfont search-bar-span">&#xe61c;</span>
+        </div>
+      </div>
+    </form>
+
+    <div class="common-wrap">
+      <ul class="common-list">
+        {if condition="!$groupBuys"}
+        <li class="list-item no-data">抱歉，当前没有拼团活动信息~</li>
+        {else/}
+        {volist name="$groupBuys" id="groupBuy"}
+        <li class="list-item ">
+          <a href="#" class="flexCol">
+            <div class="flex">
+              <div class="list-item-img"><img src="{$groupBuy['chrimg_m']}"></div>
+              <div class="list-item-txt flexCol">
+                <div class="info title flex fontColor">
+                    {$groupBuy['chrtitle']}
+                </div>
+                <div class="info age flex">
+                  <div class="tit">适合年龄</div>：
+                  <div class="txt">{:$groupBuy['minage'] == $groupBuy['maxage'] && $groupBuy['maxage'] == 0 ? '不限年龄' : $groupBuy['minage'] . ' ~ ' . $groupBuy['maxage']}</div>
+                </div>
+                <div class="info time flex">
+                  <div class="tit">使用时间</div>：
+                  <div class="txt">{:date('Y-m-d', $groupBuy['start_at'])} ~ {:date('Y-m-d', $groupBuy['end_at'])}</div>
+                </div>
+              </div>
+            </div>
+            <div class="list-item-price">
+              <div class="txt1">单购:￥<del>{$groupBuy['member_price']}</del></div>
+              <div class="txt2 red">{$groupBuy['group_num']}人拼团:￥<span>{$groupBuy['group_buy_price']}</span></div>
+              <input class="normal-btn fr" type="button" value="我要拼团" onclick="location.href='/{$sitecode}/detail/{$groupBuy['activity_id']}'">
+            </div>
+          </a>
+        </li>
+        {/volist}
+        {/if}
+      </ul>
+    </div>
+  </section>
+
+  <footer class="footer">
+    
+  </footer>
+  <script src="__PUBLIC__/static/template/pub/js/jquery.min.js"></script>
+  <script src="__PUBLIC__/static/template/pub/js/menu.js"></script>
+  <script src="__PUBLIC__/static/template/pub/js/swiper.min.js"></script>
+  <script>
+    $(function () {
+      var mySwiper2 = new Swiper('.swiper-container.swiper2', {
+        pagination: {
+          el: '.swiper-pagination',
+        },
+        autoplay: {
+          delay: 3000,
+        },
+        loop: true,
+        watchOverflow: true,
+        effect: 'fade',
+      });
+    })
+
+    //点击之后，让搜索条件维持，不点击，不维持
+    $('.iconfont').click(function(){
+        $("#frm").submit()
+    })
+
+
+    var winH = $(window).height(); //页面可视区域高度
+
+    var page=2;
+    var scrollHandler = function () {
+        var pageH = $(document).height();
+        var scrollT = $(window).scrollTop(); //滚动条top
+        if(pageH-winH-scrollT<1)
+        {
+            LoadData(page)
+            page++;
+        }
+    }
+
+    //定义鼠标滚动事件
+    $(window).scroll(scrollHandler);
+
+    function LoadData(page){
+        $("#dataload").show();
+        $ (window).unbind ('scroll');
+        var keyword=$('.pintuan-search-in').val();
+
+        $.ajax({
+            url: "/{$sitecode}/group_buy_list" ,
+            data:{"keyword":keyword,"page":page,'ajax':1},
+            success:function(data){
+                if(data==11)
+                {
+                    $("#dataload").hide();
+                    return false
+                }
+
+                $("#dataload").hide();
+                $("#datalist").html($("#datalist").html()+data);
+                $(window).scroll(scrollHandler);
+            }
+        })
+    }
+  </script>
+</body>
+
+</html>

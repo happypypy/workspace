@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="yes" name="apple-mobile-web-app-capable">
+  <meta content="yes" name="apple-touch-fullscreen">
+  <meta content="telephone=no,email=no" name="format-detection">
+  <meta name="viewport"
+    content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+    <script src="__PUBLIC__/static/template/pub/js/common.js"></script>
+    <link rel="stylesheet" href="__PUBLIC__/static/template/pub/css/main.css?v={:time()}">
+    <link rel="stylesheet" href="__PUBLIC__/static/template/skin/M1/css/skin.css?v={:time()}">
+  
+  <title>我的积分记录</title>
+</head>
+
+<body class="flexCol">
+   {include file="modules/common/header" /}
+  <section class="section">
+    <div class="select-bar">
+      <ul class="select-bar-tab flex">
+        <li class="active on">
+          <span>全部积分</span>
+        </li>
+        <li><span>积分获取</span></li>
+        <li><span>积分扣除</span></li>
+      </ul>
+      <div class="select-wrapper">
+        <div class="select-list">
+          <div class="select-item">
+            <ul>
+              <li data-index="0">全部积分</li>
+              {volist name="$member_integral_category" id="vo"  key="k"}
+              <li data-index="{$k}">{$vo}</li>
+              {/volist}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="score-common-wrap common-wrap">
+      <ul class="common-list">
+        
+      </ul>
+      <div class="load"><span id="dataload" class="iconfont iconload">&#xe618;</span></div>
+    </div>
+  </section>
+
+  <footer class="footer">
+        {include file="modules/common/footer5" /}
+  </footer>
+
+  <script src="__PUBLIC__/static/template/pub/js/jquery.min.js"></script>
+  <script src="__PUBLIC__/static/template/pub/js/menu.js"></script>
+  <script>
+    var index = 0,category_id = 0;
+    var page = 1;
+    var pageSize = 8;
+    var scrollState = true;  // 下拉滚动状态, true：启用 false: 禁用
+
+    //tab栏下拉菜单
+    var optionHtml = $('.select-bar-tab li.active').html();
+    $('.select-bar-tab li').click(function () {
+        index = $(this).index();
+        if ($(this).hasClass('active')) {
+            $(this).toggleClass('fontColor').addClass('on').siblings().removeClass('on');;
+            $('.select-list').stop().slideToggle().children('.select-item').stop().slideToggle();
+        } else {
+            $(this).addClass('on').siblings().removeClass('on');
+            $('.select-bar-tab li.active').removeClass('fontColor on').children('span').html(optionHtml);
+            $('.select-list').stop().slideUp().children('.select-item').stop().slideUp();
+        }
+        category_id = 0;
+        page = 1;
+        if(index !== 0){
+            loadData();
+        }
+    })
+
+    $('.select-item li').click(function () {
+        $(this).parents('.select-list,.select-item').slideUp(0);
+        $('.select-bar-tab li.active').removeClass('fontColor').children('span').html($(this).html());
+        category_id = $(this).data('index');
+        loadData();
+    })
+
+    // 页面滚动
+    //滚动条滚动到指定位置触发下面事件
+    var getDiv_md = $(".select-bar");
+    var offSet = getDiv_md.offset().top + 20;
+    // console.log(offSet);
+    $(window).scroll(function () {
+      if ($(window).scrollTop() > offSet) {
+        $(".select-bar").css({ "position": "fixed", "left": "0px", "top": "0px" });
+        $('header').slideUp(100);
+      } else {
+        $(".select-bar").css({ "position": "", "left": "0px", "top": "" });
+        $('header').slideDown(100);
+      }
+    })
+
+  </script>
+  <script type="text/javascript">
+    // 积分选择
+    $('#classify').change(function(){
+      category_id = $("#classify").val();
+      loadData();
+    });
+  
+    // 菜单选择
+    $('.select').on('click',function(){
+      $('.select').removeClass("on");
+      $(this).addClass("on");
+      index = $(".select").index(this);
+      category_id = 0;
+      page = 1;
+      if(index !== 0){
+        loadData();
+      }
+    });
+  
+    loadData();
+    // 加载数据
+    function loadData(){
+        $('.load').show();
+        $.ajax({
+        type: "POST",
+        url: "/{$sitecode}/getintegralrecord",
+        data: {menu_type:index,category_id:category_id,page:page,pageSize:pageSize},
+        dataType: "JSON",
+        success:function(result){
+            if(result.data.length == 0){
+            scrollState = false;
+            if(page == 1){
+                $('.common-list').html('<li class="flex list-item no-data">未查询到积分记录</li>');
+            }
+            $('.load').hide();
+            return;
+            }
+
+            var html = "";
+            result.data.forEach(item => {
+            var freeze = '';
+            if(item.is_freeze == 1){
+                freeze = '冻结：产品未使用';
+            }else if(item.is_freeze == 3){
+                freeze = '失效：产品退款';
+            }
+            var category_name = '';
+            if(item.category_id == 1){
+                category_name = '签到'
+            }else if(item.category_id == 2){
+                category_name = '产品报名'
+            }else if(item.category_id == 3){
+                category_name = '评论'
+            }else if(item.category_id == 4){
+                category_name = '产品退款'
+            }else if(item.category_id == 5){
+                category_name = '商品兑换'
+            }else if(item.category_id == 6){
+                category_name = '赠送积分'
+            }else if(item.category_id == 7){
+                category_name = '取消兑换'
+            }
+
+            html += '<li class="flex">';
+            if(item.category_id==1 || item.category_id==2 || item.category_id==3 || item.category_id==6 || item.category_id==7){
+                html += '<div class="tit flex red">+'+ item.integral +'</div>';
+            }else if(item.category_id == 4){
+                html += '<div class="tit flex green">-'+ item.integral +'</div>';
+            }else{
+                html += '<div class="tit flex green">-'+ item.integral +'</div>';
+            }
+            html += '<div class="txt flexCol">';
+            html += '<div class="time">'+ formatTime(item.create_time) +'</div>';
+            html += '<div class="info">'+ category_name +' <div style="float:right;color:red;">'+ freeze +'</div></div>';
+            html += '</div>';
+            html += '</li>';
+            });
+            if(page == 1){
+            $('.common-list').html(html);
+            }else{
+            $('.common-list').append(html);
+            }
+            scrollState = true;
+            $('.load').hide();
+            page++;
+        }
+        });
+    }
+  
+    // 时间格式化
+    function formatTime(timestamp){
+      var now = new Date(timestamp*1000);
+      var   year=now.getFullYear();    
+      var   month=now.getMonth()+1;    
+      var   date=now.getDate();    
+      var   hour=now.getHours();    
+      var   minute=now.getMinutes();    
+      var   second=now.getSeconds();    
+      return   year+"-"+month+"-"+date+"   "+hour+":"+minute+":"+second;    
+    }
+    //获取滚动条当前的位置
+    function getScrollTop() {
+        var scrollTop = 0;
+        if (document.documentElement && document.documentElement.scrollTop) {
+            scrollTop = document.documentElement.scrollTop;
+        } else if (document.body) {
+            scrollTop = document.body.scrollTop;
+        }
+        return scrollTop;
+    }
+    //获取当前可视范围的高度
+    function getClientHeight() {
+        var clientHeight = 0;
+        if (document.body.clientHeight && document.documentElement.clientHeight) {
+            clientHeight = Math.min(document.body.clientHeight, document.documentElement.clientHeight);
+        } else {
+            clientHeight = Math.max(document.body.clientHeight, document.documentElement.clientHeight);
+        }
+        return clientHeight;
+    }
+    //获取文档完整的高度
+    function getScrollHeight() {
+        return Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+    }
+    //滚动事件触发
+    window.onscroll = function () {
+      if (getScrollTop() + getClientHeight() === getScrollHeight() && scrollState == true) {
+        loadData();
+      }
+    };
+  </script>
+</body>
+
+</html>

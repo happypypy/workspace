@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:70:"D:\workspace\work\public/../application/admin\view\activity\index.html";i:1568631131;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:70:"D:\workspace\work\public/../application/admin\view\activity\index.html";i:1569483947;}*/ ?>
 <!--
  * @Descripttion: 
  * @version: 
@@ -429,7 +429,7 @@
                                                     </td>
                                                     <?php } ?>
                                                     <td  style="white-space:normal;padding: 5px; ">
-                                                        <a onmousemove="javascript:show_rqcode(this,'<?php echo $vo['idactivity']; ?>')" onmouseout="javascript:close_rqcode()" href="/<?php echo $sitecode; ?>/detail/<?php echo $vo['idactivity']; ?>" target="_blank">浏览</a>
+                                                        <a onmousemove="javascript:show_rqcode(this,'<?php echo $vo['idactivity']; ?>')" onmouseout="javascript:close_rqcode()" href="https://www.tongxiang123.cn/<?php echo $sitecode; ?>/detail/<?php echo $vo['idactivity']; ?>" target="_blank">浏览</a>
                                                         <a href="<?php echo url('activity/visitlist','dataid='.$vo['idactivity'],''); ?>" target="_blank">访问数据</a>
                                                         <?php  if($intflag!=4) {  if($intflag==1) {
                                                            if($cms->CheckPurview('contentmanage','checkactivity')){
@@ -449,7 +449,7 @@
                                                         <a href="#" onclick="del_checked(<?php echo $vo['idactivity']; ?>,'<?php echo $vo['chrtitle']; ?>');" >删除</a>
                                                         <?php } } ?>
                                                         <a href="javascript:CustomOpen('<?php echo url('activity/importorder',array('id'=>$vo['idactivity'],'templateid'=>$vo['selsignfrom'])); ?>','activity','产品修改',550,160)">导入报名</a>
-                                                        <a href="javascript:void(0);" class="data<?php echo $vo['idactivity']; ?>" data-clipboard-text="http://www.tongxiang123.cn/<?php echo $sitecode; ?>/detail/<?php echo $vo['idactivity']; ?>?type=test" onclick="copycontent('data<?php echo $vo['idactivity']; ?>')" >复制链接</a>
+                                                        <a href="javascript:void(0);" class="data<?php echo $vo['idactivity']; ?>" data-clipboard-text="https://www.tongxiang123.cn/<?php echo $sitecode; ?>/detail/<?php echo $vo['idactivity']; ?>" onclick="copycontent('data<?php echo $vo['idactivity']; ?>')" >复制链接</a>
                                                         <a href="javascript:CustomOpen('<?php echo url('activity/customdetail',array('id'=>$vo['idactivity'])); ?>','customdetail','咨询详情',700,400)">咨询详情</a>
                                                         <!--除了待审核中不可以同步-->
                                                         <?php  if($intflag==2) {  if($vo['wntx_sync_status'] != 1){?>

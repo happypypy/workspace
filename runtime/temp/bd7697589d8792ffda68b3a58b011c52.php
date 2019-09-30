@@ -1,13 +1,13 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:67:"D:\workspace\work\public/../application/admin\view\column\modi.html";i:1565406519;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:67:"D:\workspace\work\public/../application/admin\view\column\modi.html";i:1568943086;}*/ ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>栏目管理</title>
-<link href="/static/css/layout.css" rel="stylesheet" type="text/css" />
-<link href="/static/css/page.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" src="/static/js/jquery-3.2.1.min.js"></script>
- <script type="text/javascript" src="/static/js/del-checked.js"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>栏目管理</title>
+    <link href="/static/css/layout.css" rel="stylesheet" type="text/css"/>
+    <link href="/static/css/page.css" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="/static/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="/static/js/del-checked.js"></script>
     <script type="text/javascript" src="/static/js/layer/layer.js"></script>
 </head>
 <body>
@@ -25,23 +25,24 @@
                 <table width="100%" border="0" cellspacing="1" cellpadding="0" class="oa_edition" style="border-bottom: #e0e0e0 solid 1px">
                     <tr>
                         <td width="150" class="oa_cell-left">栏目名称：</td>
-                        <td class="oa_cell-right">
+                        <td class="oa_cell-right" colspan="2">
                             <input name="nodename" id="nodename"  type="text" value="<?php echo $datainfo['nodename']; ?>" class="oa_input-200" />
                         </td>
                     </tr>
                     <tr>
                         <td width="150" class="oa_cell-left">类型：</td>
-                        <td class="oa_cell-right">
+                        <td class="oa_cell-right" colspan="2">
                             <select name="nodetype" id="nodetype">
                                 <option value="1" <?php if($datainfo['nodetype'] == 1): ?>selected="selected"<?php endif; ?>>资讯</option>
                                 <option value="2" <?php if($datainfo['nodetype'] == 2): ?>selected="selected"<?php endif; ?>>产品</option>
+                                <option value="3" <?php if($datainfo['nodetype'] == 3): ?>selected="selected"<?php endif; ?>>相册</option>
                             </select>
                         </td>
                     </tr>
                     <tr style="display: none;">
                         <td width="150" class="oa_cell-left">所属栏目：</td>
                         <td class="oa_cell-right">
-                            <select name="parentid">
+                            <select name="parentid" colspan="2">
                                 <option value="0">根目录</option>
                                 <?php if(is_array($nodelist) || $nodelist instanceof \think\Collection || $nodelist instanceof \think\Paginator): $i = 0; $__LIST__ = $nodelist;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$vo): $mod = ($i % 2 );++$i;?>
                                     <option value="<?php echo $vo['nodeid']; ?>" <?php if($datainfo['parentid'] == $vo['nodeid']): ?>selected="selected"<?php endif; ?>><?php for($x=0;$x<=$vo['level'];$x++){ echo "&nbsp;&nbsp;&nbsp;&nbsp;";} ?><?php echo $vo['nodename']; ?></option>
@@ -65,26 +66,27 @@
                     <!--</tr>-->
                     <tr>
                         <td width="150" class="oa_cell-left">栏目图片地址：</td>
-                        <td class="oa_cell-right">
+                        <td class="oa_cell-right" colspan="2">
                             <input name="nodepicurl" id="nodepicurl" type="text" value="<?php echo $datainfo['nodepicurl']; ?>" class="oa_input-300" /><br>
                             <input onclick="GetUploadify(1,'nodepicurl','admin','undefined','*.jpg;*.jpeg;*.png;*.gif;*.jpeg;');" type="button" value="上传图标"/>
                             <input onclick="SelectImg(1,'nodepicurl','admin','undefined','*.jpg;*.jpeg;*.png;*.gif;*.jpeg;');" type="button" value="选择图标"/>
+                            <input onclick="clearpic()" type="button" value="清空图片"/>
                         </td>
                     </tr>
                     <tr style="display: none">
                         <td width="150" class="oa_cell-left">栏目的目录名称：</td>
-                        <td class="oa_cell-right"><input name="nodedir" type="text" value="<?php echo $datainfo['nodedir']; ?>" class="oa_input-200" /></td>
+                        <td class="oa_cell-right" colspan="2"><input name="nodedir" type="text" value="<?php echo $datainfo['nodedir']; ?>" class="oa_input-200" /></td>
                     </tr>
 
                     <tr style="display: none;">
                         <td width="150" class="oa_cell-left">栏目提示：</td>
-                        <td class="oa_cell-right">
+                        <td class="oa_cell-right"  colspan="2">
                             <input name="tips" type="text" value="<?php echo $datainfo['tips']; ?>" class="oa_input-200" />
                         </td>
                     </tr>
                     <tr  style="display: none;">
                         <td width="150" class="oa_cell-left">栏目说明：</td>
-                        <td class="oa_cell-right">
+                        <td class="oa_cell-right" colspan="2">
                             <input name="remark" type="text" value="<?php echo $datainfo['remark']; ?>" class="oa_input-200" />
                         </td>
                     </tr>
@@ -92,6 +94,13 @@
                         <td width="150" class="oa_cell-left">序号：</td>
                         <td class="oa_cell-right">
                             <input name="idorder" type="text" value="<?php echo $datainfo['idorder']; ?>" class="oa_input-200" />
+                        </td>
+                        <td rowspan="5" width="150">
+                            <div  style="width: 100%;height:180px;overflow: hidden;text-align: left;">
+                                <a href="/template/modules/listtype/small.png" target="_blank" id="liststylea">
+                                <img style="width: 120px;" src="/template/modules/listtype/small.png" alt="" id="liststyleimg"/>
+                                </a>
+                            </div>
                         </td>
                     </tr>
 
@@ -180,7 +189,19 @@
                         <td width="150" class="oa_cell-left">栏目内容页模版：</td>
                         <td class="oa_cell-right"><input name="templateofnodecontent" type="text" value="<?php echo $datainfo['templateofnodecontent']; ?>" class="oa_input-200" /></td>
                     </tr>
-                    <tr><td colspan="2" style="padding:10px;"><input type="button" onclick="javascript:checkdata();" value="确定"></td></tr>
+
+                    <tr>
+                        <td width="150" class="oa_cell-left">列表模板：</td>
+                        <td class="oa_cell-right">
+                            <select name="listtype" id="listtype">
+                                <option value="1" <?php if($datainfo['listtype'] == 1): ?>selected="selected"<?php endif; ?>>小图</option>
+                                <option value="2" <?php if($datainfo['listtype'] == 2): ?>selected="selected"<?php endif; ?>>中图</option>
+                                <option value="3" <?php if($datainfo['listtype'] == 3): ?>selected="selected"<?php endif; ?>>大图</option>
+                            </select>
+                        </td>
+                    </tr>
+
+                    <tr><td colspan="3" style="padding:10px;"><input type="button" onclick="javascript:checkdata();" value="确定"></td></tr>
                     <tr>
                         <?php if($datainfo['action'] == 'edit'): ?>
                         <td><input type="hidden" name="nodeid" value="<?php echo $datainfo['nodeid']; ?>"></td>
@@ -191,8 +212,40 @@
         </div>
     </div>
 </div>
+
 </body>
 <script type="text/javascript">
+
+    var listtype = $("#listtype").val()
+    if (listtype == 1) {
+        $("#liststylea").attr('href', "/template/modules/listtype/small.png")
+        $("#liststyleimg").attr('src', "/template/modules/listtype/small.png")
+    } else if (listtype == 2) {
+        $("#liststylea").attr('href', "/template/modules/listtype/middle.png")
+        $("#liststyleimg").attr('src', "/template/modules/listtype/middle.png")
+    } else if (listtype == 3) {
+        $("#liststylea").attr('href', "/template/modules/listtype/big.png")
+        $("#liststyleimg").attr('src', "/template/modules/listtype/big.png")
+    }
+
+    $("#listtype").change(function(){
+        var listtype=$(this).val()
+        if(listtype==1){
+            $("#liststylea").attr('href',"/template/modules/listtype/small.png")
+            $("#liststyleimg").attr('src',"/template/modules/listtype/small.png")
+        }else if(listtype==2){
+            $("#liststylea").attr('href',"/template/modules/listtype/middle.png")
+            $("#liststyleimg").attr('src',"/template/modules/listtype/middle.png")
+        }else if(listtype==3){
+            $("#liststylea").attr('href',"/template/modules/listtype/big.png")
+            $("#liststyleimg").attr('src',"/template/modules/listtype/big.png")
+        }
+    })
+
+
+    function clearpic(){
+        $("#nodepicurl").val('')
+    }
     function checkdata() {
         var tmpValue=$("#nodename").val();
         if(tmpValue=="")

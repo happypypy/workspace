@@ -1,0 +1,120 @@
+﻿.fontColor{/* 文字颜色，主色调 */
+  color: #ff9902!important;
+}
+
+.bgColor{/* 非按钮背景色，主色调 */
+  background: #ff9902!important;
+}
+
+.normal-btn{/* 常规皮肤按钮、主要是针对单一按钮 */
+  background: #ff9902!important;
+}
+
+/* 多个按钮展示 */
+.several-btn1{
+  background: #d98bb3!important;
+}
+.several-btn2{
+  background: #d9b38b!important;
+}
+.several-btn3{
+  background: #5fd2b8!important;
+}
+.several-btn4{
+  background: #ed958f!important;
+}
+.several-btn5{
+  background: #f27151!important;
+}
+.several-btn6{ /* 取消订单、申请退款等特除备注 */
+  background: #666!important;
+}
+
+.reply-btn{/* 回复按钮 */
+  background: #ff9902!important;
+}
+.del-btn{/* 删除按钮 */
+  background: #ccc!important;
+}
+.shield-btn{/* 屏蔽按钮 */
+  background: #ccc!important;
+}
+.cancel-btn{/* 取消按钮 */
+  background: #ccc!important;
+}
+.sub-btn{/* 提交按钮 */
+  background: #ff9902!important;
+}
+.spread-btn{/* 通栏按钮 */
+  background: #ff9902!important;
+}
+.pay-btn{/* 订单详情继续支付 */
+  background: pink!important;
+}
+.gray{/* 按钮置灰 */
+  background: #eee!important;
+  color: #ccc!important;
+}
+
+
+.select-bar-tab > li.fontColor > span:after {
+  border-top: 0;
+  border-left: 0.04rem solid transparent;
+  border-right: 0.04rem solid transparent;
+  border-bottom: 0.08rem solid #ff9902;
+  vertical-align: 1px;
+}
+
+.pintuan-img {
+  background: url(../images/pintuan_img.jpg) no-repeat;
+  background-size: 100% 100%;
+}
+
+body .my-layer .layui-layer-btn a{
+  background: #ff9902;
+}
+
+.coupon-list > ul > li .tit {
+    border-right: 1px solid #ff9902;
+}
+.activity-info > ul > li span.second.cost{
+  border: 1px solid #ff9902;
+}
+.info-left-tag{
+  border: 1px solid #ff9902;
+}
+
+.exchange-form ul > li .pwclass.pwon{
+  border: 2px solid #ff9902;
+}
+.score-wrap{
+  background: linear-gradient(#ff9902, #f5bd03);
+}
+.qiandao-item .qd-img{
+  background: url(../images/weiqiandao.png) no-repeat;
+  background-size: 100% 100%;
+}
+.qiandao-item .qd-img1{
+    width: 0.7rem;
+    height: 0.7rem;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    -ms-border-radius: 50%;
+    -o-border-radius: 50%;
+    border-radius: 50%;
+    background: url(../images/weiqiandao1.png) no-repeat;
+    background-size: 100% 100%;
+}
+.qiandao-list > ul > li::before{
+  background: #ff9902;
+}
+.qiandao-list > ul > li .time::before{
+  background: #ff9902;
+}
+.mine-head{
+  background: url(../images/mine_bg.jpg) no-repeat center;
+  background-size: cover;
+}
+.divsub{
+  border: 1px solid #ff9902;
+}

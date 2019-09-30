@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:71:"D:\workspace\work\public/../application/admin\view\index\loginsite.html";i:1561691687;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:71:"D:\workspace\work\public/../application/admin\view\index\loginsite.html";i:1569204153;}*/ ?>
 <!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
@@ -95,11 +95,10 @@ function ch()
     if($('#txtSiteCode').val()=='')
     {
         layer.alert('站点代号不能为空', {icon: 4}, function(index){
-            $('#txtAccount').focus();
+            $('#txtSiteCode').focus();
             layer.close(index);
         });
         //$('#msg').html('账号不能为空')
-        $('#txtSiteCode').focus();
         return false;
     }
     if($('#txtAccount').val()=='')
@@ -109,7 +108,6 @@ function ch()
             layer.close(index);
         });
         //$('#msg').html('账号不能为空')
-        $('#txtAccount').focus();
         return false;
     }
     if($('#txtPassword').val()=='')
@@ -182,31 +180,41 @@ function ch()
                 </form>
             </div>
         </div>
+        <div class="tncode_div" id="tncode_div">
+            <div class="loading">加载中</div>
+            <canvas class="tncode_canvas_bg"></canvas>
+            <canvas class="tncode_canvas_mark"></canvas>
+            <div class="hgroup"></div>
+            <div class="tncode_msg_error"></div>
+            <div class="tncode_msg_ok"></div>
+            <div class="slide">
+                <div class="slide_block"></div>
+                <div class="slide_block_text">拖动左边滑块完成上方拼图</div>
+            </div>
+            <div class="tools">
+                <div class="tncode_refresh"
+                    style="padding-left:30px;width:80px; vertical-align:middle;text-align:left;color:#555;">刷新</div>
+            </div>
+        </div>
     </div>
 </div>
 <div class="tncode_div_bg" id="tncode_div_bg"></div>
-<div class="tncode_div" id="tncode_div">
-    <div class="loading">加载中</div>
-    <canvas class="tncode_canvas_bg"></canvas>
-    <canvas class="tncode_canvas_mark"></canvas>
-    <div class="hgroup"></div>
-    <div class="tncode_msg_error"></div>
-    <div class="tncode_msg_ok"></div>
-    <div class="slide">
-        <div class="slide_block"></div>
-        <div class="slide_block_text">拖动左边滑块完成上方拼图</div>
-    </div>
-    <div class="tools">
-        <div class="tncode_refresh" style="padding-left:30px;width:80px; vertical-align:middle;text-align:left;color:#555;">刷新</div>
-    </div>
-</div>
-
-
 
 <script language="JavaScript">
     $("#txtSiteCode").val(getCookie("SiteCode"));
 </script>
-
+<!-- 
+<script>
+    $(function () {
+        document.onkeydown = function (event) {
+            var e = event || window.event || arguments.callee.caller.arguments[0];
+            var tncodeDiv = document.getElementById('tncode_div');
+            if (e && e.keyCode == 13 && tncodeDiv.style.display != 'block') {
+                ch();
+            }
+        };
+    });
+</script> -->
 </body>
 </html>
 

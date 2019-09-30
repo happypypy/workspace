@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="yes" name="apple-mobile-web-app-capable">
+  <meta content="yes" name="apple-touch-fullscreen">
+  <meta content="telephone=no,email=no" name="format-detection">
+  <meta name="viewport"
+    content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+    <script src="__PUBLIC__/static/template/pub/js/common.js"></script>
+    <link rel="stylesheet" href="__PUBLIC__/static/template/pub/css/main.css?v={:time()}">
+    <link rel="stylesheet" href="__PUBLIC__/static/template/skin/M1/css/skin.css?v={:time()}">
+  
+  <title>报名信息</title>
+</head>
+
+<body class="flexCol">
+    {include file="modules/common/header" /}
+  <section class="section">
+    <form class="exchange-form" method="post" action="" id="frm1">
+      <ul>
+        <li class="title fontColor">*请如实填写以下信息</li>
+        {php}
+        $re1 = $cms->GetActivityInfo($id, "selcontent,selsignfrom, intsignnum",$groupBuyId, $groupBuyOrderId);
+        $sub = $cms->GetSignupTempSub($re1['selsignfrom']);
+        $sub1 = $cms->GetSignupTempSub1($re1['selsignfrom']);
+        {/php}
+        {if condition="$sub"}
+            {volist name="$sub" id="vo"}
+            <li class="data">
+            <label class="tit">{if condition="$vo['is_must']"}<font style="color:red">*</font>{/if}{$vo['title']}：</label>
+            {if condition="$vo['chrtype']==5"}
+            <input name="feild_{$vo['id']}" type="hidden" class="feild" value="" />
+            <div class="select-div">
+                <span>-请选择-</span>
+                <select  class="txt feild_select" style="border: 0px; font-size: 16px;width: 100%;">
+                    <option value="">请选择{$vo['title']}</option>
+                    {php}$selectArray = explode(",",$vo['chrvalue']);{/php}
+                    {volist name="$selectArray" id="vo1"}
+                        <option value="{$vo1}">{$vo1}</option>
+                    {/volist}
+                </select>
+            </div>
+            {elseif condition="$vo['chrtype']==6"}
+            <textarea type="text" name="feild_{$vo['id']}"  class="txt feild" datatype="{$vo['chrtype']}" ></textarea>
+            {elseif condition="$vo['chrtype']==7"}
+            <img src="/static/images/addimg.jpg" id="img_{$vo['id']}" style="width: 0.5rem;height: 0.5rem;" onclick="javascript:selimg('feild_{$vo['id']}')" class="img">
+            <input style="display: none" id="feild_{$vo['id']}" type="file" name="feild_{$vo['id']}" value="上传图片" style="height:24px;" class="feild" datatype="{$vo['chrtype']}" onchange="javascript:changeimg(this,'img_{$vo['id']}')" />
+            {else/}
+            {php}
+                $data_value = "";
+                if($vo['chrtype'] == 9) $data_value = $userinfo["chrname"];
+                elseif($vo['chrtype'] == 10) $data_value = $userinfo["chrtel"];
+                elseif($vo['chrtype'] == 11) $data_value = $userinfo["chrmail"];
+                elseif($vo['chrtype'] == 12) $data_value = $userinfo["postal_address"];
+                elseif($vo['chrtype'] == 13) $data_value = $userinfo["identity_card_num"];
+            {/php}
+            <input type="text" name="feild_{$vo['id']}" value="{$data_value}" class="txt feild" datatype="{$vo['chrtype']}" />
+            {/if}
+            <input style="display: none" name="feildname_{$vo['id']}" type="text" value="{$vo['title']}∫{$vo['chrtype']}" class="feildname">
+            <input style="display: none" name="feildmust_{$vo['id']}" type="hidden" value="{$vo['is_must']}" class="feildmust">
+            </li>
+            {/volist}
+        {/if}
+        {if condition="$sub1"}
+        <li class="title fontColor">*更多报名信息</li>
+        <li>
+          <div id="divsub-m" style="display: none">
+            <div class="subdata">
+              <span class="sub-del iconfont" onclick="javaScript:delsub(this)">&#xe677;</span>
+              {volist name="$sub1" id="vo"}
+              <div class="item-data #data">
+                <label class="tit">{$vo['title']}{index}：</label>
+                {if condition="$vo['chrtype']==5"}
+                <input name="feild_sub_{$vo['id']}" type="hidden" class="feild" value="" />
+                <div class="select-div">
+                    <span>-请选择-</span>
+                    <select  class="txt feild_select" style="border: 0px; font-size: 16px;width: 100%;">
+                        <option value="">请选择{$vo['title']}</option>
+                        {php}$selectArray = explode(",",$vo['chrvalue']);{/php}
+                        {volist name="$selectArray" id="vo1"}
+                            <option value="{$vo1}">{$vo1}</option>
+                        {/volist}
+                    </select>
+                </div>
+                {elseif condition="$vo['chrtype']==6"}
+                <textarea type="text" name="feild_sub_{$vo['id']}_{index}"  class="txt feild" datatype="{$vo['chrtype']}" datatype="{$vo['chrtype']}" ></textarea>
+                {elseif condition="$vo['chrtype']==7"}
+                <img src="/static/images/addimg.jpg" id="img_sub_{$vo['id']}_{index}" style="width: 0.5rem;height: 0.5rem;" onclick="javascript:selimg('feild_sub_{$vo['id']}_{index}')" class="img">
+                <input style="display: none" id="feild_sub_{$vo['id']}_{index}" type="file" name="feild_sub_{$vo['id']}_{index}" value="上传图片" style="height:24px;" class="feild" datatype="{$vo['chrtype']}" onchange="javascript:changeimg(this,'img_sub_{$vo['id']}_{$index}')" />
+                {else/}
+                {php}
+                    $data_value = "";
+                    if($vo['chrtype'] == 9) $data_value = $userinfo["chrname"];
+                    elseif($vo['chrtype'] == 10) $data_value = $userinfo["chrtel"];
+                    elseif($vo['chrtype'] == 11) $data_value = $userinfo["chrmail"];
+                    elseif($vo['chrtype'] == 12) $data_value = $userinfo["postal_address"];
+                    elseif($vo['chrtype'] == 13) $data_value = $userinfo["identity_card_num"];
+                {/php}
+                <input type="text" name="feild_sub_{$vo['id']}_{index}" value="{$data_value}" class="txt feild" datatype="{$vo['chrtype']}" placeholder="请输入{$vo['title']}{index}" />
+                {/if}
+                <input style="display: none" name="feildname_sub_{$vo['id']}_{index}" type="text" value="{$vo['title']}∫{$vo['chrtype']}" class="feildname">
+                <input style="display: none" name="feildname_sub_{$vo['id']}_{index}" type="hidden" value="{$vo['is_must']}" class="feildmust">
+              </div>
+              {/volist}
+            </div>
+          </div>
+          <div id="divsub" class="divsub" onclick="javaScript:addsub()">
+            <input type="hidden" name="subindex" id="subindex" value="0">
+            <span class="divsub-icon iconfont fontColor">&#xe68d;</span><span class="fontColor">增加报名信息</span>
+          </div>
+        </li>
+        {/if}
+        <style>
+          .subdata {
+            position: relative;
+            padding: 0.05rem 0;
+          }
+
+          .sub-del {
+            position: absolute;
+            top: 0;
+            right: 0;
+            color: red;
+            font-size: 0.18rem;
+            font-weight: bold;
+          }
+
+          .divsub {
+            width: fit-content;
+            text-align: left;
+            border-radius: 4px;
+            border: 1px solid #ff9902;
+            padding: 0 0.1rem;
+          }
+
+          .divsub-icon {
+            font-size: 0.16rem;
+            margin-right: 0.05rem;
+            font-weight: bold;
+          }
+        </style>
+        <script>
+          function addsub() {
+            var html_m = $("#divsub-m").html();
+            // 索引+1
+            var subindex = $("#subindex").val();
+            subindex = eval(subindex)+1;
+            $("#subindex").val(subindex);
+            // 替换{index}标签为索引
+            html_m = html_m.replace(new RegExp("{index}","g"),subindex);
+            // 替换#data标签为data
+            html_m = html_m.replace(new RegExp("#data","g"),"data");
+            $("#divsub").before(html_m);
+          }
+
+          function delsub(obj) {
+            $(obj).parent().remove();
+          }
+
+        </script>
+
+        <li class="title">*请选择套餐</li>
+        <li>
+            {if condition="$re1['selcontent']"}
+                {volist name="$re1['selcontent']" id="package"}
+                <div Stock="{$package['stock']}" price="{$package['member_price']}"  data="{$package['package_id']}" class="pwclass pw">
+                        {$package['keyword1']} {$package['keyword2']}
+                    <span class="red">{:$package['member_price'] ? '(￥'.$package['member_price'].'元)' : ''}</span>
+                    [库存：{$package['package_sum']==-1 ? '已售完' : $package['stock']}]
+                  </div>
+                {/volist}
+            {/if}
+
+            <input type="hidden" id="pwStock" name="pwStock" value="">
+            <input type="hidden" id="pwprice" name="pwprice" value="">
+            <input type="hidden" id="payname" name="payname" value="">
+        </li>
+        <li class="flex">
+          <label for="">购买数量：</label>
+          <div class="minus" onclick="changepaynum(1);"></div>
+          <div class="num" id="divpaynum">1</div>
+          <div class="plus" onclick="changepaynum(2);"></div>
+          <input type="hidden" id="txtpaynum" name="txtpaynum" value="1">
+        </li>
+      </ul>
+
+      <div class="price-box">
+        <div class="price-box-item">订单金额：<span class="red">￥</span><span id="spddprice" class="red">0</span></div>
+        {if condition = "$activity_cashed && $is_cashed"}
+        <div class="price-box-item red-packet flex" id="red-packet">
+          <div class="txt">优惠券<span>(现金抵扣券)</span></div>
+          <div class="num" id="divvolumeprice">{$cashed_list_count}个可用</div>
+          <span class="spsel"></span>
+        </div>
+        <div class="price-box-item">实际支付：<span class="red">￥</span><span id="spdiwang" class="red">0</span></div>
+        {/if}
+        <input type="hidden" id="hidvolumeid" name="hidvolumeid" value="">
+        <input type="hidden" id="hidvolumeprice" name="hidvolumeprice" value="0">
+        <input type="hidden" id="hidvolumeprice1" value="0">
+        <div class="btns-center">
+            <input type="hidden" id="is_activity_cashed" value="{$activity_cashed ? 1 : 0}">
+            <input type="hidden" name="group_buy_id" value="{$groupBuyId}">
+            <input type="hidden" name="group_buy_order_id" value="{$groupBuyOrderId}">
+            <input id="subbtn" type="button" onclick="confirminfo()" class="sub-btn" value="提交">
+        </div>
+      </div>
+    </form>
+
+    {if condition = "$activity_cashed"}
+    <div class="choose-redpacket">
+      <div class="redpacket-box">
+        <input type="hidden" id="max_amount" value="$activity_cashed['max_amount']" />
+        <div class="flex">
+          <p>可选张数：{if condition="$activity_cashed['max_use'] == 0"}不限{else}{$activity_cashed['max_use']}张{/if}<br>最多抵扣金额：{if
+            condition="$activity_cashed['max_amount'] == 0"}不限{else}{$activity_cashed['max_amount']}元{/if}</p>
+          <a href="javascript:;" class="confirm" onclick="closevolume();">确认选择</a>
+        </div>
+        <div class="redpacket-rule-box">
+          <div class="redpacket-rule-tit flex">
+            <div class="redpacket-rule">现金券使用规则</div>
+            <div class="arrow iconfont">&#xe61d;</div>
+          </div>
+          <ol class="redpacket-content" style="display: none">
+            <li>一张现金券只能使用一次，不兑现，不找零；</li>
+            <li>如取消的订单中使用了现金券，退回金额为实际支付金额，现金券退回到活动券。</li>
+            <li>每张现金券都设有有效期，请在有效期内使用，逾期失效。</li>
+          </ol>
+        </div>
+      </div>
+      {if condition="$cashed_list"}
+      <div class="choose-box">
+        {volist name="$cashed_list" id="vo"}
+        <div class="choose-item flex" onclick="choosevolume({$vo['id']},{$vo['cashed_amount']},this)">
+          <div class="amount">
+            <div class="num"><span class="red">{$vo['cashed_amount']}</span></div>
+          </div>
+          <div class="txt flexCol">
+            <div class="info">{$vo['receive_cashed_name']}</div>
+            <div class="date">{$vo['cashed_validity_time']}</div>
+          </div>
+          <span class="choose-icon iconfont">&#xe659;</span>
+        </div>
+        {/volist}
+      </div>
+      {/if}
+    </div>
+    {/if}
+  </section>
+  
+  <footer class="footer">
+  </footer>
+
+  <script src="__PUBLIC__/static/template/pub/js/jquery.min.js"></script>
+  <script src="__PUBLIC__/static/template/pub/js/menu.js"></script>
+  <script src="__PUBLIC__/static/template/pub/js/layer/layer.js"></script>
+  <script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+  <script type="text/javascript">
+    window.issel = true;
+    $(function () {
+      // 弹出选择优惠券
+      $("#red-packet").on("click", function () {
+        $(".choose-redpacket").show();
+        $("body").addClass("open-redpacket");
+      })
+      // 关闭选择优惠券
+      $(".close-redpacket").on("click", function () {
+        $(".choose-redpacket").hide();
+        $("body").removeClass("open-redpacket");
+      })
+
+      var flag = 0;
+      // 现金券使用规则
+      $('.redpacket-rule-tit').on("click", function () {
+        if (flag == 0) {
+          $('.redpacket-content').show();
+          $('.redpacket-rule-tit .arrow').html('&#xe61e;')
+          flag = 1;
+        } else {
+          $('.redpacket-content').hide();
+          $('.redpacket-rule-tit .arrow').html('&#xe61d;')
+          flag = 0;
+        }
+
+      })
+
+    })
+    // 选择图片
+    function selimg(sname){
+        $("#"+sname).click();
+    }
+    // 修改图片
+    function changeimg(obj,imgname){
+        var objUrl = getObjectURL(obj.files[0]) ;//获取文件信息
+        if (objUrl) {
+            $("#"+imgname).attr("src", objUrl);
+        }
+    };
+    function getObjectURL(file) {
+        var url = null;
+        if (window.createObjectURL!=undefined) {
+            url = window.createObjectURL(file) ;
+        } else if (window.URL!=undefined) { // mozilla(firefox)
+            url = window.URL.createObjectURL(file) ;
+        } else if (window.webkitURL!=undefined) { // webkit or chrome
+            url = window.webkitURL.createObjectURL(file) ;
+        }
+        return url ;
+    }
+    // 下拉赋值
+    $('.feild_select').change(function(){
+        var selectValue = $(this).find('option:selected').text();
+        $(this).siblings("span").text(selectValue);
+        $(this).parent().siblings(".feild").val(selectValue)
+    })
+    // 增加子表单
+    function addsub() {
+        var html_m = $("#divsub-m").html();
+        // 索引+1
+        var subindex = $("#subindex").val();
+        subindex = eval(subindex)+1;
+        $("#subindex").val(subindex);
+        // 替换{index}标签为索引
+        html_m = html_m.replace(new RegExp("{index}","g"),subindex);
+        // 替换#data标签为data
+        html_m = html_m.replace(new RegExp("#data","g"),"data");
+        $("#divsub").before(html_m);
+    }
+    // 删除子表单
+    function delsub(obj) {
+        $(obj).parent().remove();
+    }
+    // 选择套餐
+    $(".pwclass").click(function(){
+        $(this).addClass("pwon").siblings().removeClass("pwon");
+        $("#pwStock").val($(this).attr('Stock'));
+        $("#pwprice").val($(this).attr('price'));
+        $("#payname").val($(this).attr('data'));
+        loadprice();
+    });
+    $(".pwclass").eq(0).click();
+    // 计算订单金额
+    function loadprice() {
+        var isActivityCashed = $('#is_activity_cashed').val();
+        var payNum = parseInt($("#txtpaynum").val());   // 购买数量
+        var pwPrice = parseFloat($("#pwprice").val()).toFixed(2);   // 选中的套餐金额
+        var maxvolumeprice = parseFloat($('#max_amount').val());    // 最大可用优惠券
+        var volumeprice = $("#hidvolumeprice").val();   // 选中的优惠券金额
+        var spddprice = 0; // 订单金额
+        var spdiwang = 0; // 实际支付金额
+
+        if(isActivityCashed==1){
+            if(max_amount !=0 && volumeprice > maxvolumeprice){
+                volumeprice = maxvolumeprice;
+                $("#hidvolumeprice").val(volumeprice);
+            }
+        }
+        spddprice = (pwPrice * payNum).toFixed(2);
+        $("#spddprice").html(spddprice);    // 订单金额
+
+        if(isActivityCashed){
+            if(spddprice <= volumeprice){
+                spdiwang = 0;
+            }else{
+                spdiwang = (spddprice - volumeprice).toFixed(2);
+            }
+            $("#spdiwang").html(spdiwang);     // 实际支付
+        }
+    }
+    // 确认信息
+    function confirminfo() {
+        var user_name = $('#username').val(); // 姓名
+        var user_phone = $('#usertel').val(); // 电话
+        var content = '<ul class="order-info-ul">'; // 确认的信息
+
+        var flag = true;
+        // 循环子单表
+        $(".data").each(function () {
+            var strname = $(this).children(".feildname").val();   // 字段名称
+            var strvalue = $(this).children(".feild").val();      // 字段值
+            var strmust = $(this).children(".feildmust").val();   // 是否必填
+            
+            // ∫分隔后，获取字段值 
+            var arr= strname.split("∫");
+            var datatype = 1;
+            var dataname = $(this).children(".tit").html();
+            if(arr.length>1)
+            {
+                datatype = arr[1];
+            }
+
+            // 字段值验证
+            var re = checkdata(strvalue,datatype,strmust)
+            if(re.state!=1)
+            {
+                flag = false;
+                layer.confirm(dataname+re.msg,{btn:['关闭']});
+                return false;
+            }
+
+            // 如果是图片
+            if(datatype == 7)
+            {
+                strvalue = $(this).children(".img").prop('outerHTML');
+            }
+            content += '<li>' + dataname + strvalue+'</li>';
+        });
+        content += '</ul>';
+        if(flag){
+            var index = layer.open({
+                title: '确认信息',
+                area: '100%',
+                skin: 'my-layer',
+                btn: ['确认提交', '返回修改'],
+                btnAlign: 'c',
+                content: content,
+                yes: function (index, layero) {
+                    submitedata();
+                },
+                btn2: function (index, layero) {
+                    layer.close(index);
+                }
+            });
+        }
+    }
+    // 确认提交
+    function submitedata(){
+        var data = new FormData(document.getElementById("frm1"));
+        //分享id
+        var share_id = '{$share_id}';
+        layer.load(1, {
+            shade: [0.1,'#fff'] //0.1透明度的白色背景
+        });
+        //拼团id
+        //    console.log($("#groupBuyOrderId").val())
+        //    console.log($("#groupjoin").val())
+
+        if(($("#groupjoin").val()==1 || $("#groupjoin").val()=='1') && $("#groupBuyOrderId").val() !='undefined'){
+            var url="/{$sitecode}/signup_post/{$id}?share_id={$share_id}&group_buy_order_id="+$("#groupBuyOrderId").val()+"&groupjoin=1"
+        }else if( typeof $("#groupBuyOrderId").val() !='undefined'){
+            var url="/{$sitecode}/signup_post/{$id}?share_id={$share_id}&group_buy_order_id="+$("#groupBuyOrderId").val()
+        }else{
+            var url="/{$sitecode}/signup_post/{$id}?share_id={$share_id}"
+        }
+
+        $.ajax({
+                type: 'post',
+                url: url,
+                dataType: 'json',
+                data: data,
+                contentType: false, //不设置内容类型
+                processData: false, //不处理数据
+                success: function (data) {
+                    layer.closeAll('loading');
+                    //格式化data数据
+                    data=JSON.parse(data)
+                    //console.log(data)
+                    //用户再次提交订单
+                        //追加元素
+                    var htmlappend="<input id='orderid' type=\"hidden\" name=\"order_id\" value=\""+data.order_id+"\">"
+                    $("#txtpaynum").after(htmlappend)
+
+
+                    //如果有拼团id
+                // console.log(data.group_buy_order_id)
+                    if(data.group_buy_order_id !='undefined' && data.group_buy_order_id !=0){
+
+                        var formappend="<input id='groupBuyOrderId' type=\"hidden\" name=\"group_buy_order_id\" value=\""+data.group_buy_order_id+"\">"
+
+                        $("#frm1").after(formappend)
+
+                    }
+                    //如果是参团用户
+                    if(data.groupjoin==1){
+
+                        var formbefore="<input id='groupjoin' type='hidden' name='groupjoin' value=\""+data.groupjoin+"\">"
+                        $("#frm1").before(formbefore)
+                    }
+                    if(data.ischarge==2 && data.flag==1 && data.price > 0) {
+                        jsondata=$.parseJSON(data.data)
+                        wx.config({
+                            //debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+                            appId: data.config["appId"], // 必填，公众号的唯一标识
+                            timestamp:data.config["timestamp"] , // 必填，生成签名的时间戳
+                            nonceStr: data.config["nonceStr"], // 必填，生成签名的随机串
+                            signature:data.config["signature"],// 必填，签名
+                            jsApiList: ['chooseWXPay']// 必填，需要使用的JS接口列表
+
+                        });
+                        wx.ready(function () {
+                            wx.chooseWXPay({
+                                timestamp: jsondata["timeStamp"], // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
+                                nonceStr: jsondata["nonceStr"], // 支付签名随机串，不长于 32 位
+                                package: jsondata["package"], // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=\*\*\*）
+                                signType: jsondata["signType"], // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
+                                paySign: jsondata["paySign"], // 支付签名
+                                success: function (res) {
+                                    if(data.group_buy_order_id !='undefined' && data.group_buy_order_id !=0){
+                                        window.location="/"+data.sitecode+"/group_buy_share/"+data.group_buy_order_id+"/"+data.userid
+                                        return ;
+                                    }
+                                    if(data.is_cashed && data.activity_cashed_set && data.activity_cashed_set.cashed_plan_id > 0){
+                                        window.location="/"+data.sitecode+"/share/"+data.order_id+"/0"
+                                    }else{
+                                        window.location="/"+data.sitecode+"/detail/"+data.dataID
+                                    }
+                                },
+                                // cencel:function(res){
+                                //     // 支付取消回调函数
+                                //     alert('cencel pay');
+                                // },
+                                // fail: function(res){
+                                //     // 支付失败回调函数
+                                //     alert('pay fail');
+                                //     alert(JSON.stringify(res));
+                                // },
+                                // error:function(res){
+                                //     alert("err pay");
+                                // }
+
+                            })
+                        });
+                        // wx.error(function(res){
+                        //     alert("DDddddddddddddddddd");
+                        // });
+
+                        
+                        flag=IsPC()
+                        if(!flag){
+                                        layer.confirm('您好，请用手机登录微信，进入公众号会员中心完成支付，谢谢！',
+                                            {
+                                                btn: ["关闭"] //按钮)
+                                            })
+                                }
+
+                    }else{
+                        if(data.flag==2) {
+
+                            if(typeof(data.errmsg) != "undefined"){
+
+                                layer.confirm(
+                                    data.errmsg,
+                                    {
+                                        btn:['关闭'],
+                                        //btn1: function(index, layero){
+                                            //window.location = "/" + data.sitecode + "/detail/" + data.dataID;
+                                        // return false;
+                                        //}
+                                    });
+                            }
+
+                            if(typeof(data.err_arr) != "undefined"){
+                                layer.confirm(
+                                    data.err_arr[0]["err"],
+                                    {
+                                        btn:['关闭'],
+                                        // btn1: function(index, layero){
+                                        //     //window.location="/"+data.sitecode+"/againorder/"+data.order_id;
+                                        //     return false;
+                                        // }
+                                    });
+                            }
+                        } else{
+                            layer.confirm('报名成功！',{btn:['关闭'],btn1: function(index, layero){ window.location="/"+data.sitecode+"/detail/"+data.dataID}});
+                        }
+                    }
+
+                },
+            }
+        );
+        }
+    //判断是否在pc端
+    function IsPC() {
+        var userAgentInfo = navigator.userAgent;
+        var Agents = ["Android", "iPhone",
+            "SymbianOS", "Windows Phone",
+            "iPad", "iPod"];
+        var flag = false;
+        for (var v = 0; v < Agents.length; v++) {
+            if (userAgentInfo.indexOf(Agents[v]) > -1) {
+                flag = true;
+                break;
+            }
+        }
+        return flag;
+    }
+    // 字段验证
+    function  checkdata(datavalue,datatype,ismust) {
+        var json ={"state":1,"msg" : "" };
+        if(datavalue=="" && ismust==1)
+        {
+            json.state=0;
+            json.msg="不能为空";
+            return json;
+        }
+        ///1文本框 2数字框 3电话框 4邮件框 5下拉框 6多行文本框 7图片上传 8身份证 9 关联姓名框 10关联电话号码框 11关联邮箱框 12关联邮寄地址框 13关联身份证框
+        switch(datatype)
+        {
+            case "2":
+                var reg =/^(-?\d+)(\.\d+)?$/;
+                if(reg.test(datavalue)==false)
+                {
+                    json.state=0;
+                    json.msg="必须输入数字";
+                }
+                break;
+            case "3":
+            case "10":
+                var isMobile = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1})|(17[0-9]{1})|(14[0-9]{1}))+\d{8})$/;
+                var isPhone = /^(?:(?:0\d{2,3})-)?(?:\d{7,8})(-(?:\d{3,}))?$/;
+                if(isMobile.test(datavalue)==false && isPhone.test(datavalue)==false)
+                {
+                    json.state=0;
+                    json.msg="输入格式不正确";
+                }
+                break;
+            case "4":
+            case "11":
+                var reg =/^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[-.])+[A-Za-z\d]{2,4}$/;
+                if(reg.test(datavalue)==false)
+                {
+                    json.state=0;
+                    json.msg="输入格式不正确";
+                }
+                break;
+            case "8":
+            case "13":
+                var reg =/^[1-9]\d{5}(18|19|20)\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/;
+                if(reg.test(datavalue)==false)
+                {
+                    json.state=0;
+                    json.msg="输入格式不正确";
+                }
+                break;
+        }
+        return json;
+    }
+    // 修改产品数量
+    function changepaynum(type) {
+        var isActivityCashed = $('#is_activity_cashed').val();
+        var payNum = parseInt($("#txtpaynum").val());   // 购买数量
+        var pwPrice = parseFloat($("#pwprice").val()).toFixed(2);   // 选中的套餐金额
+        var maxvolumeprice = parseFloat($('#max_amount').val());    // 最大可用优惠券
+        var volumeprice = $("#hidvolumeprice").val();   // 选中的优惠券金额
+        var spddprice = 0; // 订单金额
+        var spdiwang = 0; // 实际支付金额
+
+        if(isActivityCashed==1){
+            if(max_amount !=0 && volumeprice > maxvolumeprice){
+                volumeprice = maxvolumeprice;
+                $("#hidvolumeprice").val(volumeprice);
+            }
+        }
+
+        // 减少产品数量
+        if(type == 1){
+            payNum--;
+            // 如果产品数量，小于等于1
+            if(payNum <= 1){
+                $("#txtpaynum").val(1);
+                $("#divpaynum").html(1);
+            }else{
+                $("#txtpaynum").val(payNum);
+                $("#divpaynum").html(payNum);
+                spddprice = pwPrice;
+                $("#spddprice").html(spddprice);    // 订单金额
+                if(isActivityCashed){
+                    if(spddprice <= volumeprice){
+                        spdiwang = 0;
+                    }else{
+                        spdiwang = (spddprice - volumeprice).toFixed(2);
+                    }
+                    $("#spdiwang").html(spdiwang);     // 实际支付
+                }
+            }
+        }
+        // 增加产品数量
+        else if(type == 2){
+            payNum++;
+            $("#txtpaynum").val(payNum);
+            $("#divpaynum").html(payNum);
+            spddprice = (pwPrice * payNum).toFixed(2);
+            $("#spddprice").html(spddprice);    // 订单金额
+
+            if(isActivityCashed){
+                if(spddprice <= volumeprice){
+                    spdiwang = 0;
+                }else{
+                    spdiwang = (spddprice - volumeprice).toFixed(2);
+                }
+                $("#spdiwang").html(spdiwang);     // 实际支付
+            }
+        }
+    }
+    // 选择优惠券
+    function choosevolume(obj, obj1, obj2) {
+        var volumeids = $("#hidvolumeid").val();
+        if (volumeids.indexOf(',' + obj + ',') > -1) { //已选过的就移除
+            volumeids = volumeids.replace(',' + obj + ',', ',');
+            if (volumeids == ",") {
+                volumeids = "";
+            }
+            $("#hidvolumeid").val(volumeids);
+            var volumeprice = $("#hidvolumeprice1").val() * 1 - obj1 * 1;
+            $("#hidvolumeprice").val(volumeprice);
+            $("#hidvolumeprice1").val(volumeprice);
+            $("#divvolumeprice").html("-" + volumeprice);
+            $(obj2).removeClass("on");
+            issel = true;
+        } else {
+            var maxvolumeprice = '{$activity_cashed['max_amount'] ?: 0}';//可使用最大金额
+            if(maxvolumeprice != 0) {
+                if (issel == false) {
+                    layer.alert('您选择的现金券总金额已经超过产品最大抵扣额，不需要继续选择');
+                    return;
+                }
+            }
+            var volumenum = '{$activity_cashed['max_use'] ?: 0}';//可使用最大数量
+            //不等于不限时
+            if(volumenum != 0){
+                if (volumeids.split(',').length - 1 > volumenum && volumenum != 0) {
+                    layer.alert('该产品最多可使用' + volumenum + '张现金券');
+                    return;
+                }
+            }
+            maxvolumeprice = maxvolumeprice * 1;
+            var volumeprice = $("#hidvolumeprice1").val() * 1 + obj1 * 1;
+            if(maxvolumeprice != 0) {
+                if (volumeprice > maxvolumeprice) {
+                    layer.alert('该产品最多可抵扣' + maxvolumeprice + '元，您已选择' + volumeprice.toFixed(2) + '元，金额超出部分也将抵扣完');
+                    //return;
+                    //volumeprice=maxvolumeprice*1;
+                    issel = false;
+                }
+            }
+            if (volumeids == "") {
+                volumeids = ',' + obj + ',';
+            } else {
+                volumeids += obj + ",";
+            }
+            $("#hidvolumeid").val(volumeids);
+            $("#hidvolumeprice").val(volumeprice.toFixed(2));
+            $("#hidvolumeprice1").val(volumeprice.toFixed(2));
+            $("#divvolumeprice").html("-" + volumeprice.toFixed(2));
+            $(obj2).addClass("on");
+        }
+        var spddprice = $("#spddprice").html();
+        if (obj > 0) {
+            if (spddprice > 0) {
+                if (spddprice <= volumeprice) {
+                    $("#spdiwang").html(0.00);
+                } else {
+                    $("#spdiwang").html((spddprice - volumeprice).toFixed(2));
+                }
+            }
+        } else {
+            $("#spdiwang").html(spddprice);
+        }
+    }
+    // 确认选择优惠券
+    function closevolume() {
+      var maxvolumeprice = "5";//可使用最大金额
+      var volumeprice = $("#hidvolumeprice").val() * 1;
+      if (volumeprice > maxvolumeprice) {
+        volumeprice = maxvolumeprice * 1;
+      }
+      $("#hidvolumeprice").val(volumeprice);
+      $("#divvolumeprice").html("-" + volumeprice);
+      var spddprice = $("#spddprice").html();
+      if (spddprice > 0) {
+        if (spddprice <= volumeprice) {
+          $("#spdiwang").html(0.01);
+        } else {
+          $("#spdiwang").html((spddprice - volumeprice).toFixed(2));
+        }
+      }
+
+      $(this).addClass("on").siblings().removeClass("on");
+      $(".choose-redpacket").hide();
+      $("body").removeClass("open-redpacket");
+    }
+  </script>
+</body>
+</html>

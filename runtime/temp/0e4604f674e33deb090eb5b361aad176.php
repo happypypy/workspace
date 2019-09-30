@@ -1,4 +1,12 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:68:"D:\workspace\work\public/../application/admin\view\sms\send_log.html";i:1561691686;s:57:"D:\workspace\work\application\admin\view\sms\sms_nav.html";i:1561691686;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:68:"D:\workspace\work\public/../application/admin\view\sms\send_log.html";i:1568274857;s:57:"D:\workspace\work\application\admin\view\sms\sms_nav.html";i:1561691686;}*/ ?>
+<!--
+ * @Descripttion: 
+ * @version: 
+ * @Author: ChenJie
+ * @Date: 2019-05-16 17:52:05
+ * @LastEditors: ChenJie
+ * @LastEditTime: 2019-09-09 11:38:19
+ -->
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -124,8 +132,8 @@
                                         <div class="oa_title clearfix">
                                         <span class="oa_title-btn">
                                             <ul>
-                                                <a href="javascript:CustomOpen('<?php echo url('sms/send_sms_with_xlsx'); ?>', 'send_sms_with_xlsx','短信发送', 700,550)">短信发送</a>
-                                                <a href="javascript:CustomOpen('<?php echo url('sms/sms_batch_send'); ?>', 'sms_batch_send','短信批量发送', 700,550)">短信批量发送</a>
+                                                <li><a href="javascript:CustomOpen('<?php echo url('sms/send_sms_with_xlsx'); ?>', 'send_sms_with_xlsx','短信发送', 700,550)">短信发送</a></li>
+                                                <li><a href="javascript:CustomOpen('<?php echo url('sms/sms_batch_send'); ?>', 'sms_batch_send','短信批量发送', 700,550)">短信批量发送</a></li>
                                             </ul>
                                         </span>
                                             <span class="oa_ico-left"></span>
@@ -140,7 +148,7 @@
                                                             <th width="120"><span class="oa_arr-text-list-title"></span>发送时间</th>
                                                             <th width="120"><span class="oa_arr-text-list-title"></span>创建时间</th>
                                                         </tr>
-                                                        <?php if($list == null): ?><tr><td colspan="6" style="text-align: center"><?php echo lang('data empty'); ?></td></tr><?php else: if(is_array($list) || $list instanceof \think\Collection || $list instanceof \think\Paginator): $i = 0; $__LIST__ = $list;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$vo): $mod = ($i % 2 );++$i;?>
+                                                        <?php if($list == null): ?><tr><td colspan="5" style="text-align: center">无符合条件的数据</td></tr><?php else: if(is_array($list) || $list instanceof \think\Collection || $list instanceof \think\Paginator): $i = 0; $__LIST__ = $list;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$vo): $mod = ($i % 2 );++$i;?>
                                                         <tr>
                                                             <td><?php echo $vo['mobile']; ?></td>
                                                             <td><?php echo $vo['content']; ?></td>

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+    <script src="__PUBLIC__/static/template/pub/js/common.js"></script>
+    <link rel="stylesheet" href="__PUBLIC__/static/template/pub/css/main.css?v={:time()}">
+    <link rel="stylesheet" href="__PUBLIC__/static/template/skin/M1/css/skin.css?v={:time()}">
+    <link rel="stylesheet" type="text/css" href="/static/modules/style/css/swiper.min.css">
+
+    <title>图片信息</title>
+    <style>
+        body,
+        html {
+            overflow-y: hidden;
+        }
+
+        section.section {
+            padding-top: 0;
+        }
+    </style>
+</head>
+
+<body class="flexCol">
+<section class="section">
+    <div class="swiper-container photo-swiper-container">
+        <ul class="swiper-wrapper">
+            <?php  if(!$result_data) { ?>
+            <li class="no-data">没有相关的图片</li>
+            <?php }
+			foreach($result_data as $k=>$val){ ?>
+            <li class="swiper-slide flexCol">
+                <div class="gallery-title">
+                    上传图片者：<span>{$val.account_name}</span>
+                </div>
+                <div class="gallery-top">
+                    <!--用来判断是否有大图，是因为存在老数据没有大图-->
+                    <?php
+                        $big_img = trim(substr($val['face_url'],0,strrpos($val['face_url'],'.')).'_big'.strstr($val['face_url'],'.'),'/');
+                        if(file_exists($big_img)){
+                            $img_url = '/'.$big_img;
+                        }else{
+                            $img_url = $val['face_url'];
+                        }
+                    ?>
+                    <img src="{$img_url}">
+                </div>
+                <!--如果有检测到人脸信息的图片-->
+                {if condition="$val.detect_face_url"}
+                <?php $detect_face_url_arr = explode(',',$val['detect_face_url']); ?>
+                <div class="gallery-thumbs">
+                    <div class="img-div">
+                        {foreach $detect_face_url_arr as $v}
+                        <img src="{$v}" onclick="javascript:window.location='/{$sitecode}/searchphoto/{$album_id}?face_url={$v}'">
+                        {/foreach}
+                    </div>
+                </div>
+                {/if}
+                <div style="display: none" class="likes">{$val.is_like}</div>
+                <div style="display: none" class="dataid">{$val.id}</div>
+            </li>
+            <?php } ?>
+        </ul>
+    </div>
+</section>
+<footer class="footer">
+    <div class="footernav-wrap">
+        <div class="footernav-wrap-inner">
+            <form class="footer-comment-form">
+                <div class="footer-comment-textarea">
+                    <textarea name="content" id="content"></textarea>
+                </div>
+                <div class="comment-submit">
+                    <input type="button" onclick="javascript:add_comment();" value="提交">
+                    <input type="button" value="取消" id="close-comment">
+                </div>
+            </form>
+            <ul class="flex footernavbar">
+                <li>
+                    <a href="javascript:;" id="show-comment" class="flexCol footernavbar-link">
+                        <span><i class="iconfont message">&#xe65d;</i></span>
+                        <p>评论</p>
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:;" class="flexCol footernavbar-link" id="liked">
+                        <span><i class="iconfont">&#xe60f;</i></span>
+                        <p>点赞</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</footer>
+<input type="hidden" name="dataid" id="dataid" value="{$photo_id}">
+<input type="hidden" value="{$result_data[$key]['is_like']}" id="dataindex">
+<input type="hidden" value="{$key}" id="index">
+
+<script src="__PUBLIC__/static/template/pub/js/jquery.min.js"></script>
+<script src="__PUBLIC__/static/template/pub/js/menu.js"></script>
+<script type="text/javascript" src="/static/modules/js/swiper.min.js"></script>
+<script src="__PUBLIC__/static/template/pub/js/layer/layer.js"></script>
+<script>
+    var swiper1 = new Swiper('.photo-swiper-container', {
+        slidesPerView: 1,
+        spaceBetween: 10,
+        watchSlidesVisibility: true,
+        watchSlidesProgress: true,
+        noSwipingSelector: '.gallery-thumbs,.gallery-title',
+        on: {
+            slideChangeTransitionEnd: function () {
+                var index = this.activeIndex;
+                var st = $('.swiper-slide').eq(index).find('.likes').html();
+                var dataid = $('.swiper-slide').eq(index).find('.dataid').html();
+                $('#dataindex').val(st);
+                $('#index').val(index);//给滚动第几张图片的索引赋值
+                // debugger;
+                $('#dataid').val(dataid);
+                // window.location.href = "?key=" + index;
+                console.log(st);
+                getLiked(st);
+            },
+        },
+    });
+
+    swiper1.slideTo({$key},0,false);
+
+    function getLiked(st) {
+        if (st == 0) {
+            //未点赞
+            $("#liked").find('i').html('&#xe60f;')
+        } else {
+            $("#liked").find('i').html('&#xe610;')
+        }
+
+    }
+    //该图片是否点赞
+    var st = $('#dataindex').val();
+    //初始化的时候点赞的手标志
+    getLiked(st);
+
+
+    //指定img-div宽度
+    var imgWidth = $('.img-div');
+    imgWidth.each(function () {
+        $(this).css('width', $(this).children('img').length * 0.56 + 0.2 + 'rem')
+    })
+
+    //评论
+    $(function () {
+        $("#show-comment").on("click", function () {
+            $(".footer-comment-form,.cover").show();
+        })
+        $("#close-comment").on("click", function () {
+            $(".footer-comment-form,.cover").hide();
+        })
+    })
+
+    function add_comment() {
+        var photo_id = $('#dataid').val();
+        var content = $('#content').val();//评论的内容
+        if (content == '') {
+            layer.alert('请填写评论内容'); return;
+        }
+        $.ajax({
+            url: "/{$sitecode}/addphotocomment/" + photo_id + "?content=" + content,
+            // data:data,
+            type: "post",
+            dataType: "json",
+            success: function (msg) {
+                if (msg == 1) {
+                    layer.alert('评论已成功提交！');
+                    $("#content").val('');
+                    $(".footer-comment-form,.cover").hide();
+                    // location.reload();
+                }
+            }
+        })
+    }
+
+
+
+
+    /* 点赞 */
+    $('#liked').on('click', function () {
+        //该图片是否点赞
+        var st = $('#dataindex').val();
+        //图片的索引
+        var index = $('#index').val();
+
+        var action = 'add';
+        //获取图片id
+        var photo_id = $('#dataid').val();
+        // alert(st);
+        if (st == 0) {
+            $('#dataindex').val(1);
+            $('.swiper-slide').eq(index).find('.likes').html(1)
+        } else {
+            $('#dataindex').val(0);
+            $('.swiper-slide').eq(index).find('.likes').html(0);
+            action = 'sub';
+        }
+        getClickLiked(st);
+        $.ajax({
+            url: "/{$sitecode}/photolike/" + photo_id + "?action=" + action,
+            // data:data,
+            type: "post",
+            dataType: "json",
+            success: function (msg) {
+
+            }
+        })
+        // console.log($('#dataindex').attr('data-index'));
+
+    })
+    function getClickLiked(st) {
+        if (st == 1) {
+            //未点赞
+            $("#liked").find('i').html('&#xe60f;')
+        } else {
+            $("#liked").find('i').html('&#xe610;')
+        }
+    }
+
+
+</script>
+</body>
+
+</html>

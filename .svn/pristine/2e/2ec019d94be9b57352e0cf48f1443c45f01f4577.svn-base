@@ -1,0 +1,30 @@
+@charset "utf-8";
+/* CSS Document */
+/*Create 2012-08-07 Updata:2012-08-08 by:Tim.lai*/
+body{color:#333;font-size:12px; font-weight:normal; font-family:"Microsoft YaHei",Arial, Helvetica, sans-serif; background:#f9fcff; padding:0; margin:0;}
+a{color:#4e4e4e; text-decoration:none;}
+a:hover{color:#f00; text-decoration:underline;}
+img{border:none;}
+form{padding:0;margin:0;}
+/*clear float*/
+.clearfix:after{content:".";display:block;height:0;clear:both;visibility:hidden;}
+.clearfix{zoom:1;}
+/*clear end*/
+#header{color:#2a5b9d;width:100%; min-width:1000px; height:88px; background:url(../images/oa_bg-header.gif) 0 0 repeat-x;}
+	.header{height:60px; line-height:80px; font-size:36px; font-weight:bold; color:#a66314; padding:0 0 0 15px;}
+		.header div.sys-btn{width:324px;height:80px;  background:url(../images/oa_bg-header-right.gif) right 0 no-repeat; float:right;}
+			.header div.sys-btn span.sys-btn{width:304px; height:37px; line-height:30px; background:url(../images/oa_bg-systemchange.gif) 0 0 no-repeat; margin:30px 20px 0 0; display:block;}
+			.header div.sys-btn span.sys-btn em{ font-style:normal; padding:0 40px 0 125px;}
+				.header div.sys-btn span.sys-btn a{color:#2a5b9d;}
+	.loginmsg{height:28px; line-height:28px; background:url(../images/oa_ico-nav.gif) 10px 5px no-repeat; padding:0 0 0 36px; float:left;}
+		.loginmsg strong{padding:0 5px 0 0;}
+			.loginmsg strong a{color:#2a5b9d;}
+		.loginmsg em a{color:#86682b; font-style:normal; text-decoration:underline; padding:0 0 0 10px;}
+	.op-btn{height:28px; line-height:28px;float:right;}
+		.op-btn ul{list-style:none; padding:0; margin:0;}
+			.op-btn ul li{padding:0 15px 0 40px;display:block; float:left;}
+				.op-btn ul li a{color:#2a5b9d;}
+			.op-btn ul li.contact{ background:url(../images/oa_ico-01.gif) 0 0 no-repeat; }
+				.op-btn ul li.contact span.arr{padding:0 0 0 5px;}
+			.op-btn ul li.help{ background:url(../images/oa_ico-02.gif) 0 0 no-repeat;}
+			.op-btn ul li.logout{ background:url(../images/oa_ico-03.gif) 0 0 no-repeat;}

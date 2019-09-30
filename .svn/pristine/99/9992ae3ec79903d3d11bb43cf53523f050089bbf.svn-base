@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+    <script src="__PUBLIC__/static/template/pub/js/common.js"></script>
+    <link rel="stylesheet" href="__PUBLIC__/static/template/pub/css/main.css?v={:time()}">
+    <link rel="stylesheet" href="__PUBLIC__/static/template/skin/M1/css/skin.css?v={:time()}">
+
+    <title>图片</title>
+</head>
+
+<body class="flexCol">
+{include file="modules/common/header" /}
+<section class="section">
+    <div class="headtitle">-图片列表-</div>
+
+    <div class="flexCol photo-container">
+        <ul style="min-height: 75px;">
+            <?php  if(!$result_data) { ?>
+            <li class="no-data">没有相关的图片</li>
+            <?php }
+                    $date_arr = [];
+			foreach($result_data as $k=>$val){
+            $val_create_time = date('Y/m/d',strtotime($val['create_time']));
+            $key_create_time = date('Ymd',strtotime($val['create_time']));
+            if(!array_key_exists($key_create_time,$date_arr)){ $date_arr[$key_create_time] = $val_create_time; ?>
+            <li id="{$key_create_time}" data-time="{$key_create_time}">
+                <?php }else{ ?>
+            <li>
+                <?php } ?>
+                <a href="/{$sitecode}/photolist/{$album_id}/{$val.id}?key={$k}">
+                    <div class="pic"><img src="{$val.min_face_url}"></div>
+                </a>
+            </li>
+            <?php } ?>
+        </ul>
+    </div>
+    <div class="load"><span id="dataload" class="iconfont iconload">&#xe618;</span></div>
+</section>
+<div style="display: none;" class="leftbar">
+    <ul class="leftbar-inner">
+        {if condition="$date_arr"}
+        {foreach $date_arr as $k=>$val}
+        <li style=" font-weight: bold " onclick="abc({$k})" class="time-option">{$val}</li>
+        {/foreach}
+        {/if}
+    </ul>
+</div>
+
+<footer class="footer">
+    {include file="modules/common/footer" /}
+</footer>
+
+<script src="__PUBLIC__/static/template/pub/js/jquery.min.js"></script>
+<script src="__PUBLIC__/static/template/pub/js/menu.js"></script>
+<script src="__PUBLIC__/static/template/pub/js/layer/layer.js"></script>
+<script>
+    function waterFall() {
+        // 1- 确定图片的宽度 - 滚动条宽度
+        pageWidth = $(".photo-container ul").width();//父盒子宽度
+        var columns = 2; //2列
+        var rowSpaces = 1; //每列的间隙
+        var colSpaces = 1; //每行的间隙
+        var itemWidth = parseInt((pageWidth - rowSpaces) / columns); //得到item的宽度
+        $(".photo-container ul li").innerWidth(itemWidth); //设置到item的宽度
+
+        var arr = [];
+
+        $(".photo-container ul li").each(function (i) {
+            var height = $(this).outerHeight();
+
+            var width = $(this).outerWidth();
+
+            var bi = itemWidth / width; //获取缩小的比值
+            var boxheight = parseInt(height * bi) + colSpaces; //图片的高度*比值 = item的高度。boxheight是下个item的top值
+            if (i < columns) {
+                // 2- 确定第一行
+                $(this).css({
+                    top: 0,
+                    left: (itemWidth) * i + rowSpaces * (i + 1)
+                });
+                arr.push(boxheight);
+
+            } else {
+                // 其他行
+                // 3- 找到数组中最小高度  和 它的索引
+                var minHeight = arr[0];
+                var index = 0;
+                for (var j = 0; j < arr.length; j++) {
+                    if (minHeight > arr[j]) {
+                        minHeight = arr[j];
+                        index = j;
+                    }
+                }
+                // 4- 设置下一行的第一个盒子位置
+                // top值就是最小列的高度
+                $(this).css({
+                    top: arr[index],
+                    left: $(".photo-container ul li").eq(index).css("left")
+                });
+
+                // 5- 修改最小列的高度
+                // 最小列的高度 = 当前自己的高度 + 拼接过来的高度
+                arr[index] = arr[index] + boxheight;
+            }
+            $('.photo-container ul').css('minHeight', Math.max.apply(null, arr));
+        });
+    }
+
+
+    //clientWidth 处理兼容性
+    function getClient() {
+        return {
+            width: window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth,
+            height: window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
+        }
+    }
+
+
+
+    // 页面尺寸改变时实时触发
+    window.onresize = function () {
+        //重新定义瀑布流
+        waterFall();
+    };
+
+    //初始化
+    window.onload = function () {
+        //实现瀑布流
+        waterFall();
+    }
+
+
+    //侧边栏选择时间代码
+    var timeNum = 2;//定义无操作后侧边栏几秒后消失
+    var time = 0;
+    var status = 0;
+    var couldRun = true;//防止事件频繁触发
+    $(document).scroll(function () {
+        if (couldRun) {
+            couldRun = false;
+            time = timeNum;
+            $(".leftbar").stop(0).animate({ left: "0" }, 100);
+            if (status == 0) {
+                subtime();
+            }
+            setTimeout(function () {
+                couldRun = true;
+            }, 500);
+        }
+
+    })
+    $('.leftbar').scroll(function () {
+        if (couldRun) {
+            couldRun = false;
+            time = timeNum;
+            if (status == 0) {
+                subtime();
+            }
+            setTimeout(function () {
+                couldRun = true;
+            }, 500);
+        }
+    })
+
+    function subtime() {
+        status = 1;
+        if (time < 0) {
+            status = 0;
+            $(".leftbar").stop(0).animate({ left: "-30%" }, 100);
+            return;
+        }
+        else {
+            time--;
+        }
+
+        setTimeout(() => {
+            subtime();
+        }, 1000);
+    }
+
+    function abc(id) {
+        window.location.href = "#" + id;
+        var T = $(window).scrollTop(); //滚动条top
+        var H = $('header').height();
+        $(window).scrollTop(T - H);
+    }
+
+    $(function () {
+        var click_quick = null;
+        var last_scroll_num = 0;
+        var w_height = $(window).height();
+        var liHeight = $('.leftbar-inner>li.time-option').height();
+        var flag;
+        $(document).scroll(function () {
+            var w_top = $(window).scrollTop();
+            $('.comment-list>ul>li[id^=20]').each(function (i) {
+                if ($(this).offset().top - 50 >= w_top) {
+                    flag = click_quick !== null ? click_quick : i;
+                    if (last_scroll_num != w_top && w_top > 0) {
+                        click_quick = null;
+                    }
+                    $(".leftbar-inner>li.time-option:eq(" + (flag) + ")").addClass('on').siblings().removeClass('on');
+                    var r = $(".leftbar-inner>li.time-option:eq(" + (flag) + ")").position().top - w_height +120;
+                    var b = Math.ceil(r/liHeight);
+                    if (r > 0) {
+                        $('.leftbar-inner').stop(0).animate({'top': b*-liHeight});
+                    }
+                    last_scroll_num = w_top;
+                    return false;
+                }
+            })
+        })
+        // 点击导航锚点时记录点击项
+        $('.leftbar-inner').on('click','.time-option',function () {
+            click_quick = $(this).index('.time-option');
+            // 触发一次事件 防止最后几个都在页尾 点击时没有高亮到点击的锚点
+            $(window).triggerHandler('scroll');
+        })
+    })
+
+
+</script>
+</body>
+
+</html>

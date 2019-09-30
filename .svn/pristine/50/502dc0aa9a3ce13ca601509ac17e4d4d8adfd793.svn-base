@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="yes" name="apple-mobile-web-app-capable">
+  <meta content="yes" name="apple-touch-fullscreen">
+  <meta content="telephone=no,email=no" name="format-detection">
+  <meta name="viewport"
+    content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+    <script src="__PUBLIC__/static/template/pub/js/common.js"></script>
+    <link rel="stylesheet" href="__PUBLIC__/static/template/pub/css/main.css?v={:time()}">
+    <link rel="stylesheet" href="__PUBLIC__/static/template/skin/M1/css/skin.css?v={:time()}">
+  
+  <title>报名签到</title>
+</head>
+
+<body class="flexCol">
+    {include file="modules/common/header" /}
+  <section class="section">
+    <div class="tab-bar">
+      <ul class="tabs flex">
+        <li class="{$flag==1 ? 'active' : ''} flexCol" onclick="javascript:sel('1')" id="sel1">二维码</li>
+        <li class="{$flag==2 ? 'active' : ''} flexCol" onclick="javascript:sel('2')" id="sel2">签到码</li>
+      </ul>
+
+      <div class="tab-content">
+        <div class="content selected scan-div" id="tab1">
+          <input type="button" value="扫二维码" class="scanbtn">
+        </div>
+        <div class="content" id="tab2">
+          <form class="exchange-form" method="post" id="submit_code">
+            <ul>
+              <li>
+                <div class="tit">签到码类型：</div>
+                <div class="select-div">
+                  <span id="select-show">-请选择-</span>
+                  <select id="signintype" name="signintype" class="txt">
+                    <option value="">-请选择-</option>
+                    <option value="signin">产品签到码</option>
+                    <option value="subscribe">预约签到码</option>
+                  </select>
+                </div>
+              </li>
+              <li>
+                <label for="username" class="tit">签到码：</label>
+                <input type="text" id="checkcode" name="checkcode" value="" class="txt" placeholder="请输入签到码">
+              </li>
+            </ul>
+            <div class="btns-center">
+                <input type="hidden" name="flag" value="2">
+              <input type="button" value="查询" class="sub-btn" onclick="javascript:checkdata();" />
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </section>
+  
+  <footer class="footer">
+        {include file="modules/common/footer3" /}
+  </footer>
+
+  <script src="__PUBLIC__/static/template/pub/js/jquery.min.js"></script>
+  <script src="__PUBLIC__/static/template/pub/js/menu.js"></script>
+  <script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+
+  <script>
+    // // tab栏切换
+    // $('ul.tabs>li').click(function () {
+    //   var index = $(this).index();
+    //   $(this).addClass('active').siblings('li').removeClass('active');
+    //   $('.tab-content .content').eq(index).addClass('selected').siblings('.content').removeClass('selected');
+    // });
+    $('#signintype').change(function () {
+      var text = $(this).find('option:selected').text();
+      $('#select-show').text(text);
+    })
+
+
+    function checkdata()
+    {
+        var signintype = $("#signintype").val();
+        var checkcode = $("#checkcode").val();
+        if(checkcode.length <= 0)
+        {
+            layer.alert('请输入签到码',{icon:2});
+            return;
+        }
+
+        $("#searchdiv").hide();
+        loaddata2(checkcode,signintype);
+    }
+
+
+    function return_search() {
+        $("#frmdata").hide();
+        $("#searchdiv").show();
+        $("#checkcode").val('');
+    }
+
+
+    function sel(index) {
+        if(index=="2")
+        {
+            $("#sel1").removeClass("active");
+            $("#sel2").addClass("active");
+            $("#tab1").hide();
+            $("#tab2").show();
+
+        }
+        else
+        {
+            $("#sel2").removeClass("active");
+            $("#sel1").addClass("active");
+            $("#tab2").hide();
+            $("#tab1").show();
+
+        }
+    }
+    $(function () {
+        sel(1);
+    });
+
+
+    wx.config({
+        debug: false,
+        appId: '<?php echo $signPackage["appId"]; ?>',
+        timestamp: '<?php echo $signPackage["timestamp"]; ?>',
+        nonceStr: '<?php echo $signPackage["nonceStr"]; ?>',
+        signature: '<?php echo $signPackage["signature"]; ?>',
+        jsApiList: ['scanQRCode',]
+    });
+
+    wx.ready(function () {
+        wx.checkJsApi({
+            jsApiList: [
+                'scanQRCode'
+            ],
+            success: function (res) {
+                if (res.checkResult.getLocation == false) {
+                    alert('你的微信版本太低，不支持微信JS接口，请升级到最新的微信版本！');
+                    return;
+                }
+            }
+        });
+        wx.error(function(res){
+          //  alert("接口调取失败")
+        });
+        document.querySelector('.scanbtn').onclick = function() {
+            wx.scanQRCode({
+                needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
+                scanType: ["qrCode"], // 可以指定扫二维码还是一维码，默认二者都有
+                success: function (res) {
+                    var result = res.resultStr; // 当needResult 为 1 时，扫码返回的结果
+                    // window.location.href = result;//因为我这边是扫描后有个链接，然后跳转到该页面
+                    loaddata(result);
+                }
+            });
+        }
+
+    });
+
+    // 扫码加载数据
+    function loaddata(url){
+        $("#searchdiv").hide();
+        $.ajax({
+            url: '/{$sitecode}/signinloaddata',
+            type: 'post',
+            data: {'url':url},
+            success:function(data){
+                if(data.length < 50){
+                    layer.alert(data,{icon:2});
+                    return_search();
+                }else{
+                    $("#frmdata").show();
+                    $('#frmdata').html(data);
+                }
+            }
+        });
+    }
+    // 签到码加载数据
+    function loaddata2(checkcode,signintype){
+        $("#searchdiv").hide();
+        $.ajax({
+            url: '/{$sitecode}/signinloaddata',
+            type: 'post',
+            data: {'signintype':signintype, 'checkcode':checkcode},
+            success:function(data){
+                if(data.length < 50){
+                    layer.alert(data,{icon:2});
+                    return_search();
+                }else{
+                    $("#frmdata").show();
+                    $('#frmdata').html(data);
+                }
+            }
+        });
+    }
+  </script>
+</body>
+
+</html>

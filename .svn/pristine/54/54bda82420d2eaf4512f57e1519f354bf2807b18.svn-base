@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="yes" name="apple-mobile-web-app-capable">
+  <meta content="yes" name="apple-touch-fullscreen">
+  <meta content="telephone=no,email=no" name="format-detection">
+  <meta name="viewport"
+    content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+    <script src="__PUBLIC__/static/template/pub/js/common.js"></script>
+    <link rel="stylesheet" href="__PUBLIC__/static/template/pub/css/main.css?v={:time()}">
+    <link rel="stylesheet" href="__PUBLIC__/static/template/skin/M1/css/skin.css?v={:time()}">
+  
+  <title>积分商城</title>
+</head>
+
+<body class="flexCol">
+    {include file="modules/common/header" /}
+
+  <section class="section">
+    <div class="score-wrap">
+      <div class="qiandao-user flex">
+        <div class="pic"><img src="{$userinfo.userimg}"></div>
+        <div class="txt">
+          <div class="name">{$userinfo.nickname},欢迎您！</div>
+          <div class="score flex">
+            <span>积分：</span>
+            <p><a href="/{$sitecode}/integralrecord">{$userinfo.integral}</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="select-bar">
+      <ul class="select-bar-tab flex" id="select-bar-tab">
+        <li {$tabType==0 ? 'class="on fontColor"' : ''}>全部商品</li>
+        <li {$tabType==1 ? 'class="on fontColor"' : ''}>可兑换</li>
+        <li {$tabType==2 ? 'class="on fontColor"' : ''}>兑换记录</li>
+      </ul>
+    </div>
+
+    <div class="common-wrap">
+      <!-- score-list activity -->
+      <ul id="data" class="common-list">
+
+      </ul>
+      <div class="load"><span id="dataload" class="iconfont iconload">&#xe618;</span></div>
+    </div>
+
+  </section>
+  
+  <footer class="footer">
+        {include file="modules/common/footer5" /}
+  </footer>
+  
+  <script src="__PUBLIC__/static/template/pub/js/jquery.min.js"></script>
+  <script src="__PUBLIC__/static/template/pub/js/menu.js"></script>
+
+  <script>
+    /* tab栏样式切换 */
+    $(function () {
+      $(".select-bar-tab>li").click(function () {
+        $(this).addClass('on fontColor').siblings().removeClass('on fontColor');
+      })
+    })
+  </script>
+<script>
+        var tabType = {$tabType};
+        var page = 1;
+        var pageSize = 5;
+        var scrollState = true;  // 下拉滚动状态, true：启用 false: 禁用
+        /* tab栏样式切换 */
+        $(function () {
+          $(".select-bar-tab>li").click(function () {
+            var index = $(".select-bar-tab>li").index(this);
+            page = 1;
+            // 全部商品
+            if(index == 0){
+              tabType = 0;
+            }
+            // 可兑换商品
+            else if(index == 1){
+              tabType = 1;
+            }
+            // 兑换订单
+            else if(index == 2){
+              tabType = 2;
+            }
+            $("#data").html('');
+            
+            loadData();
+            $(this).addClass('on').siblings().removeClass('on');
+          })
+        })
+      
+        loadData();
+        // 加载数据
+        function loadData(){
+          scrollState = false;
+          $('.load').show();
+          if(tabType !== 2){
+            getGoods();
+          }else{
+            getExchangeRecord();
+          }
+        }
+        // 获取商品数据
+        function getGoods(){
+          $.ajax({
+            url: "/{$sitecode}/getintegralmall",
+            type: "POST",
+            data: {sitecode: '{$sitecode}', tabType: tabType,page:page, pageSize:pageSize},
+            dataType: "JSON",
+            success: function(result){
+              scrollState = false;
+              if(result.data.length == 0){
+                if(page == 1){
+                  if(tabType == 0){
+                    $("#data").html('<li class="list-item no-data">没有找到更多商品~</li>');
+                  }else if(tabType == 1){
+                    $("#data").html('<li class="list-item no-data">您的积分太少啦，亲~</li>');
+                  }
+                }
+                $('.load').hide();
+                return;
+              }
+      
+              var html = '';
+              result.data.forEach(item => {
+                    var age = '';
+                    if(item.suitable_age_start != 0 && item.suitable_age_end != 0){
+                        age = item.suitable_age_start +'~'+ item.suitable_age_end + '岁';
+                    }else{
+                        age = '不限制';
+                    }
+
+                    html += '<li class="list-item">';
+                    html += '<a href="/{$sitecode}/integraldetail/'+ item.id +'" class="flex">';
+                    html += '<div class="list-item-img"><img src="'+ item.goods_thumb +'"></div>';
+                    html += '<div class="list-item-txt">'
+                    html += '<div class="info title fontColor">'+ item.goods_name +'</div>'
+                    html += '<div class="info flex age">';
+                    html += '<div class="tit">适合年龄</div>：'
+                    html += '<div class="txt">'+ age +'</div>';
+                    html += '</div>';
+                    html += '<div class="info flex price">';
+                    html += '<div class="tit">所需积分</div>：'
+                    html += '<div class="txt">'+ item.integral +'</div>';
+                    html += '</div>';
+                    html += '<div class="info flex price">';
+                    html += '<div class="tit">剩余数量</div>：'
+                    html += '<div class="txt">'+ item.goods_number  +'</div>';
+                    html += '</div>';
+                    html += '</div></a></li>';
+              });
+      
+              $("#data").append(html);
+              scrollState = true;
+              page++;
+              $('.load').hide();
+            },
+            error: function(e){
+              console.log(e);
+              $("#data").html('');
+              if(tabType == 0){
+                $("#data").html('<li class="list-item no-data">没有找到更多商品~</li>');
+              }else if(tabType == 1){
+                $("#data").html('<li class="list-item no-data">您的积分太少啦，亲~</li>');
+              }
+              $('.load').hide();
+            }
+          });
+        }
+        // 获取兑换记录
+        function getExchangeRecord(){
+          $.ajax({
+            url: "/{$sitecode}/getexchangerecord",
+            type: "POST",
+            data: {sitecode: '{$sitecode}', page:page, pageSize:pageSize},
+            dataType: "JSON",
+            success: function(result){
+              scrollState = false;
+              if(result.data.length == 0){
+                if(page == 1){
+                  $("#data").append('<li class="list-item no-data">没有找到更多兑换记录~</li>');
+                }
+                $('.load').hide();
+                return;
+              }
+              var html = '';
+              result.data.forEach(item => {
+                  html += '<li class="list-item flex">'
+                  html += '<div class="list-item-img"><img src="'+  item.goods_thumb +'"></div>';
+                  html += '<div class="list-item-txt">';
+                  html += '<div class="info title fontColor">'+ item.goods_name +'</div>';
+                  html += '<div class="info flex"><div class="tit">订单号</div>：<div class="txt">'+ item.order_no +'</div></div>';
+                  html += '<div class="info flex"><div class="tit">所需积分</div>：<div class="txt">'+ item.integral +'</div></div>';
+                  html += '<div class="info flex"><div class="tit">兑换数量</div>：<div class="txt">'+ item.exchange_number +'</div></div>';
+                  html += '<div class="info flex"><div class="tit">兑换时间</div>：<div class="txt">'+ formatTime(item.create_time) +'</div></div>';
+                  if(item.courier_company && item.courier_number){
+                    html += '<div class="info flex"><div class="tit">快递公司</div>：<div class="txt">'+ item.courier_company +'</div></div>';
+                    html += '<div class="info flex"><div class="tit">快递单号</div>：<div class="txt">'+ item.courier_number +'</div></div>';
+                  }
+                  if(item.order_status == 0){
+                    html += '<div class="normal-btn" onclick="javajscript:void(0);">待审核</div>';
+                  }else if(item.order_status == 1){
+                    html += '<div class="normal-btn" onclick="window.location=\'https://m.kuaidihelp.com/express/queryResult?word='+item.courier_number+'+\'">查看物流</div>';
+                  }else if(item.order_status == 2){
+                    html += '<div class="normal-btn" onclick="javajscript:void(0);">已取消</div>';
+                  }
+                  html += '</div>'
+                  html += '</li>';
+              });
+              $("#data").append(html);
+              scrollState = true;
+              page++;
+              $('.load').hide();
+            },
+            error: function(e){
+              $("#data").html('');
+              $("#data").html('<li class="list-item no-data">没有找到更多兑换记录~</li>');
+              $('.load').hide();
+            }
+          });
+        }
+        // 时间格式化
+        function formatTime(timestamp){
+          var now = new Date(timestamp*1000);
+          var   year=now.getFullYear();    
+          var   month=now.getMonth()+1;    
+          var   date=now.getDate();    
+          var   hour=now.getHours();    
+          var   minute=now.getMinutes();    
+          var   second=now.getSeconds();    
+          return   year+"-"+month+"-"+date+"   "+hour+":"+minute+":"+second;    
+        }
+        //获取滚动条当前的位置
+        function getScrollTop() {
+            var scrollTop = 0;
+            if (document.documentElement && document.documentElement.scrollTop) {
+                scrollTop = document.documentElement.scrollTop;
+            } else if (document.body) {
+                scrollTop = document.body.scrollTop;
+            }
+            return scrollTop;
+        }
+        //获取当前可视范围的高度
+        function getClientHeight() {
+            var clientHeight = 0;
+            if (document.body.clientHeight && document.documentElement.clientHeight) {
+                clientHeight = Math.min(document.body.clientHeight, document.documentElement.clientHeight);
+            } else {
+                clientHeight = Math.max(document.body.clientHeight, document.documentElement.clientHeight);
+            }
+            return clientHeight;
+        }
+        //获取文档完整的高度
+        function getScrollHeight() {
+            return Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+        }
+        //滚动事件触发
+        window.onscroll = function () {
+          if (getScrollTop() + getClientHeight() === getScrollHeight() && scrollState == true) {
+            loadData();
+          }
+        };
+      </script>
+
+</body>
+
+</html>

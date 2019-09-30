@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="yes" name="apple-mobile-web-app-capable">
+  <meta content="yes" name="apple-touch-fullscreen">
+  <meta content="telephone=no,email=no" name="format-detection">
+  <meta name="viewport"
+    content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+    <script src="__PUBLIC__/static/template/pub/js/common.js"></script>
+    <link rel="stylesheet" href="__PUBLIC__/static/template/pub/css/main.css?v={:time()}">
+    <link rel="stylesheet" href="__PUBLIC__/static/template/skin/M1/css/skin.css?v={:time()}">
+  
+  <title>评论管理</title>
+</head>
+
+<body class="flexCol">
+    {include file="modules/common/header" /}
+  <section class="section">
+    <div class="select-bar">
+      <ul class="select-bar-tab flex" id="select-bar-tab">
+        <li {if condition="$flag == 0"} class="on" {/if} onclick="location.href='/{$sitecode}/commentmanage/0'">全部评论</li>
+        <li {if condition="$flag == 2"} class="on" {/if} onclick="location.href='/{$sitecode}/commentmanage/2'">活动评论</li>
+        <li {if condition="$flag == 1"} class="on" {/if} onclick="location.href='/{$sitecode}/commentmanage/1'">资讯评论</li>
+      </ul>
+    </div>
+
+    <div class="common-wrap">
+      <ul id="data" class="common-list">
+        {if condition="empty($list)"}
+        <li class="list-item no-data">没找到相关评论信息</li>
+        {else/}
+        {volist name="$list" id="vo"}
+        <li class="list-item" id="data_{$vo['id']}">
+          <div class="list-item-txt">
+            <div class="info title fontColor">{$vo['chrtitle']}</div>
+            <div class="info flex node">
+              <div class="tit">评论内容</div>：
+              <div class="txt">{$vo['content']}</div>
+            </div>
+            <div class="info flex time">
+              <div class="tit">评论时间</div>：
+              <div class="txt">{$vo['createtime']|date="Y-m-d H:i:s",### }</div>
+            </div>
+            <div class="info flex node">
+              <div class="tit">回复内容</div>：
+              <div class="txt">{$vo['recontent']}</div>
+            </div>
+            <div class="info flex time">
+              <div class="tit">回复时间</div>：
+              <div class="txt">{$vo['retime']|date="Y-m-d H:i:s",###}</div>
+            </div>
+            <div class="btns-right">
+                <input type="hidden" id="id" value="{$vo['id']}" >
+              {if condition="$vo['intstate']==2"}
+              <input type="button" class="reply-btn" value="回复" onclick="javascript:re('{$vo['id']}')">
+              {/if}
+              {if condition="$vo['show']==1"}
+              <input type="button" id="{$vo['id']}" show="{$vo['show']}" class="shield-btn show1" value="屏蔽">
+              {else/}
+              <input type="button" id="{$vo['id']}" show="{$vo['show']}" class="shield-btn show1" value="显示">
+              {/if}
+              <input type="button" class="del-btn" onclick="javascript:del('{$vo['id']}')" value="删除">
+            </div>
+          </div>
+        </li>
+        {/volist}
+        {/if}
+      </ul>
+      <div class="load"><span id="dataload" class="iconfont iconload">&#xe618;</span></div>
+    </div>
+
+  </section>
+  
+  
+  <footer class="footer">
+        <div class="footernav-wrap-inner">
+            <form class="footer-comment-form" method="post" id="frm">
+                <div class="footer-comment-textarea">
+                    <textarea name="content" id="content"></textarea>
+                </div>
+                <div class="comment-submit">
+                    <input type="hidden" id="dataid" name="dataid" value="">
+                    <input type="button" onclick="javascript:sava_data();" value="提交">
+                    <input type="button" value="取消" id="close-comment">
+                </div>
+            </form>
+            <ul class="flex footernavbar">
+                <li>
+                    <a href="/{$sitecode}" class="flexCol footernavbar-link">
+                    <span><i class="iconfont">&#xe61a;</i></span>
+                    <p>首页</p>
+                    </a>
+                </li>
+        
+                <li>
+                    <a href="/{$sitecode}/mine" class="flexCol footernavbar-link bgColor on">
+                    <span><i class="iconfont">&#xe666;</i></span>
+                    <p>个人中心</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+  </footer>
+
+  <script src="__PUBLIC__/static/template/pub/js/jquery.min.js"></script>
+  <script src="__PUBLIC__/static/template/pub/js/menu.js"></script>
+  <script src="__PUBLIC__/static/template/pub/js/layer/layer.js"></script>
+
+  <script language="JavaScript">
+        $(function () {
+            $("#close-comment").on("click",function(){
+                $(".footer-comment-form").hide();
+            })
+        });
+        $('.show1').click(function(){
+            obj=$(this)
+            var show=obj.attr('show')
+            id=obj.attr('id')
+            var tishi=obj.html();
+            $.ajax({
+                url:"/{$sitecode}/showcomment",
+                data:{'id':id,'show':show},
+                type:"post",
+                dataType:"text",
+                success:function(msg) {
+                    if(msg==1)
+                    {
+                        if(show == 1){
+                            obj.attr('show','2')
+                            obj.val('显示')
+                        }else{
+                            obj.attr('show','1')
+                            obj.val('屏蔽')
+                        }
+                        layer.confirm(tishi+'成功！',{btn:['关闭']});
+                    }
+                    else
+                    {
+                        layer.confirm(tishi+'失败！',{btn:['关闭']});
+                    }
+                }
+            })
+        })
+    
+        function re(id) {
+            $("#dataid").val(id);
+            $("#content").val("");
+            $(".footer-comment-form").show();
+        }
+    
+        function sava_data()
+        {
+            if($("#content").val()=="")
+            {
+                //layer.alert("请输入退款理由！",{icon:2});
+                layer.msg("请输入回复内容！")
+                return;
+            }
+            $.ajax({
+                url: "/{$sitecode}/commentmanage",
+                type: 'POST',
+                cache: false,
+                data: new FormData($('#frm')[0]),
+                processData: false,
+                contentType: false,
+                dataType:"json",
+                success : function(data) {
+                    if (data == 1) {
+                        layer.msg("回复成功！")
+                        window.location.reload(true);
+                    } else {
+                        layer.msg("数据提交失败！",{icon:2})
+                    }
+    
+                }
+            });
+    
+        }
+    
+        function  del(id) {
+            layer.confirm('你确定要删除吗？', {
+                btn: ['确定','取消'] //按钮
+            }, function(){
+                var data= {"id":id};
+                $.ajax({
+                    url:"/{$sitecode}/delcomment",
+                    data:data,
+                    type:"post",
+                    dataType:"json",
+                    success:function(msg) {
+                        if(msg==1)
+                        {
+                            $("#data_"+id).remove();
+                            layer.confirm('删除成功！',{btn:['关闭']});
+                        }
+                        else
+                        {
+                            layer.confirm('删除失败！',{btn:['关闭']});
+                        }
+                    }
+                })
+            }, function(){
+    
+            });
+        }
+    
+    
+        //==============核心代码=============
+        var winH = $(window).height(); //页面可视区域高度
+    
+        var ipage=1;
+        var scrollHandler = function () {
+            var pageH = $(document).height();
+            var scrollT = $(window).scrollTop(); //滚动条top
+    
+            if(pageH-winH-scrollT<1)
+            {
+                LoadData(ipage)
+                ipage++;
+            }
+        }
+        //定义鼠标滚动事件
+        $(window).scroll(scrollHandler);
+        //==============核心代码=============
+    
+        function LoadData(ipage)
+        {
+            $("#dataload").show();
+            $ (window).unbind ('scroll');
+            // var state = $('input[name="states"]').val();
+            $.ajax({
+                url: "/{$sitecode}/commentmanage/{$flag}",
+                type: 'GET',
+                cache: false,
+                data:{"ipage":ipage,"ajax":1} ,
+                success : function(data) {
+    
+                    if(data== 11)
+                    {
+                        $("#dataload").hide();
+                        // $("#loadmsg").html("已无更多数据");
+                        return;
+                    }
+                    $("#dataload").hide();
+                    $("#data").html($("#data").html()+data);
+                    $(window).scroll(scrollHandler);
+                }
+            });
+    
+        }
+    </script>
+</body>
+
+</html>

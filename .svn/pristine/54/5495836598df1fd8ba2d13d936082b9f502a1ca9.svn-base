@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="yes" name="apple-mobile-web-app-capable">
+  <meta content="yes" name="apple-touch-fullscreen">
+  <meta content="telephone=no,email=no" name="format-detection">
+  <meta name="viewport"
+    content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+    <script src="__PUBLIC__/static/template/pub/js/common.js"></script>
+    <link rel="stylesheet" href="__PUBLIC__/static/template/pub/css/main.css?v={:time()}">
+    <link rel="stylesheet" href="__PUBLIC__/static/template/skin/M1/css/skin.css?v={:time()}">
+  
+  <title>收藏列表</title>
+</head>
+
+<body class="flexCol">
+    {include file="modules/common/header" /}
+  <section class="section">
+    <div class="common-wrap">
+      <ul id="data" class="common-list">
+        {if condition="empty($collection)"}
+        <li class="list-item no-data">没找到相关报名信息</li>
+        {else/}
+        {volist name="$collection" id="vo"}
+        <li class="list-item ">
+          <div class="list-item-txt">
+            <div class="info title fontColor" onclick="javascript:loadurl('{$vo['dataid']}','{$vo['flag']}')">{$vo['chrtitle']}</div>
+            <div class="info flex">
+              <div class="tit">收藏时间</div>：
+              <div class="txt">{$vo['createtime']|date="Y-m-d H:i:s",###}</div>
+            </div>
+            <div class="info flex">
+              <div class="tit">所属类别</div>：
+              <div class="txt fontColor">{$vo.flag==2 ? '产品' : '文章'}</div>
+            </div>
+            <div class="btns-right">
+              <input type="button" class="del-btn" onclick="javascript:del('{$vo['id']}');" value="删除">
+            </div>
+          </div>
+        </li>
+        {/volist}
+        {/if}
+      </ul>
+      <div class="load"><span id="dataload" class="iconfont iconload">&#xe618;</span></div>
+    </div>
+
+  </section>
+  
+  <footer class="footer">
+        {include file="modules/common/footer3" /}
+  </footer>
+
+
+  <script src="__PUBLIC__/static/template/pub/js/jquery.min.js"></script>
+  <script src="__PUBLIC__/static/template/pub/js/menu.js"></script>
+  <script src="__PUBLIC__/static/template/pub/js/layer/layer.js"></script>
+  <script>
+    function  loadurl(id,flag) {
+		if(flag=='2')
+		{
+		    window.location="/{$sitecode}/detail/"+id;
+		}
+		else
+		{
+            window.location="/content/"+id;
+		}
+    }
+
+    function del(id) {
+      layer.confirm('你确定要删除吗？', {
+        btn: ['确定', '取消'], //按钮
+        btnAlign: 'c',
+        skin: 'my-layer',
+        area: '100%'
+      }, function () {
+        var data = { "id": id };
+        $.ajax({
+          url: "/{$sitecode}/delcollection",
+          data: data,
+          type: "post",
+          dataType: "json",
+          success: function (msg) {
+            if (msg == 1) {
+              $("#data_" + id).remove();
+              layer.confirm('删除成功！', { btn: ['关闭'] }, function(){location.reload();});
+            }
+          }
+        })
+      }, function () {
+
+      });
+    }
+
+    //==============核心代码=============
+    var winH = $(window).height(); //页面可视区域高度
+
+    var ipage=1;
+    var scrollHandler = function () {
+        var pageH = $(document).height();
+        var scrollT = $(window).scrollTop(); //滚动条top
+
+        if(pageH-winH-scrollT<1)
+        {
+            LoadData(ipage)
+            ipage++;
+        }
+    }
+    //定义鼠标滚动事件
+    $(window).scroll(scrollHandler);
+    //==============核心代码=============
+
+    function LoadData(ipage)
+    {
+        $("#dataload").show();
+        $ (window).unbind ('scroll');
+        // var state = $('input[name="states"]').val();
+        $.ajax({
+            url: "/{$sitecode}/collection",
+            type: 'POST',
+            cache: false,
+            data:{"ipage":ipage,"ajax":1} ,
+            success : function(data) {
+
+                if(data== 11)
+                {
+                    $("#dataload").hide();
+                    // $("#loadmsg").html("已无更多数据");
+                    return;
+                }
+                $("#dataload").hide();
+                $("#data").html($("#data").html()+data);
+                $(window).scroll(scrollHandler);
+            }
+        });
+
+    }
+  </script>
+</body>
+
+</html>

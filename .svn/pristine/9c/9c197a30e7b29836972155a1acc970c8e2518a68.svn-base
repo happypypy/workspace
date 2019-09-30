@@ -1,0 +1,35 @@
+{volist name="$list" id="vo"}
+<li class="list-item ">
+  <div class="list-item-txt">
+    <div class="info title fontColor">{$vo['chrtitle']}</div>
+    <div class="info flex node">
+      <div class="tit">评论内容</div>：
+      <div class="txt">{$vo['content']}</div>
+    </div>
+    <div class="info flex time">
+      <div class="tit">评论时间</div>：
+      <div class="txt">{$vo['createtime']|date="Y-m-d H:i:s",### }</div>
+    </div>
+    <div class="info flex node">
+      <div class="tit">回复内容</div>：
+      <div class="txt">{$vo['recontent']}</div>
+    </div>
+    <div class="info flex time">
+      <div class="tit">回复时间</div>：
+      <div class="txt">{$vo['retime']|date="Y-m-d H:i:s",###}</div>
+    </div>
+    <div class="btns-right">
+        <input type="hidden" id="id" value="{$vo['id']}" >
+      {if condition="$vo['intstate']==2"}
+      <input type="button" class="reply-btn" value="回复" onclick="javascript:re('{$vo['id']}')">
+      {/if}
+      {if condition="$vo['show']==1"}
+      <input type="button" id="{$vo['id']}" show="{$vo['show']}" class="shield-btn show1" value="屏蔽">
+      {else/}
+      <input type="button" id="{$vo['id']}" show="{$vo['show']}" class="shield-btn show1" value="显示">
+      {/if}
+      <input type="button" class="del-btn" onclick="javascript:del('{$vo['id']}')" value="删除">
+    </div>
+  </div>
+</li>
+{/volist}
