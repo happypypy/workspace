@@ -1,0 +1,500 @@
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>开启头部工具栏 - 数据表格</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../layuiadmin/style/admin.css" media="all">
+    <style>
+        .layui-form-item{
+            margin-bottom: 5px;
+        }
+        .layui-table-cell{
+            height: auto;
+        }
+        .lastcell>a{
+            text-decoration: underline;
+            color: #333;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-tab">
+                    <ul class="layui-tab-title">
+                        <li class="layui-this">草稿箱<span style="color: red">(5)</span></li>
+                        <li>待审批产品<span style="color: red">(3)</span></li>
+                        <li>审批不过的产品<span style="color: red">(0)</span></li>
+                        <li>已发布产品<span style="color: red">(95)</span></li>
+                        <li>7天内即将开始的产品<span style="color: red">(0)</span></li>
+                        <li>回收站<span style="color: red">(47)</span></li>
+                    </ul>
+                </div>
+
+                <div class="layui-card-header">会员列表</div>
+                <!-- 搜索区域 -->
+                <div class="layui-card-body">
+                    <form class="layui-form" action="" lay-filter="component-form-group">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">产品标题：</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">产品分类</label>
+                                <div class="layui-input-inline">
+                                    <select name="quiz">
+                                        <option value="">所有类别</option>
+                                        <option value="">产品说明会</option>
+                                        <option value="">儿童剧</option>
+                                        <option value="">乐园剧场</option>
+                                        <option value="">免费活动</option>
+                                        <option value="">测试活动分类</option>
+                                        <option value="">技术培训会</option>
+                                        <option value="">行业交流会</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">是否收费</label>
+                                <div class="layui-input-inline">
+                                    <select name="quiz1">
+                                        <option value="">所有记录</option>
+                                        <option value="">免费产器</option>
+                                        <option value="">收费产器</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">是否置顶</label>
+                                <div class="layui-input-inline">
+                                    <select name="quiz1">
+                                        <option value="">所有记录</option>
+                                        <option value="">是</option>
+                                        <option value="">否</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">首页显示</label>
+                                <div class="layui-input-inline">
+                                    <select name="quiz1">
+                                        <option value="">所有记录</option>
+                                        <option value="">是</option>
+                                        <option value="">否</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">举办时间：</label>
+                                <div class="layui-input-inline">
+                                    <input name="date_start" type="text" class="layui-input"   id="test-laydate-start" placeholder="开始日期">
+                                </div>
+                                <div class="layui-form-mid">
+                                    -
+                                </div>
+                                <div class="layui-input-inline">
+                                    <input name="date_end"  type="text" class="layui-input" id="test-laydate-end" placeholder="结束日期" >
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">发布时间：</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" class="layui-input" id="publish-laydate-start" placeholder="开始日期">
+                                </div>
+                                <div class="layui-form-mid">
+                                    -
+                                </div>
+                                <div class="layui-input-inline">
+                                    <input type="text" class="layui-input" id="publish-laydate-end" placeholder="结束日期" >
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-inline" pane="">
+                                <label class="layui-form-label">产品标签：</label>
+                                <div class="layui-input-block">
+                                    <input type="checkbox" name="like1[write]" lay-skin="primary" title="写作" checked="">
+                                    <input type="checkbox" name="like1[read]" lay-skin="primary" title="阅读">
+                                    <input type="checkbox" name="like1[game]" lay-skin="primary" title="游戏" disabled="">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <button class="layui-btn layuiadmin-btn-list" lay-submit lay-filter="LAY-app-contlist-search">
+                                    <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <table class="layui-hide" id="test-table-toolbar" lay-filter="test-table-toolbar"></table>
+
+
+
+                <script type="text/html" id="test-table-switchTpl">
+                    <!-- 这里的 checked 的状态只是演示 -->
+                    <input type="checkbox" name="sex" lay-skin="switch" lay-text="女|男" lay-filter="test-table-sexDemo"
+                           value="{{ d.id }}" data-json="{{ encodeURIComponent(JSON.stringify(d)) }}" {{ d.id == 10003 ? 'checked' : '' }}>
+                </script>
+
+                <script type="text/html" id="buttonTpl">
+                    {{#  if(d.username=='李清照'){ }}
+                    <div class="layui-btn layui-btn-xs">李清照</div>
+                    {{#  } else { }}
+                    {{d.username}}
+                    {{#  } }}
+                </script>
+
+                <script type="xt/html" id="test-table-toolbar-toolbarDemo">
+              <div class="layui-btn-container">
+               <button class="layui-btn layui-btn-sm" data-type="add">添加</button>
+              </div>
+            </script>
+
+                <script type="text/html" id="test-table-toolbar-barDemo">
+                    <div class="test-table-toolbar-barDemo" style="white-space:normal;text-align: left;">
+                        <a class="layui-btn layui-btn-xs">浏览</a>
+                        <a class="layui-btn layui-btn-xs">访问数据</a>
+                        <a class="layui-btn layui-btn-xs">查看报名</a>
+                        <a class="layui-btn layui-btn-xs">复制</a>
+                        <a class="layui-btn layui-btn-xs">导入报名</a>
+                        <a class="layui-btn layui-btn-xs">复制链接</a>
+                        <a class="layui-btn layui-btn-xs">修改</a>
+                        <a class="layui-btn layui-btn-xs">删除</a>
+                        <a class="layui-btn layui-btn-xs">咨询详情</a>
+                    </div>
+
+                </script>
+
+                <div style="overflow: hidden" >
+                    <div style="float: left; margin-top: 15px;margin-left: 10px; vertical-align: middle;">
+                        <button class="layui-btn layui-btn-sm" data-type="del">删除</button>
+                    </div>
+                    <div id="test-laypage-demo1" style="text-align: right; margin-right: 15px;"></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../../layuiadmin/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: '../../layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['index', 'table','laydate'], function(){
+        var admin = layui.admin
+            ,laypage = layui.laypage
+            ,table = layui.table;
+
+        table.render({
+            elem: '#test-table-toolbar'
+            ,toolbar: '#test-table-toolbar-toolbarDemo'
+            ,title: '用户数据表'
+
+            ,cols: [[
+                {type: 'checkbox'}
+                ,{field:'sign', title: '产品标题' }
+                ,{field:'username', title:'所属分类', width:120, unresize: true}
+                // ,{field:'username', title: '所属分类', width: 120, templet: '#buttonTpl', unresize: true }
+                ,{field: 'publishTime', title: '发布时间', width: 120, unresize: true }
+                ,{field: 'approvalTime', title: '审批时间', width: 120, unresize: true }
+                ,{field: 'joinTime', title: '参加时间', width: 120, unresize: true }
+                ,{field: 'orderTime', title: '报名时间', width: 120, unresize: true }
+                // ,{field:'sex', title:'性别', width:80,  templet: '#test-table-switchTpl', unresize: true}
+                // ,{field:'city', title:'城市', width:100}
+                // ,{field:'experience', title:'积分', width:80, sort: true}
+                // ,{field:'ip', title:'IP', width:120}
+                // ,{field:'logins', title:'登入次数', width:100, sort: true}
+                ,{field: 'orderNum', title: '订单数', width: 100, sort: true }
+                ,{title:'操作', toolbar: '#test-table-toolbar-barDemo', width:190}
+            ]]
+
+            ,data: [ {
+                "sign": "有优惠券的活动喔有优惠券的活动喔有优惠券的活动喔有优惠券的活动喔有优惠券的活动喔有优惠券的活动喔有优惠券的活动喔有优惠券的活动喔有优惠券的活动喔有优惠券的活动喔有优惠券的活动喔有优惠券的活动喔"
+                ,"username": "产品说明会"
+                // ,"email": "xianxin@layui.com"
+                // ,"sex": "男"
+                // ,"city": "浙江杭州"
+                // ,"experience": "116"
+                // ,"ip": "192.168.0.8"
+                // ,"logins": "108"
+                ,"publishTime": "2019-10-14"
+                ,"approvalTime": "2019-11-14"
+                ,"joinTime": "2019-10-14"
+                ,"orderTime": "2019-11-14"
+                ,"orderNum": "22"
+            }, {
+                "sign": "有优惠券的活动喔有优惠券的活动喔有优惠券的活动喔有优惠券的活动喔有优惠券的活动喔有优惠券的活动喔"
+                , "username": "产品说明会"
+                // ,"email": "xianxin@layui.com"
+                // ,"sex": "男"
+                // ,"city": "浙江杭州"
+                // ,"experience": "116"
+                // ,"ip": "192.168.0.8"
+                // ,"logins": "108"
+                , "publishTime": "2019-10-14"
+                , "approvalTime": "2019-11-14"
+                , "joinTime": "2019-10-14"
+                , "orderTime": "2019-11-14"
+                , "orderNum": "22"
+            },
+                {
+                    "sign": "有优惠券的活动喔有优惠券的有优惠券的活动喔有优惠券的活动喔有优惠券的活动喔有优惠券的活动喔有优惠券的活动喔有优惠券的活动喔活动喔有优惠券的活动喔"
+                    , "username": "产品说明会"
+                    // ,"email": "xianxin@layui.com"
+                    // ,"sex": "男"
+                    // ,"city": "浙江杭州"
+                    // ,"experience": "116"
+                    // ,"ip": "192.168.0.8"
+                    // ,"logins": "108"
+                    , "publishTime": "2019-10-14"
+                    , "approvalTime": "2019-11-14"
+                    , "joinTime": "2019-10-14"
+                    , "orderTime": "2019-11-14"
+                    , "orderNum": "22"
+                },
+                {
+                    "sign": "有优惠券的活动喔有优惠券的活动喔有优惠券的活动喔"
+                    , "username": "产品说明会"
+                    // ,"email": "xianxin@layui.com"
+                    // ,"sex": "男"
+                    // ,"city": "浙江杭州"
+                    // ,"experience": "116"
+                    // ,"ip": "192.168.0.8"
+                    // ,"logins": "108"
+                    , "publishTime": "2019-10-14"
+                    , "approvalTime": "2019-11-14"
+                    , "joinTime": "2019-10-14"
+                    , "orderTime": "2019-11-14"
+                    , "orderNum": "22"
+                },
+                {
+                    "sign": "有优惠券的活动喔有优惠券的活动喔有优惠券的活动喔"
+                    , "username": "产品说明会"
+                    // ,"email": "xianxin@layui.com"
+                    // ,"sex": "男"
+                    // ,"city": "浙江杭州"
+                    // ,"experience": "116"
+                    // ,"ip": "192.168.0.8"
+                    // ,"logins": "108"
+                    , "publishTime": "2019-10-14"
+                    , "approvalTime": "2019-11-14"
+                    , "joinTime": "2019-10-14"
+                    , "orderTime": "2019-11-14"
+                    , "orderNum": "22"
+                },
+                {
+                    "sign": "有优惠券的活动喔有优惠券的活动喔有优惠券的活动喔"
+                    , "username": "产品说明会"
+                    // ,"email": "xianxin@layui.com"
+                    // ,"sex": "男"
+                    // ,"city": "浙江杭州"
+                    // ,"experience": "116"
+                    // ,"ip": "192.168.0.8"
+                    // ,"logins": "108"
+                    , "publishTime": "2019-10-14"
+                    , "approvalTime": "2019-11-14"
+                    , "joinTime": "2019-10-14"
+                    , "orderTime": "2019-11-14"
+                    , "orderNum": "22"
+                },
+                {
+                    "sign": "有优惠券的活动喔有优惠券的活动喔有优惠券的活动喔"
+                    , "username": "产品说明会"
+                    // ,"email": "xianxin@layui.com"
+                    // ,"sex": "男"
+                    // ,"city": "浙江杭州"
+                    // ,"experience": "116"
+                    // ,"ip": "192.168.0.8"
+                    // ,"logins": "108"
+                    , "publishTime": "2019-10-14"
+                    , "approvalTime": "2019-11-14"
+                    , "joinTime": "2019-10-14"
+                    , "orderTime": "2019-11-14"
+                    , "orderNum": "22"
+                },
+                {
+                    "sign": "有优惠券的活动喔有优惠券的活动喔有优惠券的活动喔"
+                    , "username": "产品说明会"
+                    // ,"email": "xianxin@layui.com"
+                    // ,"sex": "男"
+                    // ,"city": "浙江杭州"
+                    // ,"experience": "116"
+                    // ,"ip": "192.168.0.8"
+                    // ,"logins": "108"
+                    , "publishTime": "2019-10-14"
+                    , "approvalTime": "2019-11-14"
+                    , "joinTime": "2019-10-14"
+                    , "orderTime": "2019-11-14"
+                    , "orderNum": "22"
+                },
+                {
+                    "sign": "有优惠券的活动喔有优惠券的活动喔有优惠券的活动喔"
+                    , "username": "产品说明会"
+                    // ,"email": "xianxin@layui.com"
+                    // ,"sex": "男"
+                    // ,"city": "浙江杭州"
+                    // ,"experience": "116"
+                    // ,"ip": "192.168.0.8"
+                    // ,"logins": "108"
+                    , "publishTime": "2019-10-14"
+                    , "approvalTime": "2019-11-14"
+                    , "joinTime": "2019-10-14"
+                    , "orderTime": "2019-11-14"
+                    , "orderNum": "22"
+                },
+            ]
+        });
+
+        //总页数大于页码总数
+        laypage.render({
+            elem: 'test-laypage-demo1'
+            ,count: 7000 //数据总数
+            ,curr: 5 //设定初始在第 5 页
+            ,layout: ['count', 'prev', 'page', 'next', 'skip']
+            ,jump: function(obj){
+                console.log(obj)
+            }
+        });
+
+        //头工具栏事件
+        table.on('toolbar(test-table-toolbar)', function(obj){
+            var checkStatus = table.checkStatus(obj.config.id);
+            switch(obj.event){
+                case 'getCheckData':
+                    var data = checkStatus.data;
+                    layer.alert(JSON.stringify(data));
+                    break;
+                case 'getCheckLength':
+                    var data = checkStatus.data;
+                    layer.msg('选中了：'+ data.length + ' 个');
+                    break;
+                case 'isAll':
+                    layer.msg(checkStatus.isAll ? '全选': '未全选');
+                    break;
+            };
+        });
+
+        //监听行工具事件
+        table.on('tool(test-table-toolbar)', function(obj){
+            var data = obj.data;
+            debugger;
+            if(obj.event === 'del'){
+                layer.confirm('真的删除行么', function(index){
+                    obj.del();
+                    layer.close(index);
+                });
+            } else if(obj.event === 'edit'){
+                layer.prompt({
+                    formType: 2
+                    ,value: data.email
+                }, function(value, index){
+                    obj.update({
+                        email: value
+                    });
+                    layer.close(index);
+                });
+            }
+        });
+
+        //监听性别操作
+        table.on('switch(test-table-sexDemo)', function(obj){
+            var json = JSON.parse(decodeURIComponent($(this).data('json')));
+            layer.tips(this.value + ' ' + this.name + '：'+ obj.elem.checked, obj.othis);
+
+            json = table.clearCacheKey(json);
+            console.log(json); //当前行数据
+
+        });
+
+
+        var laydate = layui.laydate;
+
+        //示例代码
+
+        //举办开始日期
+        var insStart = laydate.render({
+            elem: '#test-laydate-start'
+            , min: 0
+            , done: function (value, date) {
+                //更新结束日期的最小日期
+                insEnd.config.min = lay.extend({}, date, {
+                    month: date.month - 1
+                });
+
+                //自动弹出结束日期的选择器
+                insEnd.config.elem[0].focus();
+            }
+        });
+
+        //发布开始日期
+        var insEnd = laydate.render({
+            elem: '#test-laydate-end'
+            , min: 0
+            , done: function (value, date) {
+                //更新开始日期的最大日期
+                insStart.config.max = lay.extend({}, date, {
+                    month: date.month - 1
+                });
+            }
+        });
+
+        //发布开始日期
+        var insStart1 = laydate.render({
+            elem: '#publish-laydate-start'
+            , min: 0
+            , done: function (value, date) {
+                //更新结束日期的最小日期
+                insEnd1.config.min = lay.extend({}, date, {
+                    month: date.month - 1
+                });
+
+                //自动弹出结束日期的选择器
+                insEnd1.config.elem[0].focus();
+            }
+        });
+
+        //发布开始日期
+
+        var insEnd1 = laydate.render({
+            elem: '#publish-laydate-end'
+            , min: 0
+            , done: function (value, date) {
+                //更新开始日期的最大日期
+                insStart1.config.max = lay.extend({}, date, {
+                    month: date.month - 1
+                });
+            }
+        });
+    });
+</script>
+</body>
+</html>

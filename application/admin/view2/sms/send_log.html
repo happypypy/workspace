@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="generator" content="HTML Tidy for HTML5 for Windows version 5.2.0" />
+    <meta charset="utf-8" />
+    <title>短信管理</title>
+    <meta name="renderer" content="webkit" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="stylesheet" href="__PUBLIC__/layuiadmin/layui/css/layui.css" media="all" />
+    <link rel="stylesheet" href="__PUBLIC__/layuiadmin/style/admin.css" media="all" />
+    <link rel="stylesheet" href="__PUBLIC__/layuiadmin/style/public.css" media="all" />
+    <script src="__PUBLIC__/layuiadmin/js/laydate/laydate.js"></script>
+    <script src="__PUBLIC__/layuiadmin/js/public.js"></script>
+    <script src="__PUBLIC__/layuiadmin/layui/layui.js"></script>
+
+    <style>
+        .layui-form-item{
+            margin-bottom: 5px;
+        }
+        .layui-table-cell{
+            height: auto;
+        }
+        .lastcell>a{
+            text-decoration: underline;
+            color: #333;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+    </style>
+    </head>
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-tab">
+                    <ul class="layui-tab-title">
+                        <?php if($cms->CheckPurview('sms','send') || $cms->CheckPurview('sms','sendmanage')){ ?>
+                            <li class="layui-this" id="send_log" onclick="javascript:window.location='{:url('sms/send_log','')}'">发送记录</li>
+                        <?php } ?>
+
+                        <?php if($cms->CheckPurview('sms','recharge')){ ?>
+                            <li id="sms_recharge_list" onclick="javascript:window.location='{:url('sms/sms_recharge_list',array('id'=>1,'flag'=>10))}'">短信充值</li>
+                        <?php } ?>
+
+                        <?php if($cms->CheckPurview('sms','autosend')){ ?>
+                            <li id="sms_open_config" onclick="javascript:window.location='{:url('sms/sms_open_config','')}'">发送设置</li>
+                        <?php } ?>
+
+                        <?php if($cms->CheckPurview('sms','opensms')){ ?>
+                            <li id="sms_apply" onclick="javascript:window.location='{:url('sms/sms_apply','')}'">短信申请</li>
+                        <?php } ?>
+
+                        <?php if($cms->CheckPurview('sms','msgpattern')){ ?>
+                            <li id="sms_template_list" onclick="javascript:window.location='{:url('sms/sms_template_list','')}'">短信模版</li>
+                        <?php } ?>
+                    </ul>
+                </div>
+
+                <!-- 搜索区域 -->
+                <div class="layui-card-body">
+                    <div class="layui-card-header2">{:lang('search')}</div>
+                    <form class="layui-form layui-bd layui-mb15" action="" lay-filter="component-form-group">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">发送状态</label>
+                            <div class="layui-input-inline">
+                                <select name="status" style="width: 200px">
+                                    <option value="">请选择</option>
+                                    <option value="0" <?php if(is_numeric($search["status"]) && $search["status"]==0){echo "selected";} ?>>待发送</option>
+                                    <option value="1" <?php if($search["status"]==1){echo "selected";} ?>>发送成功</option>
+                                    <option value="2" <?php if($search["status"]==2){echo "selected";} ?>>发送失败</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">发送号码</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="mobile" autocomplete="off" placeholder="请输入发送号码" value="{$search.mobile ?: ''}" class="layui-input" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">发送内容</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="content" autocomplete="off" placeholder="请输入发送内容" value="{$search.content ?: ''}" class="layui-input" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">创建时间</label>
+                                <div class="layui-input-inline">
+                                    <input type="text"  id="create_begin_time" name="create_begin_time" value="{$search['create_begin_time']}" class="layui-input" placeholder="开始日期" lay-key="1">
+                                </div>
+                                <div class="layui-form-mid">
+                                -
+                                </div>
+                                <div class="layui-input-inline">
+                                    <input type="text" id="create_end_time" name="create_end_time" value="{$search['create_end_time']}" class="layui-input"  placeholder="结束日期" lay-key="2">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">发送时间</label>
+                                <div class="layui-input-inline">
+                                    <input type="text"  id="send_begin_time" name="send_begin_time" value="{$search['send_begin_time']}" class="layui-input" placeholder="开始日期" lay-key="3">
+                                </div>
+                                <div class="layui-form-mid">
+                                -
+                                </div>
+                                <div class="layui-input-inline">
+                                    <input type="text" id="send_end_time" name="send_end_time" value="{$search['send_end_time']}" class="layui-input"  placeholder="结束日期" lay-key="4">
+                                </div>
+                                <div class="layui-inline">
+                                    <button class="layui-btn layuiadmin-btn-list" lay-submit lay-filter="LAY-app-contlist-search">
+                                        <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                    <table class="layui-hide" id="manage-table" lay-filter="manage-table"></table>
+
+                    <div style="overflow: hidden">
+                        <div id="laypage" style="text-align: right; margin-right: 15px;"></div>
+                    </div>
+                </div>
+
+                <!-- 工具栏按钮 -->
+                <script type="text/html" id="table-toolbar">
+                    <div class="layui-btn-container ov-hd">
+                        <div class="info-l fl">短信管理</div>
+                        <div class="info-r fr">
+                            <a class="layui-btn layui-btn-sm" href="javascript:CustomOpen('{:url('sms/send_sms_with_xlsx')}', 'send_sms_with_xlsx','短信发送', 700,550)">短信发送</a>
+                            <a class="layui-btn layui-btn-sm" href="javascript:CustomOpen('{:url('sms/sms_batch_send')}', 'sms_batch_send','短信批量发送', 700,550)">短信批量发送</a
+                        </div>
+                    </div>
+                </script>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+seltime1('create_begin_time','create_end_time');
+seltime1('send_begin_time','send_end_time');
+layui.config({
+    base: '/layuiadmin/' //静态资源所在路径
+}).extend({
+    index: 'lib/index' //主入口模块
+}).use(['index', 'table', 'jquery'], function(){
+    var admin = layui.admin
+    ,laypage = layui.laypage
+    ,table = layui.table
+    ,$ = layui.$;
+
+    table.render({
+        elem: '#manage-table'
+        ,toolbar: '#table-toolbar'
+        ,defaultToolbar: []
+        ,title: '短信管理'
+        ,cols: [[
+        {field:'mobile', title:'发送号码', width:120, unresize: true}
+        ,{field: 'content', title: '发送内容', minWidth: 120, unresize: true}
+        ,{field: 'str_status', title: '发送状态', width: 120, unresize: true}
+        ,{field: 'send_time', title: '发送时间', width: 160, unresize: true}
+        ,{field: 'create_time', title: '创建时间', width: 160, unresize: true}
+        ]]
+        ,data: [
+            {volist name="list" id="vo"}
+            {
+                mobile: '{$vo.mobile}',
+                content: '{$vo.content}',
+                str_status: '{$vo.str_status}',
+                send_time: '{$vo.send_time}',
+                create_time: '{$vo.create_time}',
+            },
+            {/volist}
+        ]
+        ,limit: {:$page->pageSize}
+    });
+
+    //总页数大于页码总数
+    laypage.render({
+        elem: 'laypage'
+        ,count: {:$page->count}
+        ,curr: {:$page->iPage}
+        ,limit: {:$page->pageSize}
+        ,layout: ['count', 'prev', 'page', 'next', 'skip']
+        ,jump: function(obj){
+            if(obj.curr!= "{:$page->iPage}"){
+                var jumpUrl = "{:$page->url('currentPage')}";
+                jumpUrl = jumpUrl.replace("currentPage",obj.curr);
+                location.href = jumpUrl;
+            }
+        }
+    });
+
+    // 批量删除
+    $('#batchDel').click(function(){
+        var checkStatus = table.checkStatus('manage-table')
+        ,checkData = checkStatus.data; //得到选中的数据
+
+        if(checkData.length === 0){
+          return layer.msg('请选择要删除的数据');
+        }
+      var ids = '';
+      // 拼接ID
+      checkData.forEach(function(item){
+          ids += item.id + ',';
+      });
+      ids = ids.substr(0, ids.length - 1);
+      delData(ids,'');
+    })
+    
+    // 根据ID删除数据
+    window.delData = function (ids,remark) {
+        var msg = '您确定要删除选定的记录吗？';
+        if(typeof ids === 'number'){
+            msg = '您确定要删除“'+remark+'”吗？';
+        }
+        layer.confirm(msg, function(index) {
+            // 删除数据
+            $.ajax({
+                url: "{:url('admin/work/contentdel')}",
+                data: "id=" + ids,
+                type: "post",
+                dataType: "json",
+                success: function (obj) {
+                    if (obj.msg == '删除成功') {
+                        layer.msg('已删除');
+                        location.reload();
+                    } else {
+                        layer.alert('删除失败', { icon: 2 });
+                    }
+                }
+            });
+        });
+    }
+});
+</script>
+</html>

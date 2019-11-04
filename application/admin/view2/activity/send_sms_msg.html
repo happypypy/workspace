@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>信息发送</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/admin.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/public.css" media="all">
+    <script type="text/javascript" src="/layuiadmin/js/jquery-3.3.1.js"></script>
+    <script type="text/javascript" src="/layuiadmin/js/public.js"></script>
+</head>
+<body>
+<form class="layui-form" id="frm" action="" lay-filter="component-form-group" method="post">
+    <div class="layui-fluid">
+        <div class="layui-card">
+            <div class="layui-card-header1">信息发送</div>
+            <div class="layui-card-body" style="padding: 15px;">
+
+                <div class="layui-form-item">
+                    &nbsp;账号签名：<span style="color: dodgerblue;">【{$sm_info["sms_sign"]}】</span>   &nbsp;&nbsp;当前计费字数67个字，当前已输入<span id="current_input_num"> </span>个字，分一条短信发送
+                   <br/> 短信剩余发送条数：{$sm_info["sms_num"]}
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">短信内容</label>
+                    <div class="layui-input-inline" style="width: 520px;">
+                        <textarea name="content"  lay-verify="required" class="layui-textarea" id="content">【{$sm_info.sms_sign}】</textarea>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">手机号码</label>
+                    <div class="layui-input-inline" style="width: 520px;" id="mobile_part">
+                        <input id="checked"  onclick="DoCheck();" name="" type="checkbox"  lay-skin="primary" title="全选" checked lay-filter="checked" />
+                        <br/>
+
+                    </div>
+                </div>
+
+                <input type="hidden" name="touser" id="touser" value=""/>
+
+            </div>
+        </div>
+
+        <div class="layui-form-item layui-layout-admin">
+            <div class="layui-input-block">
+                <div class="layui-footer" style="left: 0;z-index: 9999;">
+                    <button class="layui-btn" lay-submit="" lay-filter="component-form-demo1"  >发送</button>
+                    <button type="button" id="close" class="layui-btn"  lay-filter="component-form-demo1">取消</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<script>
+    $(function(){
+        var ids = GetOpenerWin().userids;
+        $("#touser").val(ids);
+        $.ajax({
+            url:'/admin/activity/get_mobile_by_user_ids',
+            type:'POST',
+            data: {userids:ids},
+            dataType:'json',
+            async:false,
+            success:function (data) {
+                if(data.mobile_list.length>0)
+                {
+                    $.each(data.mobile_list,function (index,value) {
+                        $("#mobile_part").append("<input lay-skin=\"primary\" type=\"checkbox\"  name=\"mobile[]\" value='"+value+"' checked title='"+value+"'/>");
+                    });
+                }
+            }
+        })
+    });
+</script>
+<script src="/layuiadmin/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: '/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['index', 'form', 'laydate'], function(){
+        var $ = layui.$
+            ,admin = layui.admin
+            ,element = layui.element
+            ,layer = layui.layer
+            ,laydate = layui.laydate
+            ,form = layui.form;
+
+
+        /* 监听指定开关 */
+        form.on('switch(component-form-switchTest)', function(data){
+            layer.msg('开关checked：'+ (this.checked ? 'true' : 'false'), {
+                offset: '6px'
+            });
+            layer.tips('温馨提示：请注意开关状态的文字可以随意定义，而不仅仅是ON|OFF', data.othis)
+        });
+
+        form.on('checkbox(checked)', function(data){
+            //console.log(data.elem); //得到checkbox原始DOM对象
+            //console.log(data.elem.checked); //是否被选中，true或者false
+            //console.log(data.value); //复选框value值，也可以通过data.elem.value得到
+            //console.log(data.othis); //得到美化后的DOM对象
+            $("input[type='checkbox']").each(function () {
+                //console.log(this);
+                this.checked = data.elem.checked;
+            });
+            form.render('checkbox');
+
+        });
+
+        /* 监听提交 */
+        form.on('submit(component-form-demo1)', function(data){
+            if(JSON.stringify(data.field).indexOf('mobile') == -1){
+                layer.alert('请选择要发送的手机号码');
+                return false;
+            }
+            $.ajax({
+                url:'/admin/activity/send_sms_msg',
+                type:'POST',
+                data: $('#frm').serialize(),
+                dataType:'json',
+                success:function (data) {
+                    if(data.state==1)
+                    {
+                        layer.alert('信息发送成功',{
+                            yes:function(){
+                                parent.layer.closeAll();
+                            }});
+                    }
+                    else
+                    {
+                        layer.alert("提交失败");
+                    }
+                }
+            })
+            return false;
+        });
+    });
+
+    $("#close").click(function () {
+        parent.layer.closeAll()
+    })
+    $(document).ready(function () {
+        $("#current_input_num").text($("#content").val().length);
+    });
+    $("#content").keyup(function() {
+        var len = $(this).val().length;
+        if (len > 66) {
+            $(this).val($(this).val().substring(0, 67));
+            $("#current_input_num").text(67);
+        }else{
+            $("#current_input_num").text(len);
+        }
+    });
+    $("#checked").click(function(){
+
+    })
+    function DoCheck() {
+        console.log(111)
+        console.log($("input[type='checkbox']"))
+        if($("#checked").is(':checked')){
+            $("input[type='checkbox']").attr("checked", true);
+        }else{
+            $("input[type='checkbox']").attr("checked", false);
+        }
+    }
+
+</script>
+
+</body>
+</html>

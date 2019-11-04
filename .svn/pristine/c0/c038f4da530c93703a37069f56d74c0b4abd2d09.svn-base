@@ -1,0 +1,186 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/static/css/page.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="__PUBLIC__/static/js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/js/lhgdialog.js?skin=aero"></script>
+<script type="text/javascript" src="__PUBLIC__/static/js/CostomLinkOpenSw.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/js/tabscommon.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/js/cntotc.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/js/del-checked.js"></script>
+<script type="text/javascript">
+$(function(){
+	$(document).ready(function() {
+		$('.oa_text-list tr').addClass('odd');
+		$('.oa_text-list tr:even').addClass('even');
+	});
+    $('.oa_text-list tr').hover(
+        function(){
+            $(this).addClass('oa_mouseover-bg');
+        },
+        function(){
+            $(this).removeClass('oa_mouseover-bg');
+        }
+    );
+	});
+</script>
+</head>
+<body>
+<div class="oa_wrapper">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0">
+  	<tr class="oa_wrapper-display">
+    	<td class="oa_wrapper-top-arr-left">&nbsp;</td>
+      <td class="oa_wrapper-top-arr-middle"></td>
+      <td class="oa_wrapper-top-arr-right">&nbsp;</td>
+    </tr>
+    <tr>
+      <td class="oa_wrapper-middle-arr-left oa_wrapper-display"></td>
+      <td class="oa_wrapper-middle-arr-middle">
+      	<div class="oa_location clearfix"><span class="oa_ico-left"></span>location<span class="oa_ico-right"></span></div>
+        <div class="oa_main clearfix">
+        	<div class="oa_subnav clearfix"  style="display: none">
+
+			  <div class="oa_subnav-tab clearfix">
+             <ul>
+                <li class="oa_on"><em><a href="{:url('configs/index','idsite='.$idsite)}">网站配置</a></em></li>
+                <li ><em><a href="{:url('configs/configself','idsite='.$idsite)}">管理自定义配置</a> </em></li>
+              </ul>
+            </div>
+            <div class="oa_subnav-list clearfix">
+              <ul>
+                {volist name="configmenu" id="vo"}
+                {if condition="$vo['isshow'] eq 1"}
+                <li><em><a href="{:url('configs/index','menucode='.$vo['chrcode'].'&chrname='.$vo['chrname'].'&idsite='.$idsite)}">{$vo['chrname']}</a></em></li>
+                {/if}
+                {/volist}
+              </ul>
+            </div>
+          </div>
+          <div class="oa_content-area clearfix">
+            <div class="oa_content-main">
+              <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                  <td valign="top">
+                    <div class="oa_pop">
+                      <div class="oa_title clearfix">
+                        <span class="oa_ico-right"></span>
+                        <span class="oa_title-btn"></span>
+                        <span class="oa_ico-left"></span>
+                        <span>{$menuname['chrname']}</span>
+                        {foreach name="lang" item="vo" key="k"}
+                        <a class="lang" lang="{$k}"> {$vo}</a>
+                        {/foreach}
+                      </div>
+                      <div class="oa_pop-main">
+                        <div class="oa_edition">
+                          <form action="{:url('configs/datapost')}" enctype="multipart/form-data" method="post">
+                            <table width="100%" border="0" cellspacing="1" cellpadding="0" class="oa_edition">
+                              {foreach name="lang" item="v" key="k"}
+                              <?php $k=='cn'?$prefix='':$prefix=$k.'_'; ?>
+                              {volist name="menurule" id="vo"}
+                              {if condition="$vo['isshow'] eq 1"}
+                              <tr class="div_configs {$k}" style="display: none">
+                                <td width="240" class="oa_cell-left">
+                                  {$vo['chrname']}
+                                  {in name="vo['fieldtype']" value="1,2,3"}
+                                  {eq name="prefix" value="tc_"}(繁体){/eq}
+                                  {eq name="prefix" value="en_"}(英文){/eq}
+                                  {eq name="prefix" value=""}{/eq}
+                                  {/in}：
+                                </td>
+                                <td class="oa_cell-right">
+
+                                  {if condition="$vo['fieldtype'] eq 10"}
+                                  <input $style type="text"  value="{$vo['defaultval']}"  name="{$vo['fieldname']}" id="{$vo['fieldname']}" class="form-control large" readonly="readonly"  style="width:200px;display:initial;"/>
+                                  <input onclick="GetUploadify(1,'{$vo['fieldname']}','admin','undefined','*.jpg;*.jpeg;*.png;*.gif;*.jpeg;');" type="button" value="上传图片"/>
+                                  <input onclick="openimg('{$vo['fieldname']}')" type="button" value="查看图片"/>
+                                  {else /}
+                                      {$vo,$vo[$prefix.'defaultval'],$prefix|getControl}
+                                  {/if}
+
+
+                                  {if condition="$vo['fieldname'] eq 'stencildir'"}
+                                  <input onclick="GetUploadify(1,'stencildir','admin','','*.html;');" value="选择" type="button">
+                                  {/if}
+                                  {in name="vo['fieldtype']" value="1,2,3"}
+                                  {eq name="prefix" value="tc_"}
+                                  <input type="button" onclick="convert('{$vo['fieldname']}')" value="转成繁体" />
+                                  {/eq}
+                                  {/in}
+                                  <div style="color: #ff7070;padding: 2px;">{$vo.tips}</div>
+                                </td>
+                              </tr>
+                              {/if}
+                              {/volist}
+                              {/foreach}
+                              <tr>
+                                <td width="240" class="oa_cell-left">
+                                  关注后自动回复文字
+                                </td>
+                                <td class="oa_cell-right">
+                                  <span>注:插入链接请用以下标签  &lt;a href='地址'>文字内容&lt;/a></span>
+                                  <!--<span>换行请在文字末尾加上  \n\n</span>-->
+                                  <br/>
+                                  <textarea id="reply_word" name="reply_word" is_null="1" cols="50" rows="3"  class="input oa_input-200"  style="width:800px;height:80px;">{$reply_word}</textarea>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td width="240" class="oa_cell-left">
+                                  关注后自动回复图片
+                                </td>
+                                <td class="oa_cell-right">
+                                  <input name="reply_img" id="reply_img" type="text" value="{$reply_img}"   chname=""   class="form-control "  style="width:800px;" />
+                                  <input type="button" onclick="GetUploadify(1,'reply_img','admin','undefined','*.jpg;*.jpeg;*.png;*.gif;*.jpeg;');" value="上传图片" />
+                                  <input onclick="openimg('reply_img')" type="button" value="查看图片"/>
+                                </td>
+                              </tr>
+                            </table>
+                            <div class="oa_bottom clearfix">
+                              <div class="clearfix">
+                                <div class="oa_op-btn clearfix">
+                                  <input type="hidden" name="menucode" value="{$menuname['chrcode']}">
+                                  <input type="hidden" name="idsite" value="{$idsite}"/>
+                                  <input value="保存" type="submit" class="oa_input-submit" />
+                                </div>
+                              </div>
+                              <div class="oa_bottom-bottom"><em></em></div>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <div class="oa_content-main-bottom"></div>
+            </div>
+          </div>
+        </div>
+      </td>
+      <td class="oa_wrapper-middle-arr-right oa_wrapper-display"></td>
+    </tr>
+    <tr class="oa_wrapper-display">
+      <td class="oa_wrapper-bottom-arr-left">&nbsp;</td>
+      <td class="oa_wrapper-bottom-arr-middle"></td>
+      <td class="oa_wrapper-bottom-arr-right">&nbsp;</td>
+    </tr>
+  </table>
+</div>
+</body>
+<script type="text/javascript">
+    $(".lang").eq(0).css("color","#f00");
+    var type = $(".lang").eq(0).attr("lang");
+    $("table .div_configs").hide();
+    $("."+type).show();
+    $(".lang").click(function () {
+        $(this).css("color","#f00");//给点击的a标签加红色
+        $(this).siblings().css("color","#000");//被点击之外的a标签颜色为黑色
+        var lang = $(this).attr("lang");
+        $(".div_configs").hide();
+        $("."+lang).show();
+    });
+</script>
+</html>

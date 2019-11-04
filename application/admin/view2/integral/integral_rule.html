@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>新增模板</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="__PUBLIC__/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="__PUBLIC__/layuiadmin/style/admin.css" media="all">
+    <link rel="stylesheet" href="__PUBLIC__/layuiadmin/style/public.css" media="all">
+    <script type="text/javascript" src="__PUBLIC__/layuiadmin/js/jquery-3.3.1.js"></script>
+</head>
+    <style>
+        .imgPeview{
+            border: solid 1px #ccc;
+            width: 100px;
+            height: 100px;
+            margin-top: 5px;
+        }
+    </style>
+    <script type="text/javascript">
+        window.UEDITOR_Admin_URL = "/public/plugins/Ueditor/";
+        var URL_upload = "/index.php/Admin/Ueditor/imageUp/savepath/article";
+        var URL_fileUp = "/index.php/Admin/Ueditor/fileUp/savepath/article";
+        var URL_scrawlUp = "/index.php/Admin/Ueditor/scrawlUp/savepath/article";
+        var URL_getRemoteImage = "/index.php/Admin/Ueditor/getRemoteImage/savepath/article";
+        var URL_imageManager = "/index.php/Admin/Ueditor/imageManager/savepath/article";
+        var URL_imageUp = "/index.php/Admin/Ueditor/imageUp/savepath/article";
+        var URL_getMovie = "/index.php/Admin/Ueditor/getMovie/savepath/article";
+        var URL_home = "";
+    </script>
+    <script language="javascript">
+        //具体参数配置在  editor_config.js 中
+        var options = {
+            zIndex: 999,
+            initialFrameWidth: 558, //初化宽度
+            initialFrameHeight: 400, //初化高度
+            focus: false, //初始化时，是否让编辑器获得焦点true或false
+            maximumWords: 99999, removeFormatAttributes: 'class,style,lang,width,height,align,hspace,valign',//允许的最大字符数 'fullscreen',
+            pasteplain:false, //是否默认为纯文本粘贴。false为不使用纯文本粘贴，true为使用纯文本粘贴
+            autoHeightEnabled: false
+            /*   autotypeset: {
+             mergeEmptyline: true,        //合并空行
+             removeClass: true,           //去掉冗余的class
+             removeEmptyline: false,      //去掉空行
+             textAlign: "left",           //段落的排版方式，可以是 left,right,center,justify 去掉这个属性表示不执行排版
+             imageBlockLine: 'center',    //图片的浮动方式，独占一行剧中,左右浮动，默认: center,left,right,none 去掉这个属性表示不执行排版
+             pasteFilter: false,          //根据规则过滤没事粘贴进来的内容
+             clearFontSize: false,        //去掉所有的内嵌字号，使用编辑器默认的字号
+             clearFontFamily: false,      //去掉所有的内嵌字体，使用编辑器默认的字体
+             removeEmptyNode: false,      //去掉空节点
+             //可以去掉的标签
+             removeTagNames: {"font": 1},
+             indent: false,               // 行首缩进
+             indentValue: '0em'           //行首缩进的大小
+             }*/
+        };
+        function previous() {
+            var content = UE.getEditor('chrcontent').getContent();
+            layer.open({
+                title:"内容预览",
+                type: 1,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['375px', '600px'], //宽高
+                content: content
+            });
+        }
+    </script>
+    <script type="text/javascript" src="__PUBLIC__/static/plugins/Ueditor/ueditor.config.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/plugins/Ueditor/ueditor.all.js"></script>
+<body>
+    
+<form class="layui-form" method="post" action="{:url('integral/integral_rule_save')}" lay-filter="component-form-group">
+    <div class="layui-fluid">
+        <div class="layui-card">
+            <div class="layui-tab">
+                <ul class="layui-tab-title">
+                    {if condition="$cms->CheckPurview('integralmanage','view')"}
+                    <li onclick="javascript:window.location='{:url('integral/index')}'" >积分管理</li>
+                    {/if}
+                    {if condition="$cms->CheckPurview('goodsmanage','view')"}
+                    <li onclick="javascript:window.location='{:url('integral/integral_goods')}'" >商品管理</li>
+                    {/if}
+                    <li onclick="javascript:window.location='{:url('integral/exchange_record')}'" >兑换订单</li>
+                    {if condition="$cms->CheckPurview('integralannualreport','view')"}
+                    <li onclick="javascript:window.location='{:url('integral/integral_report',['action'=>'year'])}'" >积分年度报表</li>
+                    {/if}
+                    {if condition="$cms->CheckPurview('integralmonthlyreport','view')"}
+                    <li onclick="javascript:window.location='{:url('integral/integral_report',['action'=>'month'])}'" >积分月度报表</li>
+                    {/if}
+                    {if condition="$cms->CheckPurview('integralruleconfig','view')"}
+                    <li class="layui-this">积分规则设置</li>
+                    {/if}
+                </ul>
+            </div>
+
+            <div class="layui-card-body">
+                <div class="layui-card-body" style="padding: 15px;">
+                    <div class="layui-card-header2">积分规则信息</div>
+                    <div class="layui-form layui-bd">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">签到功能开关</label>
+                            <div class="layui-input-block">
+                                <input type="checkbox" name="is_sign" id="is_sign" lay-skin="switch" lay-filter="is_sign" value="1" {$integral_rule.is_sign ? 'checked' : ''} lay-text="开启|关闭">
+                            </div>
+                        </div>
+                        <div class="layui-form-item {$integral_rule.is_sign ? '' : 'layui-hide'}" id="signin_set">
+                            <label class="layui-form-label">签到设置</label>
+                            <div class="layui-input-block">
+                                <div class="layui-mb5 ov-hd">
+                                <div class="layui-form-mid layui-word-aux">连续签到第一天</div>
+                                <div class="layui-input-inline layui-w40">
+                                    <input type="text" id="first_day" name="signin_integral[]" class="layui-input layui-w40" value="{$integral_rule['signin_integral'][0] ? $integral_rule['signin_integral'][0] : '5'}" />
+                                </div>
+                                <div class="layui-form-mid layui-word-aux">分</div>
+                                </div>
+                                <div class="layui-mb5 ov-hd">
+                                <div class="layui-form-mid layui-word-aux">连续签到第二天</div>
+                                <div class="layui-input-inline layui-w40">
+                                    <input type="text" id="second_day" name="signin_integral[]" class="layui-input layui-w40" value="{$integral_rule['signin_integral'][1] ? $integral_rule['signin_integral'][1] : '10'}" />
+                                </div>
+                                <div class="layui-form-mid layui-word-aux">分</div>
+                                </div>
+                                <div class="layui-mb5 ov-hd">
+                                <div class="layui-form-mid layui-word-aux">连续签到第三天</div>
+                                <div class="layui-input-inline layui-w40">
+                                    <input type="text" id="third_day" name="signin_integral[]" class="layui-input layui-w40" value="{$integral_rule['signin_integral'][2] ? $integral_rule['signin_integral'][2] : '15'}" />
+                                </div>
+                                <div class="layui-form-mid layui-word-aux">分</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">签到规则说明</label>
+                            <div class="layui-input-block">
+                                <textarea style="width:800px;height:400px;" class="span12 ckeditor" id="sign_rule" is_null="1" name="sign_rule">{$integral_rule.sign_rule ? $integral_rule.sign_rule : '<p>签到规则：</p><p>1、第1天签到，您将获得5积分；
+                                    </p>
+                                    <p>2、连续第2天签到，您将获得10积分；</p>
+                                    <p>3、连续第3天及以后签到，您都将获得15积分；
+                                    </p>
+                                    <p>4、如果某一天中断了签到，再次签到则重新从第1天开始递增积分。
+                                    </p>'}
+                                </textarea>
+                            </div>
+                                <script>var editorcontent; $(function () { editorcontent = new UE.ui.Editor(options); editorcontent.render("sign_rule"); });</script>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">报名积分开关</label>
+                                <div class="layui-input-block">
+                                    <input type="checkbox" name="is_signup" id="is_signup" lay-filter="is_signup" value="1" lay-skin="switch" {$integral_rule.is_signup ? 'checked' : ''} lay-text="开启|关闭">
+                                </div>
+                            </div>
+                            <div class="layui-form-item {$integral_rule.is_signup ? '' : 'layui-hide'}" id="signup_set">
+                                <label class="layui-form-label">报名积分</label>
+                                <div class="layui-input-block">
+                                    <div class="layui-mb5 ov-hd">
+                                        <div class="layui-form-mid layui-word-aux">消费1元赠送</div>
+                                        <div class="layui-input-inline layui-w40">
+                                            <input type="text" id="signup_integral" name="signup_integral" class="layui-input layui-w40" value="{$integral_rule.signup_integral ? $integral_rule.signup_integral : '1'}">
+                                        </div>
+                                        <div class="layui-form-mid layui-word-aux">分</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item layui-layout-admin">
+                            <div class="layui-input-block">
+                                <div class="layui-footer" style="left: 0;z-index: 9999;">
+                                    <input type="hidden" name="idsite" value="{$idsite}" />
+                                    <button type="submit" class="layui-btn" lay-filter="component-form-submit">保存</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script src="__PUBLIC__/layuiadmin/layui/layui.js"></script>
+<script type="text/javascript" src="__PUBLIC__/layuiadmin/js/public.js"></script>
+<script>
+    layui.config({
+        base: '__PUBLIC__/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['index', 'table','form'], function(){
+        var form = layui.form;
+        // 显示签到设置
+        form.on('switch(is_sign)', function (data) {
+            if(data.elem.checked){
+                $("#signin_set").removeClass('layui-hide');
+            }else{
+                $("#signin_set").addClass('layui-hide')
+            }
+        });
+        // 显示报名设置
+        form.on('switch(is_signup)', function (data) {
+            if (data.elem.checked) {
+                $("#signup_set").removeClass('layui-hide');
+            } else {
+                $("#signup_set").addClass('layui-hide')
+            }
+        });
+    });
+</script>
+</body>
+</html>

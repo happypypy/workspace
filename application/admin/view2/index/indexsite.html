@@ -10,6 +10,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
   <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
   <link rel="stylesheet" href="/layuiadmin/style/admin.css" media="all">
+  <script type="text/javascript" src="__PUBLIC__/static/js/jquery-3.2.1.min.js"></script>
 </head>
 <body class="layui-layout-body">
   
@@ -55,6 +56,8 @@
               <i class="layui-icon layui-icon-screen-full"></i>
             </a>
           </li>
+          <li class="layui-nav-item" ><a href="javascript:toggleTheme()">切换旧版本</a></li>
+
           <li class="layui-nav-item" lay-unselect>
             <a href="javascript:;">
               <cite>登陆用户</cite>
@@ -63,7 +66,7 @@
               <dd><a lay-href="set/user/info.html">基本资料</a></dd>
               <dd><a lay-href="set/user/password.html">修改密码</a></dd>
               <hr>
-              <dd layadmin-event="logout" style="text-align: center;"><a>退出</a></dd>
+              <dd onclick="location.href='{:url('admin/index/loginsite')}'" style="text-align: center;"><a>退出</a></dd>
             </dl>
           </li>
           
@@ -102,6 +105,7 @@
                       {volist name="activity_arr" id="activity"}
                       <dd data-name="list"><a lay-href="{:url($v['action'],'nodeid='.$activity.nodeid)}">{$activity['nodename']|HtmlEncode}</a></dd>
                       {/volist}
+                      <a href="javascript:;" lay-href="{:url($v['action'],'nodeid=code')}" >码库管理</a>
                     </dl>
                   </dd>
                   <?php } elseif($v['chrcode']=="node" && !empty($info_arr)) { $hui = 0; ?>
@@ -117,7 +121,7 @@
                   </dd>
                   <?php } elseif($v['chrcode']!="node" && $v['chrcode']!="activity")  { ?>
                   <dd data-name="console">
-                    <a lay-href="{:url($v['action'])}">{$v['chrname']|HtmlEncode}</a>
+                    <a lay-href="{:url($v['action'],'idsite='.$idsite)}">{$v['chrname']|HtmlEncode}</a>
                   </dd>
                   <?php } ?>
                 {/if}
@@ -164,16 +168,24 @@
       <div class="layadmin-body-shade" layadmin-event="shade"></div>
     </div>
   </div>
-
   <script src="/layuiadmin/layui/layui.js"></script>
   <script>
-  layui.config({
-    base: '/layuiadmin/' //静态资源所在路径
-  }).extend({
-    index: 'lib/index' //主入口模块
-  }).use('index');
+    // 切换主题
+    function toggleTheme(){
+        $.ajax({
+            url: "{:url('Admin/index/toggleTheme','theme=v1')}",
+            type: 'POST',
+            success:function(res){
+                window.parent.location.reload();
+            }
+        })
+    }
+    layui.config({
+      base: '/layuiadmin/' //静态资源所在路径
+    }).extend({
+      index: 'lib/index' //主入口模块
+    }).use('index');
   </script>
-
 </body>
 </html>
 

@@ -1,0 +1,10 @@
+<section class="section" style="padding-top: 0; background: transparent;" id="popup-section">
+    <div class="score-detail-wrap">
+        <div class="inner">
+            <div class="docs-picture">
+                {:replearurl($content)}
+            </div>
+        </div>
+    </div>
+    <div class="popup-close">X</div>
+</section>

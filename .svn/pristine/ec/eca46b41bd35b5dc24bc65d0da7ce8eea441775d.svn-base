@@ -1,0 +1,107 @@
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>产品管理</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/admin.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/public.css" media="all">
+    <script type="text/javascript" src="/layuiadmin/js/jquery-3.3.1.js"></script>
+
+
+</head>
+
+<body>
+<form class="layui-form" action="" lay-filter="component-form-group" method="post" id="form1">
+    <input type="hidden" name="id" value="{$datainfo['id']}">
+    <div class="layui-fluid">
+        <div class="layui-card">
+            <div class="layui-card-header1">修改订单金额</div>
+            <div class="layui-card-body" style="padding: 10px;">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">原订单金额</label>
+                    <div class="layui-input-block">
+                        <span style="color: red;line-height: 38px;">{$datainfo['price']}（元）</span>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label"><span style="color: red">*</span>修改后订单金额</label>
+                    <div class="layui-input-block">
+                        <input type="text" id="new_price" name="new_price" lay-verify="required|newprice" placeholder="请输入修改后订单金额" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item layui-form-text">
+                    <label class="layui-form-label"><span style="color: red">*</span>备注</label>
+                    <div class="layui-input-block">
+                        <textarea name="remark"  lay-verify="required"  class="layui-textarea"></textarea>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="layui-form-item layui-layout-admin">
+            <div class="layui-input-block">
+                <div class="layui-footer" style="left: 0;z-index: 9999;">
+                    <button class="layui-btn" lay-submit="" lay-filter="component-form-demo1">确定修改</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+
+
+<script src="/layuiadmin/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: '/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['index', 'form'], function(){
+        var $ = layui.$
+            ,admin = layui.admin
+            ,element = layui.element
+            ,layer = layui.layer
+            ,form = layui.form;
+        /* 自定义验证规则 */
+        form.verify({
+            newprice: function(value){
+                var price = /^((([1-9]|0)\d{0,6})|0)([.]{1}[0-9]{1,2})?$/; //金额（允许输入0）
+                var new_price = $('#new_price').val();
+                if(!price.test(new_price)){
+                    return "请输入大于等于零的有效金额！";
+                }
+            }
+            ,content: function(value){
+                layedit.sync(editIndex);
+            }
+        });
+
+        /* 监听指定开关 */
+        form.on('switch(component-form-switchTest)', function(data){
+            layer.msg('开关checked：'+ (this.checked ? 'true' : 'false'), {
+                offset: '6px'
+            });
+            layer.tips('温馨提示：请注意开关状态的文字可以随意定义，而不仅仅是ON|OFF', data.othis)
+        });
+
+        /* 监听提交 */
+        form.on('submit(component-form-demo1)', function(data){
+            $("#form1").submit()
+        });
+    });
+    
+</script>
+
+
+
+</body>
+</html>

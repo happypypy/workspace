@@ -1,0 +1,431 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>内容管理</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/admin.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/public.css">
+    <script src="__PUBLIC__/layuiadmin/js/jquery-3.3.1.js"></script>
+
+</head>
+
+<body>
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+
+                <!-- 搜索区域 -->
+
+                <div class="layui-card-body">
+                    <div class="layui-card">
+                        <div class="layui-card-header2">搜索
+                        </div>
+
+
+                            <form class="layui-form" method="post" action="" id="form1">
+                                <div class="layui-form-item">
+                                    <div class="layui-inline" pane="">
+                                        <label class="layui-form-label">产品标签：</label>
+                                        <div class="layui-input-block">
+                                            <input type="checkbox" name="chrtags[]" value="300"  title="测试1" lay-skin="primary"  ></input>
+                                            <input type="checkbox" name="chrtags[]" value="100"  title="活动标签1" lay-skin="primary" checked='' ></input>
+                                            <input type="checkbox" name="chrtags[]" value="200"  title="活动标签2" lay-skin="primary"  ></input>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label"></label>
+                                    </div>
+                                    <div class="layui-inline">
+                                        <input type="submit" value="tijioa">
+                                        <button class="layui-btn layuiadmin-btn-list" lay-submit>
+                                            <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </form >
+                            <script language="JavaScript">
+                                function aaaaaa() {
+                                    $("#form1").submit();
+                                }
+                            </script>
+
+                    </div>
+                        </div>
+                    </div>
+
+                    <table class="layui-hide" id="test-table-toolbar" lay-filter="test-table-toolbar"></table>
+
+                    <script type="text/html" id="test-table-switchTpl">
+                        <!-- 这里的 checked 的状态只是演示 -->
+                        <input type="checkbox" name="sex" lay-skin="switch" lay-text="女|男" lay-filter="test-table-sexDemo"
+                               value="{{ d.id }}" data-json="{{ encodeURIComponent(JSON.stringify(d)) }}"
+                               {{ d.id == 10003 ? 'checked' : '' }}>
+                    </script>
+
+                    <script type="text/html" id="buttonTpl">
+                        {{#  if(d.username=='李清照'){ }}
+                        <div class="layui-btn layui-btn-xs">李清照</div>
+                        {{#  } else { }}
+                        {{d.username}}
+                        {{#  } }}
+                    </script>
+
+                    <script type="xt/html" id="test-table-toolbar-toolbarDemo">
+              <div class="layui-btn-container ov-hd">
+                <div class="info-l fl">内容列表</div>
+                <div class="info-l fr">
+                 <button class="layui-btn layui-btn-sm" type="button" onclick="javascript:CustomOpen('http://www.baidu.com','abc','测试百度','90%','90%')">添加内容</button></div>
+
+            </script>
+
+                    <script type="text/html" id="test-table-toolbar-barDemo">
+                        <div class="test-table-toolbar-barDemo" style="white-space:normal;text-align: left;">
+
+
+                        </div>
+
+                    </script>
+
+                    <div style="overflow: hidden">
+                        <div style="float: left; margin-top: 15px;margin-left: 10px; vertical-align: middle;">
+                            <button class="layui-btn layui-btn-sm" data-type="del">删除</button>
+                        </div>
+                        <div id="laypage" style="text-align: right; margin-right: 15px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="/layuiadmin/layui/layui.js"></script>
+<script language="JavaScript">
+    var layer = layui.layer;
+    function CustomOpen(url, code, showName, w, h) {
+        layer.open({
+            type: 2,
+            title: showName,
+            shade: false,
+            maxmin: true,
+            area: [w, h],
+            content: url
+        });
+    }
+
+
+</script>
+
+<script>
+    layui.config({
+        base: '/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['index', 'table', 'laydate', 'form'], function () {
+        var admin = layui.admin
+            , laypage = layui.laypage
+            , table = layui.table
+            , form = layui.form;
+
+        table.render({
+            elem: '#test-table-toolbar'
+            , toolbar: '#test-table-toolbar-toolbarDemo'
+            , title: '内容列表'
+            , defaultToolbar: false
+            , cols: [[
+                { type: 'checkbox' }
+                , { field: 'contendid', title: '内容ID', width: 80, unresize: true }
+                {foreach name="modelfield" item="vo" key="k"}
+                {if condition="$vo.isdisplayonlist eq 1"}
+                ,{field: "{$vo.fieldname}",title:"{$vo.fieldalias}",unresize: true,{if condition="($vo.fieldname eq 'title')"}{elseif condition="($vo.fieldname eq 'hits') OR  ($vo.fieldname eq 'idorder')"}width:80{elseif condition="$vo.fieldname eq 'sys00003'" /}width:200{else /}width:120{/if}}
+                {/if}
+                {/foreach}
+            ]]
+
+            , data: [
+                    {volist name="list" id="vo"}
+                    {
+                    "contendid": "{$vo['contentid']}"
+                    {foreach name="modelfield" item="vl" key="k"}
+                    {if condition="$vl.isdisplayonlist eq 1"}
+                    ,"{$vl.fieldname}":"{$vo[strtolower($vl['fieldname'])]}"
+                    {/if}
+                        {/foreach}
+                        },
+                        {/volist}
+            ]
+        });
+
+        //总页数大于页码总数
+        laypage.render({
+            elem: 'laypage'
+            ,count: {:$page->count}
+            ,curr: {:$page->iPage}
+            ,limit: {:$page->pageSize}
+            ,layout: ['count', 'prev', 'page', 'next', 'skip']
+            ,jump: function(obj){
+            if(obj.curr!= "{:$page->iPage}"){
+                var jumpUrl = "{:$page->url('currentPage')}";
+                jumpUrl = jumpUrl.replace("currentPage",obj.curr);
+                location.href = jumpUrl;
+            }
+        }
+        });
+
+        //头工具栏事件
+        table.on('toolbar(test-table-toolbar)', function (obj) {
+            var checkStatus = table.checkStatus(obj.config.id);
+            switch (obj.event) {
+                case 'getCheckData':
+                    var data = checkStatus.data;
+                    layer.alert(JSON.stringify(data));
+                    break;
+                case 'getCheckLength':
+                    var data = checkStatus.data;
+                    layer.msg('选中了：' + data.length + ' 个');
+                    break;
+                case 'isAll':
+                    layer.msg(checkStatus.isAll ? '全选' : '未全选');
+                    break;
+            };
+        });
+
+        //监听行工具事件
+        table.on('tool(test-table-toolbar)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'del') {
+                layer.confirm('真的删除行么', function (index) {
+                    obj.del();
+                    layer.close(index);
+                });
+            } else if (obj.event === 'edit') {
+                layer.prompt({
+                    formType: 2
+                    , value: data.email
+                }, function (value, index) {
+                    obj.update({
+                        email: value
+                    });
+                    layer.close(index);
+                });
+            }
+        });
+
+        //监听性别操作
+        table.on('switch(test-table-sexDemo)', function (obj) {
+            var json = JSON.parse(decodeURIComponent($(this).data('json')));
+            layer.tips(this.value + ' ' + this.name + '：' + obj.elem.checked, obj.othis);
+
+            json = table.clearCacheKey(json);
+            console.log(json); //当前行数据
+
+        });
+
+        // 监听时间范围
+        form.on('radio(timeRange)', function (data) {
+            if (data.value == 4) {
+                $('#comingTimeDiv').removeClass('layui-hide');
+            } else {
+                $('#comingTimeDiv').addClass('layui-hide');
+            }
+        });
+
+        var laydate = layui.laydate;
+
+        //示例代码
+
+        //举办开始日期
+        var showStart = laydate.render({
+            elem: '#show-laydate-start'
+            , min: 0
+            , done: function (value, date) {
+                //更新结束日期的最小日期
+                showEnd.config.min = lay.extend({}, date, {
+                    month: date.month - 1
+                });
+                //自动弹出结束日期的选择器
+                showEnd.config.elem[0].focus();
+            }
+        });
+
+        //发布开始日期
+        var showEnd = laydate.render({
+            elem: '#show-laydate-end'
+            , min: 0
+            , done: function (value, date) {
+                //更新开始日期的最大日期
+                showStart.config.max = lay.extend({}, date, {
+                    month: date.month - 1
+                });
+            }
+        });
+
+        //发布开始日期
+        var publishStart = laydate.render({
+            elem: '#publish-laydate-start'
+            , min: 0
+            , done: function (value, date) {
+                //更新结束日期的最小日期
+                publishEnd.config.min = lay.extend({}, date, {
+                    month: date.month - 1
+                });
+
+                //自动弹出结束日期的选择器
+                publishEnd.config.elem[0].focus();
+            }
+        });
+
+        //发布开始日期
+
+        var publishEnd = laydate.render({
+            elem: '#publish-laydate-end'
+            , min: 0
+            , done: function (value, date) {
+                //更新开始日期的最大日期
+                publishStart.config.max = lay.extend({}, date, {
+                    month: date.month - 1
+                });
+            }
+        });
+
+        //来访开始日期
+        var comingStart = laydate.render({
+            elem: '#coming-laydate-start'
+            , min: 0
+            , done: function (value, date) {
+                //更新结束日期的最小日期
+                comingEnd.config.min = lay.extend({}, date, {
+                    month: date.month - 1
+                });
+
+                //自动弹出结束日期的选择器
+                comingEnd.config.elem[0].focus();
+            }
+        });
+
+        //来访结束日期
+
+        var comingEnd = laydate.render({
+            elem: '#coming-laydate-end'
+            , min: 0
+            , done: function (value, date) {
+                //更新开始日期的最大日期
+                comingStart.config.max = lay.extend({}, date, {
+                    month: date.month - 1
+                });
+            }
+        });
+    })
+
+    function del_recovery(value) {
+        if (!confirm('确定从回收站中恢复吗？'))
+        { return false;}
+        var b = $(".checked_one");
+        var s = '';
+        if(value<1)
+        {
+            for (var i = 0; i < b.length; i++) {
+                if (b[i].checked) {
+                    s += b[i].value + ',';
+                }
+            }
+            s = s.substr(0, s.length - 1);
+        }
+        else
+        {
+            s=value;
+        }
+
+        $.ajax({
+            url:"{:url('node/recoverychecked')}",
+            data:"id="+s,
+            type:"post",
+            dataType:"json",
+            success:function(msg) {
+                if (msg == 1) {
+                    layer.alert('从回收站中恢复成功', {icon: 1});
+                    $(".checked_one").attr("checked", false);
+                    location.reload();
+                }
+                else if(msg==-1){
+                    layer.alert('你没有恢复权限', {icon: 4});
+                } else {
+                    layer.alert('从回收站中恢复失败', {icon: 2});
+                    //location.reload();
+                }
+            }
+        })
+    }
+
+    //删除选中
+    function del_checked(value) {
+        if (confirm('确定删除吗？'))
+        { }
+        else{return false;}
+        var b = $(".checked_one");
+        var s = '';
+        if(value<1)
+        {
+            for (var i = 0; i < b.length; i++) {
+                if (b[i].checked) {
+                    s += b[i].value + ',';
+                }
+            }
+            s = s.substr(0, s.length - 1);
+        }
+        else
+        {
+            s=value;
+        }
+
+        $.ajax({
+            url:"{:url('node/delchecked')}",
+            data:"id="+s+"&nodeid={$nodeid}",
+            type:"post",
+            dataType:"json",
+            success:function(msg) {
+                if (msg == 1) {
+                    layer.alert('删除成功', {icon: 1});
+                    $(".checked_one").attr("checked", false);
+                    location.reload();
+                }
+                else if(msg==-1){
+                    layer.alert('你没有删除权限', {icon: 4});
+                } else {
+                    layer.alert('删除失败', {icon: 2});
+                    //location.reload();
+                }
+            }
+        })
+    }
+
+    function show_rqcode(o,id)
+    {
+        var obj=$("#rqcode");
+        obj.html("<img width='150' id='img_rqcode' src='/admin/Qrcode/contenturl/sitecode/{$sitecode}/id/"+id+"' />");
+        var yy=event.clientY-150;
+        if(yy<10) {yy=10};
+
+        $("#rqcode").css("top",yy+"px").css("left",event.clientX-300+"px");
+        obj.show();
+    }
+    function  close_rqcode() {
+        var obj=$("#rqcode");
+        obj.html("");
+        obj.hide();
+    }
+</script>
+</body>
+
+</html>

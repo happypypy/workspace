@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="generator" content="HTML Tidy for HTML5 for Windows version 5.2.0" />
+    <meta charset="utf-8" />
+    <title>无标题文档</title>
+    <meta name="renderer" content="webkit" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="stylesheet" href="__PUBLIC__/layuiadmin/layui/css/layui.css" media="all" />
+    <link rel="stylesheet" href="__PUBLIC__/layuiadmin/style/admin.css" media="all" />
+    <link rel="stylesheet" href="__PUBLIC__/layuiadmin/style/public.css" media="all" />
+    <script src="__PUBLIC__/layuiadmin/layui/layui.js"></script>
+    <script src="__PUBLIC__/layuiadmin/js/public.js"></script>
+
+    <style>
+        .layui-form-item{
+            margin-bottom: 5px;
+        }
+        .layui-table-cell{
+            height: auto;
+        }
+        .lastcell>a{
+            text-decoration: underline;
+            color: #333;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+    </style>
+    </head>
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <!-- 搜索区域 -->
+                <div class="layui-card-body">
+                    <div class="layui-card-header2">{:lang('search')}</div>
+                    <form class="layui-form layui-bd layui-mb15" action="" lay-filter="component-form-group">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">{:lang('account')}：</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="chraccount" autocomplete="off" placeholder="请输入{:lang('account')}" value="{$data.chraccount ?: ''}" class="layui-input" />
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">{:lang('account name')}：</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="chrname" autocomplete="off" placeholder="请输入{:lang('account name')}" value="{$data.chrname ?: ''}" class="layui-input" />
+                            </div>
+                            <div class="layui-inline">
+                                <button class="layui-btn layuiadmin-btn-list" lay-submit lay-filter="LAY-app-contlist-search">
+                                    <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <table class="layui-hide" id="manage-table" lay-filter="manage-table"></table>
+
+                    <div style="overflow: hidden">
+                        <div style="float: left; margin-top: 15px;margin-left: 10px; vertical-align: middle;">
+                            <button class="layui-btn layui-btn-sm" id="batchDel">删除</button>
+                        </div>
+                        <div id="laypage" style="text-align: right; margin-right: 15px;"></div>
+                    </div>
+                </div>
+
+                <!-- 工具栏按钮 -->
+                <script type="text/html" id="table-toolbar">
+                    <div class="layui-btn-container">
+                        <div style="font-size:14px;font-weight:bold">会员列表
+                            <a class="layui-btn layui-btn-sm fr" href="javascript:CustomOpen('{:url('accountsite/accountdeal','&action=add','')}', 'account','{:lang('account add')}', 540, 630)">{:lang('add account')}</a>
+                        </div>
+                    </div>
+                </script>
+                <!-- 行工具按钮 -->
+                <script type="text/html" id="table-operation">
+                    <div class="layui-btn-container">
+                        <a class="layui-btn layui-btn-sm" href="javascript:CustomOpen('{:url('admin/accountsite/accountdeal','action=view','','')}/id/{{d.idaccount}}', 'account','{:lang('account check')}', 540, 630)">{:lang('check')}</a>
+
+                        <?php if($cms->CheckPurview('accountmanage','edit')){ ?>
+                        <a class="layui-btn layui-btn-sm" href="javascript:CustomOpen('{:url('accountsite/accountdeal','action=edit','','')}/id/{{d.idaccount}}', 'account','{:lang('account editor')}', 540, 630)">{:lang('revise')}</a>
+                        <?php } ?>
+
+                        <?php if($cms->CheckPurview('accountmanage','roleset')){ ?>
+                        <a class="layui-btn layui-btn-sm" href="javascript:CustomOpen('{:url('accountsite/roleset','','')}/id/{{d.idaccount}}', 'account','{:lang('choice role')}', 540, 630)">{:lang('role')}</a>
+                        <?php } ?>
+
+                        <?php if($cms->CheckPurview('accountmanage','del')){ ?>
+                        <a class="layui-btn layui-btn-sm" href="javascript:delData({{d.idaccount}},'{{d.chraccount}}')">删除</a> <?php } ?>
+                    </div>
+                </script>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+layui.config({
+    base: '/layuiadmin/' //静态资源所在路径
+}).extend({
+    index: 'lib/index' //主入口模块
+}).use(['index', 'table', 'jquery'], function(){
+    var admin = layui.admin
+    ,laypage = layui.laypage
+    ,table = layui.table
+    ,$ = layui.$;
+
+    table.render({
+        elem: '#manage-table'
+        ,toolbar: '#table-toolbar'
+        ,defaultToolbar: []
+        ,title: '用户数据表'
+        ,cols: [[
+        {type: 'checkbox'}
+        ,{field:'chraccount', title:'{:lang('account')}', width:120, unresize: true}
+        ,{field: 'chrname', title: '姓名', width: 120, unresize: true }
+        ,{field: 'mobile', title: '手机号码', width: 120, unresize: true }
+        ,{field: 'rolename', title: '角色', minWidth: 120, unresize: true}
+        ,{field: 'status', title: '{:lang('status')}', width: 80, unresize: true}
+        ,{field: 'chrremark', title: '{:lang('describe')}', width: 80, unresize: true}
+        ,{field: 'nickname', title: '微信昵称', width: 120, unresize: true}
+        ,{title:'操作', toolbar: '#table-operation', width:230}
+        ]]
+        ,data: [
+            {volist name="account" id="vo"}
+            {
+                idaccount: '{$vo.idaccount}',
+                chraccount: '{$vo.chraccount}',
+                chrname: '{$vo.chrname}',
+                mobile: '{$vo.mobile}',
+                rolename: '{$vo.rolename}',
+                status: '{if condition="$vo.intflag eq 1"}{:lang('not locked')}{else /}<span style="color: red;"> {:lang('lock')}</span>{/if}',
+                chrremark: '{$vo.chrremark}',
+                nickname: '{$vo.nickname}',
+            },
+            {/volist}
+        ]
+        ,limit: {:$page->pageSize}
+    });
+
+    //总页数大于页码总数
+    laypage.render({
+        elem: 'laypage'
+        ,count: {:$page->count}
+        ,curr: {:$page->iPage}
+        ,limit: {:$page->pageSize}
+        ,layout: ['count', 'prev', 'page', 'next', 'skip']
+        ,jump: function(obj){
+            if(obj.curr!= "{:$page->iPage}"){
+                var jumpUrl = "{:$page->url('currentPage')}";
+                jumpUrl = jumpUrl.replace("currentPage",obj.curr);
+                location.href = jumpUrl;
+            }
+        }
+    });
+
+    // 批量删除
+    $('#batchDel').click(function(){
+        var checkStatus = table.checkStatus('manage-table')
+        ,checkData = checkStatus.data; //得到选中的数据
+
+        if(checkData.length === 0){
+          return layer.msg('请选择要删除的数据');
+        }
+      var ids = '';
+      // 拼接ID
+      checkData.forEach(function(item){
+          ids += item.id + ',';
+      });
+      ids = ids.substr(0, ids.length - 1);
+      delData(ids,'');
+    })
+    
+    // 根据ID删除数据
+    window.delData = function (ids,remark) {
+        var msg = '您确定要删除选定的记录吗？';
+        if(typeof ids === 'number'){
+            msg = '您确定要删除“'+remark+'”吗？';
+        }
+        layer.confirm(msg, function(index) {
+            // 删除数据
+            $.ajax({
+                url: "{:url('account/del')}",
+                data: "id=" + ids,
+                type: "post",
+                dataType: "json",
+                success: function (obj) {
+                    if (obj.msg == '删除成功') {
+                        layer.msg('已删除');
+                        location.reload();
+                    } else {
+                        layer.alert('删除失败', { icon: 2 });
+                    }
+                }
+            });
+        });
+    }
+});
+</script>
+</html>

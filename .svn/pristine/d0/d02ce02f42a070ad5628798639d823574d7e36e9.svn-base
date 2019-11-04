@@ -1,0 +1,5 @@
+<?php
+$url=url('admin/node/contentlist',array('nodeid'=>$nodeid));
+header("location: ".$url);
+exit;
+?>

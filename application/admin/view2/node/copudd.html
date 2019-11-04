@@ -1,0 +1,365 @@
+function getControl_v2($v,$value=null,$prefix=null)
+{
+//主题的选择
+$theme = cache('AccountID_'.session("AccountID").'_theme') ? cache('AccountID_'.session("AccountID").'_theme') : 'v1';
+//选择语言
+$arr_lang = config("admin_lang_list");
+//前台调用配置语言
+if(empty($arr_lang)){
+$arr_lang = ['cn'=>'简体中文'];
+}
+$indexTmp=0;
+$langIndex=0;
+foreach ($arr_lang as $key=>$vo){
+if($key."_"==$prefix) {
+$langIndex=$indexTmp;
+break;
+}
+$indexTmp++;
+}
+
+//给字段加前缀，获取不同语言的字段
+if($prefix == "cn_"){
+$prefix = '';
+}
+
+//1单行文本,2多行文本,3编辑器,4多选列表框,5复选框,6单选按钮,7下拉列表,8数字型,9日期,10图片,11多图片,12文件,13多文件,15相关内容,16相关栏目,17相关栏目(多选),18只读文本,19弹窗分页(单选),20弹窗分页(多选),21相关产品,22日期和时间,23图片裁剪
+$ControlType=intval($v['fieldtype']);
+
+$style=intval($v['txtwidth'])>0?"width:".intval($v['txtwidth'])."px;":"";
+$style=$style.(intval($v['txtheight'])>0?"height:".intval($v['txtheight'])."px;":"");
+if(array_key_exists('enablenull',$v)){
+$is_null = $v['enablenull'];
+}else{
+$is_null = '';
+}
+if(array_key_exists('isonly',$v)){
+$is_only = $v['isonly'];
+}else{
+$is_only = '';
+}
+
+if($style!="")
+$style="style=\"".$style."\"";
+$required='';
+if(!$is_null)
+$required="lay-verify=\"required\"";
+switch($ControlType)
+{
+case 1:
+$arr=getSettingData1($v['settings']);
+if($theme == 'v2'){
+if($v['txttype']==2){
+return "<input sign=\"$arr[0]\" is_only=\"$is_only\" ".$required." reg=\"$arr[1]\" tip=\"$arr[2]\" type=\"password\" id=\"".$prefix.$v['fieldname']."\" name=\"".$prefix.$v['fieldname']."\" id=\"".$prefix.$v['fieldname']."\" class=\"layui-input\" "." value=\"".$value."\">";
+}else{
+return "<input reg=\"".$arr[1]."\" tip=\"".$arr[2]."\" sign=\"".$arr[0]."\" is_only=\"$is_only\" ".$required." type=\"text\" id=\"".$prefix.$v['fieldname']."\" name=\"".$prefix.$v['fieldname']."\" id=\"".$prefix.$v['fieldname']."\" class=\"layui-input\" "." value=\"".$value."\">";
+}
+}else{
+if($v['txttype']==2){
+return "<input sign=\"$arr[0]\" is_only=\"$is_only\" is_null=\"".$is_null."\"  reg=\"$arr[1]\" tip=\"$arr[2]\" type=\"password\" id=\"".$prefix.$v['fieldname']."\" name=\"".$prefix.$v['fieldname']."\" id=\"".$prefix.$v['fieldname']."\" class=\"form-control oa_input-200 input\" ".$style." value=\"".$value."\">";
+}else{
+return "<input reg=\"".$arr[1]."\" tip=\"".$arr[2]."\" sign=\"".$arr[0]."\" is_only=\"$is_only\" is_null=\"".$is_null."\" type=\"text\" id=\"".$prefix.$v['fieldname']."\" name=\"".$prefix.$v['fieldname']."\" id=\"".$prefix.$v['fieldname']."\" class=\"form-control oa_input-200 input\" ".$style." value=\"".$value."\">";
+}
+}
+
+
+case 2:
+if($theme=='v2'){
+return "<textarea id=\"".$prefix.$v['fieldname']."\" name=\"".$prefix.$v['fieldname']."\" is_null=\"$is_null\" cols=\"50\" rows=\"3\"  class=\"layui-textarea\"  ".$style.">".$value."</textarea>";
+}else{
+return "<textarea id=\"".$prefix.$v['fieldname']."\" name=\"".$prefix.$v['fieldname']."\" is_null=\"$is_null\" cols=\"50\" rows=\"3\"  class=\"form-control input oa_input-200\"  ".$style.">".$value."</textarea>";
+}
+case 3:
+//print_r($value);
+/*  <textarea id="editor_id" name="content" style="width:700px;height:300px;">
+               &lt;strong&gt;请输入内容&lt;/strong&gt;
+               </textarea>*/
+//$strTmp="<script>var editor".$v['fieldname'].";$(function(){editor".$v['fieldname']." = new UE.ui.Editor(options);editor".$v['fieldname'].".render(\"post_".$v['fieldname']."\");});</script>";
+//return "<div style='width:100%'><textarea class=\"span12 ckeditor\" id=\"post_".$v['fieldname']."\" name=\"".$v['fieldname']."\">".$value."</textarea></div>\r\n".$strTmp;
+$strTmp="<script>var editor".$prefix.$v['fieldname'].";$(function(){editor".$prefix.$v['fieldname']." = new UE.ui.Editor(options);editor".$prefix.$v['fieldname'].".render(\"post_".$prefix.$v['fieldname']."\");});</script>";
+return "<div ><textarea  $style class=\"span12 ckeditor\" id=\"post_".$prefix.$v['fieldname']."\" is_null=\"$is_null\" name=\"".$prefix.$v['fieldname']."\">".$value."</textarea></div>\r\n".$strTmp;
+case 4://多选列表框
+$strTmp="<select is_null=\"$is_null\" class=\"input-sm input\" id=\"".$prefix.$v['fieldname']."\" name=\"".$prefix.$v['fieldname'].'[]'."\" multiple=\"multiple\">";
+$arr=getSettingData($v['settings']);
+foreach($arr as $vo) {
+if(count($vo)>1) {
+if ((is_array($value) && in_array($vo[1], $value)) || (is_string($value) && $value == $vo[1])) {
+if (is_array($vo[0])) {
+$strTmp = $strTmp . "<option  value=\"" . $vo[1] . "\"  " . "selected" . ">" . getArrValue($vo[0], $langIndex) . "</option>";
+} else {
+$strTmp = $strTmp . "<option  value=\"" . $vo[1] . "\"  " . "selected" . ">" . $vo[0] . "</option>";
+}
+} else {
+if (is_array($vo[0])) {
+$strTmp = $strTmp . "<option  value=\"" . $vo[1] . "\"  " . ">" . getArrValue($vo[0], $langIndex) . "</option>";
+} else {
+$strTmp = $strTmp . "<option  value=\"" . $vo[1] . "\"  " . ">" . $vo[0] . "</option>";
+}
+}
+}
+}
+return $strTmp."</select>";
+case 5://复选框
+$value=empty($value)?'':trim($value,"|");
+if(is_string($value) && strpos($value,"|"))
+{
+$value=explode("|",$value);
+}
+
+$strTmp = "";
+$arr=getSettingData($v['settings']);
+if($theme == 'v2'){
+foreach ($arr as $key=>$vo){
+if((is_array($value) && in_array($vo[1],$value)) || (is_string($value) && $value==$vo[1])) {
+if (is_array($vo[0])) {
+$strTmp = $strTmp . "<input lay-skin=\"primary\" title=\"".getArrValue($vo[0], $langIndex)."\" type=\"checkbox\" name=\"" . $prefix . $v['fieldname'] . '[]' . "\"  value=\"" . $vo[1] . "\" checked></input>"."&nbsp;&nbsp;&nbsp;";
+} else {
+$strTmp = $strTmp . "<input title=\"$vo[0]\" lay-skin=\"primary\" type=\"checkbox\" name=\"" . $prefix . $v['fieldname'] . '[]' . "\"  value=\"" . $vo[1] . "\" checked></input>"  . "&nbsp;&nbsp;&nbsp;";
+}
+}else{
+if (is_array($vo[0])) {
+$strTmp = $strTmp . "<input lay-skin=\"primary\" title=\"".getArrValue($vo[0], $langIndex)."\" type=\"checkbox\" name=\"" . $prefix . $v['fieldname'] . '[]' . "\"  value=\"" . $vo[1] . "\" >" . getArrValue($vo[0], $langIndex) . "&nbsp;&nbsp;&nbsp;";
+} else {
+$strTmp = $strTmp . "<input lay-skin=\"primary\" title=\"$vo[0]\" type=\"checkbox\" name=\"" . $prefix . $v['fieldname'] . '[]' . "\"  value=\"" . $vo[1] . "\" >" . "&nbsp;&nbsp;&nbsp;";
+}
+}
+}
+}else{
+foreach ($arr as $key=>$vo){
+if((is_array($value) && in_array($vo[1],$value)) || (is_string($value) && $value==$vo[1])) {
+if (is_array($vo[0])) {
+$strTmp = $strTmp . "<input class=\"input\" lay-skin=\"primary\" type=\"checkbox\" name=\"" . $prefix . $v['fieldname'] . '[]' . "\"  value=\"" . $vo[1] . "\" checked>" . getArrValue($vo[0], $langIndex) . "&nbsp;&nbsp;&nbsp;";
+} else {
+$strTmp = $strTmp . "<input class=\"input\" lay-skin=\"primary\" type=\"checkbox\" name=\"" . $prefix . $v['fieldname'] . '[]' . "\"  value=\"" . $vo[1] . "\" checked>" . $vo[0] . "&nbsp;&nbsp;&nbsp;";
+}
+}else{
+if (is_array($vo[0])) {
+$strTmp = $strTmp . "<input class=\"input\" lay-skin=\"primary\" type=\"checkbox\" name=\"" . $prefix . $v['fieldname'] . '[]' . "\"  value=\"" . $vo[1] . "\" >" . getArrValue($vo[0], $langIndex) . "&nbsp;&nbsp;&nbsp;";
+} else {
+$strTmp = $strTmp . "<input class=\"input\" lay-skin=\"primary\" type=\"checkbox\" name=\"" . $prefix . $v['fieldname'] . '[]' . "\"  value=\"" . $vo[1] . "\" >" . $vo[0] . "&nbsp;&nbsp;&nbsp;";
+}
+}
+}
+}
+return $strTmp;
+
+case 6://单选按钮
+$strTmp="";
+$arr=getSettingData($v['settings']);
+if($theme=='v2'){
+foreach ($arr as $vo) {
+if(is_array($vo[0])) {
+$strTmp=$strTmp."<input class=\"input\" title=\"getArrValue($vo[0], $langIndex)\" is_null=\"$is_null\" type=\"radio\" name=\"".$prefix.$v['fieldname']."\" value=\"".$vo[1]."\" ".($value==$vo[1]?"checked=\"checked\"":"")."> " ."&nbsp;&nbsp;&nbsp;&nbsp;" ;
+}else{
+$strTmp=$strTmp."<input class=\"input\" is_null=\"$is_null\" title=\"$vo[0] \" type=\"radio\" name=\"".$prefix.$v['fieldname']."\" value=\"".$vo[1]."\" ".($value==$vo[1]?"checked=\"checked\"":"")."> " ."&nbsp;&nbsp;&nbsp;&nbsp;" ;
+}
+}
+}else{
+foreach ($arr as $vo) {
+if(is_array($vo[0])) {
+$strTmp=$strTmp."<input class=\"input\" is_null=\"$is_null\" type=\"radio\" name=\"".$prefix.$v['fieldname']."\" value=\"".$vo[1]."\" ".($value==$vo[1]?"checked=\"checked\"":"")."> " .getArrValue($vo[0], $langIndex)."&nbsp;&nbsp;&nbsp;&nbsp;" ;
+}else{
+$strTmp=$strTmp."<input class=\"input\" is_null=\"$is_null\" type=\"radio\" name=\"".$prefix.$v['fieldname']."\" value=\"".$vo[1]."\" ".($value==$vo[1]?"checked=\"checked\"":"")."> " .$vo[0]."&nbsp;&nbsp;&nbsp;&nbsp;" ;
+}
+}
+}
+
+return $strTmp;
+case 7://下拉列表
+if(array_key_exists('childsetting',$v)){
+$arr1 = $v['childsetting'];
+}
+if(!empty($arr1) && $arr1[0]==1){
+$strTmp="<select $style id=\"".$prefix.$v['fieldname']."\" onchange=\"".$arr1[3]."\" is_null=\"$is_null\" class=\"input-sm\" id=\"".$prefix.$v['fieldname']."\" name=\"".$prefix.$v['fieldname']."\" >";
+    }else{
+    $strTmp="<select $style id=\"".$prefix.$v['fieldname']."\" is_null=\"$is_null\" class=\"input-sm\"  name=\"".$prefix.$v['fieldname']."\" >";
+        }
+        $strTmp = $strTmp . "<option  value=\"\">请选择</option>";
+        $arr=getSettingData($v['settings']);
+        if(count($arr)>0) {
+        foreach ($arr as $vo) {
+        if( count($vo)>1) {
+        if (is_array($vo[0])) {
+        $strTmp = $strTmp . "<option  value=\"" . $vo[1] . "\"  " . ($value == $vo[1] ? "selected=\"selected\"" : "") . ">" . getArrValue($vo[0], $langIndex) . "</option>";
+        } else {
+        $strTmp = $strTmp . "<option  value=\"" . $vo[1] . "\" " . ($value == $vo[1] ? "selected=\"selected\"" : "") . ">" . $vo[0] . "</option>";
+        }
+        }
+        }
+        }
+        return $strTmp."</select>";
+    case 8://数字型
+
+    if($theme == 'v2'){
+    return "<input $style sign=\"6\" class=\"layui-input layui-input-inline \" is_null=\"$is_null\" type=\"number\" id=\"".$prefix.$v['fieldname']."\" name=\"".$v['fieldname']."\" value=\"".$value."\">";
+    }else{
+    return "<input $style sign=\"6\" class=\"form-control oa_input-200 input\" is_null=\"$is_null\" type=\"number\" id=\"".$prefix.$v['fieldname']."\" name=\"".$v['fieldname']."\" value=\"".$value."\">";
+    }
+
+    /*$strTmp="onkeyup=\"this.value=this.value.replace(/[^\d]/g,'')\" onpaste=\"this.value=this.value.replace(/[^\d]/g,'')\"";
+    return "<input type=\"text\" name=\"".$v['fieldname']."\" ".$strTmp ." class=\"form-control\" ".$style." value=\"".$value."\">";*/
+    case 9://日期
+    if($theme=="v2"){
+    return "<input type=\"text\" is_null=\"$is_null\" id=\"".$prefix.$v['fieldname']."\" name=\"".$v['fieldname']."\" class=\"layui-input layui-input-inline\" ".$style." value=\"".$value."\">";
+    }else{
+    return "<div style=\"width:250px\" class=\"input-prepend input-group\">"."<span class=\"add-on input-group-addon\">"."<i class=\"glyphicon glyphicon-calendar fa fa-calendar\">"."</i>"."</span>"
+    ."<input type=\"text\" is_null=\"$is_null\" id=\"".$prefix.$v['fieldname']."\" name=\"".$v['fieldname']."\" class=\"form-control\" ".$style." value=\"".$value."\">". "</div>"
+    ."<script language='JavaScript'>seltime(\"".$prefix.$v['fieldname']."\",\"YYYY-MM-DD\")</script>";
+    }
+
+
+    case 22://时间日期
+    $strTmp="<div  style=\"width:250px\" class=\"input-prepend input-group\">"."<span class=\"add-on input-group-addon\">"."<i class=\"glyphicon glyphicon-calendar fa fa-calendar\">"."</i>"."</span>";
+    $strTmp=$strTmp."<input type=\"text\" is_null=\"$is_null\" id=\"".$prefix.$v['fieldname']."\" name=\"".$v['fieldname']."\" class=\"form-control\" ".$style." value=\"".$value."\">";
+    $strTmp=$strTmp."</div>"
+    ."<script language='JavaScript'>seltime(\"".$prefix.$v['fieldname']."\",\"YYYY-MM-DD HH:mm:ss\")</script>";
+    return $strTmp;
+    case 10://单图片
+    //因为要支持图片截图功能，更换之前的单图片上传代码。
+    return
+    "<input onclick=\"GetUploadify(1,'".$prefix.$v['fieldname']."','admin','undefined','*.jpg;*.jpeg;*.png;*.gif;*.jpeg;');\" type=\"button\" value=\"上传单图片\"/>".
+    "<input $style type=\"text\" is_null=\"$is_null\" value=\"".$value."\" id=\"".$prefix.$v['fieldname']."\" name=\"".$v['fieldname']."\" class=\"form-control large\" readonly=\"readonly\"  style=\"width:200px;display:initial;\"/>"
+    ;
+    case 11://多图片
+    if(empty($value)){
+    return "<div class=\"col-sm-10\">".
+        "<input onclick=\"GetUploadify(5,'".$v['fieldname']."','','undefined','*.jpg;*.jpeg;*.png;*.gif;*.jpeg;');\" type=\"button\" value=\"上传多图片\" name=\"".$prefix.$v['fieldname']."[]\"/>".
+        "<div id=".$prefix.$v['fieldname']." />".
+        "</div>";
+    }else{
+    $temp = '';
+    if(is_array($value)){
+    for($i=0;$i<count($value);$i++){
+    $temp.= "<div class='div'>"."<input id=\"".$prefix.$v['fieldname']."\" name=\"".$v['fieldname']."[]\" type=text value=\"".$value[$i]."\">"."<a href=\"#none\">删除</a>"."</div>";
+    }
+    }else{
+    $temp.= "<div class='div'>"."<input id=\"".$prefix.$v['fieldname']."\" name=\"".$v['fieldname']."[]\" type=text value=\"".$value."\">"."<a href=\"#none\" href=\"\">删除</a>"."</div>";
+    }
+
+    return "<div class=\"col-sm-10\">".
+        "<input onclick=\"GetUploadify(5,'".$v['fieldname']."','','','*.jpg;*.jpeg;*.png;*.gif;');\" type=\"button\" value=\"上传多图片\"/>".
+        "<div id=".$v['fieldname'].">".
+            $temp."</div>"."</div>";
+    }
+    case 12://单文件
+    return "<div class=\"col-sm-10\">".
+        "<input onclick=\"GetUploadify(1,'".$v['fieldname']."','','');\" type=\"button\" value=\"上传单文件\"/>".
+        "<input type=\"text\" is_null=\"$is_null\" value=\"".$value."\"  name=\"".$v['fieldname']."\" id=\"".$v['fieldname']."\" class=\"form-control large\" readonly=\"readonly\"  style=\"width:500px;display:initial;\"/>".
+        "</div>";
+    case 13://多文件
+    if(empty($value)){
+    return "<div class=\"col-sm-10\">".
+        "<input onclick=\"GetUploadify(5,'".$v['fieldname']."','','','*.txt;*.exe;*.docx;*.jpg;');\" type=\"button\" value=\"上传多文件\"/>".
+        "<div id=\"".$v['fieldname']."\" />".
+        "</div>";
+    }else{
+    $temp = '';
+    if(is_array($value)){
+    foreach($value as $key=>$val){
+    $temp.= "<div class='div'>"."<input name=\"".$v['fieldname']."[]\" type=text value=\"".$val."\">"."<a href=\"#none\">删除</a>"."</div>";
+    }
+    }else{
+    $temp.= "<div class='div'>"."<input name=\"".$v['fieldname']."[]\" type=text value=\"".$value."\">"."<a href=\"#none\">删除</a>"."</div>";
+    }
+
+    return "<div>".
+        "<input onclick=\"GetUploadify(5,'".$v['fieldname']."','','','*.txt;*.exe;*.docx;*.jpg;');\" type=\"button\" value=\"上传多文件\"/>".
+        "<div id=\"".$v['fieldname']."\">".
+            $temp."</div>"."</div>";
+    }
+    case 14:
+    return "<span>".$value."</span>";
+    case 15://相关内容
+    $strTmp="<select class=\"input-sm input\" name=\"".$v['fieldname']."\">";
+    $arr=getContent();
+    foreach ($arr as $key =>$vo){
+    $strTmp = $strTmp."<option value=\"".$vo['content']."\" >".$vo['content']."</option>";
+    }
+    return $strTmp."</select>";
+case 16://相关栏目
+$strTmp="<select is_null=\"$is_null\" class=\"input-sm input\" name=\"".$v['fieldname']."\">";
+$arr=getNode();
+if(empty($value)){
+foreach ($arr AS $key => $vo)
+{
+$strTmp=$strTmp."<option  value=\"".$vo['node_id']."\" >".$vo['nodename']."</option>";
+}
+return $strTmp."</select>";
+}else{
+foreach ($arr AS $key => $vo)
+{
+if($vo['node_id']==$value){
+$strTmp=$strTmp."<option  value=\"".$vo['node_id']."\" selected=\"selected\" >".$vo['nodename']."</option>";
+}else{
+$strTmp=$strTmp."<option  value=\"".$vo['node_id']."\" >".$vo['nodename']."</option>";
+}
+}
+return $strTmp."</select>";
+}
+
+case 17://相关栏目多选
+$arr=getNode();
+$strTmp="<select is_null=\"$is_null\" class=\"input-sm input\" name=\"".$v['fieldname']."[]\" size=\"5\" multiple=\"multiple\" >";
+if (empty($value)){
+foreach ($arr AS $key => $vo)
+{
+$strTmp=$strTmp."<option  value=\"".$vo['node_id']."\" >".$vo['nodename']."</option>";
+}
+return $strTmp."</select>";
+}else{
+foreach ($arr as $key=>$vo){
+if(is_array($value) && in_array($vo['node_id'],$value)){
+$strTmp=$strTmp."<option value=\"".$vo['node_id']."\" selected=\"selected\">".$vo['nodename']."</option>";
+}elseif(is_string($value) && $value==$vo['node_id']){
+$strTmp=$strTmp."<option value=\"".$vo['node_id']."\" selected=\"selected\">".$vo['nodename']."</option>";
+}else{
+$strTmp=$strTmp."<option value=\"".$vo['node_id']."\">".$vo['nodename']."</option>";
+}
+}
+return $strTmp."</select>";
+}
+case 18://只读文本
+if($v['txttype']==1){    //普通框
+$strTmp = "<input type=\"text\"  value=\"您选择的栏目是：\" readonly=\"true\">";
+}else{
+$strTmp = "<input type=\"password\"  value=\"您选择的栏目是：\" readonly=\"true\">";    //密码框
+}
+
+return $strTmp;
+case 19://弹窗
+if(empty($value)){
+return "<input type=\"button\" name=\"".$v['fieldname']."\" class=\"btn btn-primary btn-lg\" data-toggle=\"modal\" data-target=\"#myModal\" value=\"浏览\" >".
+"<table id='tab'>"."<tr>"."<td>"."标题"."</td>"."<td>"."操作"."</td>"."</tr>"."</table>";
+}else{
+$temp =  "<table id='tab'>"."<tr>"."<td>"."标题"."</td>"."<td>"."操作"."</td>"."</tr>";
+    if(is_array($value)){
+    foreach ($value as $key=>$val){
+    $temp .= "<tr>"."<td>"."<input readonly='true' type='text' class='test' name=\"".$prefix.$v['fieldname']."[]\" value=\"".$val."\">"."</td>"."<td><a href=\"#none\">"."删除"."</a></td>"."</tr>";
+    }
+    }else{
+    $temp .= "<tr>"."<td>"."<input readonly='true' type='text' class='test' name=\"".$prefix.$v['fieldname']."[]\" value=\"".$value."\">"."</td>"."<td><a href=\"#none\">"."删除"."</a></td>"."</tr>";
+    }
+    return "<input type=\"button\" name=\"".$v['fieldname']."\" class=\"btn btn-primary btn-lg\" data-toggle=\"modal\" data-target=\"#myModal\" value=\"浏览\" >".
+    $temp."</table>";
+}
+case 20:
+return "<span>".$value."</span>";
+case 21:
+return "<span>".$value."</span>";
+//单图片,支持截图
+case 23:
+//因为要支持图片截图功能，更换之前的单图片上传代码。
+//            return
+//                "<input onclick=\"GetUploadify(1,'".$prefix.$v['fieldname']."','admin','undefined','*.jpg;*.jpeg;*.png;*.gif;*.jpeg;');\" type=\"button\" value=\"上传单图片\"/>".
+//                "<input $style type=\"text\" is_null=\"$is_null\" value=\"".$value."\" id=\"".$prefix.$v['fieldname']."\" name=\"".$v['fieldname']."\" class=\"form-control large\" readonly=\"readonly\"  style=\"width:200px;display:initial;\"/>"
+//                ;
+$tmp=$v['settings'];
+if(!strstr($tmp,','))
+$tmp="100,100";
+return "<input name='".$prefix.$v['fieldname']."' id='".$prefix.$v['fieldname']."' type='text' value='".$value."'  class=\"form-control \"  style=\"width:800px;\" />
+<input style=\"display: none;\" onclick=\"GetUploadify(1'".$prefix.$v['fieldname']."','admin','undefined','*.jpg;*.jpeg;*.png;*.gif;*.jpeg;');\" type=\"button\" value=\"上传单图片\"/>
+<input onclick=\"uploadimgcut('".$prefix.$v['fieldname']."','admin',".$tmp.");\" type=\"button\" value=\"上传单图片\"/>
+<input onclick=\"openimg('".$prefix.$v['fieldname']."')\" type=\"button\" value=\"查看图片\"/>";
+}
+return "";
+}

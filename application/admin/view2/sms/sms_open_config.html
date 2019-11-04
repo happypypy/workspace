@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>开启头部工具栏 - 数据表格</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="__PUBLIC__/layuiadmin/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="__PUBLIC__/layuiadmin/style/admin.css" media="all">
+  <link rel="stylesheet" href="__PUBLIC__/layuiadmin/style/public.css">
+  <style>
+    .autosend-switch+.layui-form-switch{
+      margin-top: 0;
+    }
+  </style>
+</head>
+
+<body layadmin-themealias="default">
+
+
+  <div class="layui-fluid">
+    <div class="layui-card">
+      <div class="layui-tab">
+          <ul class="layui-tab-title">
+              <?php if($cms->CheckPurview('sms','send') || $cms->CheckPurview('sms','sendmanage')){ ?>
+                  <li id="send_log" onclick="javascript:window.location='{:url('sms/send_log','')}'">发送记录</li>
+              <?php } ?>
+
+              <?php if($cms->CheckPurview('sms','recharge')){ ?>
+                  <li id="sms_recharge_list" onclick="javascript:window.location='{:url('sms/sms_recharge_list',array('id'=>1,'flag'=>10))}'">短信充值</li>
+              <?php } ?>
+
+              <?php if($cms->CheckPurview('sms','autosend')){ ?>
+                  <li class="layui-this" id="sms_open_config" onclick="javascript:window.location='{:url('sms/sms_open_config','')}'">发送设置</li>
+              <?php } ?>
+
+              <?php if($cms->CheckPurview('sms','opensms')){ ?>
+                  <li id="sms_apply" onclick="javascript:window.location='{:url('sms/sms_apply','')}'">短信申请</li>
+              <?php } ?>
+
+              <?php if($cms->CheckPurview('sms','msgpattern')){ ?>
+                  <li id="sms_template_list" onclick="javascript:window.location='{:url('sms/sms_template_list','')}'">短信模版</li>
+              <?php } ?>
+          </ul>
+      </div>
+      <div class="layui-card-header1">短信自动发送设置</div>
+      <div class="layui-card-body" style="padding: 15px;">
+        <form class="layui-form" action="" method="post" lay-filter="component-form-group">
+          <table class="layui-table">
+            <tbody>
+              <tr>
+                <td width="150" style="text-align: right;">开启系统自动发送短信功能</td>
+                <td>
+                  <input type="checkbox" name="s0000" lay-skin="switch" value="1"  <?php echo $data['0000']?'checked':'' ?> lay-text="开启|关闭" />
+                </td>
+              </tr>
+
+              <tr>
+                <td width="150" style="text-align: right;">下单未支付提醒</td>
+                <td>
+                  <input type="checkbox" name="s1001" lay-skin="primary" value="1"  <?php echo $data['1001']?'checked':'' ?> title="提醒客户" />
+                  <input type="checkbox" name="s1002" lay-skin="primary" value="1"  <?php echo $data['1002']?'checked':'' ?>  title="商务" />
+                </td>
+              </tr>
+
+              <tr>
+                <td width="150" style="text-align: right;">下单成功</td>
+                <td>
+                  <input type="checkbox" name="s1101" lay-skin="primary" value="1"  <?php echo $data['1101']?'checked':'' ?> title="提醒客户" />
+                  <input type="checkbox" name="s1102" lay-skin="primary" value="1"  <?php echo $data['1102']?'checked':'' ?>  title="商务" />
+                </td>
+              </tr>
+
+              <tr>
+                <td width="150" style="text-align: right;">申请退款</td>
+                <td>
+                  <input type="checkbox" name="s1201" lay-skin="primary" value="1"  <?php echo $data['1201']?'checked':'' ?> title="提醒客户" />
+                  <input type="checkbox" name="s1202" lay-skin="primary" value="1"  <?php echo $data['1202']?'checked':'' ?>  title="商务" />
+                </td>
+              </tr>
+
+              <tr>
+                <td width="150" style="text-align: right;">已退款，继续服务</td>
+                <td>
+                  <input type="checkbox" name="s1301" lay-skin="primary" value="1"  <?php echo $data['1301']?'checked':'' ?> title="提醒客户" />
+                  <input type="checkbox" name="s1302" lay-skin="primary" value="1"  <?php echo $data['1302']?'checked':'' ?>  title="商务" />
+                </td>
+              </tr>
+              <tr>
+                <td width="150" style="text-align: right;">已退款，终止服务</td>
+                <td>
+                  <input type="checkbox" name="s1401" lay-skin="primary" value="1"  <?php echo $data['1401']?'checked':'' ?> title="提醒客户" />
+                  <input type="checkbox" name="s1402" lay-skin="primary" value="1"  <?php echo $data['1402']?'checked':'' ?>  title="商务" />
+                </td>
+              </tr>
+
+              <tr>
+                <td width="150" style="text-align: right;">退款不成功</td>
+                <td>
+                  <input type="checkbox" name="s1501" lay-skin="primary" value="1"  <?php echo $data['1501']?'checked':'' ?> title="提醒客户" />
+                  <input type="checkbox" name="s1502" lay-skin="primary" value="1"  <?php echo $data['1502']?'checked':'' ?>  title="商务" />
+                </td>
+              </tr>
+              
+              <tr>
+                <td width="150" style="text-align: right;">免费产品报名成功</td>
+                <td>
+                  <input type="checkbox" name="s1601" lay-skin="primary" value="1"  <?php echo $data['1601']?'checked':'' ?> title="提醒客户" />
+                  <input type="checkbox" name="s1602" lay-skin="primary" value="1"  <?php echo $data['1602']?'checked':'' ?>  title="商务" />
+                </td>
+              </tr>
+
+              <tr>
+                <td width="150" style="text-align: right;">免费产品审核通过</td>
+                <td>
+                  <input type="checkbox" name="s1701" lay-skin="primary" value="1"  <?php echo $data['1701']?'checked':'' ?> title="提醒客户" />
+                  <input type="checkbox" name="s1702" lay-skin="primary" value="1"  <?php echo $data['1702']?'checked':'' ?>  title="商务" />
+                </td>
+              </tr>
+
+              <tr>
+                <td width="150" style="text-align: right;">免费产品审核不通过</td>
+                <td>
+                  <input type="checkbox" name="s1801" lay-skin="primary" value="1"  <?php echo $data['1801']?'checked':'' ?> title="提醒客户" />
+                  <input type="checkbox" name="s1802" lay-skin="primary" value="1"  <?php echo $data['1802']?'checked':'' ?>  title="商务" />
+                </td>
+              </tr>
+
+              <tr>
+                <td width="150" style="text-align: right;">签到</td>
+                <td>
+                  <input type="checkbox" name="s1901" lay-skin="primary" value="1"  <?php echo $data['1901']?'checked':'' ?> title="提醒客户" />
+                  <input type="checkbox" name="s1902" lay-skin="primary" value="1"  <?php echo $data['1902']?'checked':'' ?>  title="商务" />
+                </td>
+              </tr>
+
+              <tr>
+                <td width="150" style="text-align: right;">新增评论</td>
+                <td>
+                  <input type="checkbox" name="s2001" lay-skin="primary" value="1"  <?php echo $data['2001']?'checked':'' ?> title="提醒客户" />
+                  <input type="checkbox" name="s2002" lay-skin="primary" value="1"  <?php echo $data['2002']?'checked':'' ?>  title="商务" />
+                </td>
+              </tr>
+
+              <tr>
+                <td width="150" style="text-align: right;">评论回复</td>
+                <td>
+                  <input type="checkbox" name="s2101" lay-skin="primary" value="1"  <?php echo $data['2101']?'checked':'' ?> title="提醒客户" />
+                  <input type="checkbox" name="s2102" lay-skin="primary" value="1"  <?php echo $data['2102']?'checked':'' ?>  title="商务" />
+                </td>
+              </tr>
+
+              <tr>
+                <td width="150" style="text-align: right;">预约提醒</td>
+                <td>
+                  <input type="checkbox" name="s2201" lay-skin="primary" value="1"  <?php echo $data['2201']?'checked':'' ?> title="提醒客户" />
+                  <input type="checkbox" name="s2202" lay-skin="primary" value="1"  <?php echo $data['2202']?'checked':'' ?>  title="商务" />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="layui-form-item layui-layout-admin">
+            <div class="layui-input-block">
+              <div class="layui-footer" style="left: 0;z-index: 9999;">
+                <button type="submit" class="layui-btn">保存</button>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+  <script src="__PUBLIC__/layuiadmin/layui/layui.js"></script>
+  <script>
+    layui.config({
+      base: '__PUBLIC__/layuiadmin/' //静态资源所在路径
+    }).extend({
+      index: 'lib/index' //主入口模块
+    }).use(['index', 'table', 'laydate', 'form', 'layer', 'upload'], function () {
+      var admin = layui.admin
+        , element = layui.element
+        , layer = layui.layer
+        , laydate = layui.laydate
+        , form = layui.form
+        , upload = layui.upload;
+
+      // 监听定时发送开关
+      form.on('switch(autosend-switch)', function (data) {
+
+      });
+
+    })
+
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,382 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>开启头部工具栏 - 数据表格</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/admin.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/public.css">
+    <script src="/layuiadmin/js/jquery-3.3.1.js"></script>
+
+</head>
+
+<body>
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <!-- 搜索区域 -->
+                <div class="layui-card-body">
+                    <div class="layui-card">
+                        <div class="layui-card-header2">搜索
+                        </div>
+                        <form class="layui-form layui-bd layui-mb15" action="" lay-filter="component-form-group">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">产品标题</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入标题"
+                                           class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">产品分类</label>
+                                    <div class="layui-input-inline">
+                                        <select name="quiz">
+                                            <option value="">所有类别</option>
+                                            <option value="">产品说明会</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div class="layui-form-item">
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">首页显示</label>
+                                    <div class="layui-input-inline layui-w40">
+                                        <input type="checkbox" name="close" lay-skin="switch" lay-text="是|否">
+                                    </div>
+                                    <div class="layui-form-mid layui-word-aux">辅助文字</div>
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <div class="layui-inline" pane="">
+                                    <label class="layui-form-label">产品标签</label>
+                                    <div class="layui-input-block">
+                                        <input type="checkbox" name="like1[write]" lay-skin="primary" title="写作" checked="">
+                                        <input type="checkbox" name="like1[read]" lay-skin="primary" title="阅读">
+                                        <input type="checkbox" name="like1[game]" lay-skin="primary" title="游戏" disabled="">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">最近来访</label>
+                                <div class="layui-input-block">
+                                    <div class="search-box">
+                                        <input type="radio" name="sex" value="0" title="所有" lay-filter="timeRange">
+                                        <input type="radio" name="sex" value="1" title="今天" lay-filter="timeRange">
+
+                                        <div class="layui-inline timediv layui-hide" style="margin:0;" id="comingTimeDiv">
+                                            <div class="layui-input-inline">
+                                                <input type="text" class="layui-input" id="coming-laydate-start" placeholder="开始日期">
+                                            </div>
+                                            <div class="layui-form-mid">
+                                                -
+                                            </div>
+                                            <div class="layui-input-inline">
+                                                <input type="text" class="layui-input" id="coming-laydate-end" placeholder="结束日期">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">举办时间</label>
+                                    <div class="layui-input-inline">
+                                        <input name="date_start" type="text" class="layui-input" id="show-laydate-start"
+                                               placeholder="开始日期">
+                                    </div>
+                                    <div class="layui-form-mid">
+                                        -
+                                    </div>
+                                    <div class="layui-input-inline">
+                                        <input name="date_end" type="text" class="layui-input" id="show-laydate-end" placeholder="结束日期">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">发布时间</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" class="layui-input" id="publish-laydate-start" placeholder="开始日期">
+                                    </div>
+                                    <div class="layui-form-mid">
+                                        -
+                                    </div>
+                                    <div class="layui-input-inline">
+                                        <input type="text" class="layui-input" id="publish-laydate-end" placeholder="结束日期">
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <button class="layui-btn layuiadmin-btn-list" lay-submit lay-filter="LAY-app-contlist-search">
+                                        <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <table class="layui-hide" id="test-table-toolbar" lay-filter="test-table-toolbar"></table>
+
+
+                    <script type="text/html" id="test-table-toolbar-toolbarDemo">
+                        <div class="layui-btn-container ov-hd">
+                            <div class="info-l fl">会员列表</div>
+                            <div class="info-r fr">
+                                <button class="layui-btn layui-btn-sm" type="button" onclick="javascript:CustomOpen('edit1.html','abc','测试百度','90%','90%')">添加</button>
+                            </div>
+                        </div>
+                    </script>
+
+                    <script type="text/html" id="test-table-toolbar-barDemo">
+                        <div class="test-table-toolbar-barDemo" style="white-space:normal;text-align: left;">
+                            <a class="layui-btn layui-btn-xs">浏览</a>
+                            <a class="layui-btn layui-btn-xs">访问数据</a>
+                        </div>
+
+                    </script>
+
+                    <div style="overflow: hidden">
+                        <div style="float: left; margin-top: 15px;margin-left: 10px; vertical-align: middle;">
+                            <button class="layui-btn layui-btn-sm" data-type="del">删除</button>
+                        </div>
+                        <div id="test-laypage-demo1" style="text-align: right; margin-right: 15px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/layuiadmin/layui/layui.js"></script>
+<script language="JavaScript">
+    var layer = layui.layer;
+    function CustomOpen(url, code, showName, w, h) {
+        layer.open({
+            type: 2,
+            title: showName,
+            shade: false,
+            maxmin: true,
+            area: [w, h],
+            content: url
+        });
+    }
+</script>
+
+<script>
+    layui.config({
+        base: '/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['index', 'table', 'laydate', 'form'], function () {
+        var admin = layui.admin
+            , laypage = layui.laypage
+            , table = layui.table
+            , form = layui.form;
+
+        table.render({
+            elem: '#test-table-toolbar'
+            , toolbar: '#test-table-toolbar-toolbarDemo'
+            , title: '用户数据表'
+            , defaultToolbar: false
+            , cols: [[
+                { type: 'checkbox' }
+                , { field: 'sign', title: '产品标题' }
+                , { field: 'username', title: '所属分类', width: 120, unresize: true }
+                // ,{field:'username', title: '所属分类', width: 120, templet: '#buttonTpl', unresize: true }
+                , { field: 'publishTime', title: '发布时间', width: 120, unresize: true }
+                , { field: 'approvalTime', title: '审批时间', width: 120, unresize: true }
+                , { field: 'joinTime', title: '参加时间', width: 120, unresize: true }
+                , { field: 'orderTime', title: '报名时间', width: 120, unresize: true }
+                // ,{field:'sex', title:'性别', width:80,  templet: '#test-table-switchTpl', unresize: true}
+                // ,{field:'city', title:'城市', width:100}
+                // ,{field:'experience', title:'积分', width:80, sort: true}
+                // ,{field:'ip', title:'IP', width:120}
+                // ,{field:'logins', title:'登入次数', width:100, sort: true}
+                , { field: 'orderNum', title: '订单数', width: 100, sort: true }
+                , { title: '操作', toolbar: '#test-table-toolbar-barDemo', width: 190 }
+            ]]
+
+            , data: [{
+                "sign": "有优惠券的活动喔有优惠券的活动喔有优惠券的活动喔有优惠券的活动喔有优惠券的活动喔有优惠券的活动喔有优惠券的活动喔有优惠券的活动喔有优惠券的活动喔有优惠券的活动喔有优惠券的活动喔有优惠券的活动喔"
+                , "username": "产品说明会"
+                // ,"email": "xianxin@layui.com"
+                // ,"sex": "男"
+                // ,"city": "浙江杭州"
+                // ,"experience": "116"
+                // ,"ip": "192.168.0.8"
+                // ,"logins": "108"
+                , "publishTime": "2019-10-14"
+                , "approvalTime": "2019-11-14"
+                , "joinTime": "2019-10-14"
+                , "orderTime": "2019-11-14"
+                , "orderNum": "22"
+            }, 
+            ]
+        });
+
+        //总页数大于页码总数
+        laypage.render({
+            elem: 'test-laypage-demo1'
+            , count: 7000 //数据总数
+            , curr: 5 //设定初始在第 5 页
+            , layout: ['count', 'prev', 'page', 'next', 'skip']
+            , jump: function (obj) {
+                console.log(obj)
+            }
+        });
+
+        //头工具栏事件
+        table.on('toolbar(test-table-toolbar)', function (obj) {
+            var checkStatus = table.checkStatus(obj.config.id);
+            switch (obj.event) {
+                case 'getCheckData':
+                    var data = checkStatus.data;
+                    layer.alert(JSON.stringify(data));
+                    break;
+                case 'getCheckLength':
+                    var data = checkStatus.data;
+                    layer.msg('选中了：' + data.length + ' 个');
+                    break;
+                case 'isAll':
+                    layer.msg(checkStatus.isAll ? '全选' : '未全选');
+                    break;
+            };
+        });
+
+        //监听行工具事件
+        table.on('tool(test-table-toolbar)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'del') {
+                layer.confirm('真的删除行么', function (index) {
+                    obj.del();
+                    layer.close(index);
+                });
+            } else if (obj.event === 'edit') {
+                layer.prompt({
+                    formType: 2
+                    , value: data.email
+                }, function (value, index) {
+                    obj.update({
+                        email: value
+                    });
+                    layer.close(index);
+                });
+            }
+        });
+
+
+
+        // 监听时间范围
+        form.on('radio(timeRange)', function (data) {
+            if (data.value == 4) {
+                $('#comingTimeDiv').removeClass('layui-hide');
+            } else {
+                $('#comingTimeDiv').addClass('layui-hide');
+            }
+        });
+
+        var laydate = layui.laydate;
+
+        //示例代码
+
+        //举办开始日期
+        var showStart = laydate.render({
+            elem: '#show-laydate-start'
+            , min: 0
+            , done: function (value, date) {
+                //更新结束日期的最小日期
+                showEnd.config.min = lay.extend({}, date, {
+                    month: date.month - 1
+                });
+                //自动弹出结束日期的选择器
+                showEnd.config.elem[0].focus();
+            }
+        });
+
+        //发布开始日期
+        var showEnd = laydate.render({
+            elem: '#show-laydate-end'
+            , min: 0
+            , done: function (value, date) {
+                //更新开始日期的最大日期
+                showStart.config.max = lay.extend({}, date, {
+                    month: date.month - 1
+                });
+            }
+        });
+
+        //发布开始日期
+        var publishStart = laydate.render({
+            elem: '#publish-laydate-start'
+            , min: 0
+            , done: function (value, date) {
+                //更新结束日期的最小日期
+                publishEnd.config.min = lay.extend({}, date, {
+                    month: date.month - 1
+                });
+
+                //自动弹出结束日期的选择器
+                publishEnd.config.elem[0].focus();
+            }
+        });
+
+        //发布开始日期
+
+        var publishEnd = laydate.render({
+            elem: '#publish-laydate-end'
+            , min: 0
+            , done: function (value, date) {
+                //更新开始日期的最大日期
+                publishStart.config.max = lay.extend({}, date, {
+                    month: date.month - 1
+                });
+            }
+        });
+
+        //来访开始日期
+        var comingStart = laydate.render({
+            elem: '#coming-laydate-start'
+            , min: 0
+            , done: function (value, date) {
+                //更新结束日期的最小日期
+                comingEnd.config.min = lay.extend({}, date, {
+                    month: date.month - 1
+                });
+
+                //自动弹出结束日期的选择器
+                comingEnd.config.elem[0].focus();
+            }
+        });
+
+        //来访结束日期
+
+        var comingEnd = laydate.render({
+            elem: '#coming-laydate-end'
+            , min: 0
+            , done: function (value, date) {
+                //更新开始日期的最大日期
+                comingStart.config.max = lay.extend({}, date, {
+                    month: date.month - 1
+                });
+            }
+        });
+    })
+
+</script>
+</body>
+
+</html>

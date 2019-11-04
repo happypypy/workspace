@@ -1,0 +1,106 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>码库管理</title>
+    <link href="/static/css/layout.css" rel="stylesheet" type="text/css" />
+    <link href="/static/css/page.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+    <script type="text/javascript" src="/static/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="/static/js/del-checked.js"></script>
+    <script type="text/javascript" src="/static/js/layer/layer.js"></script>
+    <script type="text/javascript" src="/static/js/ContorlValidator.js"></script>
+    <script type="text/javascript" src="/static/js/CostomLinkOpenSw.js"></script>
+    <link href="/static/js/daterangepicker/daterangepicker-bs3.css" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="/static/js/daterangepicker/moment.min.js"></script>
+    <script type="text/javascript" src="/static/js/daterangepicker/daterangepicker.js"></script>
+    <script type="text/javascript" src="/static/js/lhgdialog.js?skin=aero"></script>
+    <style>
+        .layui-layer.layui-layer-page.layui-layer-rim.layer-anim .layui-layer-content{
+            padding: 10px;
+        }
+        .layui-layer.layui-layer-page.layui-layer-rim.layer-anim *{
+            max-width : 100%!important;
+            box-sizing: border-box;
+        }
+        .layui-layer.layui-layer-page.layui-layer-rim.layer-anim img{
+            height: auto!important;
+        }
+    </style>
+
+
+
+</head>
+<body>
+<div class="oa_pop">
+    <div class="oa_pop-main">
+        <div style="height: 6px"></div>
+        <div class="oa_title clearfix">
+            <span class="oa_ico-right"></span>
+            <span class="oa_title-btn"></span>
+            <span class="oa_ico-left"></span>
+            码库管理        </div>
+        <div class="oa_edition">
+            <form id="frm" action="" method="post">
+                <table id="tabcontent" width="100%" border="0" cellspacing="1" cellpadding="0" class="oa_edition" style="border-bottom: #e0e0e0 solid 1px">
+                    <tr>
+                        <td width="150"class="oa_cell-left"><span style="color:#ff0000">*</span>码库名称</td>
+                        <td class="oa_cell-right"><input name="name1" id="name1" type="text" value="{$info.name}" class="form-control "  style="width:400px;"   chname="活动名称"  /> </td>
+                    </tr>
+                    <tr>
+                        <td width="150"class="oa_cell-left">创建时间：</td>
+                        <td class="oa_cell-right">
+                            <input type="text"   style="width: 160px;"  autocomplete="off" id="ctime" name="ctime" class="form-control"  value="{$info.ctime}">
+                            <script language='JavaScript'>seltime("ctime","YYYY-MM-DD");</script>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td width="150" class="oa_cell-left">状态：</td>
+                        <td class="oa_cell-right">
+                            <select  id="state"   name="state"   class="form-control" style="width: auto; height: 34px" >
+                                <option value=""  >请选择状态</option>
+                                <option value="1" <?php if ($info['state'] == 1) {echo "selected";}?> >启用</option>
+                                <option value="2" <?php if ($info['state'] == 2) {echo "selected";}?> >禁用</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="150"class="oa_cell-left">备注</td>
+                        <td class="oa_cell-right">
+                            <textarea name="remark" rows="3" cols="30">{$info.remark}</textarea>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="padding:10px;">
+
+                            <input type="button" style="display: none" onclick="javascript:checkdata(0);" value="提交">
+
+                            <input type="button"  class="subdata" value="保存">
+                            <br/><br/>
+                        </td>
+                    </tr>
+                </table>
+
+            </form>
+        </div>
+        <div style="height: 30px"></div>
+    </div>
+</div>
+
+<script src="/static/js/jquery.searchableSelect.js"></script>
+<script>
+
+
+    $(".subdata").click(function(){
+        if(!$.trim($("#name1").val())){
+            layer.alert('请输入码库名称！')
+            return false
+        }
+        $('#frm').submit()
+    })
+
+</script>
+</body>
+</html>

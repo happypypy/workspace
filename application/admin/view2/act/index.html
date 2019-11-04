@@ -1,0 +1,373 @@
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>开启头部工具栏 - 数据表格</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/admin.css" media="all">
+    <script type="text/javascript" src="/static/js/jquery-3.2.1.min.js"></script>
+
+    <style>
+        .layui-form-item{
+            margin-bottom: 5px;
+        }
+        .layui-table-cell{
+            height: auto;
+        }
+        .lastcell>a{
+            text-decoration: underline;
+            color: #333;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+
+                <div class="layui-card-header">查询</div>
+                <!-- 搜索区域 -->
+                <div class="layui-card-body">
+                    <form class="layui-form" action="" lay-filter="component-form-group">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">活动名称：</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">活动状态</label>
+                                <div class="layui-input-inline">
+                                    <select name="state">
+                                            <option value="" <?php if($state=='') echo "selected"?>>所有</option>
+                                            <option value="1" <?php if($state==1) echo "selected"?>>进行中</option>
+                                            <option value="3" <?php if($state==3) echo "selected"?>>已过期</option>
+                                            <option value="2" <?php if($state==2) echo "selected"?>>未开始</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">活动日期：</label>
+                                <div class="layui-input-inline">
+                                    <input name="stime" type="text" value="{$stime}" class="layui-input"   id="test-laydate-start" placeholder="开始日期">
+                                </div>
+                                <div class="layui-form-mid">
+                                    -
+                                </div>
+                                <div class="layui-input-inline">
+                                    <input name="etime"  type="text" value="{$etime}" class="layui-input" id="test-laydate-end" placeholder="结束日期" >
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-inline" pane="">
+                                <label class="layui-form-label">负责人：</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="leader" value="{$leader}" lay-verify="title" autocomplete="off"  class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <button class="layui-btn layuiadmin-btn-list" lay-submit lay-filter="LAY-app-contlist-search">
+                                    <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <table class="layui-hide" id="test-table-toolbar" lay-filter="test-table-toolbar"></table>
+
+
+
+                <script type="text/html" id="test-table-switchTpl">
+                    <!-- 这里的 checked 的状态只是演示 -->
+                    <input type="checkbox" name="sex" lay-skin="switch" lay-text="女|男" lay-filter="test-table-sexDemo"
+                           value="{{ d.id }}" data-json="{{ encodeURIComponent(JSON.stringify(d)) }}" {{ d.id == 10003 ? 'checked' : '' }}>
+                </script>
+
+                <script type="text/html" id="buttonTpl">
+                    {{#  if(d.username=='李清照'){ }}
+                    <div cla=ss="layui-btn layui-btn-xs">李清照</div>
+                    {{#  } else { }}
+                    {{d.username}}
+                    {{#  } }}
+                </script>
+
+                <script type="xt/html" id="test-table-toolbar-toolbarDemo">
+              <div class="layui-btn-container">
+               <button class="layui-btn layui-btn-sm" data-type="add" onclick="addact()">添加</button>
+              </div>
+            </script>
+
+                <script type="text/html" id="test-table-toolbar-barDemo">
+                    <div class="test-table-toolbar-barDemo" >
+                        <a class="layui-btn layui-btn-xs" lay-event="act_info">管理</a>
+                        <a class="layui-btn layui-btn-xs" lay-event="edit">修改</a>
+                        <a class="layui-btn layui-btn-xs" lay-event="del">删除</a>
+                    </div>
+
+                </script>
+
+                <div style="overflow: hidden" >
+                    <div style="float: left; margin-top: 15px;margin-left: 10px; vertical-align: middle;">
+                        <button class="layui-btn layui-btn-sm" data-type="del">删除</button>
+                    </div>
+                    <div id="test-laypage-demo1" style="text-align: right; margin-right: 15px;"></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<?php dump($act_list); ?>
+<script src="/layuiadmin/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: '/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use([ 'index','table' ,'laydate'], function(){
+        var admin = layui.admin
+            ,laypage = layui.laypage
+            ,table = layui.table;
+
+        table.render({
+            elem: '#test-table-toolbar'
+            ,toolbar: '#test-table-toolbar-toolbarDemo'
+            ,title: '用户数据表'
+
+            ,cols: [[
+                {type: 'checkbox'}
+                ,{field:'title', title: '活动名称' }
+                ,{field:'acttime', title:'活动日期范围', width:200, unresize: true}
+                // ,{field:'username', title: '所属分类', width: 120, templet: '#buttonTpl', unresize: true }
+                ,{field: 'leader', title: '负责人', width: 200, unresize: true }
+                ,{field: 'stunum', title: '学员数量', width: 100, unresize: true }
+                ,{field: 'state', title: '活动状态', width: 100, unresize: true }
+                ,{title:'操作', toolbar: '#test-table-toolbar-barDemo', width:150}
+            ]]
+
+            ,data: [
+                <?php
+                 foreach($act_list as $vo){
+                ?>
+                {
+                    "id":"{$vo.id}"
+                ,"title": "{$vo.title}"
+                ,"acttime": "{php}
+                    if(!empty($vo['start_time'])){ echo date('Y-m-d',$vo['start_time']);} echo ' ~ '; if(!empty($vo['end_time'])){echo date('Y-m-d',$vo['end_time']);} {/php}"
+                ,"leader": "{$vo.leader}"
+                ,"stunum": "{$vo.stu_num}"
+                ,"state":"{php}
+                    if($vo['state']==1){
+                        echo "进行中";}
+                    if($vo['state']==2){
+                        echo "未开始";}
+                    if($vo['state']==3){
+                        echo "已过期";}
+                    {/php}"
+            },
+            <?php } ?>
+            ]
+        });
+
+        //总页数大于页码总数
+        laypage.render({
+            elem: 'test-laypage-demo1'
+            ,count: 7000 //数据总数
+            ,curr: 5 //设定初始在第 5 页
+            ,jump: function(obj){
+                console.log(obj)
+            }
+        });
+
+        //头工具栏事件
+        table.on('toolbar(test-table-toolbar)', function(obj){
+            var checkStatus = table.checkStatus(obj.config.id);
+            switch(obj.event){
+                case 'getCheckData':
+                    var data = checkStatus.data;
+                    layer.alert(JSON.stringify(data));
+                    break;
+                case 'getCheckLength':
+                    var data = checkStatus.data;
+                    layer.msg('选中了：'+ data.length + ' 个');
+                    break;
+                case 'isAll':
+                    layer.msg(checkStatus.isAll ? '全选': '未全选');
+                    break;
+            };
+        });
+
+        //监听行工具事件
+        table.on('tool(test-table-toolbar)', function(obj){
+            var data = obj.data;
+            var id=data.id
+            if(obj.event === 'del'){
+                layer.confirm('真的删除行么'+id, function(index){
+                    del_checked1(id)
+                    obj.del();
+                    layer.close(index);
+                });
+            } else if(obj.event === 'edit'){
+                    layer.open({
+                        type: 2,
+                        title: '修改活动',
+                        area:['805px', '620px'],
+                        content: "{:url('act/edit')}?actid="+id,
+
+                    }
+            )
+            }else if(obj.event === 'act_info'){
+                layer.open({
+                        type: 2,
+                        title: '活动详情',
+                        area:['1600px', '780px'],
+                        content: "{:url('act/act_info')}?actid="+id,
+
+                    }
+                )
+        }
+        });
+
+        //监听性别操作
+        table.on('switch(test-table-sexDemo)', function(obj){
+            var json = JSON.parse(decodeURIComponent($(this).data('json')));
+            layer.tips(this.value + ' ' + this.name + '：'+ obj.elem.checked, obj.othis);
+
+            json = table.clearCacheKey(json);
+            console.log(json); //当前行数据
+
+        });
+
+
+        var laydate = layui.laydate;
+
+        //示例代码
+
+        //举办开始日期
+        var insStart = laydate.render({
+            elem: '#test-laydate-start'
+            , min: 0
+            , done: function (value, date) {
+                //更新结束日期的最小日期
+                insEnd.config.min = lay.extend({}, date, {
+                    month: date.month - 1
+                });
+
+                //自动弹出结束日期的选择器
+                insEnd.config.elem[0].focus();
+            }
+        });
+
+        //发布开始日期
+        var insEnd = laydate.render({
+            elem: '#test-laydate-end'
+            , min: 0
+            , done: function (value, date) {
+                //更新开始日期的最大日期
+                insStart.config.max = lay.extend({}, date, {
+                    month: date.month - 1
+                });
+            }
+        });
+
+        //发布开始日期
+        var insStart1 = laydate.render({
+            elem: '#publish-laydate-start'
+            , min: 0
+            , done: function (value, date) {
+                //更新结束日期的最小日期
+                insEnd1.config.min = lay.extend({}, date, {
+                    month: date.month - 1
+                });
+
+                //自动弹出结束日期的选择器
+                insEnd1.config.elem[0].focus();
+            }
+        });
+
+        //发布开始日期
+
+        var insEnd1 = laydate.render({
+            elem: '#publish-laydate-end'
+            , min: 0
+            , done: function (value, date) {
+                //更新开始日期的最大日期
+                insStart1.config.max = lay.extend({}, date, {
+                    month: date.month - 1
+                });
+            }
+        });
+
+    });
+</script>
+<script>
+    function addact(){
+        layer.open({
+            type:2,
+            title: '增加活动',
+            area:['805px', '620px'],
+            content:"{:url('act/edit')}"
+    })
+    }
+
+    //删除选中
+    function del_checked1(value) {
+        var b = $(".checked_one");
+        var s = '';
+        if(value<1)
+        {
+            for (var i = 0; i < b.length; i++) {
+                if (b[i].checked) {
+                    s += b[i].value + ',';
+                }
+            }
+            s = s.substr(0, s.length - 1);
+        }
+        else
+        {
+            s=value;
+        }
+
+        $.ajax({
+            url:"{:url('act/del_acts')}",
+            data:"id="+s,
+            type:"post",
+            dataType:"json",
+            success:function(msg) {
+                if (msg == 1) {
+                    layer.msg('删除成功', {icon:1,time: 1500});
+                    window.setTimeout(function(){
+                        location.reload();
+                    },1500)
+                }
+                else if(msg==-1){
+                    layer.msg('你没有删除权限', {icon: 5});
+                }
+                else
+                {
+                    layer.msg('删除失败', {icon: 2});
+                }
+            }
+        })
+    }
+</script>
+
+</body>
+</html>

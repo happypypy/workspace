@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="generator" content="HTML Tidy for HTML5 for Windows version 5.2.0" />
+    <meta charset="utf-8" />
+    <title>商品管理</title>
+    <meta name="renderer" content="webkit" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="stylesheet" href="__PUBLIC__/layuiadmin/layui/css/layui.css" media="all" />
+    <link rel="stylesheet" href="__PUBLIC__/layuiadmin/style/public.css" media="all" />
+    <link rel="stylesheet" href="__PUBLIC__/layuiadmin/style/admin.css" media="all" />
+    <style>
+        .layui-form-item{
+            margin-bottom: 5px;
+        }
+        .layui-table-cell{
+            height: auto;
+        }
+        .lastcell>a{
+            text-decoration: underline;
+            color: #333;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+    </style>
+    </head>
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-tab">
+                    <ul class="layui-tab-title">
+                            {if condition="$cms->CheckPurview('integralmanage','view')"}
+                            <li onclick="javascript:window.location='{:url('integral/index')}'">积分管理</li>
+                            {/if}
+                            {if condition="$cms->CheckPurview('goodsmanage','view')"}
+                            <li class="layui-this" >商品管理</li>
+                            {/if}
+                            {if condition="$cms->CheckPurview('goodsmanage','exchangerecord')"}
+                            <li onclick="javascript:window.location='{:url('integral/exchange_record')}'" >兑换订单</li>
+                            {/if}
+                            {if condition="$cms->CheckPurview('integralannualreport','view')"}
+                            <li onclick="javascript:window.location='{:url('integral/integral_report',['action'=>'year'])}'" >积分年度报表</li>
+                            {/if}
+                            {if condition="$cms->CheckPurview('integralmonthlyreport','view')"}
+                            <li onclick="javascript:window.location='{:url('integral/integral_report',['action'=>'month'])}'" >积分月度报表</li>
+                            {/if}
+                            {if condition="$cms->CheckPurview('integralruleconfig','view')"}
+                            <li onclick="javascript:window.location='{:url('integral/integral_rule','')}'">积分规则设置</li>
+                            {/if}
+                    </ul>
+                </div>
+                
+                <!-- 搜索区域 -->
+                <div class="layui-card-body">
+                    <div class="layui-card-header2">搜索</div>
+                    <form class="layui-form layui-bd layui-mb15" action="" lay-filter="component-form-group">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">商品名称：</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="goods_name" autocomplete="off" placeholder="请输入商品名称" value="{$param.goods_name}" class="layui-input" />
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">适合年龄：</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="age" autocomplete="off" placeholder="请输入适合年龄" value="{$param.age}" class="layui-input" />
+                            </div>
+                            <div class="layui-inline">
+                                <button class="layui-btn layuiadmin-btn-list" lay-submit lay-filter="LAY-app-contlist-search">
+                                    <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    <table class="layui-hide" id="manage-table" lay-filter="manage-table"></table>
+                </div>
+
+                <div style="overflow: hidden">
+                    <div style="float: left; margin-top: 15px;margin-left: 10px; vertical-align: middle;">
+                        <button class="layui-btn layui-btn-sm" id="batchDel">删除</button>
+                    </div>
+                    <div id="laypage" style="text-align: right; margin-right: 15px;"></div>
+                </div>
+
+                <!-- 工具栏按钮 -->
+                <script type="text/html" id="table-toolbar">
+					<div class="layui-btn-container ov-hd">
+						<div class="info-l fl">商品管理</div>
+						<div class="info-r fr">
+							{if condition="$cms->CheckPurview('integralmallmanage','add')"}
+							<a class="layui-btn layui-btn-sm" href="javascript:CustomOpen('{:url('integral/integral_goods_modi','&action=add&siteid='.$siteid)}', 'Integralmall','新建商品', 1000,600)">新建商品</a>
+							{/if}
+						</div>
+					</div>
+                </script>
+                <!-- 行工具按钮 -->
+                <script type="text/html" id="table-operation">
+                    <div class="table-operation">
+                        <a class="layui-btn layui-btn-xs" href="javascript:CustomOpen('{:url('integral/exchange_record','','','')}/id/{{d.id}}','exchange_record','订单详情',1200,700)">订单详情</a>
+                        {if condition="$cms->CheckPurview('integralmallmanage','edit')"}
+                        <a class="layui-btn layui-btn-xs" href="javascript:CustomOpen('{:url('integral/integral_goods_modi','action=edit','','')}/id/{{d.id}}/siteid/{$siteid}','modi','商品修改',900,700)">修改</a>
+                        {/if}
+                        {if condition="$cms->CheckPurview('integralmallmanage','del')"}
+                        <button class="layui-btn layui-btn-xs" lay-event="del">删除</button> 
+                        <!-- <a class="layui-btn layui-btn-sm" href="#" onclick="del_checked({{d.id}},'{{d.goods_name}}');" >删除</a> -->
+                        {/if}
+                        <!-- <button class="layui-btn layui-btn-sm" lay-event="view">查看关注用户</button>
+                        <button class="layui-btn layui-btn-sm" lay-event="edit">修改</button>
+                        <button class="layui-btn layui-btn-sm" lay-event="del">删除</button> -->
+                    </div>
+                </script>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="__PUBLIC__/layuiadmin/js/jquery-3.3.1.js"></script>
+<script src="__PUBLIC__/layuiadmin/layui/layui.js"></script>
+<script src="__PUBLIC__/layuiadmin/js/public.js"></script>
+<script>
+layui.config({
+    base: '__PUBLIC__/layuiadmin/' //静态资源所在路径
+}).extend({
+    index: 'lib/index' //主入口模块
+}).use(['index', 'table', 'jquery'], function(){
+    var admin = layui.admin
+    ,laypage = layui.laypage
+    ,table = layui.table
+    ,$ = layui.$;
+
+    table.render({
+        elem: '#manage-table'
+        ,toolbar: '#table-toolbar'
+        ,defaultToolbar: []
+        ,title: '用户数据表'
+        ,cols: [[
+        {type: 'checkbox', hide:true}
+        ,{field:'id', title:'id', width:80, unresize: true}
+        ,{field:'goods_name', title:'商品名称', minWidth:120, unresize: true}
+        ,{field: 'age', title: '适合年龄', width: 120, unresize: true }
+        ,{field: 'integral', title: '所需积分', width: 100, unresize: true }
+        ,{field: 'goods_number', title: '总数量', width: 100, unresize: true }
+        ,{field: 'exchange_number', title: '已兑换数量', width: 100, unresize: true }
+        ,{field: 'is_display', title: '上架/下架', width: 100, unresize: true }
+        ,{field: 'is_virtual', title: '是否虚拟商品', width: 120, unresize: true }
+        ,{field: 'create_time', title: '创建时间', width: 160, unresize: true}
+        ,{title:'操作', toolbar: '#table-operation', width:170}
+        ]]
+        ,data: [
+            {volist name="integral_mall_goods" id="vo"}
+            {
+                id: '{$vo.id}',
+                goods_name: '{$vo.goods_name}',
+                age: '{if condition="$vo['suitable_age_start']!=0 && $vo['suitable_age_end']!=0"}
+{$vo['suitable_age_start']}-{$vo['suitable_age_end']}岁{else /}不限制{/if}',
+                integral: '{$vo.integral}',
+                goods_number: '{$vo.goods_number}',
+                exchange_number: '{$vo.exchange_number}',
+                is_display: "{$vo['is_display'] ? '上架' : '下架'}",
+                is_virtual: "{$vo['is_virtual'] ? '是' : '否'}",
+                create_time: '{$vo['create_time']|date="Y-m-d H:i:s",###}',
+            },
+            {/volist}
+        ]
+        ,limit: {:$page->pageSize}
+    });
+
+    //总页数大于页码总数
+    laypage.render({
+        elem: 'qrcode-laypage'
+        ,count: {:$page->count}
+        ,curr: {:$page->iPage}
+        ,limit: {:$page->pageSize}
+        ,layout: ['count', 'prev', 'page', 'next', 'skip']
+        ,jump: function(obj){
+            if(obj.curr!= "{:$page->iPage}"){
+                var jumpUrl = "{:$page->url('currentPage')}";
+                jumpUrl = jumpUrl.replace("currentPage",obj.curr);
+                location.href = jumpUrl;
+            }
+        }
+    });
+    // 根据ID删除数据
+    function delData(ids){
+          // 删除数据
+          $.ajax({
+                url:"{:url('qrcodemanage/integral_goods_del')}",
+                data:"id="+ids,
+                type:"post",
+                dataType:"json",
+                success:function(msg) {
+                    if (msg == 1) {
+                        layer.msg('已删除');
+                        location.reload();
+                    }else if(msg == -1){
+                        layer.alert('你没有删除权限', {icon: 5});
+                    }else{
+                        layer.alert('删除失败', {icon: 2});
+                    }
+                }
+            });
+    }
+    // 批量删除
+    $('#batchDel').click(function(){
+        var checkStatus = table.checkStatus('qrcode-manage-table')
+        ,checkData = checkStatus.data; //得到选中的数据
+
+        if(checkData.length === 0){
+          return layer.msg('请选择要删除的数据');
+        }
+
+        layer.confirm('确定删除吗？', function(index) {
+          var ids = '';
+          debugger;
+          // 拼接ID
+          checkData.forEach(function(item){
+              ids += item.id + ',';
+          });
+          ids = ids.substr(0, ids.length - 1);
+          delData(ids);
+        });
+    })
+    //监听行工具事件
+    table.on('tool(manage-table)', function(obj){
+        var data = obj.data;
+        if(obj.event === 'del'){
+            layer.confirm('确定删除'+data.goods_name+'吗？', function(index){
+                delData(data.id);
+                layer.close(index);
+            });
+        }
+    });
+});
+</script>
+</html>

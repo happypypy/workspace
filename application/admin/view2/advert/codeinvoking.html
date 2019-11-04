@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>无标题文档</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="__PUBLIC__/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="__PUBLIC__/layuiadmin/layui/css/public.css" media="all">
+    <script type="text/javascript" src="__PUBLIC__/layuiadmin/js/jquery-3.3.1.js"></script>
+</head>
+<body>
+    
+<form class="layui-form" method="post" action="{:url('admin/advert/advpositionpost')}" lay-filter="component-form-group">
+    <div class="layui-form" lay-filter="layuiadmin-app-form-list" id="layuiadmin-app-form-list" style="padding: 20px 30px 0 0;">
+        <div class="layui-form-item">
+            <label class="layui-form-label">JavaScript</label>
+            <div class="layui-input-block">
+                <input type="text" name="position_name" autocomplete="off" placeholder="请输入JavaScript" value="<script type='text/javascript' src='index.php?m=Home&c=Api&a=ad_show&pid={$request.id}&limit=1'></script>" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">PHP</label>
+            <div class="layui-input-block">
+                <input type="text" name="ad_width" autocomplete="off" placeholder="请输入PHP" value="<adv pid='{$request.id}' limit='1' item='v'></adv>" class="layui-input">
+            </div>
+        </div>
+    </div>
+</form>
+
+<script src="__PUBLIC__/layuiadmin/layui/layui.js"></script>
+<script type="text/javascript" src="__PUBLIC__/layuiadmin/js/public.js"></script>
+<script>
+layui.config({
+    base: '__PUBLIC__/layuiadmin/' //静态资源所在路径
+}).extend({
+    index: 'lib/index' //主入口模块
+}).use(['index', 'table', 'jquery'], function(){
+    
+});
+</script>
+</body>
+</html>

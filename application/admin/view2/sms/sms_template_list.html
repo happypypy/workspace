@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="generator" content="HTML Tidy for HTML5 for Windows version 5.2.0" />
+    <meta charset="utf-8" />
+    <title>短信管理</title>
+    <meta name="renderer" content="webkit" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="stylesheet" href="__PUBLIC__/layuiadmin/layui/css/layui.css" media="all" />
+    <link rel="stylesheet" href="__PUBLIC__/layuiadmin/style/admin.css" media="all" />
+    <link rel="stylesheet" href="__PUBLIC__/layuiadmin/style/public.css" media="all" />
+    <script src="__PUBLIC__/layuiadmin/layui/layui.js"></script>
+    <script src="__PUBLIC__/layuiadmin/js/public.js"></script>
+
+    <style>
+        .layui-form-item{
+            margin-bottom: 5px;
+        }
+        .layui-table-cell{
+            height: auto;
+        }
+        .lastcell>a{
+            text-decoration: underline;
+            color: #333;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+    </style>
+    </head>
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-tab">
+                    <ul class="layui-tab-title">
+                        <?php if($cms->CheckPurview('sms','send') || $cms->CheckPurview('sms','sendmanage')){ ?>
+                            <li id="send_log" onclick="javascript:window.location='{:url('sms/send_log','')}'">发送记录</li>
+                        <?php } ?>
+
+                        <?php if($cms->CheckPurview('sms','recharge')){ ?>
+                            <li id="sms_recharge_list" onclick="javascript:window.location='{:url('sms/sms_recharge_list',array('id'=>1,'flag'=>10))}'">短信充值</li>
+                        <?php } ?>
+
+                        <?php if($cms->CheckPurview('sms','autosend')){ ?>
+                            <li id="sms_open_config" onclick="javascript:window.location='{:url('sms/sms_open_config','')}'">发送设置</li>
+                        <?php } ?>
+
+                        <?php if($cms->CheckPurview('sms','opensms')){ ?>
+                            <li id="sms_apply" onclick="javascript:window.location='{:url('sms/sms_apply','')}'">短信申请</li>
+                        <?php } ?>
+
+                        <?php if($cms->CheckPurview('sms','msgpattern')){ ?>
+                            <li class="layui-this" id="sms_template_list" onclick="javascript:window.location='{:url('sms/sms_template_list','')}'">短信模版</li>
+                        <?php } ?>
+                    </ul>
+                </div>
+
+                <!-- 搜索区域 -->
+                <div class="layui-card-body">
+                    <table class="layui-hide" id="manage-table" lay-filter="manage-table"></table>
+
+                    <div style="overflow: hidden">
+                        <div id="laypage" style="text-align: right; margin-right: 15px;"></div>
+                    </div>
+                </div>
+
+                <!-- 工具栏按钮 -->
+                <script type="text/html" id="table-toolbar">
+                    <div class="layui-btn-container ov-hd">
+                        <div class="info-l fl">短信模版</div>
+                        <div class="info-r fr">
+                            <a class="layui-btn layui-btn-sm" href="javascript:CustomOpen('{:url('sms/sms_template','action=create','')}', '','新建模版', 550, 365)">新建模版</a>
+                        </div>
+                    </div>
+                </script>
+                <!-- 行工具按钮 -->
+                <script type="text/html" id="table-operation">
+                    <div class="table-operation">
+                        <?php if($cms->CheckPurview('sms','smstemplate')){ ?>
+                        <a class="layui-btn layui-btn-xs" href="javascript:CustomOpen('{:url('sms/sms_template', 'action=revise','','')}/id/{{d.id}}', 'account','{:lang('revise')}模版', 550, 365)">
+                            {:lang('revise')}
+                        </a>
+                        <a class="layui-btn layui-btn-xs" href="javascript:delData({{d.id}},'{{d.name}}')">{:lang('delete')}</a>
+                        <?php } ?>
+                    </div>
+                </script>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+layui.config({
+    base: '/layuiadmin/' //静态资源所在路径
+}).extend({
+    index: 'lib/index' //主入口模块
+}).use(['index', 'table', 'jquery'], function(){
+    var admin = layui.admin
+    ,laypage = layui.laypage
+    ,table = layui.table
+    ,$ = layui.$;
+
+    table.render({
+        elem: '#manage-table'
+        ,toolbar: '#table-toolbar'
+        ,defaultToolbar: []
+        ,title: '短信模版'
+        ,cols: [[
+        ,{field: 'name', title:'模版名称', width:138, unresize: true }
+        ,{field: 'content', title: '模版内容', minWidth: 120, unresize: true }
+        ,{field: 'create_time', title: '创建时间', width: 160, unresize: true, templet:"<div>{{layui.util.toDateString(d.create_time*1000)}}</div>"}
+        ,{title:'操作', toolbar: '#table-operation', width:105}
+        ]]
+        ,data: [
+            {volist name="list" id="vo"}
+            {
+                id: '{$vo.id}',
+                name: '{$vo.name}',
+                content: '{$vo.content}',
+                create_time: '{$vo.create_time}'
+            },
+            {/volist}
+        ]
+        ,limit: {:$page->pageSize}
+    });
+
+    //总页数大于页码总数
+    laypage.render({
+        elem: 'laypage'
+        ,count: {:$page->count}
+        ,curr: {:$page->iPage}
+        ,limit: {:$page->pageSize}
+        ,layout: ['count', 'prev', 'page', 'next', 'skip']
+        ,jump: function(obj){
+            if(obj.curr!= "{:$page->iPage}"){
+                var jumpUrl = "{:$page->url('currentPage')}";
+                jumpUrl = jumpUrl.replace("currentPage",obj.curr);
+                location.href = jumpUrl;
+            }
+        }
+    });
+
+    // 批量删除
+    $('#batchDel').click(function(){
+        var checkStatus = table.checkStatus('manage-table')
+        ,checkData = checkStatus.data; //得到选中的数据
+
+        if(checkData.length === 0){
+          return layer.msg('请选择要删除的数据');
+        }
+      var ids = '';
+      // 拼接ID
+      checkData.forEach(function(item){
+          ids += item.id + ',';
+      });
+      ids = ids.substr(0, ids.length - 1);
+      delData(ids,'');
+    })
+    
+    // 根据ID删除数据
+    window.delData = function (ids,remark) {
+        var msg = '您确定要删除选定的记录吗？';
+        if(typeof ids === 'number'){
+            msg = '您确定要删除“'+remark+'”吗？';
+        }
+        layer.confirm(msg, function(index) {
+            // 删除数据
+            $.ajax({
+                url: "{:url('sms/sms_template_del')}",
+                data: "id=" + ids,
+                type: "post",
+                dataType: "json",
+                success: function (obj) {
+                    if (obj.msg == '操作成功') {
+                        layer.msg('已删除');
+                        location.reload();
+                    } else {
+                        layer.alert('删除失败', { icon: 2 });
+                    }
+                }
+            });
+        });
+    }
+});
+</script>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>新增二维码</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="__PUBLIC__/layuiadmin/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="__PUBLIC__/layuiadmin/style/admin.css" media="all" />
+  <link rel="stylesheet" href="__PUBLIC__/layuiadmin/style/public.css" media="all" />
+  <script type="text/javascript" src="__PUBLIC__/layuiadmin/js/jquery-3.3.1.js"></script>
+</head>
+
+<body>
+    
+<form class="layui-form" method="post" action="" lay-filter="component-form-group">
+    <div class="layui-fluid">
+        <div class="layui-card">
+            <div class="layui-card-header1">二维码信息</div>
+            <div class="layui-card-body" style="padding: 15px;">
+                <div class="layui-form-item">
+                  <label class="layui-form-label">二维码名称</label>
+                  <div class="layui-input-block">
+                    <input type="text" name="qrcode_name" lay-verify="required" autocomplete="off" placeholder="请输入二维码名称" value="{$datainfo.qrcode_name ?: ''}" class="layui-input">
+                  </div>
+                </div>
+                <div class="layui-form-item">
+                  <div class="layui-form-item layui-form-text">
+                    <label class="layui-form-label">二维码描述</label>
+                    <div class="layui-input-block">
+                      <textarea name="qrcode_desc" placeholder="请输入二维码描述" class="layui-textarea">{$datainfo.qrcode_desc ?: ''}</textarea>
+                    </div>
+                  </div>
+                </div>
+                <div class="layui-form-item layui-layout-admin">
+                    <div class="layui-input-block">
+                        <div class="layui-footer" style="left: 0;z-index: 9999;">
+                          <input type="submit" class="layui-btn" lay-submit lay-filter="layuiadmin-submit" id="layuiadmin-submit" value="保存">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script src="__PUBLIC__/layuiadmin/layui/layui.js"></script>
+<script>
+layui.config({
+    base: '__PUBLIC__/layuiadmin/' //静态资源所在路径
+}).extend({
+    index: 'lib/index' //主入口模块
+}).use(['index', 'form'], function(){
+});
+</script>
+</body>
+</html>

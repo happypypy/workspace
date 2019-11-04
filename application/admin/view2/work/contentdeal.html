@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>无标题文档</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="__PUBLIC__/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="__PUBLIC__/layuiadmin/style/admin.css" media="all">
+    <link rel="stylesheet" href="__PUBLIC__/layuiadmin/style/public.css" media="all" />
+    <script type="text/javascript" src="__PUBLIC__/layuiadmin/js/jquery-3.3.1.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/plugins/Ueditor/ueditor.config.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/plugins/Ueditor/ueditor.all.js"></script>
+</head>
+    <style>
+        .imgPeview{
+            border: solid 1px #ccc;
+            width: 100px;
+            height: 100px;
+            margin-top: 5px;
+        }
+    </style>
+<body>
+    
+<form class="layui-form" method="post" action="{:url('Admin/work/contentpost',array('id'=>$request['id']))}" lay-filter="component-form-group">
+    <div class="layui-fluid">
+        <div class="layui-card">
+            <div class="layui-card-header1"><?php if($content_info['id']){echo '修改';}else{echo '添加';}?></div>
+            <div class="layui-card-body" style="padding: 15px;">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">名称</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="name" lay-verify="required" autocomplete="off" placeholder="请输入名称" value="{$content_info.name ?: ''}" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item layui-hide">
+                    <label class="layui-form-label">值</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="code" autocomplete="off" placeholder="请输入值" value="{$content_info.code ?: ''}" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">排序</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="order" autocomplete="off" placeholder="请输入排序" value="{$content_info.order ?: 0}" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">备注</label>
+                    <div class="layui-input-block">
+                        <textarea name="remark" placeholder="请输入备注" class="layui-textarea">{$datainfo.remark ?: ''}</textarea>
+                    </div>
+                </div>
+
+                <div class="layui-form-item layui-layout-admin">
+                    <div class="layui-input-block">
+                        <div class="layui-footer" style="left: 0;z-index: 9999;">
+                            <input type="hidden" name="action" value="{$request['action']}" />
+                            {if condition="$request['parentcode'] neq null"}
+                            <input type="hidden" name="parentcode" value="{$request['parentcode']}">
+                            {/if}
+                            <input type="hidden" name="bookcode" value="{$request['bookcode']}">
+                            <button class="layui-btn" lay-submit lay-filter="layuiadmin-submit" id="layuiadmin-submit">保存</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script src="__PUBLIC__/layuiadmin/layui/layui.js"></script>
+<script type="text/javascript" src="__PUBLIC__/layuiadmin/js/public.js"></script>
+<script>
+layui.config({
+    base: '/layuiadmin/' //静态资源所在路径
+}).extend({
+    index: 'lib/index' //主入口模块
+}).use(['index','table'], function(){
+});
+</script>
+</body>
+</html>

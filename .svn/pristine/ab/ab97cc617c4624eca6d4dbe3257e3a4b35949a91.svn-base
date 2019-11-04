@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <!--<meta http-equiv="refresh" content="5;url={$jumpurl}">-->
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+    <script src="__PUBLIC__/static/template/pub/js/common.js"></script>
+    <link rel="stylesheet" href="__PUBLIC__/static/template/pub/css/main.css?v={:time()}">
+    <link rel="stylesheet" href="__PUBLIC__/static/template/skin/M1/css/skin.css?v={:time()}">
+
+    <title>{$cms->GetConfigVal('webset','webname',$idsite);}</title>
+</head>
+
+<body class="flexCol">
+{include file="modules/common/header" /}
+<section class="section">
+    <div class="score-detail-wrap">
+        <div class="inner">
+            <div class="docs-picture">
+                {:replearurl($content)}
+            </div>
+        </div>
+
+    </div>
+    <div height="30" align="center" bgcolor="#CCCCCC"> 页面自动 <a id="href" href="<?php echo($jumpurl);?>">跳转</a> 等待时间： <b id="wait">5</b></div>
+</section>
+
+<footer class="footer">
+    {include file="modules/common/footer" /}
+</footer>
+
+<script type="text/javascript">
+
+        var wait = document.getElementById('wait'),
+            href = document.getElementById('href').href;
+        var interval = setInterval(function(){
+            var time = --wait.innerHTML;
+            if(time <= 0) {
+                location.href = href;
+                clearInterval(interval);
+            };
+        }, 1000);
+
+</script>
+</body>
+</html>

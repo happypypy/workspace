@@ -1,0 +1,431 @@
+<?php
+/**
+ * 天络CMS
+ * ============================================================================
+ * 版权所有 2017-2027 深圳天络科技有限公司，并保留所有权利。
+ * 网站地址: http://www.chinasky.net
+ * ----------------------------------------------------------------------------
+ * 这不是一个自由软件！您只能在不用于商业目的的前提下对程序代码进行修改和使用 .
+ * 不允许对程序代码以任何形式任何目的的再发布。
+ * ============================================================================
+ * Author: huangshixin
+ * Date:2017-08-25 */
+namespace app\admin\module;
+use think\Model;
+use think\Page;
+use think\Session;
+
+class Node extends Model{
+
+    //列表
+    public function index($nodetype){
+        //获取所有栏目
+        $idsite = session('idsite');
+        $node = $this->node_list($nodetype,0,$idsite);
+        return $node;
+    }
+
+    public  function  getOneNode($NodeID)
+    {
+        $idsite = session('idsite');
+        $result = db('node')->where('NodeID='.$NodeID.' and (idsite='.$idsite.' or idsite=0)')->find();
+        return $result;
+    }
+
+    public  function  getNodeList($pid=0,$nodetype)
+    {
+        $idsite = session('idsite');
+        $result = db('node')->where('nodetype='.$nodetype.' and (idsite='.$idsite.' or idsite=0) and parentid='.$pid)->order('idorder asc,nodeid asc')->select();
+        return $result;
+    }
+    public function content_list($data){
+        $node_info = db('node')->where('nodeid='.$data['nodeid'])->find();//拿到栏目的信息
+        $model_id=intval($node_info['idmodel']); //模型id
+        $where='idmodel='.$model_id." and isusing=1";
+        $ModelField =  db('modelfield')->where($where)->order('idorder asc,idtypefield asc')->select(); //找出对应的模型
+        //便利模型字段，查找哪些字段作为查询条件
+        if($data["nodeid"] !=0) {
+            $map['nodeid'] = ['eq', $data['nodeid']];
+            $map["status"] = 2;
+        }else{
+            $map["status"] = 0;
+            $idsite = session('idsite');
+            $map['siteid'] = $idsite;
+        }
+        $map1 = [];
+        $arrMList=[];
+
+        foreach ($ModelField as $key=>$value){
+            if($value['issearch'] == 1){
+                if(array_key_exists($value['fieldname'],$data) && !empty($data[$value['fieldname']])){
+                    if(is_string($data[$value['fieldname']])) { //判断是否为字符串类型，
+                        $map[$value['fieldname']] = ['like','%'.$data[$value['fieldname']].'%'];
+                    }
+                    elseif(is_array($data[$value['fieldname']]))
+                    {
+                        if(count($data[$value['fieldname']]) == 1){
+                            $map[$value['fieldname']]=['like', "%|".$data[$value['fieldname']][0]."|%"];
+                            $data[$value['fieldname']]=$data[$value['fieldname']][0];
+                        }else{
+                            $tmp_arr=[];
+                            $tmp_arr_search=[];
+                            foreach ($data[$value['fieldname']] as $v)
+                            {
+                                if(!empty($v))
+                                {
+                                    array_push($tmp_arr,['like', "%|".$v."|%"]);
+                                    $tmp_arr_search[]=$v;
+                                }
+                            }
+
+                            $map[$value['fieldname']]=$tmp_arr;
+                            $data[$value['fieldname']]=implode('|',$tmp_arr_search);
+                        }
+                    }
+                    else{
+
+                        $map[$value['fieldname']] = ['eq',$data[$value['fieldname']]];
+                    }
+                    $map1[$value['fieldname']] = $data[$value['fieldname']];
+                }else{
+                    $map1[$value['fieldname']] = '';
+                }
+            }
+            if($value['isdisplayonlist']==1)
+            {
+                $arrMList[$value['fieldname']]=$value;
+            }
+        }
+
+        $count = db('content')->where($map)->count();// 查询满足要求的总记录数
+         $Page = new Page($count,10);// 实例化分页类 传入总记录数和每页显示的记录数
+        $list = db('content')->where($map)->order('idorder asc,contentid desc')->limit($Page->firstRow.','.$Page->pageSize)->select();
+        $listTmp=[];
+        foreach ($list as $key=>$value)
+        {
+            foreach ($arrMList as $Mkey=>$vo)
+            {
+                $value[$Mkey]=formatListData($value[$Mkey],$vo);
+            }
+            $listTmp[]=$value;
+        }
+
+
+        $result['list'] = $listTmp;
+        $result['search'] = $map1;
+        $result['modelfield'] = $ModelField;
+        $result['page'] = $Page;
+        return  $result;
+    }
+
+
+
+    //内容添加，编辑跳转页面
+    public function content_deal($data){
+        $nodeid = $data['nodeid'];
+        if($data['action'] == "add"){
+            if($nodeid){
+                $node_info = db('node')->where('nodeid='.$nodeid)->find();//拿到指定栏目信息
+                $model_id=intval($node_info['idmodel']);//模型id
+                $where='idmodel='.$model_id." and isusing=1";
+
+            }
+            $contentinfo = '';
+            $data['type'] = 1;
+            $contentid = 0;
+        }
+
+        if($data['action'] == "edit" || $data['action'] == "view"){
+            $contentid = $data['contentid'];
+            $contentinfo = db('content')->where(array('contentid'=>$contentid))->find();//拿到一条内容的信息
+
+            $node_info = db('node')->where('nodeid='.$contentinfo['nodeid'])->find();//拿到指定栏目信息
+            $model_id=intval($node_info['idmodel']);//拿到modelid
+            $where='idmodel='.$model_id." and isusing=1";//是否显示列表添加页
+           // foreach ($contentinfo as $key=>$value){
+               //if(strstr($value,'|')){
+               //    $contentinfo[$key] =  explode("|",$value);
+               //}else{
+               //         $contentinfo[$key] =$value;
+               //}
+            //}
+            $data['type'] = 2;
+        }
+        //拿到所有栏目信息
+        $nodename = $this->node_list(1,0,session('idsite'));
+        $FieldList =  db('modelfield')->where($where)->order('idorder asc,idtypefield asc')->select();
+        $result['contentinfo'] = $contentinfo;
+        $result['fieldlist'] = $FieldList;
+        $result['contentid'] = $contentid;
+        $result['nodeid'] = $nodeid;
+        $result['nodename'] = $nodename;
+        $result['modelid'] = $model_id;
+        $result['action'] = $data['action'];
+        $result['type'] = $data['type'];
+        return $result;
+    }
+
+    //内容删除
+    //$nodeid 节点id 0为回收站id
+    public function content_del($data,$nodeid){
+        if(isset($data)){
+            if(strstr($data,',')){
+                $arr = explode(',',$data);
+                if($nodeid==0) {
+                    $bool = db('content')->where('contentid', 'in', $arr)->delete();
+                }else{
+                    $bool = db('content')->where('contentid', 'in', $arr)->update(array("status"=>0));
+                }
+            }else{
+                if($nodeid==0) {
+                    $bool = db('content')->where('contentid=' . $data)->delete();
+                }else{
+                    $bool = db('content')->where('contentid=' . $data)->update(array("status"=>0));
+                }
+            }
+        }else{
+            $bool = false;
+        }
+
+        return $bool;
+    }
+
+
+    //内容添加，修改提交地址
+    public function content_post($data){
+        $va = [];
+        //检测提交的数据是否有敏感词
+        foreach ($data as $k=>$v){
+            if(is_string($v)){
+                $data[$k] = field_filter($v);
+            }
+        }
+
+        foreach ($data as $key=>$value){
+            if(is_array($value) && !empty($value)){
+
+                $va[$key] ='|'. trim(implode('|',$value),'|').'|';
+                //$va[$key] = implode('|',$value);
+            }else{
+                $va[$key] = $value;
+            }
+        }
+        $va['userid'] = session('admin_id');
+
+        $va['siteid']=\session('idsite');
+        $va['status'] = 2;
+        $va['content'] = htmlentities($va['content']);
+
+        if ($va['action'] == 'add') {
+            $bool = db('content')->strict(false)->insert($va);
+        }
+        if($va['action'] == 'edit'){
+            $nodeinfo = db('node')->where(array('nodeid'=>$va['nodeid']))->find(); //找出对应的栏目信息
+            $where = 'idmodel=' . $nodeinfo['idmodel']." and isusing=1";   //模型id
+            $modelinfo = db('modelfield')->where($where)->order('idorder asc,idtypefield asc')->select();
+            $vakeys = array_keys($va);
+            foreach ($modelinfo as $key=>$value){
+                for($i=0;$i<count($vakeys);$i++){
+                    if(in_array($value['fieldname'],$vakeys)){
+                    }else{
+                        $va[$value['fieldname']]='';
+                    }
+                }
+            }
+
+            $bool = db('content')->where(array('contentid'=>$va['contentid']))->strict(false)->update($va);
+        }
+        return $bool;
+    }
+
+    /**
+     * 获得指定分类下的子分类的数组
+     * @access  public
+     * @param   int     $no_node_id     要排除的栏目ID
+
+     * @return  mix
+     */
+    public function node_list($nodetype,$no_node_id = 0,$idsite)
+    {
+        /*$sql = "SELECT * FROM  cms_node where nodetype=1 ORDER BY idorder ASC ";
+        $cms_node_g = db('node')->query($sql); //讲数据集赋给全局变量*/
+
+        $cms_node_g = db('node')->where('nodetype='.$nodetype.' and (idsite='.$idsite.' or idsite=0)')->order('idorder asc,nodeid asc')->select();
+        $cms_node_g = convert_arr_key($cms_node_g, 'nodeid');
+        $cms_node2_g=[];
+        foreach ($cms_node_g AS $key => $value)
+        {
+            if($no_node_id == $value['nodeid'])
+                continue;
+            if($value['level'] == 0)
+            {
+                $cms_node2_g= $this->get_cat_tree($no_node_id,$value['nodeid'],$cms_node_g,$cms_node2_g);
+            }
+        }
+
+        return $cms_node2_g;
+        // $this->display();
+    }
+
+    /**
+     * 获取指定id下的 所有分类
+     * @global type $cms_node_g 所有商品分类
+     * @param type $id 当前显示的 菜单id
+     * @return 返回数组 Description
+     */
+    public function get_cat_tree($no_node_id,$id,$cms_node_g,$cms_node2_g)
+    {
+        $cms_node2_g[$id] = $cms_node_g[$id];
+        foreach ($cms_node_g AS $key => $value){
+            if($no_node_id==$value['nodeid'])
+                continue;
+            if($value['parentid'] == $id)
+            {
+                $cms_node2_g=$this->get_cat_tree($no_node_id,$value['nodeid'],$cms_node_g,$cms_node2_g);
+                $cms_node2_g[$id]['have_son'] = 1; // 还有下级
+            }
+        }
+        return $cms_node2_g;
+    }
+
+    public  function visitlist($data)
+    {
+        $result=[];
+        $result3=[];
+        $openid="";
+        $dataid=$data['dataid'];
+
+        $result1=db('visit_record')->field('openid,MIN(stime) as stime,MAX(etime) as etime,SUM(differtime)as differtime,COUNT(*) as vcount ')->where(array('aid'=>$dataid,'flag'=>1))->group('openid')->order('etime desc')->select();
+
+        foreach ($result1 as $k=>$vo)
+        {
+            $openid=$openid.",'".$vo['openid']."'";
+        }
+        $openid=trim($openid,",");
+        if($openid!="")
+        {
+            $result2=db("member")->where(" openid in (".$openid.")")->order('dtlastvisitteim desc')->select();
+            if($result2)
+            {
+                foreach ($result2 as $k=>$vo)
+                {
+                    $result3[$vo['openid']]=$vo;
+                }
+            }
+        }
+
+        $where1 = "level=2";
+        $sityList = db("region")->where($where1)->select();
+        $sityArr = [];
+        foreach ($sityList as $k => $vo) {
+            $sityArr[$vo['id']] = $vo['name'];
+        }
+
+        foreach ($result1 as $k=>$vo)
+        {
+            $result1[$k]['chrname']="-";
+            $result1[$k]['nickname']="-";
+            $result1[$k]['intcity']="-";
+            $result1[$k]['intstate']="0";
+            $result1[$k]['chrtel']="-";
+            $result1[$k]['collection']="-";
+            $result1[$k]['forward']="-";//转发数
+            $result1[$k]['chraddress']="";
+            $result1[$k]['stime']=empty($result1[$k]['stime'])?"":date("Y-m-d H:i:s",$result1[$k]['stime']);
+            $result1[$k]['etime']=empty($vo['etime'])?"":date("Y-m-d H:i:s",$vo['etime']);
+            $result1[$k]['differtime']=fromatetime($result1[$k]['differtime']);
+            if(array_key_exists($vo['openid'],$result3))
+            {
+                $result1[$k]['chrname']=$result3[$vo['openid']]['chrname'];
+                $result1[$k]['nickname']=$result3[$vo['openid']]['nickname'];
+                $result1[$k]['intcity']=array_key_exists($result3[$vo['openid']]['intcity'],$sityArr)?$sityArr[$result3[$vo['openid']]['intcity']]:'-';
+                $result1[$k]['chraddress']=$result3[$vo['openid']]['chraddress'];
+                $result1[$k]['intstate']=$result3[$vo['openid']]['intstate']==1?"关注":"";
+                $result1[$k]['chrtel']=$result3[$vo['openid']]['chrtel'];
+                $result1[$k]['collection']=db('collection')->where(array('userid'=>$result3[$vo['openid']]['idmember'],'flag'=>2,'dataid'=>$dataid))->count();
+            }
+
+            if($vo['openid'] == ''){
+                unset($result1[$k]);
+            }
+        }
+//        var_dump($result1);
+//        exit;
+        $result_tmp = array_column($result1,'etime');
+        array_multisort($result_tmp,SORT_DESC,$result1);
+        return $result1;
+    }
+
+    /**
+     * 从草稿箱中恢复
+     */
+    public function recoverychecked($data){
+        if(isset($data)){
+            if(strstr($data,',')){
+                $arr = explode(',',$data);
+                $bool = db('content')->where('contentid','in',$arr)->update(array("status"=>2));
+            }else{
+                $bool = db('content')->where('contentid='.$data)->update(array("status"=>2));
+            }
+        }else{
+            $bool = false;
+        }
+
+        return $bool;
+    }
+///
+/// 获取资讯标签
+    public function getHdbq($zxbq){
+
+        $obj = new \app\admin\module\activity(session('idsite'));
+        $zxbqb=$obj->getDic("zxbq");
+        $bq=[];
+        foreach($zxbqb as $v){
+            $bq[$v['id']]=$v['name'];
+        }
+        $zxbq_str='';
+
+        foreach(explode('|',$zxbq) as $v0){
+            $zxbq_str.=$bq[$v0].'|';
+        }
+        $zxbq_str=trim($zxbq_str,'|');
+        return $zxbq_str;
+    }
+
+    /**
+     * 转移或者复制文章到栏目下
+     * @param $data
+     * @return bool|int|string
+     * @throws \think\Exception
+     * @throws \think\exception\PDOException
+     */
+    public function copy_move($data){
+        $idsite = session('idsite');
+        $bool = false;
+        //如果有文章id
+        if(isset($data['id'])){
+            $arr = explode(',',$data['id']);
+            //查询出栏目的信息
+            $node_info = db('node')->field('listtype',true)->where(['nodeid'=>$data['nodeid'],'idsite'=>$idsite])->find();
+            foreach ($arr as $value){
+                //如果类型为1的话，那么就是转移,将这些文章的栏目换成转移后的
+                if($data['type'] == 1){
+                    $bool = db('content')->where(['contentid'=>$value,'siteid'=>$idsite])->update(['nodeid'=>$data['nodeid'],'nodename'=>$node_info['nodename'],'modelid'=>$node_info['idmodel']]);
+                //复制到该栏目下
+                }else{
+                    //查询出需要处理的文章
+                    $content_info = db('content')->field('contentid',true)->where(['contentid'=>$value,'siteid'=>$idsite])->find();
+                    //重新赋值选择的栏目信息
+                    $content_info['nodeid'] = $data['nodeid'];
+                    $content_info['nodename'] = $node_info['nodename'];
+                    $content_info['modelid'] = $node_info['idmodel'];
+                    $bool = db('content')->insert($content_info);
+                }
+            }
+        }else{
+            $bool = false;
+        }
+
+        return $bool;
+    }
+}

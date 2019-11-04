@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="yes" name="apple-mobile-web-app-capable">
+  <meta content="yes" name="apple-touch-fullscreen">
+  <meta content="telephone=no,email=no" name="format-detection">
+  <meta name="viewport"
+    content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+  <script src="__PUBLIC__/static/template/pub/js/common.js"></script>
+  <link rel="stylesheet" href="__PUBLIC__/static/template/pub/css/main.css?v={:time()}">
+  <link rel="stylesheet" href="__PUBLIC__/static/template/skin/M1/css/skin.css?v={:time()}">
+  
+  <title>锁客用户列表</title>
+</head>
+
+<body class="flexCol">
+  {include file="modules/common/header" /}
+  <section class="section">
+  <div class="headtitle">-锁客用户名单-</div>
+
+   <div class="common-wrap">
+    <ul class="common-list"   id="data">
+      {if condition="!$list"}
+      <li class="list-item no-data">您当前还没有锁客用户哦~</li>
+      {else /}
+      {volist name="list" id="vo"}
+      <li class="list-item flex">
+        <div class="list-item-img"><img src="{$vo['userimg']}" alt=""></div>
+        <div class="list-item-txt">
+          <div class="info title fontColor">{$vo['u_chrname']}</div>
+          <div class="info flex wechat">
+            <div class="tit">微信昵称</div>：
+            <div class="txt">{$vo['nickname']}</div>
+          </div>
+          <div class="info flex name">
+            <div class="tit">真实姓名</div>：
+            <div class="txt">{$vo['u_chrname']}</div>
+          </div>
+          <div class="info flex time">
+            <div class="tit">绑定时间</div>：
+            <div class="txt">{$vo['lock_time']}</div>
+          </div>
+        </div>
+      </li>
+      {/volist}
+      {/if}
+    </ul>
+   </div>
+  </section>
+  
+  <footer class="footer">
+    
+  </footer>
+  <script src="__PUBLIC__/static/template/pub/js/jquery.min.js"></script>
+  <script src="__PUBLIC__/static/template/pub/js/menu.js"></script>
+  <script>
+        //==============核心代码=============
+        var winH = $(window).height(); //页面可视区域高度
+    
+        var ipage = 1;
+        var scrollHandler = function () {
+            var pageH = $(document).height();
+            var scrollT = $(window).scrollTop(); //滚动条top
+    
+            if (pageH - winH - scrollT < 1) {
+                LoadData(ipage)
+                ipage++;
+            }
+        }
+        //定义鼠标滚动事件
+        $(window).scroll(scrollHandler);
+        //==============核心代码=============
+    
+        function LoadData(ipage) {
+            $("#dataload").show();
+            $(window).unbind('scroll');
+            // var state = $('input[name="states"]').val();
+            $.ajax({
+                url: "/{$sitecode}/locksmanlist",
+                type: 'POST',
+                cache: false,
+                data: { "ipage": ipage, "ajax": 1 },
+                success: function (data) {
+    
+                    if (data == 11) {
+                        $("#dataload").hide();
+                        // $("#loadmsg").html("已无更多数据");
+                        return;
+                    }
+                    $("#dataload").hide();
+                    $("#data").html($("#data").html() + data);
+                    $(window).scroll(scrollHandler);
+                }
+            });
+    
+        }
+    </script>
+</body>
+
+</html>

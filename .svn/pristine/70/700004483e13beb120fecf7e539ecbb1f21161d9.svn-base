@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="generator" content="HTML Tidy for HTML5 for Windows version 5.2.0" />
+    <meta charset="utf-8" />
+    <title>查看关注会员</title>
+    <meta name="renderer" content="webkit" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="stylesheet" href="__PUBLIC__/layuiadmin/layui/css/layui.css" media="all" />
+    <link rel="stylesheet" href="__PUBLIC__/layuiadmin/style/admin.css" media="all" />
+    <style>
+        .layui-form-item{
+            margin-bottom: 5px;
+        }
+        .layui-table-cell{
+            height: auto;
+        }
+        .lastcell>a{
+            text-decoration: underline;
+            color: #333;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+    </style>
+    </head>
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-tab">
+                    <ul class="layui-tab-title">
+                        <li class="layui-this">查看关注会员</li>
+                    </ul>
+                </div>
+                <div class="layui-card-header">搜索</div>
+                <!-- 搜索区域 -->
+                <div class="layui-card-body">
+                    <form class="layui-form" action="" lay-filter="component-form-group">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">用户编号：</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="memberid" autocomplete="off" placeholder="请输入用户编号" value="" class="layui-input" />
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">用户姓名：</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="username" autocomplete="off" placeholder="请输入用户姓名" value="" class="layui-input" />
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">昵称：</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="memberid" autocomplete="off" placeholder="请输入昵称" value="" class="layui-input" />
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">用户类别：</label>
+                            <div class="layui-input-block">
+                                {volist name="hyfl" id="vo"}
+                                <input type="checkbox" name="categoryid[]" lay-skin="primary" value="{$vo.code}" <?php if(in_array($vo['code'],explode(",",trim($search['categoryid'],',')))) { echo "checked"; } ?> title="{$vo.name}">
+                                {/volist}
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">关注状态：</label>
+                            <div class="layui-input-block">
+                                <input name="intstate[]" lay-skin="primary" <?php if(in_array("1",explode(",",trim($search['intstate'],',')))) { echo "checked"; } ?> type="checkbox" value="1" title="关注"/>
+                                <input name="intstate[]" lay-skin="primary" <?php if(in_array("2",explode(",",trim($search['intstate'],',')))) { echo "checked"; } ?> type="checkbox" value="2" title="取消"/>
+                                <input name="intstate[]" lay-skin="primary" <?php if(in_array("3",explode(",",trim($search['intstate'],',')))) { echo "checked"; } ?> type="checkbox" value="3" title="游客"/>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">是否有手机号码：</label>
+                            <div class="layui-input-inline">
+                                <select name="istel">
+                                    <option value="">全部</option>
+                                    <option value="1" <?php if($search['istel']==1) { echo "selected"; } ?>>有手机号码</option>
+                                    <option value="2" <?php if($search['istel']==2) { echo "selected"; } ?>>无手机号码</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">手机号码：</label>
+                            <div class="layui-input-inline">
+                                <input id="chrtel" type="text" name="chrtel" value="{$search['chrtel']}" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">用户编号：</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="memberid" autocomplete="off" placeholder="请输入用户编号" value="" class="layui-input" />
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">订单条件：</label>
+                            <div class="layui-input-inline">
+                                <select name="paynumif">
+                                    <option value="1" <?php if($search['paynumif']==1) { echo "selected"; } ?>>大于</option>
+                                    <option value="2" <?php if($search['paynumif']==2) { echo "selected"; } ?>>等于</option>
+                                    <option value="3" <?php if($search['paynumif']==3) { echo "selected"; } ?>>小于</option>
+                                </select>
+                            </div>
+                            <div class="layui-input-inline">
+                                <input type="text" name="paynum" autocomplete="off" placeholder="" value="" class="layui-input" />
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">注册时间范围：</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="rstime" name="rstime" class="layui-input"  value="{$search['rstime']}">
+                            </div>
+                            <div class="layui-form-mid">
+                                -
+                            </div>
+                            <div class="layui-input-inline">
+                                <input type="text" id="retime" name="retime" class="layui-input"  value="{$search['retime']}">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">取消时间范围：</label>
+                            <div class="layui-input-inline">
+                                <input type="text" id="cstime" name="cstime" class="layui-input"  value="{$search['cstime']}">
+                            </div>
+                            <div class="layui-form-mid">
+                                -
+                            </div>
+                            <div class="layui-input-inline">
+                                <input type="text" id="cetime" name="cetime" class="layui-input"  value="{$search['cetime']}">
+                            </div>
+                        </div>
+                        
+                        <div class="layui-inline">
+                            <button class="layui-btn layuiadmin-btn-list" lay-submit lay-filter="LAY-app-contlist-search">
+                                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <table class="layui-hide" id="qrcode-manage-table" lay-filter="qrcode-manage-table"></table>
+
+                <div style="overflow: hidden">
+                    <div style="float: left; margin-top: 15px;margin-left: 10px; vertical-align: middle;">
+                        <button class="layui-btn layui-btn-sm" id="batchDel">删除</button>
+                    </div>
+                    <div id="qrcode-laypage" style="text-align: right; margin-right: 15px;"></div>
+                </div>
+
+                <!-- 工具栏按钮 -->
+                <script type="text/html" id="qrcode-table-toolbar">
+                    <div class="layui-btn-container">
+                        <button class="layui-btn layui-btn-sm" lay-event="add">新增二维码</button>
+                    </div>
+                </script>
+                <!-- 行工具按钮 -->
+                <script type="text/html" id="qrcode-table-operation">
+                    <div class="table-operation">
+                        <button class="layui-btn layui-btn-xs" lay-event="view">查看关注用户</button>
+                        <button class="layui-btn layui-btn-xs" lay-event="edit">修改</button>
+                        <button class="layui-btn layui-btn-xs" lay-event="del">删除</button>
+                    </div>
+                </script>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="__PUBLIC__/layuiadmin/js/jquery-3.3.1.js"></script>
+<script src="__PUBLIC__/layuiadmin/layui/layui.js"></script>
+<script src="__PUBLIC__/layuiadmin/js/public.js"></script>
+<script>
+layui.config({
+    base: '__PUBLIC__/layuiadmin/' //静态资源所在路径
+}).extend({
+    index: 'lib/index' //主入口模块
+}).use(['index', 'table', 'jquery'], function(){
+    var admin = layui.admin
+    ,laypage = layui.laypage
+    ,table = layui.table
+    ,$ = layui.$;
+
+    // 注册时间范围
+    seltime1("rstime","retime","YYYY-MM-DD");
+    // 取消时间范围
+    seltime1("cstime","cetime","YYYY-MM-DD");
+
+    table.render({
+        elem: '#qrcode-manage-table'
+        ,toolbar: '#qrcode-table-toolbar'
+        ,defaultToolbar: []
+        ,title: '用户数据表'
+        ,cols: [[
+        {type: 'checkbox'}
+        ,{field:'id', title:'id', width:120, unresize: true}
+        ,{field:'userimg', title:'头像', width:120, unresize: true,templet:'<div><img src="{{d.userimg}}" /></div>'}
+        ,{field: 'nickname', title: '昵称', minWidth: 120, unresize: true }
+        ,{field: 'intstate', title: '状态', width: 120, unresize: true }
+        ,{field: 'dtsubscribetime', title: '关注时间', width: 180, unresize: true }
+        ,{field: 'dtunsubscribetime', title: '取消时间', width: 180, unresize: true}
+        ,{field: 'visitcount', title: '访问次数', width: 180, unresize: true}
+        ,{field: 'integral', title: '当前积分', width: 180, unresize: true}
+        ,{field: 'iduser', title: '所属商务', width: 120, unresize: true }
+        ,{field: 'followuptime', title: '跟进日期', width: 120, unresize: true }
+        ,{field: 'dtlastvisitteim', title: '最后访问时间', width: 120, unresize: true }
+        ,{field: 'ismanage', title: '管理员', width: 120, unresize: true }
+        ,{title:'操作', toolbar: '#qrcode-table-operation', width:230}
+        ]]
+        ,data: {:json_encode($member_list)}
+        ,limit: {:$page->pageSize}
+    });
+
+    //总页数大于页码总数
+    laypage.render({
+        elem: 'qrcode-laypage'
+        ,count: {:$page->count}
+        ,curr: {:$page->iPage}
+        ,limit: {:$page->pageSize}
+        ,layout: ['count', 'prev', 'page', 'next', 'skip']
+        ,jump: function(obj){
+            if(obj.curr!= "{:$page->iPage}"){
+                var jumpUrl = "{:$page->url('currentPage')}";
+                jumpUrl = jumpUrl.replace("currentPage",obj.curr);
+                location.href = jumpUrl;
+            }
+        }
+    });
+
+    // 批量删除
+    $('#batchDel').click(function(){
+        var checkStatus = table.checkStatus('qrcode-manage-table')
+        ,checkData = checkStatus.data; //得到选中的数据
+
+        if(checkData.length === 0){
+          return layer.msg('请选择要删除的数据');
+        }
+
+        layer.confirm('确定删除吗？', function(index) {
+          var ids = '';
+          debugger;
+          // 拼接ID
+          checkData.forEach(function(item){
+              ids += item.id + ',';
+          });
+          ids = ids.substr(0, ids.length - 1);
+          del(ids);
+        });
+    })
+    // 根据ID删除数据
+    function del(ids){
+          // 删除数据
+          $.ajax({
+                url:"{:url('qrcodemanage/qrcode_del')}",
+                data:"id="+ids,
+                type:"post",
+                dataType:"json",
+                success:function(msg) {
+                    if (msg == 1) {
+                        layer.msg('已删除');
+                        location.reload();
+                    }else if(msg == -1){
+                        layer.alert('你没有删除权限', {icon: 5});
+                    }else{
+                        layer.alert('删除失败', {icon: 2});
+                    }
+                }
+            });
+    }
+    //头工具栏事件
+    table.on('toolbar(qrcode-manage-table)', function(obj){
+        if(obj.event === 'add'){
+            layer.open({
+                type: 2,
+                title: '新增二维码',
+                shadeClose: true,
+                shade: 0.8,
+                area: ['530px', '300px'],
+                content: "{:url('qrcodemanage/qrcode_modi','&action=add','')}"
+            }); 
+        }
+    });
+    
+    //监听行工具事件
+    table.on('tool(qrcode-manage-table)', function(obj){
+        var data = obj.data;
+        if(obj.event === 'del'){
+            layer.confirm('确定删除'+data.qrcode_name+'吗？', function(index){
+                del(data.id);
+                layer.close(index);
+            });
+        } else if(obj.event === 'edit'){
+            layer.open({
+                type: 2,
+                title: '编辑二维码',
+                shadeClose: true,
+                shade: 0.8,
+                area: ['530px', '300px'],
+                content: "{:url('qrcodemanage/qrcode_modi','&action=edit','','')}?id="+data.id
+            }); 
+        }
+    });
+});
+</script>
+</html>

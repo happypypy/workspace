@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>现金券详情</title>
+    <link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
+    <link href="__PUBLIC__/static/css/page.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="__PUBLIC__/static/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/layer/layer.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/ContorlValidator.js"></script>
+
+</head>
+<body>
+<div class="oa_pop">
+    <div class="oa_pop-main">
+        <div style="height: 6px"></div>
+        <div class="oa_title clearfix">
+            <span class="oa_title-btn"></span>
+            <span class="oa_ico-left"></span>
+            修改订单金额        </div>
+        <div class="oa_edition" style="margin-bottom: 5px">
+            <table width="100%" border="0" cellspacing="1" cellpadding="0" class="oa_edition" style="border-bottom: #e0e0e0 solid 1px">
+                <tr>
+                    <td width="150" class="oa_cell-left">原订单金额：</td>
+                    <td class="oa_cell-right"><span style="color: red">{$datainfo['price']}（元）</span></td>
+                </tr>
+                <form action="" method="post" id="form1" onsubmit="return verify_param()">
+                    <input type="hidden" name="id" value="{$datainfo['id']}">
+                <tr>
+                    <td width="150" class="oa_cell-left"><span style="color: red">*</span>修改后订单金额：</td>
+                    <td class="oa_cell-right">
+                        <input name="new_price" type="text" id="new_price" placeholder="请输入修改后订单金额" /> 元
+                    </td>
+                </tr>
+                    <tr>
+                        <td width="150" class="oa_cell-left"><span style="color: red">*</span>备注：</td>
+                        <td class="oa_cell-right">
+                            <textarea id="remark" name="remark" is_null="1" cols="50" rows="3"  class="form-control input oa_input-200"  style="width:250px;height:80px;"></textarea>
+                        </td>
+                    </tr>
+                <tr>
+                    <td></td>
+                    <td  style="padding:5px;"><input type="submit" value="确定" style="cursor: pointer" ></td>
+                </tr>
+                </form>
+
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    function verify_param() {
+        var price = /^((([1-9]|0)\d{0,6})|0)([.]{1}[0-9]{1,2})?$/; //金额（允许输入0）
+        var new_price = $('#new_price').val();
+        if(!price.test(new_price)){
+            layer.alert("请输入大于等于零的有效金额！",{icon:2});
+            return false;
+        }
+        //备注
+        if($("#remark").val()=="")
+        {
+            layer.alert("请输入备注！",{icon:2});
+            return false;
+        }
+        return true;
+    }
+</script>
+</body>
+</html>

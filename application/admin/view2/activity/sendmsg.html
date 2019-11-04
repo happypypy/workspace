@@ -1,0 +1,198 @@
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>产品管理</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/admin.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/public.css" media="all">
+    <script type="text/javascript" src="/layuiadmin/js/jquery-3.3.1.js"></script>
+    <script type="text/javascript" src="/layuiadmin/js/public.js"></script>
+
+
+</head>
+
+<body>
+<form class="layui-form" id="frm" action="" lay-filter="component-form-group" method="post">
+    <div class="layui-fluid">
+        <div class="layui-card">
+            <div class="layui-card-header1">信息发送</div>
+            <div class="layui-card-body" style="padding: 15px;">
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">标题</label>
+                        <div class="layui-input-inline" style="width: 400px;">
+                            <input type="text" name="chrtitle" lay-verify="required" autocomplete="off" class="layui-input" id="chrtitle">
+                        </div>
+                        <div class="layui-input-inline" style="width: 80px;">
+                        <select name="chrtitlecolor" id="chrtitlecolor">
+                            <option value="#000000">黑色</option>
+                            <option value="#ff0000">红色</option>
+                            <option style="color:#cccccc" value="#cccccc">灰色</option>
+                            <option style="color:#FE3CF57" value="#E3CF57">黄色</option>
+                            <option style="color:#0000FF" value="#0000ff">蓝色</option>
+                            <option style="color:#8A2BE2" value="#8a2be2">紫罗兰</option>
+                         </select>
+                        </div>
+                </div>
+                <div class="layui-form-item">
+
+                        <label class="layui-form-label">活动名称</label>
+                        <div class="layui-input-inline" style="width: 400px;">
+                            <input type="text" name="activityname" autocomplete="off" value="{$chrname}" class="layui-input" id="activityname">
+                        </div>
+
+                        <div class="layui-input-inline layui-w80" style="width: 80px;">
+                            <select name="activitynamecolor" id="activitynamecolor">
+                                <option value="#000000">黑色</option>
+                                <option value="#ff0000">红色</option>
+                                <option style="color:#cccccc" value="#cccccc">灰色</option>
+                                <option style="color:#FE3CF57" value="#E3CF57">黄色</option>
+                                <option style="color:#0000FF" value="#0000ff">蓝色</option>
+                                <option style="color:#8A2BE2" value="#8a2be2">紫罗兰</option>
+                            </select>
+                        </div>
+
+                </div>
+                <div class="layui-form-item layui-form-text">
+                    <label class="layui-form-label" >活动时间</label>
+                    <div class="layui-input-inline" style="width: 400px;">
+                        <input type="text" name="activitytime"   autocomplete="off" class="layui-input" id="activitytime">
+                    </div>
+                    <div class="layui-input-inline layui-w80" style="width: 80px;">
+                        <select name="activitytimecolor" id="activitytimecolor">
+                            <option value="#000000">黑色</option>
+                            <option value="#ff0000">红色</option>
+                            <option style="color:#cccccc" value="#cccccc">灰色</option>
+                            <option style="color:#FE3CF57" value="#E3CF57">黄色</option>
+                            <option style="color:#0000FF" value="#0000ff">蓝色</option>
+                            <option style="color:#8A2BE2" value="#8a2be2">紫罗兰</option>
+                        </select>
+                    </div>
+
+                </div>
+                <div class="layui-form-item layui-form-text">
+                    <label class="layui-form-label">备注</label>
+                    <div class="layui-input-inline" style="width: 400px;">
+                        <textarea name="remark"  class="layui-textarea" id="remark"></textarea>
+                    </div>
+                    <div class="layui-input-inline layui-w80" style="width: 80px;">
+                        <select name="remarkcolor" id="remarkcolor">
+                            <option value="#000000">黑色</option>
+                            <option value="#ff0000">红色</option>
+                            <option style="color:#cccccc" value="#cccccc">灰色</option>
+                            <option style="color:#FE3CF57" value="#E3CF57">黄色</option>
+                            <option style="color:#0000FF" value="#0000ff">蓝色</option>
+                            <option style="color:#8A2BE2" value="#8a2be2">紫罗兰</option>
+                        </select>
+                    </div>
+
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">链接地址</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="chrurl"    autocomplete="off" class="layui-input" value="{$chrurl}">
+                    </div>
+                </div>
+                <input type="hidden" name="touser" id="touser" value=""/>
+                <input type="hidden" name="dataid" value="{$dataid}"/>
+            </div>
+        </div>
+
+        <div class="layui-form-item layui-layout-admin">
+            <div class="layui-input-block">
+                <div class="layui-footer" style="left: 0;z-index: 9999;">
+                    <button class="layui-btn" lay-submit="" lay-filter="component-form-demo1">发送</button>
+                    <button type="button" id="close" class="layui-btn"  lay-filter="component-form-demo1">取消</button>
+                    <button type="button" class="layui-btn"  onclick="Preview()">预览</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<script>
+    $(function(){
+
+        $("#touser").val(GetOpenerWin().ids);
+    });
+</script>
+<script src="/layuiadmin/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: '/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['index', 'form', 'laydate'], function(){
+        var $ = layui.$
+            ,admin = layui.admin
+            ,element = layui.element
+            ,layer = layui.layer
+            ,laydate = layui.laydate
+            ,form = layui.form;
+
+
+        /* 监听指定开关 */
+        form.on('switch(component-form-switchTest)', function(data){
+            layer.msg('开关checked：'+ (this.checked ? 'true' : 'false'), {
+                offset: '6px'
+            });
+            layer.tips('温馨提示：请注意开关状态的文字可以随意定义，而不仅仅是ON|OFF', data.othis)
+        });
+
+        /* 监听提交 */
+        form.on('submit(component-form-demo1)', function(data){
+            $.ajax({
+                url:'/admin/activity/sendmsg',
+                type:'POST',
+                data: $('#frm').serialize(),
+                dataType:'json',
+                success:function (data) {
+                    if(data.state==1)
+                    {
+                        layer.alert('信息发送成功',{
+                            yes:function(){
+                                parent.layer.closeAll();
+                            }});
+                    }
+                    else
+                    {
+                        layer.alert("提交失败");
+                    }
+                }
+            })
+            return false;
+        });
+    });
+
+    $("#close").click(function () {
+        parent.layer.closeAll()
+    })
+    /**
+     * 预览
+     * @constructor
+     */
+    function Preview() {
+        var a1 = "<span style='color: "+$("#chrtitlecolor").val()+";'>"+$("#chrtitle").val()+"</span>";
+        var a2 = "<span style='color: "+$("#activitynamecolor").val()+";'>"+$("#activityname").val()+"</span>";
+        var a3 = "<span style='color: "+$("#activitytimecolor").val()+";'>"+$("#activitytime").val()+"</span>";
+        var a4 = "<span style='color: "+$("#remarkcolor").val()+";'>"+$("#remark").val()+"</span>";
+        var content = a1+"<br/>主题："+a2+"<br/>时间："+a3+"<br/>" + a4;
+        layer.alert(content, {
+
+            closeBtn: 0
+            ,anim: 4 //动画类型
+        });
+    }
+</script>
+
+</body>
+</html>

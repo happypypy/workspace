@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>短信发送</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="__PUBLIC__/layuiadmin/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="__PUBLIC__/layuiadmin/style/admin.css" media="all">
+  <link rel="stylesheet" href="__PUBLIC__/layuiadmin/style/public.css">
+</head>
+
+<body>
+
+  <div class="layui-fluid">
+    <div class="layui-card">
+      <div class="layui-card-header1">短信发送</div>
+      <div class="layui-card-body" style="padding: 15px;">
+        <form class="layui-form" method="post" action="">
+          <div class="layui-form-item">
+              <label class="layui-form-label"></label>
+              <div class="layui-input-block">
+                账号签名:
+                <span id="account_sign" style="color:#009688;">【{$sm_info["sms_sign"]}】</span>
+                每条短信最长<?= config('msg_config')['text_len']; ?>个字（包含账号签名），每次最多发送<span id="max_text_len"><?=config('msg_config')['max_text_len']; ?></span>个字（超过自动裁剪），当前计费字数为<span
+                  id="current_input_num">10</span>个字，分<span id="text_num">1</span>条短信发送<br>
+                短信剩余发送数量: <span>{$sm_info["sms_num"]}</span>
+              </div>
+              <hr class="layui-bg-gray">
+          </div>
+          
+          <div class="layui-form-item">
+            <label class="layui-form-label">定时发送</label>
+            <div class="layui-input-block">
+              <input type="checkbox" name="timing" lay-skin="switch" lay-filter="send-switch"
+              lay-text="ON|OFF">
+            </div>
+          </div>
+
+          <div class="layui-form-item" id="sendTimeDiv" style="display: none;">
+            <label class="layui-form-label">发送时间</label>
+            <div class="layui-input-inline">
+              <input type="text"  id="send_time" name="send_time" class="layui-input" placeholder="请选择发送时间" lay-key="1">
+            </div>
+          </div>
+
+          <div class="layui-form-item">
+            <label class="layui-form-label">模板名称</label>
+            <div class="layui-input-inline">
+              <select id="template-type">
+                  <option value="" hidden="true" ></option>
+                  {volist name="templates" id="vo"}
+                  <option value="{$vo.id}">{$vo.name}</option>
+                  {/volist}
+              </select>
+            </div>
+          </div>
+
+          <div class="layui-form-item">
+            <label class="layui-form-label">短信内容</label>
+            <div class="layui-input-block">
+              <textarea name="text" placeholder="请输入短信内容" class="layui-textarea"></textarea>
+            </div>
+          </div>
+
+          <div class="layui-form-item">
+            <label class="layui-form-label">手机号码</label>
+            <div class="layui-input-block">
+              <div class="layui-input-inline">
+                <input type="text" name="file-name" placeholder="选择文件" autocomplete="off" class="layui-input" disabled id="fileNameBox">
+              </div>
+              <button type="button" class="layui-btn" style="position: relative;">
+                <i class="layui-icon">&#xe67c;</i>上传文件
+                <input type="file" name="mobile-sheet" accept=".xlsx, .xls" name="mobile-sheet" id="upload-file" placeholder="选择excel文件" style="position: absolute; left: 0; top: 0; opacity: 0; width: 113px; height: 38px;">
+              </button>
+              <input type="hidden" name="" id="fileName" value="">
+              <a href='{:url("sms/download_text_excel_template")}' class="layui-btn" id="down">
+                <i class="layui-icon">&#xe601;</i>下载模板文件
+              </a>
+            </div>
+          </div>
+
+          <div class="layui-form-item layui-layout-admin">
+            <div class="layui-input-block">
+              <div class="layui-footer" style="left: 0;z-index: 9999;">
+                <button class="layui-btn">发送</button>
+              </div>
+            </div>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script src="__PUBLIC__/layuiadmin/js/laydate/laydate.js"></script>
+  <script src="__PUBLIC__/layuiadmin/js/public.js"></script>
+  <script src="__PUBLIC__/layuiadmin/layui/layui.js"></script>
+  <script>
+    seltime('sendTime','datetime');
+    layui.config({
+      base: '__PUBLIC__/layuiadmin/' //静态资源所在路径
+    }).extend({
+      index: 'lib/index' //主入口模块
+    }).use(['index', 'table', 'laydate', 'form', 'layer','upload'], function () {
+      var form = layui.form
+          ,upload = layui.upload;
+
+      // 监听定时发送开关
+      form.on('switch(send-switch)', function (data) {
+        if(data.elem.checked){
+          $('#sendTimeDiv').show();
+        }else{
+          $('#sendTimeDiv').hide();
+        }
+      }); 
+    })
+    // 获取上传文件名
+    $('#upload-file').change(function () {
+      var fileName = $(this).val();
+      fileName = fileName.split('\\');
+      fileName = fileName[fileName.length - 1];
+      $('#fileNameBox').val(fileName);
+    })
+
+    function check() {
+      if ($("#content").val() == "") {
+        layer.msg('短信内容不能为空！');
+        return false;
+      }
+
+      if ($("#mobile").val() == "") {
+        layer.msg('手机号码不能为空！');
+        return false;
+      }
+      return true;
+    }
+
+    //账号签名
+    sign = $("#account_sign").text();
+    //每条短信字数
+    textLen = "67";
+    //每次发送短信最大字数
+    maxTextLen = "500";
+    //每次发送最大短信数
+    // maxTextNum = Math.ceil(maxTextLen / textLen);
+    //获取当前输入框字数
+    $("#current_input_num").text($("#content").val().length + sign.length);
+
+    $("#content").keyup(function () {
+      var len = $(this).val().length;
+
+      //计费字数(短信内容加上账号签名)
+      var countLen = len + sign.length;
+      if (countLen > maxTextLen) {
+        countLen = maxTextLen;
+        $(this).val($(this).val().substring(0, maxTextLen - sign.length));
+      }
+      
+      //当前短信条数
+      var textNum = Math.ceil(countLen / textLen);
+      $("#text_num").text(textNum);
+      $("#current_input_num").text(countLen);
+
+    });
+
+
+  </script>
+</body>
+
+</html>

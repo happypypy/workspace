@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="yes" name="apple-mobile-web-app-capable">
+  <meta content="yes" name="apple-touch-fullscreen">
+  <meta content="telephone=no,email=no" name="format-detection">
+  <meta name="viewport"
+    content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+  <script src="__PUBLIC__/static/template/pub/js/common.js"></script>
+  <link rel="stylesheet" href="__PUBLIC__/static/template/pub/css/main.css?v={:time()}">
+  <link rel="stylesheet" href="__PUBLIC__/static/template/skin/M1/css/skin.css?v={:time()}">
+  
+  <title>代言数据</title>
+</head>
+
+<body class="flexCol">
+  {include file="modules/common/header" /}
+  <section class="section">
+    <div class="select-bar">
+      <ul class="select-bar-tab flex">
+        <li class="on fontColor" onclick="javascript:window.location='/{$sitecode}/endorsedata';">总览</li>
+        <li onclick="javascript:window.location='/{$sitecode}/spokesmanactivitylist';">产品</li>
+        <li onclick="javascript:window.location='/{$sitecode}/distributionorderlist';">订单</li>
+        <li onclick="javascript:window.location='/{$sitecode}/alreadyspokesmanactivitylist';">已代言</li>
+        {if condition="$user_info['is_balance'] == 1"}
+        <li onclick="javascript:window.location='/{$sitecode}/balancerecordlist';">结算</li>
+        {/if}
+      </ul>
+    </div>
+    <!--如果是一级代言人-->
+    {if condition="$user_info['spokesman_grade'] == 1"}
+    <ul class="textbox-wrap">
+      <li class="border-line">
+        <div class="head">个人代言业务数据</div>
+      </li>
+      <li class="border-line">
+        <div class="tit">今日成交订单：</div>
+        <div class="txt"><a href="/{$sitecode}/spokesmanorderlist?type=1" class="fontColor">{$today_order_info['num']}</a></div>
+      </li>
+      <li class="border-line">
+        <div class="tit">历史成交订单：</div>
+        <div class="txt"><a href="/{$sitecode}/spokesmanorderlist?type=2" class="fontColor">{$history_order_info['num']}</a></div>
+      </li>
+      <li class="border-line">
+        <div class="tit">今日获得佣金：</div>
+        <div class="txt">{if condition="$today_order_info['sell_commission']"}{$today_order_info['sell_commission']}{else}0{/if}</div>
+      </li>
+      <li class="border-line">
+        <div class="tit">已获得佣金：</div>
+        <div class="txt">￥{$user_info['already_commission']}(元)</div>
+      </li>
+      <li class="border-line">
+        <div class="tit">已结算佣金：</div>
+        <div class="txt">￥{$user_info['already_commission']}(元)</div>
+      </li>
+      <li class="border-line">
+        <div class="tit">可结算佣金：</div>
+        <div class="txt">￥{$user_info['can_commission']}(元)</div>
+      </li>
+      <li class="border-line">
+        <div class="tit">被冻结佣金：</div>
+        <div class="txt">￥{$user_info['freeze_commission']}(元)</div>
+      </li>
+
+      <li class="border-line">
+        <div class="head">个人代言业务数据</div>
+      </li>
+      <li class="border-line">
+        <div class="tit">今日发展代言人：</div>
+        <div class="txt"><a href="/{$sitecode}/spokesmanlist?type=1" class="fontColor">{$today_spokesman_info['num']}(人)</a></div>
+      </li>
+      <li class="border-line">
+        <div class="tit">所属代言人总数：</div>
+        <div class="txt"><a href="/{$sitecode}/spokesmanlist?type=2" class="fontColor">{$spokesman_info['num']}(人)</a></div>
+      </li>
+      <li class="border-line">
+        <div class="tit">今日所属代言人订单总数：</div>
+        <div class="txt"><a href="/{$sitecode}/spokesmanorderlist?type=3" class="fontColor">{$today_spokesman_order['num']}</a></div>
+      </li>
+      <li class="border-line">
+        <div class="tit">今日所属代言人佣金总额：</div>
+        <div class="txt">￥{if condition="$today_spokesman_order['bounty_commission2']"}{$today_spokesman_order['bounty_commission2']}{else}0{/if}(元)</div>
+      </li>
+      <li class="border-line">
+        <div class="tit">所属代言人订单总数：</div>
+        <div class="txt"><a href="/{$sitecode}/spokesmanorderlist?type=4" class="fontColor">{$history_spokesman_order['num']}</a></div>
+      </li>
+      <li class="border-line">
+        <div class="tit">所属代言人佣金总额：</div>
+        <div class="txt">￥{if condition="$history_spokesman_order['bounty_commission2']"}{$history_spokesman_order['bounty_commission2']}{else}0{/if}(元)</div>
+      </li>
+      <li class="border-line">
+        <div class="head">发展代言人专属二维码</div>
+      </li>
+      <li class="center">
+        <div class="txt">
+          <img src="/{$spokesman_img_path}" class="img100" alt="">
+        </div>
+      </li>
+    </ul>
+    {/if}
+      
+    <!--如果是二级代言人-->
+    {if condition="$user_info['spokesman_grade'] == 2"}
+    <div class="second-level">
+      <div class="head">您的客服专员</div>
+      <div class="flex"><span class="tit">姓名</span>：<span class="txt">{$user_info['parent_u_chrname']}</span></div>
+      <div class="flex"><span class="tit">联系电话</span>：<span class="txt">{$user_info['parent_u_chrtel']}</span></div>
+    </div>
+
+    <ul class="textbox-wrap">
+      <li class="border-line">
+        <div class="head">代言业务数据</div>
+      </li>
+      <li class="border-line">
+        <div class="tit">今日成交订单：</div>
+        <div class="txt"><a href="/{$sitecode}/spokesmanorderlist?type=1" class="fontColor">{$today_order_info['num']}</a></div>
+      </li>
+      <li class="border-line">
+        <div class="tit">历史成交订单：</div>
+        <div class="txt"><a href="/{$sitecode}/spokesmanorderlist?type=2" class="fontColor">{$history_order_info['num']}</a></div>
+      </li>
+      <li class="border-line">
+        <div class="tit">今日获得佣金：</div>
+        <div class="txt">{if condition="$today_order_info['sell_commission']"}{$today_order_info['sell_commission']}{else}0{/if}</div>
+      </li>
+      <li class="border-line">
+        <div class="tit">已获得佣金：</div>
+        <div class="txt">￥{$user_info['total_commission']}(元)</div>
+      </li>
+      <li class="border-line">
+        <div class="tit">已结算佣金：</div>
+        <div class="txt">￥{$user_info['already_commission']}(元)</div>
+      </li>
+      <li class="border-line">
+        <div class="tit">可结算佣金：</div>
+        <div class="txt">￥{$user_info['can_commission']}(元)</div>
+      </li>
+      <li class="border-line">
+        <div class="tit">被冻结佣金：</div>
+        <div class="txt">￥{$user_info['freeze_commission']}(元)</div>
+      </li>
+    </ul>
+    {/if}
+  </section>
+  
+  <footer class="footer">
+
+  </footer>
+  <script src="__PUBLIC__/static/template/pub/js/jquery.min.js"></script>
+  <script src="__PUBLIC__/static/template/pub/js/menu.js"></script>
+  <script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+
+  <script>
+
+    // 点击查看大图
+
+      function funcReadImgInfo() {
+
+        var imgs = [];
+
+        var imgObj = $('.center .img100');//这里改成相应的对象
+        var protocol = window.location.protocol;//获取协议
+        var host = window.location.host;//获取主地址
+        var port = window.location.port;//获取端口
+
+        for (var i = 0; i < imgObj.length; i++) {
+
+          var src = imgObj.eq(i).attr('src');
+          //判断地址是否有http开头，如果没有补全路径
+          src = src.substr(0, 4).toLowerCase() == "http" ? src : protocol + '//' + host + src;
+
+          imgs.push(src);
+
+          imgObj.eq(i).click(function () {
+
+            var nowImgurl = $(this).attr('src');
+            nowImgurl = nowImgurl.substr(0, 4).toLowerCase() == "http" ? nowImgurl : protocol + '//' + host + nowImgurl;//改大图的地址，不加会导致本地上传图片，点击查看显示第一张
+
+            WeixinJSBridge.invoke("imagePreview", {
+
+              "urls": imgs,
+
+              "current": nowImgurl
+
+            });
+
+          });
+
+        }
+
+      }
+
+      funcReadImgInfo();
+  </script>
+</body>
+</html>

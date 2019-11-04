@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>新增二维码</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+  <script type="text/javascript" src="/layuiadmin/js/jquery-3.3.1.js"></script>
+</head>
+
+<body>
+    
+<form class="layui-form" method="post" action="" lay-filter="component-form-group">
+    <div class="layui-form" lay-filter="layuiadmin-app-form-list" id="layuiadmin-app-form-list" style="padding: 20px 30px 0 0;">
+        <div class="layui-form-item">
+            <label class="layui-form-label">
+                <span style="color: red;">*</span>
+                相册名称：
+            </label>
+            <div class="layui-input-block">
+                <input type="text" name="album_name" lay-verify="required" autocomplete="off" placeholder="请输入相册名称" value="{$datainfo.album_name}" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">相册描述：</label>
+                <div class="layui-input-block">
+                    <textarea name="album_desc" placeholder="请输入相册描述" class="layui-textarea">{$datainfo.album_desc}</textarea>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label"><span style="color: red">*</span>相册封面图片：</label>
+                <div class="layui-input-inline">
+                    <button class="layui-btn layui-btn-sm" onclick="uploadimgcut('album_cover_url','album',400,400);" type="button">上传图片</button>
+                    <input name="album_cover_url" id="album_cover_url" type="hidden" value="{$datainfo['album_cover_url']}" lay-verify="required" autocomplete="off" placeholder="请上传相册封面图片"  class="layui-input">
+                    <div style="border: solid 1px #ccc;width: 100px;height: 100px;margin-top: 5px;display:{$datainfo.album_cover_url?'block':'none'}" id="album_cover_url_div" >
+                        <img height="100" src="{$datainfo['album_cover_url']}" id="album_cover_url_img"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label"><span style="color: red;">*</span>相册状态：</label>
+            <div class="layui-input-block">
+                <input type="radio" name="state" value="1" title="启用" {if condition="$datainfo.state eq 1"}checked{/if} checked >
+                <input type="radio" name="state" value="2" {if condition="$datainfo.state eq 2"}checked{/if}  title="禁用">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <input type="submit" class="layui-btn layui-btn-normal" lay-submit lay-filter="layuiadmin-submit" id="layuiadmin-submit" value="保存">
+            </div>
+        </div>
+    </div>
+</form>
+
+<script src="/layuiadmin/layui/layui.js"></script>
+<script src="__PUBLIC__/layuiadmin/js/public.js"></script>
+<script>
+layui.config({
+    base: '/layuiadmin/' //静态资源所在路径
+}).extend({
+    index: 'lib/index' //主入口模块
+}).use(['index', 'form'], function(){
+
+});
+</script>
+</body>
+</html>

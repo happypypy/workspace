@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>短信批量发送</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="__PUBLIC__/layuiadmin/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="__PUBLIC__/layuiadmin/style/admin.css" media="all">
+  <link rel="stylesheet" href="__PUBLIC__/layuiadmin/style/public.css">
+</head>
+
+<body>
+
+  <div class="layui-fluid">
+    <div class="layui-card">
+      <div class="layui-card-header1">短信批量发送</div>
+      <div class="layui-card-body" style="padding: 15px;">
+        <form class="layui-form" method="post" action="">
+          <div class="layui-form-item">
+              <label class="layui-form-label"></label>
+              <div class="layui-input-block">
+                账号签名:
+                <span id="account_sign" style="color:#009688;">【{$sm_info["sms_sign"]}】</span>
+                每条短信最长<?= config('msg_config')['text_len']; ?>个字（包含账号签名），每次最多发送<span id="max_text_len"><?=config('msg_config')['max_text_len']; ?></span>个字（超过自动裁剪），当前计费字数为<span
+                  id="current_input_num">10</span>个字，分<span id="text_num">1</span>条短信发送<br>
+                短信剩余发送数量: <span>{$sm_info["sms_num"]}</span>
+              </div>
+              <hr class="layui-bg-gray">
+          </div>
+          
+          <div class="layui-form-item">
+            <label class="layui-form-label">定时发送</label>
+            <div class="layui-input-block">
+              <input type="checkbox" name="timing" lay-skin="switch" lay-filter="send-switch"
+              lay-text="ON|OFF">
+            </div>
+          </div>
+
+          <div class="layui-form-item" id="sendTimeDiv" style="display: none;">
+            <label class="layui-form-label">发送时间</label>
+            <div class="layui-input-inline">
+              <input type="text"  id="send_time" name="send_time" class="layui-input" placeholder="请选择发送时间" lay-key="1">
+            </div>
+          </div>
+
+          <div class="layui-form-item">
+            <label class="layui-form-label">模板名称</label>
+            <div class="layui-input-inline">
+              <select id="template-type">
+                  <option value="" hidden="true" ></option>
+                  {volist name="templates" id="vo"}
+                  <option value="{$vo.id}">{$vo.name}</option>
+                  {/volist}
+              </select>
+            </div>
+          </div>
+
+          <div class="layui-form-item">
+            <label class="layui-form-label">短信内容</label>
+            <div class="layui-input-block">
+              <textarea name="content" placeholder="请输入短信内容" class="layui-textarea"></textarea>
+            </div>
+          </div>
+
+          <div class="layui-form-item">
+            <label class="layui-form-label">手机号码</label>
+            <div class="layui-input-block">
+              <textarea name="mobile" placeholder="请输入手机号码" rows="5" style="width: 450px;" cols="1" class="layui-textarea"></textarea>
+              <div class="layui-form-mid layui-word-aux"> 多个手机号码以,隔开，例如13XXXXXXXXX,17XXXXXXXXX </div>
+            </div>
+          </div>
+
+          <div class="layui-form-item layui-layout-admin">
+            <div class="layui-input-block">
+              <div class="layui-footer" style="left: 0;z-index: 9999;">
+                <button class="layui-btn">发送</button>
+              </div>
+            </div>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script src="__PUBLIC__/layuiadmin/js/laydate/laydate.js"></script>
+  <script src="__PUBLIC__/layuiadmin/js/public.js"></script>
+  <script src="__PUBLIC__/layuiadmin/layui/layui.js"></script>
+  <script>
+    seltime('sendTime','datetime');
+    layui.config({
+      base: '__PUBLIC__/layuiadmin/' //静态资源所在路径
+    }).extend({
+      index: 'lib/index' //主入口模块
+    }).use(['index', 'table', 'laydate', 'form', 'layer','upload'], function () {
+      var form = layui.form
+          ,upload = layui.upload;
+
+      // 监听定时发送开关
+      form.on('switch(send-switch)', function (data) {
+        if(data.elem.checked){
+          $('#sendTimeDiv').show();
+        }else{
+          $('#sendTimeDiv').hide();
+        }
+      }); 
+    })
+  </script>
+</body>
+
+</html>

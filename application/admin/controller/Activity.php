@@ -25,6 +25,14 @@ class activity extends Basesite {
 			$this->error('无权限');
 		}
 		$request = Request::instance()->param();
+
+        if (!isset($request['nodeid'])) {
+            $this->error('参数错误');
+        }
+        if($request['nodeid'] == 'code'){
+            $this->redirect('code_index');
+            return false;
+        }
 		$intflag = isset($request['intflag']) ? $request['intflag'] : '6';
 		if (is_numeric($intflag) == false || $intflag < 1) {
 			$intflag = 1;
@@ -34,11 +42,10 @@ class activity extends Basesite {
 		$obj = new \app\admin\module\activity(session('idsite'));
 		$objOrder = new \app\admin\module\Order();
 
-		if (!isset($request['nodeid'])) {
-			$this->error('参数错误');
-		}
+
 		//其中参数中具有节点id
 		$arr = $obj->index($request);
+
 		$data = $arr['data'];
 		$page = $arr['pager'];
 
@@ -52,6 +59,7 @@ class activity extends Basesite {
 			$data[$k]['order_num'] = $objOrder->getOrderNum($vo['idactivity']);
 			$data[$k]['typename'] = array_key_exists($vo['fidtype'], $hdfl_arr) ? $hdfl_arr[$vo['fidtype']] : "";
 		}
+
 		$hdbq = $obj->getDic("hdbq");
 		$this->assign('hdbq', $hdbq);
 		$this->assign('search', $arr['search']);
@@ -271,7 +279,6 @@ class activity extends Basesite {
 			}
             if(empty($data['usertype']))
                 $data['usertype']=[];
-
 			$res = $obj->PostData($data);
 			if ($res['status'] === 'success') {
 			    //dump($data);
@@ -282,6 +289,13 @@ class activity extends Basesite {
 			exit();
 		}
 
+		//判断是审批还是修改
+        $act='';
+        if(isset($data['act'])){
+            $act=$data['act'];
+        }
+		$this->assign('act',$act);
+
 		$hdfl = $obj->getDic("hdfl");
 		$this->assign('hdfl', $hdfl);
 		//获取自定义会员分类
@@ -290,6 +304,7 @@ class activity extends Basesite {
 		//获取现金券计划列表
 		$cashed_plan = $cashed_obj->getCashedPlan();
 		$this->assign('cashed_plan', $cashed_plan);
+
 		$hdbq = $obj->getDic("hdbq");
 		$this->assign('hdbq', $hdbq);
 		$FromTemp = $obj->getFromTemp();
@@ -302,6 +317,8 @@ class activity extends Basesite {
 		$this->assign('ordernum', $orderNum);
 
 		$datainfo = $obj->deal($data);
+
+
 		//dump($datainfo);//die;
 		$this->assign('datainfo', $datainfo);
 		$this->assign('idsite', session('idsite'));
@@ -478,7 +495,11 @@ class activity extends Basesite {
 		$obj = new \app\admin\module\activity(session('idsite'));
 		$datainfo = $obj->signupmodi($data);
 		$this->assign('datainfo', $datainfo);
+        //查询订单金额的修改记录
+        $order_price_record = db('update_order_price')->field('site_id',true)->where(['site_id'=>session('idsite'),'order_id'=>$data['id']])->order('create_time desc')->select();
 		$this->assign('order_state', config('order_state'));
+        $this->assign('is_cashed',checkedMarketingPackage(session('idsite'),'cashed'));
+        $this->assign('order_price_record',$order_price_record);
 		return $this->fetch();
 	}
 
@@ -1119,4 +1140,113 @@ class activity extends Basesite {
 		}
 
 	}
+
+	/*码库相关功能*/
+    //首页
+    public function code_index(){
+        $request = Request::instance()->param();
+
+        $state=1;
+        $name='';
+        $cuser='';
+        if(!empty($request['cname'])){
+            $name=$request['cname'];
+        }
+
+        if(!empty($request['state'])){
+            $state=$request['state'];
+        }
+        if(!empty($request['cuser'])){
+            $cuser=$request['cuser'];
+        }
+
+        $obj = new \app\admin\module\activity(session('idsite'));
+        $data=$obj->codeIndex($request);
+
+        $this->assign('state',$state);
+        $this->assign('name',$name);
+        $this->assign('cuser',$cuser);
+        $this->assign('data',$data['data']);
+        $this->assign('page', $data['pager']);
+
+       return $this->fetch();
+    }
+
+    public function editcodebase(){
+        if ($this->CMS->CheckPurview('contentmanage') == false) {
+            $this->error('无权限');
+        }
+        $request = Request::instance()->param();
+        $obj = new \app\admin\module\activity(session('idsite'));
+
+        if (Request::instance()->isPost()) {
+            $res = $obj->add_codebase($request);
+            if ($res['state'] == 'success') {
+                $this->success('操作成功', PUBLIC_URL . 'postsuccess.html');
+            } else {
+                //dump($res['msg']);
+                $this->error($res['msg']);
+            }
+            exit();
+        }
+        $info= $obj->get_codebase($request);
+
+        $this->assign('info',$info);
+        return $this->fetch();
+    }
+
+    public function code_info(){
+        if ($this->CMS->CheckPurview('contentmanage') == false) {
+            $this->error('无权限');
+        }
+        $request = Request::instance()->param();
+
+        $state='';
+
+
+        if(!empty($request['state'])){
+            $state=$request['state'];
+        }
+
+        $obj = new \app\admin\module\activity(session('idsite'));
+        $data=$obj->code_info($request);
+
+        //dump($request);
+        $this->assign('bid',$request['bid']);
+        $this->assign('state',$state);
+
+        $this->assign('data',$data['data']);
+        $this->assign('page', $data['pager']);
+        return $this->fetch();
+    }
+
+    public function codeadd(){
+        if ($this->CMS->CheckPurview('contentmanage') == false) {
+            $this->error('无权限');
+        }
+        $request = Request::instance()->param();
+
+        if(empty($request['bid'])){
+            $this->error('没有选择码库');
+        }
+
+        $obj = new \app\admin\module\activity(session('idsite'));
+
+        if (Request::instance()->isPost()) {
+            $res = $obj->codeadd($request);
+            if ($res['state'] == 'success') {
+                $this->success('操作成功', PUBLIC_URL . 'postsuccess.html');
+            } else {
+                //dump($res['msg']);
+                $this->error($res['msg']);
+            }
+            exit();
+        }
+
+        return $this->fetch();
+
+
+
+    }
+
 }

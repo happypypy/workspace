@@ -199,7 +199,7 @@ class activity extends Model
 
 
         $result1=[];
-        $result=db('visit_record')->field('openid,MIN(stime) as stime,MAX(stime) as etime,SUM(differtime)as differtime,COUNT(*) as vcount, source')->where(array('aid'=>$dataid,'flag'=>2))->group('openid')->select();
+        $result=db('visit_record')->field('openid,MIN(stime) as stime,MAX(stime) as etime,SUM(differtime)as differtime,COUNT(*) as vcount, source')->where(array('aid'=>$dataid,'flag'=>2))->group('openid')->order('etime desc')->select();
         foreach ($result as $k=>$vo)
         {
             if(empty($vo['openid']))
@@ -294,7 +294,10 @@ class activity extends Model
 
             }
         }
+        $result_tmp = array_column($result2,'etime');
+        array_multisort($result_tmp,SORT_DESC,$result2);
         return $result2;
+
         /*
     foreach ($result1 as $k=>$vo)
     {
@@ -379,6 +382,19 @@ class activity extends Model
                         ]
                     )
                     ->select();
+
+                //获取码库
+                $where['id_site']= $this->siteid;
+                $where['state']=1;
+                $result['selcontent'][$key]['codebase']=db('activity_codebase')->where($where)->where("`id_package` is null or `id_package` = 0 or `id_package` ={$value['package_id']}")->field('id,name,id_package')->select();
+                if(empty($result['selcontent'][$key]['codebase'])){
+                    $result['selcontent'][$key]['codebase'][0]=[
+                        'id'=>'',
+                        'name'=>'',
+                        'id_package'=>''
+                    ];
+                }
+
             }
             //查询活动现金券设置表信息
             $activity_cashed_info = db('activity_cashed_card_set')->field('id', true)->where(['activity_id' => $data['id']])->find();
@@ -464,7 +480,9 @@ class activity extends Model
                 'sell_commission' => '',
                 'bounty_commission' => '',
                 'usertype'=>'',
+                'msgtemplate'=>''
             ];
+
         }
         if ($activity_cashed_info) {
             $result = array_merge($result, $activity_cashed_info);
@@ -484,6 +502,19 @@ class activity extends Model
 
 //        var_dump($result);exit;
 
+        //获取码库
+        $where['id_site']= $this->siteid;
+        $where['state']=1;
+        $codebase=db('activity_codebase')->where($where)->where("`id_package` is null or `id_package` = 0")->field('id,name,id_package')->select();
+        if(empty($codebase)){
+            $codebase[0]=[
+                'id'=>'',
+                'name'=>'',
+                'id_package'=>''
+            ];
+        }
+
+        $result['codebase']=$codebase;
         if (!empty($data['action'])) {
             $result['action'] = $data['action'];
         }
@@ -783,6 +814,14 @@ class activity extends Model
 
         }
 
+        if (isset($data['msgtemplate'])) {
+            if(strpos($data['msgtemplate'], '【') !== false || strpos($data['msgtemplate'], '】') !== false)
+            {
+                return ['status' => 'fail', 'msg' => '模版标题和内容不能出现【】'];
+            }
+
+            $tmpArr['msgtemplate'] = trim($data['msgtemplate']);
+        }
 
 
         $tmpArr['selcontent'] = '';
@@ -908,7 +947,19 @@ class activity extends Model
         $cashed_param['is_share_cashed'] = isset($data['is_share_cashed']) ? $data['is_share_cashed'] : 2; //付款后是否可以分享现金券
 
         //$bool = db('activity')->where('idactivity=:id', ['id' => $data['id']])->update($tmpArr);
-        // var_dump($data);die;
+         //var_dump($data);die;
+        if (isset($data['chksignup']) && $data['chksignup'] == 1) {
+            $tmp_arr=[];
+            foreach ($data['packages'] as $k => $v) {
+                if(in_array($v['codebase'],$tmp_arr) && $v['codebase']){
+                    return ['status' => 'fail', 'msg' =>"一个码库只能被一个套餐绑定"];
+                }else {
+                    array_push($tmp_arr, $v['codebase']);
+                }
+            }
+        }
+
+        //;dump($data['packages']);die;
         try
         {
             $query = new Query;
@@ -930,6 +981,13 @@ class activity extends Model
                     $insertPackage = [];
                     $groupBuys = [];
                     foreach ($data['packages'] as $k => $v) {
+                        $codenum=$v['package_sum'];
+                        if($v['codebase']){
+                            $codenum=db('activity_codedetail')->where(['id_codebase'=>$v['codebase'],'id_site'=>$this->siteid])->count();
+                            $codenum == 0 ? $codenum = -1:'';
+                            $v['sold']=db('activity_codedetail')->where(['id_codebase'=>$v['codebase'],'id_site'=>$this->siteid,'state'=>['neq',2]])->count();
+                        }
+                        $v['package_sum']=$codenum;
                         if (isset($v['sell_commission']) && empty($v['sell_commission'])) {
                             $v['sell_commission']=0;
                         }
@@ -944,14 +1002,21 @@ class activity extends Model
                         $v['site_id'] = $this->siteid;
                         $price_arr[] = $v['member_price'];
 
+                        //去掉codebase字段
+                        $tmparr1=$v;
+                        unset($tmparr1['codebase']);
+                        //插入package表，获取主键
+                        $packageId = db('package')->insert($tmparr1, false, true);
+                        if($v['codebase']){
+                            $code_res=db('activity_codebase')->where(['id_site'=>$this->siteid,'id'=>$v['codebase']])->update(['id_package'=>$packageId]);
+                        }
                         $groupBuyData = [];
 
                         if (isset($v['group_buy'])) {
                             // 全是新拼团
                             $groupBuyData1 = $v['group_buy'];
                             unset($v['group_buy']);
-                            //插入package表，获取主键
-                            $packageId = db('package')->insert($v, false, true);
+
                             foreach ($groupBuyData1 as $key => $value) {
                                 // 验证拼团数据
                                 // var_dump($value);
@@ -1002,8 +1067,6 @@ class activity extends Model
                                 $groupBuyData[$key]['group_buy_price'] = $value['group_buy_price'];
                             }
                             $groupBuys = array_merge($groupBuys, $groupBuyData);
-                        } else {
-                            $insertPackage[] = $v;
                         }
                     }
                     //进行价格降序，取到第一个最低的
@@ -1023,7 +1086,7 @@ class activity extends Model
                 if (isset($data['chksignup']) && $data['chksignup'] == 1) {
                     $insertPackage = [];
                     $groupBuys = [];
-                    // print_r($data['packages']);die;
+//                    dump($data['packages']);
                     foreach ($data['packages'] as $k => $v) {
                         if ($v['package_sum'] < -1) {
                             continue;
@@ -1038,10 +1101,25 @@ class activity extends Model
                         $v['original_price'] = $v['original_price'] ?: 0;
                         $v['cost_price'] = $v['cost_price'] ?: 0;
                         $price_arr[] = $v['member_price'];
+                        $codenum=$v['package_sum'];
+                        $codeused=0;
+                        //码库选择
+                        if($v['codebase']){
+                            //查询编码数量
+                            $codenum=db('activity_codedetail')->where(['id_codebase'=>$v['codebase'],'id_site'=>$this->siteid])->count();
+                            $codeused=db('activity_codedetail')->where(['id_codebase'=>$v['codebase'],'id_site'=>$this->siteid,'state'=>['neq',2]])->count();
+
+                            //将编码数量写入库存
+                            //若编码数量为0，则-1；
+                            if($codenum == 0){
+                                $v['package_sum']=-1;
+                            }else{
+                                $v['package_sum']=$codenum;
+                            }
+                            $v['sold']=$codeused;
+                        }
 
                         if (isset($v['package_id']) && !empty($v['package_id'])) {
-                            // $package = new \app\admin\module\Package;
-                            // $package->updatePackage($v);
                             // 旧套餐 涉及新拼团添加或者旧拼团修改
                             if (isset($v['group_buy'])) {
                                 // 有拼团数据
@@ -1113,20 +1191,43 @@ class activity extends Model
                                 }
                             }
 
-                            $a = db('package')->update($v);
+                            //去掉codebase字段
+                            $tmparr2 = $v;
+                            unset($tmparr2['codebase']);
+                            $a = db('package')->update($tmparr2);
+                            \think\Log::info('update：' .print_r($tmparr2,true));
+
+                            //判断套餐是否已经选择过码库
+                            $findpack=db('activity_codebase')->where(['id_package'=>$v['package_id'],'id_site'=>$this->siteid])->find();
+                            if($findpack){
+                                $code_res1=db('activity_codebase')->where(['id_site'=>$this->siteid,'id_package'=>$v['package_id']])->update(['id_package'=>0]);
+                            }
+                            if($v['codebase']){
+                                //码库换码库（code表原来的码库套餐改为0，修改套餐id）
+                                $code_res=db('activity_codebase')->where(['id_site'=>$this->siteid,'id'=>$v['codebase']])->update(['id_package'=>$v['package_id']]);
+                            }
 
                         } else {
                             // 新套餐 全是新拼团
+                            // 新建套餐涉及到拼团部分，需要单独插入以实时获取套餐id
+                            //去掉codebase字段
                             $v['activity_id'] = $data['id'];
-                            $v['sold'] = 0;
+                            $v['sold'] = $codeused;
                             $v['site_id'] = $this->siteid;
+                            $tmparr2 = $v;
+                            $tmparr2['activity_id'] = $data['id'];
+                            unset($tmparr2['codebase']);
+                            \think\Log::info('修改中新增：' .print_r($tmparr2,true));
+                            $packageId = db('package')->insert($tmparr2, false, true);
+                            if($v['codebase']){
+                                $code_res=db('activity_codebase')->where(['id_site'=>$this->siteid,'id'=>$v['codebase']])->update(['id_package'=>$packageId]);
+                            }
 
                             if (isset($v['group_buy'])) {
                                 // 有拼团 必须先插入套餐以获取套餐id
                                 $groupBuyData = $v['group_buy'];
                                 unset($v['group_buy']);
-                                // 新建套餐涉及到拼团部分，需要单独插入以实时获取套餐id
-                                $packageId = db('package')->insert($v, false, true);
+
                                 $groupBuyData1=[];
                                 foreach ($groupBuyData as $key => $value) {
                                     // 新拼团
@@ -1149,9 +1250,6 @@ class activity extends Model
                                     $groupBuys[] = $groupBuyData1;
                                }
 
-                            } else {
-                                // 无拼团，批量插入
-                                $insertPackage[] = $v;
                             }
                         }
                     }
@@ -1195,6 +1293,7 @@ class activity extends Model
             \think\Log::info('插入拼团表的sql：' .Db::table('group_buy')->getLastSql());
             \think\Log::error($e->getMessage());
             \think\Log::error($e->getData());
+            \think\Log::info('insertPackage：' .print_r($insertPackage,true));
             $query->rollBack();
             // throw $e;
             return ['status' => 'fail', 'msg' => $e->getMessage()];
@@ -1362,7 +1461,7 @@ class activity extends Model
 
         $count = db('order')->where($whereArr)->count();
 
-        $pagesize = 2000; //PAGE_SIZE;
+        $pagesize = 20; //PAGE_SIZE;
         $page = new Page($count, $pagesize);
         //
         $data = db('order')->where($whereArr)->limit($page->firstRow . ',' . $page->pageSize)->order('id asc')->select();
@@ -1453,6 +1552,7 @@ class activity extends Model
             $result['couriername'] = ''; //物流名称//
             $result['couriersn'] = ''; //物流单号//
             $result['txtdata'] = ''; //模版数据，多个字段用“☆”分开//
+            $result['group_buy_order_id'] = null; //拼团订单id//
         }
         $result['action'] = $data['action'];
         return $result;
@@ -1879,9 +1979,159 @@ class activity extends Model
     public function getActivityDetail($params)
     {
         $result = db('activity')->where(['idactivity' => $params['id'], "siteid" => $this->siteid])->field('audit_remark')->find();
+        dump($result);
         if ($result['audit_remark']) {
             return array_reverse(json_decode($result['audit_remark'], true));
         }
         return array();
+    }
+
+    //码库首页
+    public  function codeIndex($search){
+        $idsite=session('idsite');
+        $count = db('activity_codebase')->where(['id_site'=>$idsite])->count();
+        $page = new Page($count, PAGE_SIZE);
+
+        if(!empty($search['cname'])){
+            $where['name']=['like', "%{$search['cname']}%"];
+        }
+        if(!empty($search['state'])){
+            $where['state']=$search['state'];
+        }
+        if(!empty($search['cuser'])){
+            $where['cuser']=['like', "%{$search['cuser']}%"];
+        }
+
+        $where['id_site']=$idsite;
+        $data=db('activity_codebase')->where($where)->limit($page->firstRow . ',' . $page->pageSize)->select();
+        $arr['pager'] = $page;
+        $arr['data']=$data;
+
+        return $arr;
+    }
+
+    public  function add_codebase($data){
+        $tmpData = [];
+
+        $tmpData['name'] = trim($data['name1']);
+        $tmpData['state'] = $data['state']?$data['state']:2;
+        $tmpData['ctime'] =strtotime($data['ctime']);
+        $tmpData['cuser'] = session('UserName');
+        $tmpData['remark'] = trim($data['remark']);
+        $tmpData['id_site'] = $this->siteid;
+
+        try {
+            if (key_exists('bid', $data) && $data['bid'] > 0) {
+                $where = [];
+                $where['id_site'] = $this->siteid;
+                $where['id'] = $data['bid'];
+                $tmp = db('activity_codebase')->where($where)->update($tmpData);
+            } else {
+                $tmp = db('activity_codebase')->insert($tmpData);
+            }
+        } catch (\Exception $e) {
+
+            return ['state' => 'fail', 'msg' => $e->getMessage()];
+        }
+        return ['state' => 'success', 'msg' => '操作成功'];
+    }
+
+    public function get_codebase($data){
+        $result = [];
+        $result['id'] = 0;
+
+        $result['name'] = '';
+        $result['state'] = '';
+        $result['ctime'] = date('Y-m-d H:i:s',time());
+        $result['cuser'] = session('UserName');
+        $result['remark'] = '';
+
+        if (key_exists('bid', $data) && $data['bid'] > 0) {
+            $where = [];
+            $where['id_site'] = $this->siteid;
+            $where['id'] = $data['bid'];
+            $tmp = db('activity_codebase')->where($where)->find();
+            if ($tmp)
+                $result = $tmp;
+                if($tmp['ctime']){
+                    $result['ctime']=date('Y-m-d H:i:s',$tmp['ctime']);
+                }
+        }
+        //dump($result);
+        return $result;
+    }
+
+    public function code_info($search){
+        $idsite=session('idsite');
+        $where['id_codebase']=$search['bid'];
+
+        if(!empty($search['code'])){
+            $where['code']=['like', "%{$search['code']}%"];
+        }
+        if(!empty($search['state'])){
+            $where['state']=$search['state'];
+        }
+
+        $where['id_site']=$idsite;
+        $count = db('activity_codedetail')->where($where)->count();
+        $page = new Page($count, PAGE_SIZE);
+        $data=db('activity_codedetail')->where($where)->limit($page->firstRow . ',' . $page->pageSize)->select();
+        $arr['pager'] = $page;
+        $arr['data']=$data;
+
+        return $arr;
+    }
+
+    public function codeadd($data){
+
+        if(empty($data['content'])){
+            return ['state' => 'fail', 'msg' => '请输入编码'];
+        }
+
+        $tmpArr=[];
+        $content=$data['content'];
+        $arr=explode(PHP_EOL,$content);
+
+        $count=0;
+        foreach (array_filter($arr) as $k=> $v){
+            $tmpArr[$k]['code']=$v;
+            $tmpArr[$k]['id_codebase']=$data['bid'];
+            $tmpArr[$k]['id_site']=$this->siteid;
+            $count+=1;
+        }
+        //dump($tmpArr);die;
+        try{
+            db('activity_codedetail')->insertAll($tmpArr);
+            //判断是否被套餐绑定，增加库存
+            $packageid=db('activity_codebase')->where(['id'=>$data['bid'],'state'=>1])->where("id_package is not null or id_package = 0")
+                                                    ->value('id_package');
+            if($packageid){
+                $packagesum= db('package')->where(['package_id'=>$packageid])->value('package_sum');
+                if($packagesum == -1){
+                    db('package')->where(['package_id'=>$packageid])->setInc('package_sum',$count+1);
+                }else{
+                    db('package')->where(['package_id'=>$packageid])->setInc('package_sum',$count);
+                }
+
+            }
+
+        }catch (Exception $e) {
+            return ['state' => 'fail', 'msg' =>$e->getMessage()];
+        }
+        return ['state' => 'success', 'msg' => '操作成功'];
+
+    }
+
+    public function getBaseName()
+    {
+        $where['id_site']= $this->siteid;
+        $where['state']=1;
+        //$where['id_activity']='null';
+
+        $res=db('activity_codebase')->where($where)->where("`id_package` is null or `id_package` = 0")->field('id,name')->select();
+        //$sql = db('activity_codebase')->getLastSql();
+
+        return $res;
+
     }
 }

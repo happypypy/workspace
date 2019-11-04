@@ -1,0 +1,49 @@
+{php}
+    $map=[];
+    if(isset($_POST['keyword']) ) $map['title|summary']=['like','%'.$_POST['keyword'].'%'];
+    if(isset($_POST['zxbqid']) && $_POST['zxbqid']!=0) $map['fieldspare9']=['like','%'.$_POST['zxbqid'].'%'];
+    $re = $cms->GetContents($nodeid,$map,'idorder DESC,contentid DESC','linkurl,summary,picurl,sys00003,hits,contentid,title,en_title,tc_title,fieldspare6',1,10);
+{/php}
+{volist name="$re.data" id="vo"}
+{if condition="$node_info.listtype eq 1"}
+<li class="activity-item-b">
+    <a href="#" class="flexCol">
+        <div class="activity-item-img"><img
+                src="{:$vo['linkurl'] ? $vo['linkurl'] : '/'.$sitecode.'/content/'.$vo['contentid']}"></div>
+        <div class="activity-item-txt  flexCol">
+            <div class=" activity-item-title flex">{$vo['title']}</div>
+            <div class="activity-item-view">
+                <div class="eyes">{$vo['hits']}</div>
+                <div class="time">{:date('m-d',strtotime($vo['sys00003']))}</div>
+            </div>
+        </div>
+    </a>
+</li>
+{elseif condition="$node_info.listtype eq 2"}
+<li class="activity-item-m">
+    <a href="{:$vo['linkurl'] ? $vo['linkurl'] : '/'.$sitecode.'/content/'.$vo['contentid']}" class="flexCol">
+        <div class="activity-item-img"><img src="{$vo['picurl']}"></div>
+        <div class="activity-item-txt flexCol">
+            <div class=" activity-item-title flex">{$vo['title']}</div>
+        </div>
+        <div class="activity-item-view flex">
+            <div class="eyes">{$vo['hits']}</div>
+            <div class="time">{:date('m-d',strtotime($vo['sys00003']))}</div>
+        </div>
+    </a>
+</li>
+{elseif condition="$node_info.listtype eq 3"}
+<li class="activity-item-s">
+    <a href="{:$vo['linkurl'] ? $vo['linkurl'] : '/'.$sitecode.'/content/'.$vo['contentid']}" class="flex">
+        <div class="activity-item-img"><img src="{$vo['picurl']}"></div>
+        <div class="activity-item-txt flexCol">
+            <div class=" activity-item-title flex">{$vo['title']}</div>
+            <div class=" activity-item-view">
+                <div class="eyes">{$vo['hits']}</div>
+                <div class="time">{:date('m-d',strtotime($vo['sys00003']))}</div>
+            </div>
+        </div>
+    </a>
+</li>
+{/if}
+{/volist}

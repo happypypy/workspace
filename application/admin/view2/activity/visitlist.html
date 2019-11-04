@@ -1,0 +1,350 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>产品访问数据</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/admin.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/public.css">
+    <script src="/layuiadmin/js/jquery-3.3.1.js"></script>
+
+    <style>
+        .layui-table-cell {
+            height: auto;
+        }
+        .lastcell>a{
+            text-decoration: underline;
+            color: #333;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <!-- 搜索区域 -->
+                <div class="layui-card-body">
+                    <div class="layui-card">
+                        <div class="layui-card-header2">搜索
+                        </div>
+                        <form class="layui-form layui-bd layui-mb15" action="" lay-filter="component-form-group">
+
+                            <div class="layui-form-item">
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">手机号码</label>
+                                    <div class="layui-input-inline">
+                                        <select name="quiz">
+                                            <option value="">有</option>
+                                            <option value="">无</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">是否关注</label>
+                                    <div class="layui-input-inline">
+                                        <select name="quiz">
+                                            <option value="">是</option>
+                                            <option value="">否</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">阅读次数</label>
+                                <div class="layui-form-mid layui-word-aux">大于</div>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="title" lay-verify="title" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">访问时长</label>
+                                <div class="layui-form-mid layui-word-aux">大于</div>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="title" lay-verify="title" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">地区</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="title" lay-verify="title" autocomplete="off" class="layui-input">
+                                </div>
+                                <div class="layui-inline">
+                                    <button class="layui-btn layuiadmin-btn-list" lay-submit lay-filter="LAY-app-contlist-search">
+                                        <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+
+                    <table class="layui-hide" id="test-table-toolbar" lay-filter="test-table-toolbar"></table>
+
+
+                    <script type="text/html" id="test-table-toolbar-toolbarDemo">
+                        <div class="layui-btn-container ov-hd">
+                            <div class="info-l fl">产品访问数据</div>
+
+                        </div>
+                    </script>
+
+                    <script type="text/html" id="test-table-toolbar-barDemo">
+                        <div class="test-table-toolbar-barDemo" style="white-space:normal;text-align: left;">
+                            <a class="layui-btn layui-btn-xs">产品提醒</a>
+                            <br/>
+                            <a class="layui-btn layui-btn-xs">分配商务</a>
+                        </div>
+
+                    </script>
+
+                    <div style="overflow: hidden">
+                        <div style="float: left; margin-top: 15px;margin-left: 10px; vertical-align: middle;">
+                            <button class="layui-btn layui-btn-sm" data-type="del">产品提醒</button>
+                        </div>
+                        <div id="test-laypage-demo1" style="text-align: right; margin-right: 15px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/layuiadmin/layui/layui.js"></script>
+<script language="JavaScript">
+    var layer = layui.layer;
+    function CustomOpen(url, code, showName, w, h) {
+        layer.open({
+            type: 2,
+            title: showName,
+            shade: false,
+            maxmin: true,
+            area: [w, h],
+            content: url
+        });
+    }
+</script>
+
+<script>
+    layui.config({
+        base: '/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['index', 'table', 'laydate', 'form'], function () {
+        var admin = layui.admin
+            , laypage = layui.laypage
+            , table = layui.table
+            , form = layui.form;
+
+        table.render({
+            elem: '#test-table-toolbar'
+            , toolbar: '#test-table-toolbar-toolbarDemo'
+            , title: '用户数据表'
+            , defaultToolbar: false
+            , cols: [[
+                { type: 'checkbox',field:'openid' }
+                ,{hide:true,field:'openid'}
+                , { field: 'chrname', title: '用户名称' ,minWidth:100}
+                , { field: 'nickname', title: '微信昵称', width: 120, unresize: true }
+                , { field: 'chrtel', title: '所属商务', width: 120, unresize: true }
+                , { field: 'intcity', title: '来源', width: 80, unresize: true }
+                ,{field:'intstate', title: '是否关注', width: 90, templet: '#buttonTpl', unresize: true }
+                , { field: 'chrtel', title: '联系电话', width:120, unresize: true }
+                , { field: 'intcity', title: '地区', width: 120, unresize: true }
+                , { field: 'chraddress', title: '地址', width: 120, unresize: true }
+                , { field: 'stime', title: '首次阅读时间', width: 155, unresize: true }
+                , { field: 'etime', title: '最后阅读时间', width: 159, unresize: true }
+                , { field: 'vcount', title: '阅读次数', width: 86, unresize: true }
+                , { field: 'differtime', title: '阅读时长', width: 95, unresize: true }
+                , { field: 'differtime', title: '购买数', width: 95, unresize: true }
+
+                ,{field:'collection', title:'是否收藏', width:86,  templet: '#test-table-switchTpl', unresize: true}
+                ,{field:'forward', title:'转发朋友/朋友圈', width:135}
+                , { title: '操作', toolbar: '#test-table-toolbar-barDemo', width: 90 }
+            ]]
+
+            , data: [{
+                "chrname": "有优惠券的活动喔有优惠券的活动喔有优惠券的活动喔有优惠券的活动喔有优惠券的活动喔有优惠券的活动喔有优惠券的活动喔有优惠券的活动喔有优惠券的活动喔有优惠券的活动喔有优惠券的活动喔有优惠券的活动喔"
+                , "nickname": "产品说明会"
+                 ,"chrtel": "13144910090"
+                 ,"intcity": "男"
+                 ,"city": "浙江杭州"
+                // ,"experience": "116"
+                // ,"ip": "192.168.0.8"
+                // ,"logins": "108"
+                , "publishTime": "2019-10-14"
+                , "approvalTime": "2019-11-14"
+                , "joinTime": "2019-10-14"
+                , "etime": "2019-11-14 00:00:00"
+                , "orderNum": "22"
+            },
+            ]
+        });
+
+        //总页数大于页码总数
+        laypage.render({
+            elem: 'test-laypage-demo1'
+            , count: 7000 //数据总数
+            , curr: 5 //设定初始在第 5 页
+            , layout: ['count', 'prev', 'page', 'next', 'skip']
+            , jump: function (obj) {
+                console.log(obj)
+            }
+        });
+
+        //头工具栏事件
+        table.on('toolbar(test-table-toolbar)', function (obj) {
+            var checkStatus = table.checkStatus(obj.config.id);
+            switch (obj.event) {
+                case 'getCheckData':
+                    var data = checkStatus.data;
+                    layer.alert(JSON.stringify(data));
+                    break;
+                case 'getCheckLength':
+                    var data = checkStatus.data;
+                    layer.msg('选中了：' + data.length + ' 个');
+                    break;
+                case 'isAll':
+                    layer.msg(checkStatus.isAll ? '全选' : '未全选');
+                    break;
+            };
+        });
+
+        //监听行工具事件
+        table.on('tool(test-table-toolbar)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'del') {
+                layer.confirm('真的删除行么', function (index) {
+                    obj.del();
+                    layer.close(index);
+                });
+            } else if (obj.event === 'edit') {
+                layer.prompt({
+                    formType: 2
+                    , value: data.email
+                }, function (value, index) {
+                    obj.update({
+                        email: value
+                    });
+                    layer.close(index);
+                });
+            }
+        });
+
+
+
+        // 监听时间范围
+        form.on('radio(timeRange)', function (data) {
+            if (data.value == 4) {
+                $('#comingTimeDiv').removeClass('layui-hide');
+            } else {
+                $('#comingTimeDiv').addClass('layui-hide');
+            }
+        });
+
+        var laydate = layui.laydate;
+
+        //示例代码
+
+        //举办开始日期
+        var showStart = laydate.render({
+            elem: '#show-laydate-start'
+            , min: 0
+            , done: function (value, date) {
+                //更新结束日期的最小日期
+                showEnd.config.min = lay.extend({}, date, {
+                    month: date.month - 1
+                });
+                //自动弹出结束日期的选择器
+                showEnd.config.elem[0].focus();
+            }
+        });
+
+        //发布开始日期
+        var showEnd = laydate.render({
+            elem: '#show-laydate-end'
+            , min: 0
+            , done: function (value, date) {
+                //更新开始日期的最大日期
+                showStart.config.max = lay.extend({}, date, {
+                    month: date.month - 1
+                });
+            }
+        });
+
+        //发布开始日期
+        var publishStart = laydate.render({
+            elem: '#publish-laydate-start'
+            , min: 0
+            , done: function (value, date) {
+                //更新结束日期的最小日期
+                publishEnd.config.min = lay.extend({}, date, {
+                    month: date.month - 1
+                });
+
+                //自动弹出结束日期的选择器
+                publishEnd.config.elem[0].focus();
+            }
+        });
+
+        //发布开始日期
+
+        var publishEnd = laydate.render({
+            elem: '#publish-laydate-end'
+            , min: 0
+            , done: function (value, date) {
+                //更新开始日期的最大日期
+                publishStart.config.max = lay.extend({}, date, {
+                    month: date.month - 1
+                });
+            }
+        });
+
+        //来访开始日期
+        var comingStart = laydate.render({
+            elem: '#coming-laydate-start'
+            , min: 0
+            , done: function (value, date) {
+                //更新结束日期的最小日期
+                comingEnd.config.min = lay.extend({}, date, {
+                    month: date.month - 1
+                });
+
+                //自动弹出结束日期的选择器
+                comingEnd.config.elem[0].focus();
+            }
+        });
+
+        //来访结束日期
+
+        var comingEnd = laydate.render({
+            elem: '#coming-laydate-end'
+            , min: 0
+            , done: function (value, date) {
+                //更新开始日期的最大日期
+                comingStart.config.max = lay.extend({}, date, {
+                    month: date.month - 1
+                });
+            }
+        });
+    })
+
+</script>
+</body>
+
+</html>

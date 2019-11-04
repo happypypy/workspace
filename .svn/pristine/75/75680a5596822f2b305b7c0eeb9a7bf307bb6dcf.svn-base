@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="telephone=no,email=no" name="format-detection">
+    <!--<meta http-equiv="refresh" content="5;url={$jumpurl}">-->
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+    <script src="__PUBLIC__/static/template/pub/js/common.js"></script>
+    <link rel="stylesheet" href="__PUBLIC__/static/template/pub/css/main.css?v={:time()}">
+    <link rel="stylesheet" href="__PUBLIC__/static/template/skin/M1/css/skin.css?v={:time()}">
+
+    <title>{$cms->GetConfigVal('webset','webname',$idsite);}</title>
+</head>
+
+<body class="flexCol">
+<section class="section" style="padding-top: 0;">
+    <div class="score-detail-wrap">
+        <div class="inner">
+            <div class="docs-picture">
+                {:replearurl($content)}
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer class="footer">
+    {include file="modules/common/footer" /}
+    <div class="footernav-wrap">
+        <div class="fixed-pop flex">
+            <a class="fixed-pop-inner flex bgColor" onclick="javascript:window.location='<?php echo($jumpurl);?>';">
+                {if condition="strpos($jumpurl,'/group_buy_share') !== false"}
+                <p>分享拼团</p>
+                {elseif condition="strpos($jumpurl,'/share') !== false" /}
+                <p>分享现金券</p>
+                {else /}
+                <p>产品详情</p>
+                {/if}
+
+            </a>
+        </div>
+    </div>
+
+</footer>
+<script src="__PUBLIC__/static/template/pub/js/jquery.min.js"></script>
+<script src="__PUBLIC__/static/template/pub/js/menu.js"></script>
+</body>
+</html>

@@ -1,0 +1,260 @@
+{php} 
+$info = $cms->GetContentInfo($content_id,'contentid,picurl,title,content,nodeid,inputer,sys00003,fieldspare10');
+if(empty($info)){
+    header("location:/error.php?msg=".urlencode("没找到相关文章，有疑问请和管理联系！")."&url=".urlencode("/".$sitecode));
+    exit();
+}elseif(isset($usertypeflag) && $usertypeflag==1){
+    header("location:/error.php?msg=".urlencode("你好，该内容只有【".$usertype."】才可以查看/购买。如有疑问，请联系客服，谢谢！")."&url=".urlencode("/".$sitecode));
+    exit();
+}
+{/php}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="yes" name="apple-mobile-web-app-capable">
+  <meta content="yes" name="apple-touch-fullscreen">
+  <meta content="telephone=no,email=no" name="format-detection">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+  <script src="__PUBLIC__/static/template/pub/js/common.js"></script>
+  <link rel="stylesheet" href="__PUBLIC__/static/template/pub/css/main.css?v={:time()}">
+  <link rel="stylesheet" href="__PUBLIC__/static/template/skin/M1/css/skin.css?v={:time()}">
+  
+  <title>{$cms->GetConfigVal('webset','webname',$idsite);}</title>
+</head>
+
+<body class="flexCol">
+    {include file="modules/common/header" /}
+  <section class="section">
+    <div class="headtitle">-{$node_info['nodename']}-</div>
+    {if condition="$node_info['isonepage'] != 1"}
+    <div class="rich-media clearfix node-rich-media">
+        <h3>{$info['title']}</h3>
+    </div>
+    <div class="arctist">
+        <div class="time">{:date('Y-m-d',strtotime($info['sys00003']))}</div>
+        <div class="name">{$info['inputer']}</div>
+    </div>
+    {/if}
+
+      <div class="score-detail-wrap">
+        <div class="score-title border-line">
+          <p class="fontColor">内容详情</p>
+        </div>
+        <div class="inner">
+          <div class="docs-picture">
+            {:replearurl($info['content'])}
+          </div>
+        </div>
+        <div class="score-title border-line">
+          <p class="fontColor">评论信息</p>
+        </div>
+        <div class="inner">
+          <div class="content comment-list">
+            {php}$commentlist = $cms->GetComment($idsite,$content_id);{/php}
+            {if condition="!$commentlist"}
+            <div class="comment-list-item no-data flex">
+              暂无评论信息，赶快评论吧~
+            </div>
+            {else/}
+            {volist name="$commentlist" id="vo" key="k"}
+            <div class="comment-list-item flex">
+              <div class="list-item-img">
+                <img src="{:empty($vo['userimg']) ? '/static/images/userimg.jpg' : $vo['userimg']}">
+              </div>
+              <div class="list-item-txt">
+                <div class="first">
+                  <div class="info flex">
+                    <div class="flexCol">
+                      <div class="username">{$vo['username']}</div>
+                      <div class="date">{:date('Y-m-d H:i:s',$vo['createtime'])}</div>
+                    </div>
+                    <div class="floor">{$k+1}楼</div>
+                  </div>
+                  <div class="text">
+                    <div class="item">{$vo['content']}</div>
+                  </div>
+                </div>
+          
+                {if condition="$vo['reid']>0"}
+                <div class="second">
+                  <div class="info flex">
+                    <div class="flexCol">
+                      <div class="username">回复</div>
+                      <div class="date">{:date('Y-m-d H:i:s',$vo['retime'])}</div>
+                    </div>
+                  </div>
+                  <div class="text">
+                    <div class="item">{$vo['recontent']}</div>
+                  </div>
+                </div>
+                {/if}
+              </div>
+            </div>
+            {/volist}
+            {/if}
+          
+          </div>
+        </div>
+       
+      </div>
+
+  </section>
+  
+  <footer class="footer">
+        {include file="modules/common/footer2" /}
+  </footer>
+
+<script src="__PUBLIC__/static/template/pub/js/jquery.min.js"></script>
+<script src="__PUBLIC__/static/template/pub/js/menu.js"></script>
+<script src="__PUBLIC__/static/template/pub/js/layer/layer.js"></script>
+<script src="__PUBLIC__/static/js/visitrecorde.js"></script>
+<script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+
+    <script>
+      // 点击查看大图
+
+        function funcReadImgInfo() {
+
+          var imgs = [];
+
+          var imgObj = $('.docs-picture img');//这里改成相应的对象
+          var protocol = window.location.protocol;//获取协议
+          var host = window.location.host;//获取主地址
+          var port = window.location.port;//获取端口
+
+          for (var i = 0; i < imgObj.length; i++) {
+
+            var src = imgObj.eq(i).attr('src');
+            //判断地址是否有http开头，如果没有补全路径
+            src = src.substr(0, 4).toLowerCase() == "http" ? src : protocol + '//' + host + src;
+
+            imgs.push(src);
+
+            imgObj.eq(i).click(function () {
+
+              var nowImgurl = $(this).attr('src');
+              nowImgurl = nowImgurl.substr(0, 4).toLowerCase() == "http" ? nowImgurl : protocol + '//' + host + nowImgurl;//改大图的地址，不加会导致本地上传图片，点击查看显示第一张
+              console.log(nowImgurl)
+              WeixinJSBridge.invoke("imagePreview", {
+
+                "urls": imgs,
+
+                "current": nowImgurl
+
+              });
+
+            });
+
+          }
+
+        }
+
+        funcReadImgInfo();
+    
+
+    // tab栏切换
+    $('ul.tabs>li').click(function () {
+        var index = $(this).index();
+        $(this).addClass('active fontColor').siblings('li').removeClass('active fontColor');
+        $('.tab-content .content').eq(index).addClass('selected').siblings('.content').removeClass('selected');
+    });
+
+    // 点击评论
+    $('#show-comment').on('click', function () {
+        $('.footer-comment-form,.cover').show();
+    });
+    // 关闭评论
+    $('#close-comment').on('click', function () {
+        $('.footer-comment-form,.cover').hide();
+    });
+    var visitflag="{$visitflag}";
+    $(function(){
+        if(visitflag=="1")
+        {
+            $('#colle').addClass('fontColor').parent('span').siblings('p').addClass('fontColor');;
+        }
+    })
+    // 点击收藏
+    $('#colle').click(function () {
+        if(visitflag=="1"){
+            layer.confirm('已收藏',{btn:['关闭']});
+            return;
+        }
+        add_collection('{$sitecode}',{$idsite},{$content_id},'{$info['title']}',1);
+        $(this).addClass('fontColor').parent('span').siblings('p').addClass('fontColor');;
+        visitflag="1";
+    })
+    // 访问记录
+    visitdata("{$sitecode}",{$idsite},{$content_id},'{$info['title']}',1);
+    // 提交评论
+    function add_comment1()
+    {
+        var content = $("#content").val();
+
+        if(content != ''){
+            add_comment('{$sitecode}',{$idsite},{$content_id},'{$info['title']}',content,1)
+        }else{
+            layer.confirm('请输入评论内容',{btn:['关闭']});
+        }
+
+    }
+</script>
+<script language="JavaScript">
+        function  forwardedlog(title,desc,link,imgurl,inttype) {
+            var dataid='{$content_id}';
+            var data= {'dataid':dataid,"chrtitle":title, "chrdesc":desc, "chrlink": link,"imgurl":imgurl,'datatype':1,'inttype':inttype};
+            $.ajax({
+                url:"/{$sitecode}/forwardedlog",
+                data:data,
+                type:"post",
+                dataType:"json",
+                success:function(msg) {
+                    //alert(msg);
+                }
+            })
+        }
+        wx.config({
+            debug: false,
+            appId: '<?php echo $signPackage["appId"]; ?>',
+            timestamp: '<?php echo $signPackage["timestamp"]; ?>',
+            nonceStr: '<?php echo $signPackage["nonceStr"]; ?>',
+            signature: '<?php echo $signPackage["signature"]; ?>',
+            jsApiList: ['onMenuShareTimeline','onMenuShareAppMessage']
+        });
+        wx.ready(function () {
+    
+            //获取“分享到朋友圈”按钮点击状态及自定义分享内容接口（即将废弃）
+            wx.onMenuShareTimeline({
+                title: '{$info["title"]}', // 分享标题
+                link: '<?php echo $signPackage["url"]; ?>', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                imgUrl: 'https://www.tongxiang123.cn{$info["picurl"]}', // 分享图标
+                success: function () {
+                    forwardedlog('{$info["title"]}', '', '<?php echo $signPackage["url"]; ?>', '{$info["picurl"]}', 2);
+                }
+            });
+    
+            //获取“分享给朋友”按钮点击状态及自定义分享内容接口（即将废弃）
+            wx.onMenuShareAppMessage({
+                title: '{$info["title"]}', // 分享标题
+                desc: '', // 分享描述
+                link: '<?php echo $signPackage["url"]; ?>', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                imgUrl: 'https://www.tongxiang123.cn{$info["picurl"]}', // 分享图标
+                type: 'link', // 分享类型,music、video或link，不填默认为link
+                dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+                success: function () {
+                    forwardedlog('{$info["title"]}', '','<?php echo $signPackage["url"]; ?>','{$info["picurl"]}',1);
+    
+                }
+            });
+    
+        });
+    
+        wx.error(function(res){
+            //alert("接口调取失败")
+        });
+    
+    </script>
+</body>
+</html>

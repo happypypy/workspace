@@ -532,10 +532,17 @@
                                             <?php if(isset($value['package_id'])): ?>
                                                 <input type="hidden" class="package_id" name="packages[{$selcontent_index}][package_id]" value="{$value['package_id']}">
                                             <?php endif; ?>
+                                        <select name="packages[{$selcontent_index}][codebase]" class="codebase" onchange="changecode(this)">
+                                            <option value="">选择码库</option>
+                                            {volist name="$value['codebase']" id="v"}
+                                            <option value="{$v.id}" <?php if(isset($value['package_id']) && $v['id_package'] == $value['package_id']){echo 'selected';} ?>>{$v.name}</option>
+                                            {/volist}
+                                        </select>
                                             <!-- 未发布状态的活动，允许删除 -->
                                             <?php //if($datainfo['intflag'] != 2): ?>
                                                 <input type="button" name="del" value="删除" onclick="delpaytype({$selcontent_index + 1})">
                                             <?php //endif; ?>
+
                                             <script type="application/javascript" language="JavaScript">seltime("seldate{$selcontent_index}","YYYY-MM-DD")</script>
                                         <!-- </div> -->
                                     </td>
@@ -880,24 +887,34 @@
         var tr = $('<tr>').addClass('paytypecontent2');
         var tdLeft = $('<td>').addClass('oa_cell-left').html('套餐' + index_sel).appendTo(tr);
         var tdRight = $('<td>').addClass('oa_cell-right').attr('id', 'selcontent_' + index_sel).appendTo(tr);
-        var input = $("#selcontent_1 input").clone();
+        var input = $("#selcontent_1>input").clone();
         input.each(function () {
             $(this).val('').attr('name', $(this).attr('name').replace('[0]', '[' + index_sel + ']')).css({'margin-right': '3px'});
         });
-        
+
         // $('<input>').attr('type', 'button').attr('onclick', 'delpaytype(' + index_sel + ');').val('删除');
         tdRight.append(input);
+
         //库存默认为0
-        tdRight.children('.package_sum').eq(0).val(0);
+        tdRight.children('.package_sum').eq(0).val(0).attr('readonly',false);
         // 删除按钮绑定特定参数和方法
-        tdRight.children('input[type=button]').val('删除').attr('onclick', 'delpaytype(' + index_sel + ');');
+        tdRight.children('input[type=button][name=del]').val('删除').attr('onclick', 'delpaytype(' + index_sel + ');');
+
+        //增加选择库码的下拉框
+        var codename= $("#selcontent_1>select").clone();
+        $(codename).val('').attr('name', $(codename).attr('name').replace('[0]', '[' + index_sel + ']')).css({'margin-right': '3px'})
+        tdRight.children('input[type=button][name=del]').before(codename)
+
+        // 拼团按钮绑定特定参数和方法
+        // 不要问index_sel怎么算的，问就自杀
+        tdRight.children('input[type=button][name=addAssemble]').val('拼团').attr('index', index_sel);
         //新增套餐删除套餐id字段
         tdRight.children('.package_id').remove();
 
         $("#tradd").before(tr);
 
         //为有效期输入框添加选择日期事件
-        selectTime(tdRight.children('.expire_at').eq(0), "YYYY-MM-DD");
+        selectTime1(tdRight.children('.expire_at').eq(0), "YYYY-MM-DD");
         index_sel++;
     }
     function delpaytype(index){

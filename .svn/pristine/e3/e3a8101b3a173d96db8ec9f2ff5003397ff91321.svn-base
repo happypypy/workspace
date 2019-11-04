@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>现金券详情</title>
+    <link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
+    <link href="__PUBLIC__/static/css/page.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="__PUBLIC__/static/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/layer/layer.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/ContorlValidator.js"></script>
+
+</head>
+<body>
+<div class="oa_pop">
+    <div class="oa_pop-main">
+        <div style="height: 6px"></div>
+        <div class="oa_title clearfix">
+            <span class="oa_ico-right"></span>
+            <span class="oa_title-btn"></span>
+            <span class="oa_ico-left"></span>
+            修改订单金额记录       </div>
+        <div class="oa_edition" style="margin-bottom: 5px">
+            <table width="100%" border="0" cellspacing="1" cellpadding="0" class="oa_edition" style="border-bottom:none">
+                {foreach $order_price_record as $v}
+                <tr>
+                    <td width="150" style="border-bottom: #e0e0e0 solid 1px;line-height: 30px;padding-left: 30px" colspan="2">{$v.create_time}  &nbsp;&nbsp;“{$v.name}”将该订单的原价格从“{$v.old_price}”元，修改为“{$v.new_price}”，备注：{$v.remark}</td>
+                </tr>
+                {/foreach}
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    function verify_param() {
+        var price = /^((([1-9]|0)\d{0,6})|0)([.]{1}[0-9]{1,2})?$/; //金额（允许输入0）
+        var new_price = $('#new_price').val();
+        if(!price.test(new_price)){
+            layer.alert("请输入大于等于零的有效金额！",{icon:2});
+            return false;
+        }
+        //备注
+        if($("#remark").val()=="")
+        {
+            layer.alert("请输入备注！",{icon:2});
+            return false;
+        }
+        return true;
+    }
+</script>
+</body>
+</html>

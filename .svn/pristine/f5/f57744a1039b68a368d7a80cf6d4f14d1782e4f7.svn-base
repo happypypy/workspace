@@ -1,0 +1,34 @@
+(function() {
+  // 引入css
+  var cssText =
+    '' +
+    '@charset "utf-8";html{-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;-webkit-overflow-scrolling:touch;font-size:100px}html *{outline:0;-webkit-text-size-adjust:none;-webkit-tap-highlight-color:transparent;-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box}body,html{font-family:"Helvetica Neue",Helvetica,Arial,"PingFang SC","Hiragino Sans GB","Heiti SC","Microsoft YaHei","WenQuanYi Micro Hei",sans-serif}body{min-width:320px;font-size:16px;text-rendering:optimizeLegibility;overflow-x:hidden}article,aside,blockquote,body,button,code,dd,details,div,dl,dt,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,hr,input,legend,li,menu,nav,ol,p,pre,section,td,textarea,th,ul{margin:0;padding:0}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}input,input[type=button],input[type=reset],input[type=submit]{resize:none;border:0;-webkit-appearance:none;}button{border:0}input,select,textarea{font-size:100%}table{border-collapse:collapse;border-spacing:0}fieldset,img{vertical-align:middle;border:0}abbr,acronym{border:0;font-variant:normal}del{text-decoration:line-through}address,caption,cite,code,dfn,em,th,var{font-style:normal;font-weight:500}ol,ul{list-style:none}caption,th{text-align:left}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:500}q:after,q:before{content:""}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sup{top:-.5em}sub{bottom:-.25em}a:hover{text-decoration:underline}a,ins{text-decoration:none}a:active,a:hover,a:link,a:visited{background-color:transparent;-webkit-tap-highlight-color:transparent;-webkit-tap-highlight-color:transparent;outline:0;text-decoration:none}';
+  // cssText end
+
+  var styleEl = document.createElement('style');
+  document.getElementsByTagName('head')[0].appendChild(styleEl);
+  if (styleEl.styleSheet) {
+    if (!styleEl.styleSheet.disabled) {
+      styleEl.styleSheet.cssText = cssText;
+    }
+  } else {
+    try {
+      styleEl.innerHTML = cssText;
+    } catch (e) {
+      styleEl.innerText = cssText;
+    }
+  }
+})();
+
+;(function() {
+  /*文字大小自适应*/
+  var handlerOrientationChange = function() {
+    var width = window.innerWidth <= 320 ? 320 : window.innerWidth >= 640 ? 640 : window.innerWidth;
+    var fontSize = 100 * (width / 375);
+    document.documentElement.style.fontSize = fontSize + 'px';
+  };
+  window.onresize = handlerOrientationChange;
+  setTimeout(function() {
+    handlerOrientationChange();
+  }, 0);
+})();

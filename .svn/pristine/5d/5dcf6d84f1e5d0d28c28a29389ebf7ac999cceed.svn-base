@@ -1,0 +1,270 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>相册管理</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="__PUBLIC__/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="__PUBLIC__/layuiadmin/style/admin.css" media="all">
+    <style>
+        .layui-form-item{
+            margin-bottom: 5px;
+        }
+        .layui-table-cell{
+            height: auto;
+        }
+        .lastcell>a{
+            text-decoration: underline;
+            color: #333;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-tab">
+                    <ul class="layui-tab-title">
+                        <?php if($cms->CheckPurview('photo_manage','view')){ ?>
+                        <li class="layui-this" onclick="javascript:window.location='{:url('album/photo_list','album_id='.$album_id)}'">图片列表 </li>
+                        <?php } ?>
+                        <?php if($cms->CheckPurview('photo_manage','photo_comment')){ ?>
+                        <li onclick="javascript:window.location='{:url('album/comment_list','album_id='.$album_id)}'">图片评论管理</li>
+                        <?php } ?>
+                    </ul>
+                </div>
+
+                <!-- 搜索区域 -->
+                <div class="layui-card-body">
+                    <form class="layui-form" action="" lay-filter="component-form-group">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">上传者：</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="account_name" autocomplete="off" placeholder="请输入上传者" class="layui-input" value="{$search['account_name']}">
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">上传时间：</label>
+                                <div class="layui-input-inline">
+                                    <input name="dtstart" type="text" class="layui-input"   id="test-laydate-start" placeholder="开始日期"  value="{$search['dtstart']}">
+                                </div>
+                                <div class="layui-form-mid">
+                                    -
+                                </div>
+                                <div class="layui-input-inline">
+                                    <input name="dtend"  type="text" class="layui-input" id="test-laydate-end" placeholder="结束日期"  value="{$search['dtend']}">
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <button class="layui-btn layuiadmin-btn-list"  lay-submit lay-filter="LAY-app-contlist-search">
+                                    <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                                </button>
+                                <input  type="button" value="返回" onclick="javascript:window.location='{:url('album/index','')}'" class="layui-btn layuiadmin-btn-list" />
+                            </div>
+                        </div>
+                </div>
+
+                <table class="layui-hide" id="test-table-toolbar" lay-filter="table_action"></table>
+
+                <script type="xt/html" id="test-table-toolbar-toolbarDemo">
+            <?php if($cms->CheckPurview('photo_manage','add_photo')){ ?>
+              <div class="layui-btn-container">
+               <button class="layui-btn layui-btn-sm" type="button" onclick="javascript:CustomOpe('{:url('album/add_photo','album_id='.$album_id)}', 'activity','上传图片', 800,600)" >上传图片</button>
+              </div>
+              <?php } ?>
+            </script>
+
+
+                <script type="text/html" id="test-table-toolbar-barDemo">
+                    <div class="test-table-toolbar-barDemo" style="white-space:normal;text-align: left;">
+                        <?php  if($cms->CheckPurview('photo_manage','delete_photo') ){ ?>
+                        <a class="layui-btn layui-btn-xs" lay-event="del">删除</a>
+                        <?php } ?>
+                        <?php  if($cms->CheckPurview('photo_manage','photo_comment') ){ ?>
+                        <a  class="layui-btn layui-btn-xs" href="/admin/album/comment_list/photo_id/{{d.id}}/album_id/{$album_id}">查看图片评论</a>
+                        <?php } ?>
+                    </div>
+
+                </script>
+
+                <div style="overflow: hidden" >
+                    <div style="float: left; margin-top: 15px;margin-left: 10px; vertical-align: middle;">
+                        <button class="layui-btn layui-btn-sm" id="batchAll" type="button">删除</button>
+                    </div>
+                    <div id="test-laypage-demo1" style="text-align: right; margin-right: 15px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="__PUBLIC__/layuiadmin/layui/layui.js"></script>
+<script src="__PUBLIC__/layuiadmin/js/public.js"></script>
+<script>
+    layui.config({
+        base: '__PUBLIC__/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['index', 'table','laydate','jquery'], function(){
+        var laypage = layui.laypage
+            ,table = layui.table
+            ,laydate = layui.laydate
+            ,$ = layui.jquery;
+
+        table.render({
+            elem: '#test-table-toolbar'
+            ,toolbar: '#test-table-toolbar-toolbarDemo'//左侧工具栏
+            ,title: '相册表'
+            ,defaultToolbar: ['filter'] //设置右侧工具栏（打印，导出等）
+
+            ,cols: [[
+                {type: 'checkbox'}
+                ,{field:'min_face_url', title: '图片' }
+                ,{field:'good_num', title: '点赞数' }
+                ,{field:'comment_num', title:'评论数', width:100}
+                ,{field:'account_name', title:'上传者',}
+                ,{field:'create_time', title:'上传时间', width:200, unresize: true}
+                ,{title:'操作', toolbar: '#test-table-toolbar-barDemo', width:190}
+            ]]
+
+            ,data:[
+                {volist name="data" id="vo"}
+                {
+                    "id": "{$vo['id']}"
+                    ,"min_face_url": "<img src=\"{$vo['min_face_url']}\" alt=\"\" style=\"width: 60px;height: 60px\">"
+                    ,"good_num": "{$vo['good_num']}"
+                    ,"comment_num": "{$vo['comment_num']}"
+                    ,"account_name": "{$vo['account_name']}"
+                    ,"create_time": "{$vo['create_time']}"
+                },
+                {/volist}
+            ]
+            ,limit: {:$page->pageSize}
+        });
+
+        //总页数大于页码总数
+        laypage.render({
+            elem: 'test-laypage-demo1'
+            ,count: {:$page->count}
+    ,curr: {:$page->iPage}
+    ,limit: {:$page->pageSize}
+    ,layout: ['count', 'prev', 'page', 'next', 'skip']
+            ,jump: function(obj){
+            if(obj.curr!= "{:$page->iPage}"){
+                var jumpUrl = "{:$page->url('currentPage')}";
+                jumpUrl = jumpUrl.replace("currentPage",obj.curr);
+                location.href = jumpUrl;
+            }
+        }
+        });
+
+        //开始日期
+        var insStart = laydate.render({
+            elem: '#test-laydate-start'
+            , done: function (value, date) {
+                //更新结束日期的最小日期
+                insEnd.config.min = lay.extend({}, date, {
+                    month: date.month - 1
+                });
+                //自动弹出结束日期的选择器
+                insEnd.config.elem[0].focus();
+            }
+        });
+        //结束日期
+        var insEnd = laydate.render({
+            elem: '#test-laydate-end'
+            , done: function (value, date) {
+                //更新开始日期的最大日期
+                insStart.config.max = lay.extend({}, date, {
+                    month: date.month - 1
+                });
+            }
+        });
+
+        //监听行工具事件
+        table.on('tool(table_action)', function(obj){
+            var data = obj.data;
+            if(obj.event === 'del'){
+                layer.confirm('真的删除此行么？', function(index){
+                    layer.close(index);
+                    var s = obj.data.id;
+                    //此时调用假删除的数据（将是否删除字段改为了删除），目的就是防止用户感知到删除很慢
+                    del(s);
+                });
+            }
+        });
+        // 批量删除
+        $('#batchAll').click(function(){
+        //此刻要的是选中的表格的元素
+            var checkStatus = table.checkStatus('test-table-toolbar')
+                ,checkData = checkStatus.data; //得到选中的数据
+            if(checkData.length === 0){
+                return layer.msg('请选择要删除的数据');
+            }
+
+            layer.confirm('确定删除吗？', function(index) {
+                var ids = '';
+                // 拼接ID
+                checkData.forEach(function(item){
+                    ids += item.id + ',';
+                });
+                ids = ids.substr(0, ids.length - 1);
+                del(ids);
+            });
+        })
+        // 根据ID删除数据
+        function del(s){
+            //此时调用假删除的数据（将是否删除字段改为了删除），目的就是防止用户感知到删除很慢
+            $.ajax({
+                url:"{:url('album/false_del_photo')}",
+                data:"id="+s,
+                type:"post",
+                dataType:"json",
+                success:function(msg) {
+                    if (msg == 1) {
+                        loading("数据删除中，请稍等！");
+                        //再此异步调用真删除的接口
+                        $.ajax({
+                            url:"{:url('album/del_photo')}",
+                            data:"id="+s,
+                            type:"post",
+                            dataType:"json",
+                            success:function(msg) {
+                                layer.alert('删除成功', {icon:1});
+                                location.reload();
+                            }
+                        });
+                    }
+                    else
+                    {
+                        layer.alert('删除失败', {icon: 2});
+                        //location.reload();
+                    }
+                }
+            })
+        }
+
+    });
+
+    function loading(msg){
+        layer.msg(msg, {
+            icon:16,
+            shade:[0.1, '#fff'],
+            time:false  //取消自动关闭
+        })
+    }
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,462 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>报名管理</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/admin.css" media="all">
+    <script src="/layuiadmin/js/jquery-3.3.1.js"></script>
+    <link rel="stylesheet" href="/layuiadmin/style/public.css" media="all">
+    <script type="text/javascript" src="__PUBLIC__/static/js/layer/layer.js"></script>
+
+    <style>
+        .list {
+            overflow: hidden;
+        }
+
+        .list>li {
+            float: left;
+            margin-right: 15px;
+            border: 1px solid #ccc;
+        }
+
+        .img-div {
+            height: 500px;
+            overflow: hidden;
+        }
+
+        .layui-form-radio>i {
+            font-size: 14px;
+            margin-right: 2px;
+        }
+
+        .layui-form-radio {
+            margin: 6px 0 0 0;
+            padding-right: 2px;
+        }
+
+        .layui-form-radioed>div {
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+<form class="layui-form" action="" lay-filter="component-form-group">
+    <div class="layui-fluid">
+        <div class="layui-card">
+            <div class="layui-card-header1">基本信息</div>
+            <div class="layui-card-body" style="padding: 15px">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">订单号</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input"> {$datainfo['ordersn']}</div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">报名人姓名</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input">{$datainfo['chrusername']}</div>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">产品名称</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input"> {$datainfo['chrtitle']}</div>
+                    </div>
+
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">使用时间</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input"> {$datainfo['dtstart']} 至 {$datainfo['dtend']}</div>
+
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">商务名称</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input"> {$datainfo['marketname']}</div>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">购买的套餐名称</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input"> {$datainfo['payname']}</div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">购买数量</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input"> {$datainfo['paynum']}</div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">订单总价格</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input"> {$datainfo['price']}</div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">订单状态</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input"> {$order_state[$datainfo['state']]}</div>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">创建时间</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input"> {$datainfo['dtcreatetime']}</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="layui-card">
+            <div class="layui-card-header1">报名表单</div>
+            <div class="layui-card-body" style="padding:15px;">
+                <?php
+                       $row2= explode("☆", $datainfo['txtfield']);
+                            $row1= explode("☆", $datainfo['txtdata']);
+                            foreach($row1 as $k=>$vo){
+                $arr= explode("∫", $row2[$k]);
+                $datatype=1;
+                $datafield=$arr[0];
+                if(count($arr)>1)
+                {
+                $datatype=$arr[1];
+                }
+                ?>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">{$datafield}：</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input">  <?php
+                                if($datatype==7)
+                                    echo '<a href="'.$row1[$k].'" target="_blank"> <img src="'.$row1[$k].'" style="border: 0px;height: 50px;padding: 1px;"  /></a>';
+                            else
+                            echo $row1[$k];
+                            ?></div>
+                    </div>
+                </div>
+
+                <?php } ?>
+            </div>
+        </div>
+
+        <?php if(!empty($datainfo['refundsn']) || !empty($datainfo['refundremark'])) { ?>
+        <div class="layui-card">
+            <div class="layui-card-header1">退款记录</div>
+            <div class="layui-card-body" style="padding: 15px">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">退款的单号</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input"> {$datainfo['refundsn']?$datainfo['refundsn']:"<span style='color: red'>申请中</span>"}</div>
+                    </div>
+                </div>
+
+                <?php if(!empty($datainfo['dtwxrefundtime'])){ ?>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">退款时间</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input">{$datainfo['dtwxrefundtime']}</div>
+                    </div>
+                </div>
+
+                <?php } if(!empty($datainfo['refundprice'])){ ?>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">退款金额</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input">{$datainfo['refundprice']}</div>
+                    </div>
+                </div>
+
+                <?php } if(!empty($datainfo['refundremark'])){ ?>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">退款原因</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input">{$datainfo['refundremark']}</div>
+                    </div>
+                </div>
+
+                <?php } if(!empty($datainfo['refundremark1'])){ ?>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">后台备注</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input">{$datainfo['refundremark1']}</div>
+                    </div>
+                </div>
+
+                <?php } if(!empty($datainfo['refundpic'])){ ?>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">图片</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input"><img src="{$datainfo['refundpic']}" height="60"></div>
+                    </div>
+                </div>
+
+                <?php } if(!empty($datainfo['refundsn2']) || !empty($datainfo['refundmsg2'])){ ?>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">退款的单号2</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input">{$datainfo['refundsn2']?$datainfo['refundsn2']:"<span style='color: red'>申请中</span>"}</div>
+                    </div>
+                </div>
+
+                <?php } if(!empty($datainfo['dtwxrefundtime2'])){ ?>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">退款时间2</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input">{$datainfo['dtwxrefundtime2']}</div>
+                    </div>
+                </div>
+
+                <?php } if(!empty($datainfo['refundprice2'])){ ?>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">退款金额2</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input">{$datainfo['refundprice2']}</div>
+                    </div>
+                </div>
+
+                <?php } if(!empty($datainfo['refundmsg2'])){ ?>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">退款原因2</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input">{$datainfo['refundmsg2']}</div>
+                    </div>
+                </div>
+
+                <?php } if(!empty($datainfo['refundremark2'])){ ?>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">后台备注：</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input">{$datainfo['refundremark2']}</div>
+                    </div>
+                </div>
+
+                <?php } if(!empty($datainfo['refundpic2'])){ ?>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">图片2：</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input"><img src="{$datainfo['refundpic2']}" height="60"></div>
+                    </div>
+                </div>
+
+                <?php } ?>
+            </div>
+        </div>
+        <?php  } ?>
+        <div class="layui-card" >
+            <div class="layui-card-header1">退款信息</div>
+            <div class="layui-card-body" style="padding:15px;">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">退款方式：</label>
+                    <div class="layui-input-inline">
+                            <select name="isrefundpart" id="isrefundpart" lay-filter="level">
+                                <option value="">请选择退款方式</option>
+                                <option value="0">全额退款</option>
+                                <option value="1">部份退款</option>
+                            </select>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">退款金额：</label>
+                    <div class="layui-input-block">
+                        <input id="refundprice" name="refundprice" value="" class="layui-input" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" onpaste="this.value=this.value.replace(/[^\d.]/g,'')"  />
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">备注信息：</label>
+                    <div class="layui-input-block">
+                        <textarea  id="refundremark" class="layui-textarea" rows="3" cols="30"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item layui-layout-admin">
+        <div class="layui-input-block">
+            <div class="layui-footer" style="left: 0;z-index: 9999;">
+                <input type="hidden" value="3" name="intflag" id="intflag" />
+                <button type="button" class="layui-btn" onclick="refund(0)">确认退款</button>
+                <button type="button" class="layui-btn" onclick="javascript:refund(1)">退款退产品</button>
+                <button  type="button" class="layui-btn" onclick="javascript:refuse_refund()" >退款不通过</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<script src="/layuiadmin/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: '/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['index', 'form'], function() {
+        var $ = layui.$
+            , admin = layui.admin
+            , element = layui.element
+            , layer = layui.layer
+            , form = layui.form;
+
+        form.on('select(level)', function (data) {
+            $value=$("#isrefundpart").val();
+            if($value=="0")
+            {
+                $("#refundprice").val("{$datainfo['price']}");
+            }
+            else
+            {
+                $("#refundprice").val("");
+            }
+        });
+    })
+
+</script>
+</body>
+<script language="JavaScript">
+    function refund(flag)
+    {
+        if($("#isrefundpart").val()=="")
+        {
+            layer.msg('请选择退款方式！');
+            return false;
+        }
+        if($("#refundprice").val()=="" )
+        {
+            layer.msg('请输入退款金额！');
+            return;
+        }
+        if(!($("#refundprice").val()>"0"))
+        {
+            layer.msg('退款金额必须大于0！');
+            return;
+        }
+
+        $("#btnRefund").attr("disabled","disabled");
+
+        var refundprice=$("#refundprice").val();
+        var refund_desc=$("#refund_desc").val();
+        var isrefundpart=$("#isrefundpart").val();
+        var refundremark=$("#refundremark").val();
+
+        var data= {"sitecode":"<?php echo $sitecode ?>", "ordersn":"<?php echo $datainfo['transaction_id'] ?>", "refundprice": refundprice,"flag":flag, "price":"<?php echo $datainfo['price'] ?>", "refund_desc": refund_desc,"isrefundpart":isrefundpart,"refundremark":refundremark,'transaction_id':"<?php echo $datainfo['transaction_id'] ?>"};
+        layer.load(1, {
+            shade: [0.1,'#fff'] //0.1透明度的白色背景
+        });
+        $.ajax({
+            url:"{:url('admin/Api/refund')}",
+            data:data,
+            type:"post",
+            dataType:"json",
+            success:function(msg) {
+                layer.closeAll('loading')
+                if(msg.state==1)
+                {
+                    if(msg.info.return_code=="SUCCESS")
+                    {
+
+                        if(msg.info.result_code=="SUCCESS")
+                        {
+
+                            layer.confirm('退款成功！',{btn:['关闭'],btn1: function(index, layero){
+                                    CloseDiv();
+                                    GetOpenerWin().empty();
+                                }});
+                        }
+                        else
+                        {
+                            $("#btnRefund").removeAttr("disabled");
+                            layer.msg(msg.info.err_code_des);
+                        }
+
+                    }
+                    else
+                    {
+                        $("#btnRefund").removeAttr("disabled");
+                        layer.msg(msg.info.return_msg);
+                    }
+
+                }
+                else
+                {
+                    if(msg.msg==58){
+                        $("#btnRefund").removeAttr("disabled");
+                        layer.msg("本地客户端证书有问题")
+                    }else{
+                        $("#btnRefund").removeAttr("disabled");
+                        layer.msg(msg.msg)
+                    }
+
+                }
+            }
+        });
+    }
+
+
+    /**
+     * 拒绝退款
+     */
+    function refuse_refund() {
+
+        $("#btnRefund").attr("disabled","disabled");
+        $("#btnRefund1").attr("disabled","disabled");
+
+        var refundremark=$("#refundremark").val();
+
+        var data= {"sitecode":"<?php echo $sitecode ?>", "ordersn":"<?php echo $datainfo['ordersn'] ?>","refundremark":refundremark};
+        $.ajax({
+            url:"{:url('admin/Api/refuse_refund')}",
+            data:data,
+            type:"post",
+            dataType:"json",
+            success:function(msg) {
+                if(msg.state==1)
+                {
+                    if(msg.info.return_code=="SUCCESS")
+                    {
+                        if(msg.info.result_code=="SUCCESS")
+                        {
+                            layer.confirm('已拒绝退款！',{btn:['关闭'],btn1: function(index, layero){
+                                    CloseDiv();
+                                    GetOpenerWin().empty();
+                                }});
+                        }
+                        else
+                        {
+                            $("#btnRefund").removeAttr("disabled");
+                            layer.msg(msg.info.err_code_des);
+                        }
+
+                    }
+                    else
+                    {
+                        $("#btnRefund").removeAttr("disabled");
+                        layer.msg(msg.info.return_msg);
+                    }
+
+                }
+                else
+                {
+                    $("#btnRefund").removeAttr("disabled");
+                    layer.msg(msg.msg);
+                }
+            }
+        });
+    }
+</script>
+
+</html>

@@ -1,0 +1,193 @@
+/* div模拟input展示框 */
+.mylayui-word-input {
+  border: 1px solid #e6e6e6;
+  display: block;
+  width: 100%;
+  min-height: 40px;
+  padding: 9px 10px !important;
+  color: #000 !important;
+  box-sizing: border-box;
+  word-break: break-word;
+}
+
+/* 带搜索的列表头部 */
+.layui-card-header2 {
+  background-color: #f2f2f2;
+  position: relative;
+  height: 42px;
+  line-height: 42px;
+  padding: 0 15px;
+  border-bottom: none;
+  color: #666;
+  border-radius: 2px 2px 0 0;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.layui-card-header2 + .layui-form.layui-bd {
+  padding: 15px 15px 0 0;
+}
+
+/* 列表头部文字加粗 */
+.layui-card-header,.layui-card-header1{
+  font-weight: bold;
+}
+
+.header-backcolor{
+  background-color: #f2f2f2;
+}
+
+/* flex布局 */
+.flex {
+  display: flex;
+}
+.flexCol {
+  display: flex;
+  flex-direction: column;
+}
+/* flex布局 两边对齐 */
+.flex-jcsb {
+  justify-content: space-between;
+}
+/* 浮动 */
+.fl {
+  float: left;
+}
+.fr {
+  float: right;
+}
+/* 清除浮动 */
+.clearfix::before {
+  content: '';
+  display: block;
+  clear: both;
+}
+.clearfix::after {
+  content: '';
+  display: block;
+  clear: both;
+}
+
+.ov-hd {
+  overflow: hidden;
+}
+
+/* 宽度100px */
+.layui-w100 {
+  width: 100px !important;
+}
+
+/* 宽度150px */
+.layui-w150 {
+  width: 150px !important;
+}
+
+/* 宽度40px */
+.layui-w40 {
+  width: 40px !important;
+}
+
+/* 高度34px */
+.layui-h32 {
+  height: 32px;
+}
+/* 下边距15px */
+.layui-mb15 {
+  margin-bottom: 15px;
+}
+/* 下边距5px */
+.layui-mb5 {
+  margin-bottom: 5px;
+}
+/* 边框1px */
+.layui-bd {
+  border: 1px solid #e6e6e6;
+}
+
+.layuiadmin-card-status .layui-w150 {
+  flex: 0 0 150px;
+  margin-left: 15px;
+}
+
+/* 带时间范围的单选框 */
+.search-box .layui-form-radio {
+  height: 32px;
+}
+
+/* 取消表格右侧工具栏默认内边距 */
+.layui-table-tool-temp {
+  padding-right: 0;
+}
+
+/* 上传图标 */
+.icon-items {
+  padding: 10px;
+}
+.icon-wrap {
+  border: 1px solid #e6e6e6;
+  flex-wrap: wrap;
+  min-width: 360px;
+}
+
+.icon-item {
+  margin: 0 10px 10px 0;
+  justify-content: center;
+  align-items: center;
+}
+
+.icon-item > img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+.icon-item > span {
+  text-decoration: underline;
+  color: #009688;
+  cursor: pointer;
+}
+.icon-upload {
+  padding: 10px 10px 0 10px;
+}
+
+/* 列表头部背景色白色 */
+.layui-table-tool{
+  background-color: #fff;
+}
+
+.layui-upload-img{
+    max-width: 220px; 
+    max-height: 140px;
+    width: 100px;
+    height: 100px; 
+    margin: 0 10px 10px 0;
+}
+
+.layui-upload-img-long{
+    width: 220px;
+    height: 140px; 
+    margin: 0 10px 10px 0;
+}
+
+/* 表格头部区域 */
+.layui-btn-container .info-l,.layui-btn-container .info-r{
+  font-size:14px;
+  font-weight:bold
+}
+
+.layui-btn-container .info-r>span{
+  color: #666;
+}
+
+.layui-btn-container .info-r>button{
+  font-weight: normal;
+}
+
+.layui-card-header2 .fr>span{
+  color: #666;
+  font-weight: bold;
+}
+
+/* 下拉框层级调整 */
+.layui-form-select dl{
+	z-index: 1099;
+}

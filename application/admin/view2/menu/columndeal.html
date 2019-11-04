@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>新增栏目</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="__PUBLIC__/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="__PUBLIC__/layuiadmin/style/admin.css" media="all" />
+    <link rel="stylesheet" href="__PUBLIC__/layuiadmin/style/public.css" media="all">
+    <script type="text/javascript" src="__PUBLIC__/layuiadmin/js/jquery-3.3.1.js"></script>
+</head>
+    <style>
+        .imgPeview{
+            border: solid 1px #ccc;
+            width: 100px;
+            height: 100px;
+            margin-top: 5px;
+        }
+    </style>
+    <script language="javascript">
+        //具体参数配置在  editor_config.js 中
+        var options = {
+            zIndex: 999,
+            initialFrameWidth: 558, //初化宽度
+            initialFrameHeight: 400, //初化高度
+            focus: false, //初始化时，是否让编辑器获得焦点true或false
+            maximumWords: 99999, removeFormatAttributes: 'class,style,lang,width,height,align,hspace,valign',//允许的最大字符数 'fullscreen',
+            pasteplain:false, //是否默认为纯文本粘贴。false为不使用纯文本粘贴，true为使用纯文本粘贴
+            autoHeightEnabled: false
+        };
+        function previous() {
+            var content = UE.getEditor('chrcontent').getContent();
+            layer.open({
+                title:"内容预览",
+                type: 1,
+                skin: 'layui-layer-rim', //加上边框
+                area: ['375px', '600px'], //宽高
+                content: content
+            });
+        }
+    </script>
+    <script type="text/javascript" src="__PUBLIC__/layuiadmin/static/plugins/Ueditor/ueditor.config.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/layuiadmin/static/plugins/Ueditor/ueditor.all.js"></script>
+<body>
+    
+<form class="layui-form" method="post" action="{:url('menu/columnpost')}" lay-filter="component-form-group">
+    <div class="layui-fluid">
+        <div class="layui-card">
+            <div class="layui-card-header1">{:lang('column add')}</div>
+            <div class="layui-card-body" style="padding: 15px;">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">{:lang('column name')}</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="chrname" lay-verify="required" autocomplete="off" placeholder="请输入{:lang('column name')}" value="{$columninfo.chrname ?: ''}" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">{:lang('column code')}</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="chrcode" lay-verify="required" autocomplete="off" placeholder="请输入{:lang('column code')}" value="{$columninfo.chrcode ?: ''}" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">{:lang('serial')}</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="intsn" autocomplete="off" placeholder="请输入{:lang('serial')}" value="{$columninfo.intsn ?: '1'}" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">{:lang('picture path')}</label>
+                    <div class="layui-input-block">
+                        <input type="hidden" name="chrimgpath" id="chrimgpath" value="{$info['chrimgpath'] ?: ''}"
+                            class="layui-input">
+                        <button  class="layui-btn layui-btn-sm" id="upload" type="button">上传图片</button>
+                        <div class="layui-upload-list">
+                            <img class="layui-upload-img" src="{$info['chrimgpath'] ?: ''}" id="chrimgpath_preview">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">{:lang('system')}</label>
+                    <div class="layui-input-block">
+                        <input name="intflag" type="radio" value="1" {if condition="$columninfo['intflag'] eq 1"}checked{/if} title="{:lang('yes')} " />
+                        <input name="intflag" type="radio" value="2" {if condition="$columninfo['intflag'] eq 2"}checked{/if} title="{:lang("no")}" />
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">{:lang('remarks')}</label>
+                    <div class="layui-input-block">
+                        <textarea name="textremark" placeholder="请输入{:lang('remarks')}" class="layui-textarea">{$columninfo.template_desc ?: ''}</textarea>
+                    </div>
+                </div>
+
+                <div class="layui-form-item layui-layout-admin">
+                    <div class="layui-input-block">
+                        <div class="layui-footer" style="left: 0;z-index: 9999;">
+                            <input type="hidden" name="action" value="{$columninfo['action']}">
+                            <input type="hidden" name="idcatalog" value="{$columninfo['idcatalog']}">
+                            <input type="submit" class="layui-btn" lay-submit lay-filter="layuiadmin-submit" id="layuiadmin-submit" value="确定">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script src="__PUBLIC__/layuiadmin/layui/layui.js"></script>
+<script type="text/javascript" src="__PUBLIC__/layuiadmin/js/public.js"></script>
+<script>
+layui.config({
+    base: '__PUBLIC__/layuiadmin/' //静态资源所在路径
+}).extend({
+    index: 'lib/index' //主入口模块
+}).use(['index', 'table', 'uploadImg'], function(){
+    var uploadImg = layui.uploadImg;
+    uploadImg('upload', 'chrimgpath', 'menu');
+});
+</script>
+</body>
+</html>

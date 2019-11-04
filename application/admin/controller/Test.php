@@ -554,4 +554,23 @@ XML;
             exit;
         }
     }
+
+    public function biaoqian(){
+        $column = db('node')->field('nodeid')->select();
+        $bq = db('work_content')->where(['bookcode'=>'zxbq'])->select();
+        dump($bq);
+//        dump($column);
+        $arr=[];
+        foreach ($column as $k=> $v){
+            foreach ($bq as $kk=> $vv){
+                if($k==0){
+                    $arr[$vv['cid']]=$column[$k]['nodeid'];
+                }
+            }
+        }
+
+    }
+
+
+
 }

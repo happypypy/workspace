@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/static/css/page.css?1" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="__PUBLIC__/static/js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/js/del-checked.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/CostomLinkOpenSw.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/lhgdialog.js?skin=aero"></script>
+</head>
+<body>
+<div class="oa_pop">
+  <div class="oa_pop-main">
+      <div style="height: 6px"></div>
+      <div class="oa_title clearfix">
+          <span class="oa_ico-right"></span>
+          <span class="oa_title-btn"></span>
+          <span class="oa_ico-left"></span>
+          {if condition="$datainfo['action'] eq 'edit'"}编辑相册{else /}添加相册{/if}
+      </div>
+  	<div class="oa_edition">
+        <form action="{:url('admin/album/modi')}" method="post" id="form1">
+            <table width="100%" border="0" cellspacing="1" cellpadding="0" class="oa_edition"  style="border-bottom: #e0e0e0 solid 1px">
+                <tr>
+                    <td class="oa_cell-left">
+                        <span style="color: red;">*</span>
+                        相册名称：</td>
+                    <td class="oa_cell-right">
+                        <input name="album_name" type="text" value="{$datainfo.album_name}" class="oa_input-200" style="width:250px;"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="oa_cell-left">
+                        描述：</td>
+                    <td class="oa_cell-right">
+                        <textarea id="copyright" name="album_desc"  cols="50" rows="3" class="form-control input oa_input-200" style="width:300px;height:80px;">{$datainfo.album_desc}</textarea>
+                    </td>
+                </tr>
+                <tr>
+                    <td width="120" class="oa_cell-left">
+                        <span style="color: red">*</span>相册封面图片：
+                    </td>
+                    <td class="oa_cell-right">
+                        <input name="album_cover_url" id="album_cover_url" type="text" value="{$datainfo['album_cover_url']}"   chname="相册封面图片"   class="form-control "  style="width:300px;" />
+                        <input onclick="uploadimgcut('album_cover_url','album',400,400);" type="button" value="上传图片"/>
+                        <input onclick="openimg('album_cover_url')" type="button" value="查看图片"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="oa_cell-left"><span style="color: red;">*</span>相册状态：</td>
+                    <td class="oa_cell-right">
+                        <label>
+                        <input name="state" type="radio" value="1" {if condition="$datainfo.state eq 1"}checked{/if} checked />启用&nbsp;
+                        </label>
+                        <label>
+                        <input name="state" type="radio" value="2" {if condition="$datainfo.state eq 2"}checked{/if} />禁用
+                        </label>
+                    </td>
+                </tr>
+
+                <tr><td style="padding:10px;"><input type="button" value="确定" onclick="verify_param()"></td></tr>
+                <tr>
+                    <td><input type="hidden" name="action" value="{$datainfo.action}"/></td>
+                    <td>
+                        {if condition="$datainfo['action'] eq 'edit'"}
+                        <input type="hidden" name="id" value="{$datainfo.id}"/>
+                        {/if}
+                        <input type="hidden" name="site_id" value="{$datainfo.site_id}" />
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+  </div>
+
+</div>
+
+</body>
+<script type="text/javascript">
+    function verify_param() {
+        var album_name = $('input[name="album_name"]').val();
+
+        var album_cover_url = $('input[name="album_cover_url"]').val();
+        var state = $('input[name="state"]:checked').val();
+
+
+        if(album_name == ''){
+            alert('相册名称不能为空');
+            return false ;
+        }
+        if(album_cover_url == ''){
+            alert('请上传相册封面');
+            return false ;
+        }
+
+        if(state == undefined){
+            alert('请选择相册状态');
+            return false ;
+        }
+        $('#form1').submit();
+    }
+
+</script>
+</html>

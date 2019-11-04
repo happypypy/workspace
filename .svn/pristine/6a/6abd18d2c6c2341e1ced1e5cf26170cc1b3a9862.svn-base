@@ -1,0 +1,231 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>产品管理</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/admin.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/public.css" media="all">
+    <script src="/layuiadmin/js/jquery-3.3.1.js"></script>
+    <script src="/layuiadmin/js/laydate/laydate.js"></script>
+    <script src="/layuiadmin/layui/layui.js"></script>
+    <script src="/layuiadmin/js/public.js"></script>
+    <style>
+        .layui-form-item{
+            margin-bottom: 5px;
+        }
+        .layui-table-cell{
+            height: auto;
+        }
+        .lastcell>a{
+            text-decoration: underline;
+            color: #333;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-tab">
+                    <ul class="layui-tab-title">
+                        <li {$intflag==6?'class="layui-this"':''} onclick="javascript:window.location='{:url('activity/index','&intflag=6&nodeid='.$nodeid)}'">草稿箱  <span style="color: red">({$acount[6]})</span></li>
+                        <li {$intflag==1?'class="layui-this"':''} onclick="javascript:window.location='{:url('activity/index','&intflag=1&nodeid='.$nodeid)}'">待审批产品  <span style="color: red">({$acount[1]})</span></li>
+                        <li {$intflag==3?'class="layui-this"':''} onclick="javascript:window.location='{:url('activity/index','&intflag=3&nodeid='.$nodeid)}'">审批不过的产品  <span style="color: red">({$acount[3]})</span></li>
+                        <li {$intflag==2?'class="layui-this"':''} onclick="javascript:window.location='{:url('activity/index','&intflag=2&nodeid='.$nodeid)}'">已发布产品  <span style="color: red">({$acount[2]})</span></li>
+                        <li {$intflag==5?'class="layui-this"':''} onclick="javascript:window.location='{:url('activity/index','&intflag=5&nodeid='.$nodeid)}'">7天内即将开始的产品  <span style="color: red">({$acount[5]})</span></li>
+                        <li {$intflag==4?'class="layui-this"':''} onclick="javascript:window.location='{:url('activity/index','&intflag=4&nodeid='.$nodeid)}'">回收站  <span style="color: red">({$acount[4]})</span></li>
+                    </ul>
+                </div>
+
+                <div class="layui-card-header">产品列表</div>
+                <!-- 搜索区域 -->
+                <div class="layui-card-body">
+                    <form id="form1" method="post" class="layui-form" action="" >
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">产品标题：</label>
+                            <div class="layui-input-block">
+                                <input type="text" name="chrtitle" lay-verify="title" autocomplete="off" placeholder="请输入标题" class="layui-input" value="{$search['chrtitle']}">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">产品分类</label>
+                                <div class="layui-input-inline">
+                                    <select name="fidtype">
+                                        <option value="" >所有类别</option>
+                                        {volist name="hdfl" id="vo"}
+                                        <option value="{$vo.code}" <?php if($vo['code']==$search['fidtype']) { echo "selected"; } ?> >{$vo.name}</option>
+                                        {/volist}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">是否收费</label>
+                                <div class="layui-input-inline">
+                                    <select name="ischarge">
+                                        <option value="" >所有记录</option>
+                                        <option value="1" <?php if($search['ischarge']==1) { echo "selected"; } ?> >免费产品</option>
+                                        <option value="2" <?php if($search['ischarge']==2) { echo "selected"; } ?> >收费产品</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">是否置顶</label>
+                                <div class="layui-input-inline">
+                                    <select name="chkcontentlev">
+                                        <option value="" >所有</option>
+                                        <option value="0" <?php if(is_numeric($search['chkcontentlev']) && $search['chkcontentlev']==0) { echo "selected"; } ?> >否</option>
+                                        <option value="1" <?php if($search['chkcontentlev']==1) { echo "selected"; } ?> >是</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <label class="layui-form-label">首页显示</label>
+                                <div class="layui-input-inline">
+                                    <select name="chkisindex">
+                                        <option value="" >所有</option>
+                                        <option value="0" <?php if(is_numeric($search['chkisindex']) && $search['chkisindex']==0) { echo "selected"; } ?> >否</option>
+                                        <option value="1" <?php if($search['chkisindex']==1) { echo "selected"; } ?> >是</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">举办时间：</label>
+                                <div class="layui-input-inline">
+                                    <input name="dtstart" type="text" class="layui-input"   id="dtstart" placeholder="开始日期" value="{$search['dtstart']}">
+                                </div>
+                                <div class="layui-form-mid">
+                                    -
+                                </div>
+                                <div class="layui-input-inline">
+                                    <input name="dtend"  type="text" class="layui-input" id="dtend" placeholder="结束日期" value="{$search['dtend']}">
+                                </div>
+                                <script language="JavaScript">seltime1("dtstart","dtend")  </script>
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div class="layui-inline">
+                                <label class="layui-form-label">发布时间：</label>
+                                <div class="layui-input-inline">
+                                    <input type="dtpublishtime_s" class="layui-input" id="dtpublishtime_s" placeholder="开始日期" value="{$search['dtpublishtime_s']}">
+                                </div>
+                                <div class="layui-form-mid">
+                                    -
+                                </div>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="dtpublishtime_e" class="layui-input" id="dtpublishtime_e" placeholder="结束日期" value="{$search['dtpublishtime_e']}">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="layui-form-item">
+                            <div class="layui-inline" pane="">
+                                <label class="layui-form-label">产品标签：</label>
+                                <div class="layui-input-block">
+                                    {volist name="hdbq" id="vo"}
+                                    <input type="checkbox" name="chrtags[]" value="{$vo.code}"  title="{$vo.name}" lay-skin="primary" <?php if(in_array($vo['code'],$search['chrtags'])) { echo "checked=''"; } ?> ></input>
+                                    {/volist}
+                                </div>
+                            </div>
+                            <div class="layui-inline">
+                                <button class="layui-btn" type="button" onclick="javascript:shearch_check();" >
+                                    <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <table class="layui-hide" id="test-table-toolbar" lay-filter="test-table-toolbar"></table>
+
+
+                <script type="text/html" id="test-table-switchTpl">
+                    <input type="checkbox" name="sex" lay-skin="switch" lay-text="女|男" lay-filter="test-table-sexDemo"
+                           value="{{ d.id }}" data-json="{{ encodeURIComponent(JSON.stringify(d)) }}" {{ d.id == 10003 ? 'checked' : '' }}>
+                </script>
+
+
+                <script type="xt/html" id="test-table-toolbar-toolbarDemo">
+              <div class="layui-btn-container">
+              <a class="layui-btn layui-btn-sm" href="{:url('activity/modi','&action=add&nodeid='.$nodeid,'')}" target="_blank"  >添加</a>
+               <!--<button class="layui-btn layui-btn-sm"  type="button" onclick="javascript:CustomOpen('http://www.baidu.com','abc','测试百度','90%','90%')"  >添加</button>-->
+              </div>
+            </script>
+
+                <script type="text/html" id="test-table-toolbar-barDemo">
+                    <div class="test-table-toolbar-barDemo abc" style="white-space:normal;text-align: left;">
+                        <a class="layui-btn layui-btn-xs" onmousemove="javascript:show_rqcode(this,'{{d.idactivity}}')" onmouseout="javascript:close_rqcode()" href="https://www.tongxiang123.cn/{$sitecode}/detail/{{d.idactivity}}" target="_blank">浏览</a>
+                        <a class="layui-btn layui-btn-xs"   href="{:url('activity/visitlist','','','')}/dataid/{{d.idactivity}}" target="_blank">访问数据</a>
+                        <?php  if($intflag!=4) { ?>
+                        <?php  if($intflag==1) {
+                          if($cms->CheckPurview('contentmanage','checkactivity')){
+                        ?>
+                        <a class="layui-btn layui-btn-xs" href="javascript:CustomOpen('{:url('activity/activitycheck','','','')}/id/{{d.idactivity}}/action/edit','activity','产品修改',1100,600)">审批</a>
+                        <?php }} ?>
+                        <a class="layui-btn layui-btn-xs" href="javascript:CustomOpen('{:url('activity/signupindex','','','')}/id/{{d.idactivity}}','activity','{{d.chrtitle}}',1200,600)">查看报名</a>
+                        <?php if($cms->CheckPurview('contentmanage','add')){ ?>
+                        <a class="layui-btn layui-btn-xs" href="javascript:copydata('{{d.idactivity}}')">复制</a>
+                        <?php } ?>
+                        <a class="layui-btn layui-btn-xs" href="javascript:CustomOpen('{:url('activity/customdetail','','','')}/id/{{d.idactivity}}','customdetail','咨询详情',700,400)">咨询详情</a>
+                        <?php if($cms->CheckPurview('contentmanage','edit') && $intflag!=5){ ?>
+                        <a class="layui-btn layui-btn-xs" href="{:url('activity/modi','','','')}/id/{{d.idactivity}}/action/edit" target="_blank">修改</a>
+                        <?php } ?>
+                        <?php if($cms->CheckPurview('contentmanage','del')){ ?>
+                        <a class="layui-btn layui-btn-xs" href="#" onclick="del_checked({{d.idactivity}},'{{d.chrtitle}}');" >删除</a>
+                        <?php } ?>
+                        <?php } else{ ?>
+                        <?php if($cms->CheckPurview('contentmanage','edit')){ ?>
+                        <a class="layui-btn layui-btn-xs" href="#" onclick="del_recovery({{d.idactivity}},'{{d.chrtitle}}');" >恢复</a>
+                        <?php } ?>
+                        <?php if($cms->CheckPurview('contentmanage','del')){ ?>
+                        <a class="layui-btn layui-btn-xs" href="#" onclick="del_checked({{d.idactivity}},'{{d.chrtitle}}');" >删除</a>
+                        <?php } ?>
+                        <?php } ?>
+                        <a class="layui-btn layui-btn-xs" href="javascript:CustomOpen('{:url('activity/importorder','','','')}/id/{{d.idactivity}}/templateid/$vo['selsignfrom']','activity','产品修改',550,160)">导入报名</a>
+                        <a class="layui-btn layui-btn-xs" href="javascript:void(0);" class="data{{d.idactivity}}" data-clipboard-text="https://www.tongxiang123.cn/{$sitecode}/detail/{{d.idactivity}}" onclick="copycontent('data{{d.idactivity}}')" >复制链接</a>
+
+                        <?php  if($intflag==2) {  ?>
+                        <!--除了待审核中不可以同步-->
+                        {{#  if(d.wntx_sync_status!=1){ }}
+                            <a class="layui-btn layui-btn-xs" href="javascript:CustomOpen('{:url('activity/one_click_sync','','','')}/id/{{d.idactivity}}','activity','同步到蜗牛童行',800,500)">同步到蜗牛童行</a>
+                        {{#  } }}
+                        <!--审核中和审核成功可以取消-->
+                        {{#  if(d.wntx_sync_status==1 || d.wntx_sync_status==4){ }}
+                            <a class="layui-btn layui-btn-xs" href="javascript:cancelWntxSync({{d.idactivity}})" id="cancel_wn">取消同步到蜗牛童行</a>
+                        {{#  } }}
+                        <a class="layui-btn layui-btn-xs" href="javascript:CustomOpen('{:url('activity/audit_result','','','')}/id/{{d.idactivity}}','activity','审核记录',700,400)">审核记录</a>
+                        <?php } ?>
+                    </div>
+
+                </script>
+
+                <div style="overflow: hidden" >
+                    <div style="float: left; margin-top: 15px;margin-left: 10px; vertical-align: middle;">
+                        <button class="layui-btn layui-btn-sm" data-type="del">删除</button>
+                    </div>
+                    <div id="test-laypage-demo1" style="text-align: right; margin-right: 15px;"></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div id="rqcode" style="display: none; height: 160px;width: 160px;background-color: #FFFFFF; border: solid 2px #000000; text-align: center;padding-top: 20px; ;position: absolute;margin-right: 150px" />
+
+</body>
+</html>

@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:22:"template/M2/index.html";i:1569402244;s:60:"D:\workspace\work\public\template\modules\common\header.html";i:1569375256;s:60:"D:\workspace\work\public\template\modules\common\footer.html";i:1568605126;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:22:"template/M2/index.html";i:1571735586;s:60:"D:\workspace\work\public\template\modules\common\header.html";i:1569375256;s:60:"D:\workspace\work\public\template\modules\common\footer.html";i:1568605126;}*/ ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="/static/template/pub/css/main.css?v=<?php echo time(); ?>">
   <link rel="stylesheet" href="/template/M2/css/index.css">
   <link rel="stylesheet" href="/static/template/skin/M1/css/skin.css">
-  <title>童享云</title>
+  <title><?php echo $cms->GetConfigVal('webset','webname',$idsite);; ?></title>
 </head>
 
 <body class="flexCol">
@@ -122,7 +122,7 @@
     <div class="index-activity-wrap">
       <div class="index-wrap-title">热门推荐</div>
       <ul class="index-activity-list flex">
-        <?php  $re = $cms->GetActivity($idsite,array('chkdown'=>array('neq',1)),'','idactivity,chkisindex,chrtitle,chrimg_m,chrurl,chrsummary,dtstart,dtpublishtime,hits,s.is_receive_cashed,min_price',10);
+        <?php  $re = $cms->GetActivity($idsite,array('chkdown'=>array('neq',1)),'','idactivity,chkisindex,chrtitle,chrimg_m,chrurl,chrsummary,dtstart,dtpublishtime,hits,s.is_receive_cashed,min_price,ischarge',10);
         $index=0;
         foreach($re as $k=>$val){
         if($val['chkisindex']==1) {
@@ -138,7 +138,9 @@
                       class="iconfont fontColor">&#xe624;</span><?php endif; ?><?php echo $val['chrtitle']; ?>
               </div>
               <div class=" index-activity-item-view">
+                <?php if($val['ischarge'] == 2): ?>
                 <div class="index-activity-price"><span class="red">￥<em><?php echo $val['min_price']; ?></em>起</span></div>
+                <?php endif; ?>
                 <div class="eyes"><?php echo $val['hits']; ?></div>
                 <div class="time"><?php echo date('m-d',strtotime($val['dtpublishtime'])); ?></div>
               </div>
@@ -195,7 +197,7 @@
     <div class="index-activity-wrap">
       <div class="index-wrap-title">热门推荐</div>
       <ul class="index-activity-list flex">
-        <?php  $re = $cms->GetActivity($idsite,array('chkdown'=>array('neq',1)),'','idactivity,chkisindex,chrtitle,chrimg,chrurl,chrsummary,dtstart,dtpublishtime,hits,s.is_receive_cashed,min_price',10);
+        <?php  $re = $cms->GetActivity($idsite,array('chkdown'=>array('neq',1)),'','idactivity,chkisindex,chrtitle,chrimg,chrurl,chrsummary,dtstart,dtpublishtime,hits,s.is_receive_cashed,min_price,ischarge',10);
         $index=0;
         foreach($re as $k=>$val){
         if($val['chkisindex']==1) {
@@ -206,7 +208,9 @@
           <a href="<?php echo (empty($val['chrurl'])?'/'.$sitecode.'/detail/'.$val['idactivity']:$val['chrurl']) ?>" class="flexCol">
             <div class="index-activity-item-img"><img src="<?php echo $val['chrimg']; ?>"><span style="display: none"
                                                                                    class="index-activity-addr">车公庙</span>
+              <?php if($val['ischarge'] == 2): ?>
               <div class="index-activity-price"><span class="red">￥<em><?php echo $val['min_price']; ?></em>起</span></div>
+              <?php endif; ?>
             </div>
             <div class="index-activity-item-txt flexCol">
               <div class=" index-activity-item-title flex"> <?php if($val['is_receive_cashed'] == 1 && $is_cashed): ?><span
@@ -225,7 +229,9 @@
           <a href="<?php echo (empty($val['chrurl'])?'/'.$sitecode.'/detail/'.$val['idactivity']:$val['chrurl']) ?>" class="flexCol">
             <div class="index-activity-item-img"><img src="<?php echo $val['chrimg']; ?>"><span style="display: none"
                                                                                    class="index-activity-addr">车公庙</span>
+              <?php if($val['ischarge'] == 2): ?>
               <div class="index-activity-price"><span class="red">￥<em><?php echo $val['min_price']; ?></em>起</span></div>
+              <?php endif; ?>
             </div>
             <div class="index-activity-item-txt flexCol">
               <div class=" index-activity-item-title flex"> <?php if($val['is_receive_cashed'] == 1 && $is_cashed): ?><span
@@ -302,7 +308,7 @@
     <div class="index-activity-wrap">
       <div class="index-wrap-title">热门推荐</div>
       <ul class="index-activity-list flex">
-        <?php  $re = $cms->GetActivity($idsite,array('chkdown'=>array('neq',1)),'','idactivity,chkisindex,chrtitle,chrimg,chrurl,chrsummary,dtstart,dtpublishtime,hits,s.is_receive_cashed,min_price',10);
+        <?php  $re = $cms->GetActivity($idsite,array('chkdown'=>array('neq',1)),'','idactivity,chkisindex,chrtitle,chrimg,chrurl,chrsummary,dtstart,dtpublishtime,hits,s.is_receive_cashed,min_price,ischarge',10);
         $index=0;
         foreach($re as $k=>$val){
         if($val['chkisindex']==1) {
@@ -313,7 +319,9 @@
             <div class="index-activity-item-img">
               <img src="<?php echo $val['chrimg']; ?>">
               <span class="index-activity-addr" style="display: none">车公庙</span>
+              <?php if($val['ischarge'] == 2): ?>
               <div class="index-activity-price"><span class="red">￥<em><?php echo $val['min_price']; ?></em>起</span></div>
+              <?php endif; ?>
             </div>
             <div class="index-activity-item-txt flexCol">
               <div class=" index-activity-item-title"><?php if($val['is_receive_cashed'] == 1 && $is_cashed): ?> <span class="index-activity-token iconfont fontColor">&#xe624;</span><?php endif; ?><?php echo $val['chrtitle']; ?>
@@ -368,13 +376,14 @@
         <?php } ?>
       </ul>
     </div>
-    <?php endif; ?>
+    <?php endif; if($is_sign == '1'): ?>
     <div class="register-wrap">
       <div class="register-link bgColor flex">
         <div class="iconfont retrac">&#xe881;</div>
         <div class="link-signin"><a href="/<?php echo $sitecode; ?>/dailysignin">签到</a></div>
       </div>
     </div>
+	<?php endif; ?>
   </section>
 
   <footer class="footer">

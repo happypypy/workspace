@@ -1,0 +1,294 @@
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>开启头部工具栏 - 数据表格</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="../../layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="../../layuiadmin/style/admin.css" media="all">
+    <style>
+        .layui-form-item{
+            margin-bottom: 5px;
+        }
+        .layui-table-cell{
+            height: auto;
+        }
+        .lastcell>a{
+            text-decoration: underline;
+            color: #333;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+
+                <div class="layui-card-header">{$act_info.title}【<?php if(!empty($act_info['start_time'])){echo date('Y-m-d',$act_info['start_time']);} ?> - <?php if(!empty($act_info['end_time'])){echo date('Y-m-d',$act_info['end_time']);} ?>】【{$act_info.leader}】</div>
+                <!-- 搜索区域 -->
+                <div class="layui-card-body">
+                    <form class="layui-form" action="" lay-filter="component-form-group">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">学员姓名：</label>
+                            <div class="layui-inline">
+                                <input type="text" name="title" lay-verify="title" autocomplete="off"  class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">家长姓名：</label>
+                            <div class="layui-inline">
+                                <input type="text" name="title" lay-verify="title" autocomplete="off"  class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">家长手机：</label>
+                            <div class="layui-inline">
+                                <input type="text" name="title" lay-verify="title" autocomplete="off"  class="layui-input">
+                            </div>
+                            <div class="layui-inline">
+                                <button class="layui-btn layuiadmin-btn-list" lay-submit lay-filter="LAY-app-contlist-search">
+                                    <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <table class="layui-hide" id="test-table-toolbar" lay-filter="test-table-toolbar"></table>
+                <br/>
+
+                <table class="layui-hide" id="test1-table-toolbar" lay-filter="test1-table-toolbar"></table>
+                <br/>
+
+                <table class="layui-hide" id="test2-table-toolbar" lay-filter="test2-table-toolbar"></table>
+                <script type="text/html" id="test-table-switchTpl">
+                    <!-- 这里的 checked 的状态只是演示 -->
+                    <input type="checkbox" name="sex" lay-skin="switch" lay-text="女|男" lay-filter="test-table-sexDemo"
+                           value="{{ d.id }}" data-json="{{ encodeURIComponent(JSON.stringify(d)) }}" {{ d.id == 10003 ? 'checked' : '' }}>
+                </script>
+
+                <script type="xt/html" id="test-table-toolbar-toolbarDemo">
+              <div class="layui-btn-container">
+               <button class="layui-btn layui-btn-sm" >学生列表</button>
+              </div>
+            </script>
+                <script type="xt/html" id="test1-table-toolbar-toolbarDemo">
+              <div class="layui-btn-container">
+               <button class="layui-btn layui-btn-sm" >老师列表</button>
+              </div>
+            </script>
+                <script type="xt/html" id="test2-table-toolbar-toolbarDemo">
+              <div class="layui-btn-container">
+               <button class="layui-btn layui-btn-sm" data-type="add">每日总结</button>
+              </div>
+            </script>
+
+                <script type="text/html" id="test-table-toolbar-barDemo">
+                    <div class="test-table-toolbar-barDemo" style="white-space:normal;text-align: left;">
+                        <a class="layui-btn layui-btn-xs" target="_blank" href="{:url('act/comment_stu')}?sid={{d.id}}&aid={{d.id_activities}}">评价管理</a>
+                        <a class="layui-btn layui-btn-xs">修改</a>
+                        <a class="layui-btn layui-btn-xs">删除</a>
+                    </div>
+                </script>
+                <script type="text/html" id="test1-table-toolbar-barDemo">
+                    <div class="test-table-toolbar-barDemo" style="white-space:normal;text-align: left;">
+                        <a class="layui-btn layui-btn-xs">修改</a>
+                        <a class="layui-btn layui-btn-xs">删除</a>
+                    </div>
+                </script>
+                <script type="text/html" id="test2-table-toolbar-barDemo">
+                    <div class="test-table-toolbar-barDemo" style="white-space:normal;text-align: left;">
+                        <a class="layui-btn layui-btn-xs">阅读情况</a>
+                        <a class="layui-btn layui-btn-xs">评论情况</a><br/>
+                        <a class="layui-btn layui-btn-xs">修改</a>
+                        <a class="layui-btn layui-btn-xs">删除</a>
+                    </div>
+                </script>
+                <div style="overflow: hidden" >
+                    <div style="float: left; margin-top: 15px;margin-left: 10px; vertical-align: middle;">
+                        <button class="layui-btn layui-btn-sm" data-type="del">删除</button>
+                    </div>
+                    <div id="test-laypage-demo1" style="text-align: right; margin-right: 15px;"></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/html" id="summary_ctime">
+   {{d.ctime}}
+</script>
+<script src="/layuiadmin/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: '/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['index', 'table'], function(){
+        var admin = layui.admin
+            ,laypage = layui.laypage
+            ,table = layui.table;
+
+        table.render({
+            elem: '#test-table-toolbar'
+            ,toolbar: '#test-table-toolbar-toolbarDemo'
+            ,title: '学生列表'
+
+            ,cols: [[
+                {type: 'checkbox'}
+                ,{field:'name', title: '学员姓名',width:120 }
+                ,{field:'age', title:'学员年龄', width:120, unresize: true}
+                ,{field: 'sex', title: '学员性别', width: 120, unresize: true }
+                ,{field: 'idcard', title: '学员身份证号', width: 200, unresize: true }
+                ,{field: 'phone', title: '联系电话', width: 120, unresize: true }
+                ,{field: 'parents', title: '学员家长',  unresize: true }
+                ,{title:'操作', toolbar: '#test-table-toolbar-barDemo', width:190}
+            ]]
+
+            ,data: [
+
+                {volist name='stu_list' id='vo'}
+                {
+                    'id':"{$vo.id}"
+                    ,'id_activities':"{$vo.id_activities}"
+                    ,"name": "{$vo.name}"
+                ,"age":"<?php  if(!empty($vo['age']) && is_numeric($vo['age'])){
+            $age=(int)round((int)(time()-$vo['age'])/60/60/24/365);
+            if($age<0){
+                $age=0;
+            }
+            echo $age;
+        } ?>"
+                ,"sex": "{$vo.sex}"
+                ,"idcard": "{$vo.idcard}"
+                ,"phone": "{$vo.phone}"
+                ,"parents": "{volist name='vo.parents' id= 'voo'}{$voo.name} {$voo.phone}<br/>{/volist}"
+            },
+                {/volist}
+            ]
+        });
+
+        table.render({
+            elem: '#test1-table-toolbar'
+            ,toolbar: '#test1-table-toolbar-toolbarDemo'
+            ,title: '老师列表'
+
+            ,cols: [[
+                {field:'pic', title: '照片',width:100,templet:function(d){if(d.pic !=''){return "<img style='width: 60px;height:60px' src="+d.pic+">"}else {return ''} }}
+                ,{field:'name', title:'老师姓名', unresize: true}
+                ,{field: 'position', title: '职务', width: 150, unresize: true }
+                ,{field: 'phone', title: '电话', width: 150, unresize: true }
+                ,{field: 'qrcode', title: '微信二维码', width: 130, unresize: true ,templet:function(d){if(d.qrcode !=''){return "<img style='width: 100px;height:100px' src="+d.qrcode+">"}else {return ''}} }
+                ,{title:'操作', toolbar: '#test1-table-toolbar-barDemo', width:190}
+            ]]
+
+            ,data: {:json_encode($teacher_list)}
+        });
+        table.render({
+            elem: '#test2-table-toolbar'
+            ,toolbar: '#test2-table-toolbar-toolbarDemo'
+            ,title: '每日总结'
+
+            ,cols: [[
+                {type: 'checkbox'}
+                ,{field:'title', title: '标题' }
+                ,{field:'ctime', title:'发布时间', width:200, unresize: true,templet:"<div>{{layui.util.toDateString(d.ctime*1000)}}</div>"}
+                ,{field: 'view_count', title: '阅读量', width: 120, unresize: true }
+                ,{field: 'c_count', title: '评论次数', width: 120, unresize: true }
+                ,{field: 'response_count', title: '已回复评论', width: 120, unresize: true }
+                ,{field: 'unres_count', title: '未回复评论', width: 120, unresize: true }
+                ,{title:'操作', toolbar: '#test2-table-toolbar-barDemo', width:190}
+            ]]
+
+            ,data: {:json_encode($summary_list)}
+
+        });
+        //总页数大于页码总数
+        laypage.render({
+            elem: 'test-laypage-demo1'
+            ,count: 7000 //数据总数
+            ,curr: 5 //设定初始在第 5 页
+            ,layout: ['count', 'prev', 'page', 'next', 'skip']
+            ,jump: function(obj){
+                console.log(obj)
+            }
+        });
+
+        //头工具栏事件
+        table.on('toolbar(test-table-toolbar)', function(obj){
+            var checkStatus = table.checkStatus(obj.config.id);
+            switch(obj.event){
+                case 'getCheckData':
+                    var data = checkStatus.data;
+                    layer.alert(JSON.stringify(data));
+                    break;
+                case 'getCheckLength':
+                    var data = checkStatus.data;
+                    layer.msg('选中了：'+ data.length + ' 个');
+                    break;
+                case 'isAll':
+                    layer.msg(checkStatus.isAll ? '全选': '未全选');
+                    break;
+            };
+        });
+
+        //监听行工具事件
+        table.on('tool(test-table-toolbar)', function(obj){
+            var data = obj.data;
+            debugger;
+            if(obj.event === 'del'){
+                layer.confirm('真的删除行么', function(index){
+                    obj.del();
+                    layer.close(index);
+                });
+            } else if(obj.event === 'edit'){
+                layer.prompt({
+                    formType: 2
+                    ,value: data.email
+                }, function(value, index){
+                    obj.update({
+                        email: value
+                    });
+                    layer.close(index);
+                });
+            }
+        });
+
+        //监听性别操作
+        table.on('switch(test-table-sexDemo)', function(obj){
+            var json = JSON.parse(decodeURIComponent($(this).data('json')));
+            layer.tips(this.value + ' ' + this.name + '：'+ obj.elem.checked, obj.othis);
+
+            json = table.clearCacheKey(json);
+            console.log(json); //当前行数据
+
+        });
+
+    });
+
+    function timestampToTime(v) {
+        var date = new Date(v);
+        var y = date.getFullYear();
+        var m = date.getMonth()+1;
+        m = m<10?'0'+m:m;
+        var d = date.getDate();
+        d = d<10?("0"+d):d;
+        var h = date.getHours();
+        h = h<10?("0"+h):h;
+        var M = date.getMinutes();
+        M = M<10?("0"+M):M;
+        var str = y+"-"+m+"-"+d+" "+h+":"+M;
+        return str;
+    }
+</script>
+</body>
+</html>

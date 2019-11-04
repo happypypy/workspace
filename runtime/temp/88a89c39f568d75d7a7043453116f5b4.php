@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:22:"template/M1/index.html";i:1569573302;s:60:"D:\workspace\work\public\template\modules\common\header.html";i:1569375256;s:60:"D:\workspace\work\public\template\modules\common\footer.html";i:1568605126;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:3:{s:22:"template/M1/index.html";i:1570784186;s:60:"D:\workspace\work\public\template\modules\common\header.html";i:1569375256;s:60:"D:\workspace\work\public\template\modules\common\footer.html";i:1568605126;}*/ ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -73,7 +73,7 @@
     <div class="sup-banner banner">
       <div class="swiper-container swiper2 swiper-container1">
         <ul class="swiper-wrapper">
-          <?php  $result1=$cms->getAD($idsite,51325,6); if(empty($result1) || (($result1 instanceof \think\Collection || $result1 instanceof \think\Paginator ) && $result1->isEmpty())): ?>
+          <?php  $result1=$cms->getAD($idsite,51327,6); if(empty($result1) || (($result1 instanceof \think\Collection || $result1 instanceof \think\Paginator ) && $result1->isEmpty())): ?>
           <div class="swiper-slide"><a href="javascript:;"><img src="/static/modules/images/banner_01.jpg"></a></div>
           <?php else: if(is_array($result1) || $result1 instanceof \think\Collection || $result1 instanceof \think\Paginator): $i = 0; $__LIST__ = $result1;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$v): $mod = ($i % 2 );++$i;?>
           <div class="swiper-slide"><a href="<?php echo $v['ad_link']==''?'javascript:;':$v['ad_link']; ?>"><img src="<?php echo $v['ad_code']; ?>"></a></div>
@@ -378,13 +378,14 @@
       <?php } ?>
     </ul>
   </div>
-  <?php endif; ?>
+  <?php endif; if($is_sign == '1'): ?>
     <div class="register-wrap">
       <div class="register-link bgColor flex">
         <div class="iconfont retrac">&#xe881;</div>
         <div class="link-signin"><a href="/<?php echo $sitecode; ?>/dailysignin">签到</a></div>
       </div>
     </div>
+	<?php endif; ?>
   </section>
 
   <footer class="footer">

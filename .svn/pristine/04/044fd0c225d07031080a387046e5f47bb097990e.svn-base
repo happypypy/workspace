@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta content="yes" name="apple-mobile-web-app-capable">
+	<meta content="yes" name="apple-touch-fullscreen">
+	<meta content="telephone=no,email=no" name="format-detection">
+	<meta name="viewport"
+		  content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+	<script src="__PUBLIC__/static/template/pub/js/common.js"></script>
+	<link rel="stylesheet" href="__PUBLIC__/static/template/pub/css/main.css?v={:time()}">
+	<link rel="stylesheet" href="__PUBLIC__/static/template/skin/M1/css/skin.css?v={:time()}">
+	<title>{$node_info['nodename']}</title>
+</head>
+
+<body class="flexCol">
+{include file="modules/common/header" /}
+
+<section class="section">
+	<div class="headtitle">-{$node_info['nodename']}-</div>
+	<form id="frm" method="post">
+		<input type="hidden" name="typeid" id="typeid" value="{$typeid ?: 0}" />
+		<input type="hidden" name="tagid" id="tagid" value="{$tagid ?: 0}" />
+		<input type="hidden" name="intflag" id="intflag" value="{$intflag ?: 0}" />
+		<div class="select-bar">
+			<ul class="select-bar-tab flex">
+				<li class="active">
+					<span id="category">全部类别</span>
+				</li>
+				<li class="active"><span id="lable">全部标签</span></li>
+				<li class="active"><span id="activity_status">全部</span></li>
+			</ul>
+			<div class="select-wrapper">
+				<div class="select-list">
+					<div class="select-item" id="category_drop">
+						<ul>
+							<li data-id="0">全部类别</li>
+							{volist name="$hdfl" id="vo"}
+							<li data-id="{$vo.code}">{$vo.name}</li>
+							{/volist}
+						</ul>
+					</div>
+				</div>
+				<div class="select-list">
+					<div class="select-item" id="lable_drop">
+						<ul>
+							<li data-id="0">全部标签</li>
+							{volist name="$hdbq" id="vo1"}
+							<li data-id="{$vo1.code}">{$vo1.name}</li>
+							{/volist}
+						</ul>
+					</div>
+				</div>
+				<div class="select-list">
+					<div class="select-item" id="activity_status_drop">
+						<ul>
+							<li data-id="0">全部</li>
+							<li data-id="1">进行中</li>
+							<li data-id="2">已结束</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+
+	<!-- 小图 -->
+	<div class="activity-wrap">
+		<ul class="activity-list flex" id="data">
+			{if condition="!$result_data"}
+			<li class="no-data">抱歉，当前没有最新活动信息</li>
+			{else}
+			{if condition="$node_info['listtype'] == 1"}
+			{foreach $result_data as $k=>$val}
+			<li class="activity-item-s">
+				<a href="<?php echo (empty($val['chrurl'])?'/'.$sitecode.'/detail/'.$val['idactivity']:$val['chrurl']) ?>" class="flex">
+					<div class="activity-item-img"><img src="{$val['chrimg_m']}">
+						<!--<span class="activity-addr">车公庙</span>-->
+					</div>
+					<div class="activity-item-txt flexCol">
+						<div class=" activity-item-title flex">
+							{if condition="$val['is_receive_cashed'] == 1 && $is_cashed"}<span class="iconfont fontColor">&#xe624;</span>{/if}{$val['chrtitle']}</div>
+						<div class=" activity-item-view">
+							{if condition="$val['ischarge'] == 2"}
+							<div class="activity-price"><span class="red">￥<em>{$val['min_price']}</em>起</span></div>
+							{/if}
+							<div class="eyes">{$val['hits']}</div>
+							<div class="time">{:date('m-d',strtotime($val['dtpublishtime']))}</div>
+						</div>
+					</div>
+				</a>
+			</li>
+			{/foreach}
+			{elseif condition="$node_info['listtype'] == 2"}
+			<!-- 中图 -->
+			{foreach $result_data as $k=>$val}
+			<li class="activity-item-m">
+				<a href="<?php echo (empty($val['chrurl'])?'/'.$sitecode.'/detail/'.$val['idactivity']:$val['chrurl']) ?>" class="flexCol">
+					<div class="activity-item-img"><img src="{$val['chrimg']}">
+						<!--<span class="activity-addr">车公庙</span>-->
+						{if condition="$val['ischarge'] == 2"}
+						<div class="activity-price"><span class="red">￥<em>{$val['min_price']}</em>起</span></div>
+						{/if}
+					</div>
+					<div class="activity-item-txt flexCol">
+						<div class=" activity-item-title flex">
+							{if condition="$val['is_receive_cashed'] == 1 && $is_cashed"}<span class="iconfont fontColor">&#xe624;</span>{$val['chrtitle']}{/if}
+						</div>
+					</div>
+					<div class="activity-item-view flex">
+						<div class="eyes">{$val['hits']}</div>
+						<div class="time">{:date('m-d',strtotime($val['dtpublishtime']))}</div>
+					</div>
+				</a>
+			</li>
+			{/foreach}
+			{elseif condition="$node_info['listtype'] == 3"}
+			<!-- 大图 -->
+			{foreach $result_data as $k=>$val}
+			<li class="activity-item-b">
+				<a href="<?php echo (empty($val['chrurl'])?'/'.$sitecode.'/detail/'.$val['idactivity']:$val['chrurl']) ?>" class="flexCol">
+					<div class="activity-item-img"><img src="{$val['chrimg']}">
+						<!--<span class="activity-addr">车公庙</span>-->
+						{if condition="$val['ischarge'] == 2"}
+						<div class="activity-price"><span class="red">￥<em>{$val['min_price']}</em>起</span></div>
+						{/if}
+					</div>
+					<div class="activity-item-txt flexCol">
+						<div class=" activity-item-title flex">
+							{if condition="$val['is_receive_cashed'] == 1 && $is_cashed"}<span class="activity-token iconfont fontColor">&#xe624;</span>{/if}{$val['chrtitle']}
+						</div>
+						<div class="activity-item-view flex">
+							<div class="eyes">{$val['hits']}</div>
+							<div class="time">{:date('m-d',strtotime($val['dtpublishtime']))}</div>
+						</div>
+					</div>
+				</a>
+			</li>
+			{/foreach}
+			{/if}
+			{/if}
+
+		</ul>
+		<div class="load"><span id="dataload" class="iconfont iconload">&#xe618;</span></div>
+	</div>
+
+</section>
+<footer class="footer">
+	{include file="modules/common/footer" /}
+</footer>
+
+<script src="__PUBLIC__/static/template/pub/js/jquery.min.js"></script>
+<script src="__PUBLIC__/static/template/pub/js/menu.js"></script>
+<script src="__PUBLIC__/static/template/pub/js/layer/layer.js"></script>
+
+<script>
+    //tab栏下拉菜单
+    $('.select-bar-tab li').click(function () {
+        var index = $(this).index();
+        $('.select-list').eq(index).siblings().stop().slideUp(0).children('.select-item').stop().slideUp(0);
+        $(this).toggleClass('fontColor on');
+        $('.select-list').eq(index).stop().slideToggle().children('.select-item').stop().slideToggle();
+    })
+
+    // 初始化下拉状态
+    function init_select() {
+        var typeid = parseInt($('#typeid').val());    // 选中的分类ID
+        var tagid = parseInt($('#tagid').val());      // 选择的标签ID
+        var intflag = parseInt($('#intflag').val());  // 选中的活动状态
+
+        // 分类初始化
+        $('#category_drop li').each(function(){
+            var that = $(this);
+            if(typeid == that.data('id')){
+                $('#category').text(that.text());
+                if(typeid !== 0){
+                    $('#category').parent().addClass('on');
+                }
+            }
+        });
+
+        // 标签初始化
+        $('#lable_drop li').each(function(){
+            var that = $(this);
+            if(tagid == that.data('id')){
+                $('#lable').text(that.text());
+                if(tagid !== 0){
+                    $('#lable').parent().addClass('on');
+                }
+            }
+        });
+
+        // 活动状态初始化
+        $('#activity_status_drop li').each(function(){
+            var that = $(this);
+            if(intflag == that.data('id')){
+                $('#activity_status').text(that.text());
+                if(intflag !== 0){
+                    $('#activity_status').parent().addClass('on');
+                }
+            }
+        });
+    }
+
+    init_select();
+
+    // 分类下拉菜单点击
+    $('#category_drop li').click(function(){
+        var dataid = $(this).data('id');
+        $('#typeid').val(dataid);
+        $('#frm').submit();
+    });
+    // 标签下拉菜单点击
+    $('#lable_drop li').click(function(){
+        var dataid = $(this).data('id');
+        $('#tagid').val(dataid);
+        $('#frm').submit();
+    });
+    // 活动状态下拉菜单点击
+    $('#activity_status_drop li').click(function(){
+        var dataid = $(this).data('id');
+        $('#intflag').val(dataid);
+        $('#frm').submit();
+    });
+
+
+    // 页面滚动
+    //滚动条滚动到指定位置触发下面事件
+    var getDiv_md = $(".select-bar");
+    var offSet = getDiv_md.offset().top + 20;
+    // console.log(offSet);
+    $(document).scroll(function () {
+        if ($(document).scrollTop() > offSet) {
+            $(".select-bar").css({ "position": "fixed", "left": "0px", "top": "0px" });
+            $('header').slideUp(100);
+        } else {
+            $(".select-bar").css({ "position": "", "left": "0px", "top": "" });
+            $('header').slideDown(100);
+        }
+    })
+
+    function sel(index) {
+        window.location="/{$sitecode}/activity/{$nodeid}?typeid="+index;
+    }
+    //==============核心代码=============
+    var winH = $(window).height(); //页面可视区域高度
+
+    var ipage = 2;
+    var scrollHandler = function () {
+        var pageH = $(document).height();
+        var scrollT = $(window).scrollTop(); //滚动条top
+
+        if (pageH - winH - scrollT < 1) {
+            LoadData(ipage)
+            ipage++;
+        }
+    }
+    //定义鼠标滚动事件
+    $(window).scroll(scrollHandler);
+    //==============核心代码=============
+
+    function LoadData(ipage)
+    {
+        var typeid = $('#typeid').val();    // 选中的分类ID
+        var tagid = $('#tagid').val();      // 选择的标签ID
+        var intflag = $('#intflag').val();  // 选中的活动状态
+        $("#dataload").show();
+        $ (window).unbind ('scroll');
+        // alert(typeid);
+        $.ajax({
+            url: "/{$sitecode}/activity/{$nodeid}/"+ipage+"?&ajax=1",
+            type: 'POST',
+            cache: false,
+            data:{"typeid":typeid,"tagid":tagid,"intflag":intflag} ,
+            success : function(data) {
+
+                if(data== 11)
+                {
+                    $("#dataload").hide();
+                    // $("#loadmsg").html("已无更多数据");
+                    return;
+                }
+                $("#dataload").hide();
+                $("#data").html($("#data").html()+data);
+                $(window).scroll(scrollHandler);
+            }
+        });
+
+    }
+
+</script>
+</body>
+
+</html>

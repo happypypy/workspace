@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="generator" content="HTML Tidy for HTML5 for Windows version 5.2.0" />
+    <meta charset="utf-8" />
+    <title>广告管理</title>
+    <meta name="renderer" content="webkit" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="stylesheet" href="__PUBLIC__/layuiadmin/layui/css/layui.css" media="all" />
+    <link rel="stylesheet" href="__PUBLIC__/layuiadmin/style/admin.css" media="all" />
+    <link rel="stylesheet" href="__PUBLIC__/layuiadmin/style/public.css" media="all" />
+    <style>
+        .layui-form-item{
+            margin-bottom: 5px;
+        }
+        .layui-table-cell{
+            height: auto;
+        }
+        .lastcell>a{
+            text-decoration: underline;
+            color: #333;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+    </style>
+    </head>
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-tab">
+                    <?php if($idsite==1) { ?>
+                    <ul class="layui-tab-title">
+                        <li><a href="{:url('advert/index','idsite='.$idsite)}">广告列表</a></li>
+                        <li class="layui-this">广告位置</li>
+                    </ul>
+                    <?php } ?>
+                </div>
+                <!-- 搜索区域 -->
+                <div class="layui-card-body">
+                    <table class="layui-hide" id="manage-table" lay-filter="manage-table"></table>
+                </div>
+
+                <div style="overflow: hidden">
+                    <div style="float: left; margin-top: 15px;margin-left: 10px; vertical-align: middle;">
+                        <button class="layui-btn layui-btn-sm" id="batchDel">删除</button>
+                    </div>
+                    <div id="laypage" style="text-align: right; margin-right: 15px;"></div>
+                </div>
+
+                <!-- 工具栏按钮 -->
+                <script type="text/html" id="table-toolbar">
+					<div class="layui-btn-container ov-hd">
+						<div class="info-l fl">广告位置</div>
+						<div class="info-r fr">
+							<?php if($cms->CheckPurview('admanage','add')){ ?>
+								<a class="layui-btn layui-btn-sm" href="javascript:CustomOpen('{:url('advert/advpositiondeal','&action=add&idsite='.$idsite)}', 'advert','添加广告位', 500,470)">添加广告位</a>
+							<?php } ?>
+						</div>
+					</div>
+                </script>
+                <!-- 行工具按钮 -->
+                <script type="text/html" id="table-operation">
+                    <div class="table-operation">
+                        <a class="layui-btn layui-btn-xs" href="javascript:CustomOpen('{:url('advert/advpositiondeal','&action=edit&idsite='.$idsite)}/id/{{d.position_id}}', 'advert','广告编辑', 500, 470)">编辑</a>
+                        <a class="layui-btn layui-btn-xs" href="javascript:CustomOpen('{:url('advert/codeinvoking','','','')}/id/{{d.position_id}}', 'advert','代码调用', 850, 180)">代码调用</a>
+                        <a class="layui-btn layui-btn-xs" href="javascript:layer.confirm('确定删除吗？',function(index){location.href='{:url('advert/advpositiondel','','','')}/id/{{d.position_id}}'});">删除</a>
+                    </div>
+                </script>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script src="__PUBLIC__/layuiadmin/js/jquery-3.3.1.js"></script>
+<script src="__PUBLIC__/layuiadmin/layui/layui.js"></script>
+<script src="__PUBLIC__/layuiadmin/js/public.js"></script>
+<script>
+layui.config({
+    base: '__PUBLIC__/layuiadmin/' //静态资源所在路径
+}).extend({
+    index: 'lib/index' //主入口模块
+}).use(['index', 'table', 'jquery'], function(){
+    var admin = layui.admin
+    ,laypage = layui.laypage
+    ,table = layui.table
+    ,$ = layui.$;
+
+    table.render({
+        elem: '#manage-table'
+        ,toolbar: '#table-toolbar'
+        ,defaultToolbar: []
+        ,title: '用户数据表'
+        ,cols: [[
+        {type: 'checkbox'}
+        ,{field:'position_id', title:'广告位ID', width:120, unresize: true}
+        ,{field:'position_name', title:'广告位名称', minWidth:120, unresize: true}
+        ,{field: 'ad_width', title: '广告位宽度', minWidth: 120, unresize: true }
+        ,{field: 'ad_height', title: '广告位高度', width: 120, unresize: true }
+        ,{field: 'is_open', title: '是否启用', width: 120, unresize: true }
+        ,{field: 'position_desc', title: '广告位描述', width: 120, unresize: true }
+        ,{title:'操作', toolbar: '#table-operation', width:165}
+        ]]
+        ,data: [
+            {volist name="ad_position" id="vo"}
+            {
+                position_id: '{$vo.position_id}',
+                position_name: '{$vo.position_name}',
+                ad_width: '{$vo.ad_width}',
+                ad_height: '{$vo.ad_height}',
+                is_open: '{$vo.is_open==1 ? "是" : "否"}',
+                position_desc: '{$vo.position_desc}',
+            },
+            {/volist}
+        ]
+        ,limit: {:$page->pageSize}
+    });
+
+    //总页数大于页码总数
+    laypage.render({
+        elem: 'laypage'
+        ,count: {:$page->count}
+        ,curr: {:$page->iPage}
+        ,limit: {:$page->pageSize}
+        ,layout: ['count', 'prev', 'page', 'next', 'skip']
+        ,jump: function(obj){
+            if(obj.curr!= "{:$page->iPage}"){
+                var jumpUrl = "{:$page->url('currentPage')}";
+                jumpUrl = jumpUrl.replace("currentPage",obj.curr);
+                location.href = jumpUrl;
+            }
+        }
+    });
+
+    // 批量删除
+    $('#batchDel').click(function(){
+        var checkStatus = table.checkStatus('manage-table')
+        ,checkData = checkStatus.data; //得到选中的数据
+
+        if(checkData.length === 0){
+          return layer.msg('请选择要删除的数据');
+        }
+
+        layer.confirm('确定删除吗？', function(index) {
+          var ids = '';
+          debugger;
+          // 拼接ID
+          checkData.forEach(function(item){
+              ids += item.ad_id + ',';
+          });
+          ids = ids.substr(0, ids.length - 1);
+          delData(ids);
+        });
+    })
+    // 根据ID删除数据
+    function delData(ids){
+        // 删除数据
+        $.ajax({
+            url:"{:url('advert/advdel')}",
+            data:"id="+ids,
+            type:"post",
+            dataType:"json",
+            success:function(msg) {
+                layer.alert('删除成功', {icon: 1}, function(index){
+                    location.reload();
+                    layer.close(index);
+                });
+            }
+        });
+    }
+});
+</script>
+</html>

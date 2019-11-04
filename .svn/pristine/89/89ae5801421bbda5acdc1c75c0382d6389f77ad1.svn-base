@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>商品管理</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="__PUBLIC__/layuiadmin/style/admin.css" media="all" />
+    <link rel="stylesheet" href="__PUBLIC__/layuiadmin/layui/css/public.css" media="all">
+  <script type="text/javascript" src="/layuiadmin/js/jquery-3.3.1.js"></script>
+</head>
+<style>
+    .imgPeview{
+        border: solid 1px #ccc;
+        width: 100px;
+        height: 100px;
+        margin-top: 5px;
+    }
+</style>
+<script type="text/javascript">
+    window.UEDITOR_Admin_URL = "/public/plugins/Ueditor/";
+    var URL_upload = "/index.php/Admin/Ueditor/imageUp/savepath/article";
+    var URL_fileUp = "/index.php/Admin/Ueditor/fileUp/savepath/article";
+    var URL_scrawlUp = "/index.php/Admin/Ueditor/scrawlUp/savepath/article";
+    var URL_getRemoteImage = "/index.php/Admin/Ueditor/getRemoteImage/savepath/article";
+    var URL_imageManager = "/index.php/Admin/Ueditor/imageManager/savepath/article";
+    var URL_imageUp = "/index.php/Admin/Ueditor/imageUp/savepath/article";
+    var URL_getMovie = "/index.php/Admin/Ueditor/getMovie/savepath/article";
+    var URL_home = "";
+</script>
+<script language="javascript">
+    //具体参数配置在  editor_config.js 中
+    var options = {
+        zIndex: 999,
+        initialFrameWidth: 558, //初化宽度
+        initialFrameHeight: 400, //初化高度
+        focus: false, //初始化时，是否让编辑器获得焦点true或false
+        maximumWords: 99999, removeFormatAttributes: 'class,style,lang,width,height,align,hspace,valign',//允许的最大字符数 'fullscreen',
+        pasteplain:false, //是否默认为纯文本粘贴。false为不使用纯文本粘贴，true为使用纯文本粘贴
+        autoHeightEnabled: false
+        /*   autotypeset: {
+         mergeEmptyline: true,        //合并空行
+         removeClass: true,           //去掉冗余的class
+         removeEmptyline: false,      //去掉空行
+         textAlign: "left",           //段落的排版方式，可以是 left,right,center,justify 去掉这个属性表示不执行排版
+         imageBlockLine: 'center',    //图片的浮动方式，独占一行剧中,左右浮动，默认: center,left,right,none 去掉这个属性表示不执行排版
+         pasteFilter: false,          //根据规则过滤没事粘贴进来的内容
+         clearFontSize: false,        //去掉所有的内嵌字号，使用编辑器默认的字号
+         clearFontFamily: false,      //去掉所有的内嵌字体，使用编辑器默认的字体
+         removeEmptyNode: false,      //去掉空节点
+         //可以去掉的标签
+         removeTagNames: {"font": 1},
+         indent: false,               // 行首缩进
+         indentValue: '0em'           //行首缩进的大小
+         }*/
+    };
+    function previous() {
+        var content = UE.getEditor('chrcontent').getContent();
+        layer.open({
+            title:"内容预览",
+            type: 1,
+            skin: 'layui-layer-rim', //加上边框
+            area: ['375px', '600px'], //宽高
+            content: content
+        });
+    }
+</script>
+<script type="text/javascript" src="__PUBLIC__/static/plugins/Ueditor/ueditor.config.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/plugins/Ueditor/ueditor.all.js"></script>
+<body>
+    
+<form class="layui-form" method="post" action="" lay-filter="component-form-group">
+    <div class="layui-fluid">
+        <div class="layui-card">
+            <div class="layui-card-header1">商品信息</div>
+            <div class="layui-card-body" style="padding: 15px;">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">商品名称</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="goods_name" lay-verify="required" autocomplete="off" placeholder="请输入商品名称" value="{$datainfo.goods_name ?: ''}" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">商品缩略图：</label>
+                    <div class="layui-input-block">
+                        <input name="goods_thumb" id="goods_thumb" type="hidden" value="{$datainfo['goods_thumb'] ?: ''}" lay-verify="required"  class="layui-input">
+                        <button class="layui-btn layui-btn-sm" onclick="uploadimgcut('goods_thumb','album',400,400);" type="button">上传图片</button>
+                        <div class="imgPeview" style="display:{$datainfo.goods_thumb ? 'block' : 'none'}" id="goods_thumb_div">
+                            <img height="100" src="{$datainfo['goods_thumb'] ?: ''}" id="goods_thumb_img"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-form-item layui-form-text">
+                        <label class="layui-form-label">商品详情</label>
+                        <div class="layui-input-inline">
+                            <textarea id="goods_content" name="goods_content" placeholder="请输入商品详情" class="layui-textarea">{$datainfo.goods_content ?: ''}</textarea>
+                            <script>var editorcontent;$(function(){editorcontent = new UE.ui.Editor(options);editorcontent.render("goods_content");});</script>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">适合年龄</label>
+                    <div class="layui-input-inline">
+                    <input name="suitable_age_start" type="text" class="layui-input" id="suitable_age_start" placeholder="开始年龄" value="{$datainfo.suitable_age_start ?? ''}" lay-key="1">
+                    </div>
+                    <div class="layui-form-mid">
+                    到
+                    </div>
+                    <div class="layui-input-inline">
+                    <input name="suitable_age_end" type="text" class="layui-input" id="suitable_age_end" placeholder="结束年龄" value="{$datainfo.suitable_age_end ?? ''}" lay-key="2">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">所需积分</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="integral" lay-verify="required" autocomplete="off" placeholder="请输入所需积分" value="{$datainfo.integral ?: ''}" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">商品数量</label>
+                    <div class="layui-input-block">
+                        <input type="text" id="goods_number" name="goods_number" lay-verify="required" autocomplete="off" placeholder="请输入商品数量" value="{$datainfo.goods_number ?: ''}" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">上架/下架</label>
+                    <div class="layui-input-block">
+                        {present name="$datainfo['is_display']"}
+                            <input type="radio" name="is_display" value="1" {$datainfo.is_display == 1 ? 'checked' : ''} title="上架" />
+                            <input type="radio" name="is_display" value="0" {$datainfo.is_display == 0 ? 'checked' : ''} title="下架" />
+                        {else /}
+                            <input type="radio" name="is_display" value="1" title="上架" />
+                            <input type="radio" name="is_display" value="0" title="下架" checked />
+                        {/present}
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">是否虚拟商品</label>
+                    <div class="layui-input-block">
+                        {present name="$datainfo['is_virtual']"}
+                            <input type="radio" name="is_virtual" value="1" {$datainfo.is_virtual == 1 ? 'checked' : ''} title="是" />
+                            <input type="radio" name="is_virtual" value="0" {$datainfo.is_virtual == 0 ? 'checked' : ''} title="否" />
+                        {else /}
+                            <input type="radio" name="is_virtual" value="1" title="是" />
+                            <input type="radio" name="is_virtual" value="0" title="否" checked />
+                        {/present}
+                    </div>
+                </div>
+                <div class="layui-form-item layui-layout-admin">
+                    <div class="layui-input-block">
+                        <div class="layui-footer" style="left: 0;z-index: 9999;">
+                            <input type="submit" class="layui-btn" lay-submit lay-filter="layuiadmin-submit" id="layuiadmin-submit" value="保存">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script src="/layuiadmin/layui/layui.js"></script>
+<script type="text/javascript" src="/layuiadmin/js/public.js"></script>
+<script>
+layui.config({
+    base: '/layuiadmin/' //静态资源所在路径
+}).extend({
+    index: 'lib/index' //主入口模块
+}).use(['index', 'form'], function(){
+    
+});
+</script>
+</body>
+</html>

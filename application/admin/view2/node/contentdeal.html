@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>产品管理</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/admin.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/public.css" media="all">
+    <script type="text/javascript" src="/layuiadmin/js/jquery-3.3.1.js"></script>
+    <script src="/layuiadmin/js/public.js"></script>
+</head>
+
+<body>
+
+<script language="javascript">
+    //具体参数配置在  editor_config.js 中
+    var options = {
+        zIndex: 999,
+        initialFrameWidth: 558, //初化宽度
+        initialFrameHeight: 400, //初化高度
+        focus: false, //初始化时，是否让编辑器获得焦点true或false
+        maximumWords: 99999, removeFormatAttributes: 'class,style,lang,width,height,align,hspace,valign',//允许的最大字符数 'fullscreen',
+        pasteplain:false, //是否默认为纯文本粘贴。false为不使用纯文本粘贴，true为使用纯文本粘贴
+        autoHeightEnabled: false
+    };
+
+</script>
+<script type="text/javascript" src="__PUBLIC__/static/plugins/Ueditor/ueditor.config.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/plugins/Ueditor/ueditor.all.js"></script>
+<form class="layui-form" action="{:url('node/contentpost')}" lay-filter="component-form-group" id="frm">
+    <div class="layui-fluid">
+        <div class="layui-card">
+            <div class="layui-card-header1">内容管理</div>
+            <div class="layui-card-body" style="padding: 15px;">
+
+                {foreach name="fieldlist" item="vo" key="k"}
+                {foreach name="lang" id="v" key="k1"}
+                <?php $k1=='cn'?$prefix='':$prefix=$k1.'_'; ?>
+                {if condition="($vo['fieldtype'] > 3 && $k1 == 'cn')"}
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">{if condition="$vo['enablenull'] neq 1"}<span style="color: red">*</span>{/if}{$vo.fieldalias}
+                        {in name="vo['fieldtype']" value="1,2,3"}
+                        {eq name="prefix" value="tc_"}(繁体){/eq}
+                        {eq name="prefix" value="en_"}(英文){/eq}
+                        {eq name="prefix" value=""}{/eq}
+                        {/in}</label>
+                    <div class="layui-input-block">
+                        {if condition="$contentinfo neq null"}
+                        <?php array_key_exists($prefix.$vo['fieldname'],$contentinfo)?$field=$prefix.$vo['fieldname']:$field=$vo['fieldname']; ?>
+                        {$vo,$contentinfo[strtolower($field)],$prefix|getControl}
+                        {else /}{$vo,'',$prefix|getControl}
+                        {/if}
+                        {if condition="$vo['enablenull'] neq 1"}
+                        <span style="color: red;display: none;" class="{$vo['fieldname']}_null">(不能为空)</span>
+                        {/if}
+                        {if condition="$vo['isonly'] eq 1"}
+                        <span style="color: red;display: none" class="{$vo['fieldname']}">(内容重复)</span>
+                        {/if}
+                        {if condition="$vo.tips neq null"}
+                        <br /><div style="color: blue;">{$vo.tips}</div>
+                        {/if}
+                    </div>
+                </div>
+
+
+                {elseif condition="($vo['fieldtype'] == 1) or ($vo['fieldtype'] == 2) or ($vo['fieldtype'] == 3)"}
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">{if condition="$vo['enablenull'] neq 1"}<span style="color: red">*</span>{/if} {$vo.fieldalias}
+                        {in name="vo['fieldtype']" value="1,2,3"}
+                        {eq name="prefix" value="tc_"}(繁体){/eq}
+                        {eq name="prefix" value="en_"}(英文){/eq}
+                        {eq name="prefix" value=""}(简体){/eq}
+                        {/in}</label>
+                    <div class="layui-input-block">
+                        {if condition="$contentinfo neq null"}
+                        <?php array_key_exists($prefix.$vo['fieldname'],$contentinfo)?$field=$prefix.$vo['fieldname']:$field=$vo['fieldname']; ?>
+                        {$vo,$contentinfo[strtolower($field)],$prefix|getControl}
+                        {else /}{$vo,'',$prefix|getControl}
+                        {/if}
+                        {if condition="$vo['enablenull'] neq 1"}
+                        <span style="color: red;display: none;" class="{$vo['fieldname']}_null">(不能为空)</span>
+                        {/if}
+                        {if condition="$vo['isonly'] eq 1"}
+                        <span style="color: red;display: none" class="{$vo['fieldname']}">(内容重复)</span>
+                        {/if}
+                        {if condition="$vo.tips neq null"}
+                        <br /><div style="color: blue;">{$vo.tips}</div>
+                        {/if}
+                    </div>
+                </div>
+
+                {/if}
+                {/foreach}
+                {/foreach}
+            </div>
+        </div>
+
+        <div class="layui-form-item layui-layout-admin">
+            <div class="layui-input-block">
+                <div class="layui-footer" style="left: 0;z-index: 9999;">
+                    <button class="layui-btn" type="button"  onclick="javascript:window.location='{:url('admin/node/contentlist',array('nodeid'=>$nodeid))}'">返回</button>
+                    <button class="layui-btn" lay-submit="" lay-filter="component-form-demo1">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {if condition="$action eq 'edit'"}
+    <input type="hidden" name="contentid" value="{$contentinfo['contentid']}">
+    {/if}
+    <input type="hidden" name="modelid" value="{$modelid}">
+    <input type="hidden" name="nodeid" value="{$nodeid}">
+    <input type="hidden" name="action" value="{$action}">
+</form>
+
+<script src="/layuiadmin/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: '/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['index', 'form', 'laydate'], function(){
+        var $ = layui.$
+            ,admin = layui.admin
+            ,element = layui.element
+            ,layer = layui.layer
+            ,laydate = layui.laydate
+            ,form = layui.form;
+
+        // form.render(null, 'component-form-group');
+
+
+
+        laydate.render({
+            elem: '#LAY-component-form-group-date'
+        });
+
+        //绑定时间控件
+        <?php
+            foreach($fieldlist as $v){
+                if($v['fieldtype'] == 9){
+               ?>
+                    laydate.render({
+                        elem: '#{$v[\'fieldname\']}'
+                        , min: 0
+                    });
+               <?php
+                }}
+            ?>
+
+
+
+        /* 监听指定开关 */
+        form.on('switch(component-form-switchTest)', function(data){
+            layer.msg('开关checked：'+ (this.checked ? 'true' : 'false'), {
+                offset: '6px'
+            });
+            layer.tips('温馨提示：请注意开关状态的文字可以随意定义，而不仅仅是ON|OFF', data.othis)
+        });
+
+        /* 监听提交 */
+        form.on('submit(component-form-demo1)', function(data){
+            $("#frm").submit();
+        });
+    });
+
+    // 阻止冒泡
+    function stopPropagation(event) {
+        var event = event || window.event;
+        if(event && event.stopPropagation) {
+            event.stopPropagation();    // W3C标准
+        }else {
+            event.cancelBubble = true;  //ie678
+        }
+    }
+</script>
+<script>
+    var t_index=1;
+    function addtao() {
+        t_index=t_index+1;
+        var strhtml=$("#template-t").html();
+        strhtml= strhtml.replace(/TmpIndex/g,t_index);
+        $("#t-tontent").html($("#t-tontent").html()+strhtml);
+
+    }
+    function deltao(index) {
+        $("#t-tontent-"+index).remove();
+    }
+
+
+    function addp(t_index) {
+        var index = 1;
+        var strhtml=$("#template-p").html();
+        strhtml= strhtml.replace(/TmpIndex/g,t_index);
+        if($("#p-template"+t_index).length<1)
+        {
+            strhtml= strhtml.replace(/TmpPIndex/g,index);
+            strhtml='<div class="layui-collapse"  p="1" id="p-template-'+t_index+'">'+strhtml+'</div>';
+            $("#data_"+t_index).html($("#data_"+t_index).html()+strhtml);
+        }
+        else
+        {
+            index =  $("p-template-"+t_index).attr('p');
+            strhtml= strhtml.replace(/TmpPIndex/g,index);
+            $("#p-template"+t_index).html($("#p-template"+t_index).html()+strhtml);
+            $("#p-template"+t_index).attr('p',index+1);
+        }
+
+
+
+    }
+    function delp(index) {
+        $("#t-tontent-"+index).remove();
+    }
+</script>
+
+
+</body>
+</html>

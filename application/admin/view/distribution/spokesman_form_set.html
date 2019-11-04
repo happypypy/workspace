@@ -1,0 +1,148 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题文档</title>
+<link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
+<link href="__PUBLIC__/static/css/page.css?1" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="__PUBLIC__/static/js/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="__PUBLIC__/static/js/del-checked.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/CostomLinkOpenSw.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/lhgdialog.js?skin=aero"></script>
+</head>
+<body>
+<div class="oa_wrapper">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr class="oa_wrapper-display">
+            <td class="oa_wrapper-top-arr-left">&nbsp;</td>
+            <td class="oa_wrapper-top-arr-middle"></td>
+            <td class="oa_wrapper-top-arr-right">&nbsp;</td>
+        </tr>
+        <tr>
+            <td class="oa_wrapper-middle-arr-left oa_wrapper-display"></td>
+            <td class="oa_wrapper-middle-arr-middle">
+                <div class="oa_location clearfix"><span class="oa_ico-left"></span>location<span class="oa_ico-right"></span></div>
+                <div class="oa_main clearfix">
+                    <div class="oa_subnav clearfix">
+                        <div class="oa_subnav-tab clearfix">
+                            <ul>
+                                <?php if($cms->CheckPurview('distribution_img_set','set')){ ?>
+                                <li onclick="javascript:window.location='{:url('distribution/index','')}'"><em>海报设置 </em></li>
+                                <?php } if($cms->CheckPurview('spokesman_activity','view')){  ?>
+                                <li  onclick="javascript:window.location='{:url('distribution/spokesman_activity','')}'"><em>产品列表 </em></li>
+                                <?php } if($cms->CheckPurview('balance_record','view')){  ?>
+                                <li onclick="javascript:window.location='{:url('distribution/balance_record','')}'"><em>结算办理 </em></li>
+                                <?php } if($cms->CheckPurview('spokesman_list','view')){  ?>
+                                <li onclick="javascript:window.location='{:url('distribution/spokesman_list','')}'"><em>分销用户管理 </em></li>
+                                <?php } if($cms->CheckPurview('spokesman_activity_detail','view')){  ?>
+                                <li onclick="javascript:window.location='{:url('distribution/spokesman_activity_detail_list','')}'"><em> 产品代言明细  </em></li>
+                                <?php } if($cms->CheckPurview('spokesman_order','view')){  ?>
+                                <li onclick="javascript:window.location='{:url('distribution/spokesman_order','')}'"><em> 代言人订单明细  </em></li>
+                                <?php } if($cms->CheckPurview('spokesman_set_item','set')){  ?>
+                                <li  onclick="javascript:window.location='{:url('distribution/spokesman_set_item','')}'"><em> 分销设置项目  </em></li>
+                                <?php } if($cms->CheckPurview('spokesman_form_set','set')){  ?>
+                                <li class="oa_on" onclick="javascript:window.location='{:url('distribution/spokesman_form_set','')}'"><em> 代言人表单设置  </em></li>
+                                <?php } ?>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="oa_pop-main">
+                        <div style="height: 6px"></div>
+                        <div class="oa_title clearfix">
+                            <span class="oa_ico-right"></span>
+                            <span class="oa_title-btn"></span>
+                            <span class="oa_ico-left"></span>
+                            代言人表单设置
+                        </div>
+                        <div class="oa_edition">
+                            <form action="{:url('admin/distribution/spokesman_form_set')}" method="post" id="form1">
+                                <table width="100%" border="0" cellspacing="1" cellpadding="0" class="oa_edition"  style="border-bottom: #e0e0e0 solid 1px">
+                                    <tr>
+                                        <td class="oa_cell-left">是否启用表单字段：</td>
+                                        <td class="oa_cell-right">
+                                            {volist name="datainfo" id="vo"}
+                                            <label>
+                                                <input type="checkbox" name="had_checked[]" value="{$vo.form_name}"
+
+                                                       <?php
+                                                            if($data){
+                                                            //循环数据库中的数据
+                                                                foreach($data as $v){
+                                                                //判断如果数据库的值，有在初始化表单中，那就让其选中
+                                                                    if(in_array($v['form_name'],$vo)){
+                                                                      echo 'checked';
+                                                                    }
+                                                                }
+                                                            }else{
+                                                            if($vo['is_default']== 1){
+                                                            echo 'checked';
+                                                            }
+                                                            }
+                                                        ?>
+
+
+                                                >
+                                                {$vo.form_title}&nbsp;&nbsp;&nbsp;&nbsp;
+                                                </input>
+                                            </label>
+                                            {/volist}
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td></td>
+                                        <td style="padding:10px;"><input type="button" value="确定" onclick="verify_param()" style="cursor: pointer"></td>
+                                    </tr>
+                                </table>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+</div>
+
+</body>
+<script type="text/javascript">
+    function show_is_balance() {
+        //选中的分销方式
+        var distribution_methods = $('input[name="distribution_methods"]:checked').val();
+        //如果是二级的话
+        if(distribution_methods == 2){
+            $('#top_grade').show(0);
+        }else{
+            $('#top_grade').hide(0);
+        }
+
+    }
+    function verify_param() {
+
+        //选中的分销方式
+        var distribution_methods = $('input[name="distribution_methods"]:checked').val();
+
+        if(distribution_methods == 2){
+            var user_id = $('#user_id').val();
+            if(user_id == ''){
+                alert('请选择上级代言人');
+                return false;
+            }
+        }
+        $('#form1').submit();
+    }
+
+    // 选择上级代言人回调
+    function selectQrcodeCallback(user_id,scene_str){
+        if(user_id && scene_str){
+            var html = '<input type="hidden" name="spokesman_one_user_id" id="user_id" value="'+user_id+'" /><input type="hidden" name="spokesman_one_user_name"  value="'+scene_str+'" />';
+            html += '<span>'+scene_str+'</span>&nbsp;';
+            html += "<a href=\"javascript:CustomOpen('{:url('admin/member/spokesman_list','spokesman_grade=1&top=1','')}', 'memberview','重新选择一级代言人', 700, 600)\" style='color:red;'>[重新选择]</a>";
+
+            $('#spokesman_parent').html(html);
+        }
+    }
+
+</script>
+</html>

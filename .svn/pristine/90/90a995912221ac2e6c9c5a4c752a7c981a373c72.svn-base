@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="yes" name="apple-mobile-web-app-capable">
+  <meta content="yes" name="apple-touch-fullscreen">
+  <meta content="telephone=no,email=no" name="format-detection">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+  <script src="__PUBLIC__/static/template/pub/js/common.js"></script>
+  <link rel="stylesheet" href="__PUBLIC__/static/template/pub/css/main.css?v={:time()}">
+  <link rel="stylesheet" href="__PUBLIC__/static/template/skin/M1/css/skin.css?v={:time()}">
+  
+  <title>{$node_info['nodename']}</title>
+</head>
+
+<body class="flexCol">
+	{include file="modules/common/header" /}
+
+  <section class="section">
+    <div class="headtitle">-{$node_info['nodename']}-</div>
+
+      <form id="frm" method="post">
+        <div class="flex">
+          <div class="search-bar" style="width:70%">
+            <div class="search-bar-inner">
+              <input class="search-bar-input" placeholder="请输入关键字搜索" name="keyword" value="{$_POST['keyword'] ?: ''}">
+              <span class="iconfont search-bar-span" id="seacherBtn">&#xe61c;</span>
+            </div>
+          </div>
+          <div class="search-select">
+              {php}$zxbqid = isset($_POST['zxbqid']) ? $_POST['zxbqid'] : 0;{/php}
+            <select name="zxbqid">
+              <option value="0">全部类别</option>
+              {volist name="zxbq"  id="vo"}
+              <option value="{$key}" {if condition="$key==$zxbqid"}selected{/if}>{$vo}</option>
+              {/volist}
+            </select>
+          </div>
+      
+        </div>
+      </form>
+    
+    <!-- 小图 -->
+    <div class="activity-wrap">
+      <ul class="activity-list flex">
+        {php}
+            $map=[];
+            if(isset($_POST['keyword']) ) $map['title|summary']=['like','%'.$_POST['keyword'].'%'];
+            if(isset($_POST['zxbqid']) && $_POST['zxbqid']!=0) $map['fieldspare9']=['like','%'.$_POST['zxbqid'].'%'];
+            $re = $cms->GetContents($nodeid,$map,'idorder DESC,contentid DESC','linkurl,summary,picurl,sys00003,hits,contentid,title,en_title,tc_title,fieldspare6',1,10);
+        {/php}
+        {if condition="count($re.data) <= 0"}
+            <li class="no-data">抱歉，当前没有最新动态信息</li>
+        {else/}
+            {volist name="$re.data" id="vo"}
+                {if condition="$node_info.listtype == 1"}
+                <li class="activity-item-s">
+                    <a href="{:$vo['linkurl'] ? $vo['linkurl'] : '/'.$sitecode.'/content/'.$vo['contentid']}" class="flex">
+                        <div class="activity-item-img"><img src="{$vo['picurl']}"></div>
+                        <div class="activity-item-txt flexCol">
+                        <div class=" activity-item-title flex">{$vo['title']}</div>
+                            <div class=" activity-item-view">
+                                <div class="eyes">{$vo['hits']}</div>
+                                <div class="time">{:date('m-d',strtotime($vo['sys00003']))}</div>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+                {elseif condition="$node_info.listtype == 2"}
+                <li class="activity-item-m">
+                    <a href="{:$vo['linkurl'] ? $vo['linkurl'] : '/'.$sitecode.'/content/'.$vo['contentid']}" class="flexCol">
+                        <div class="activity-item-img"><img src="{$vo['fieldspare6']}"></div>
+                        <div class="activity-item-txt flexCol">
+                            <div class=" activity-item-title flex">{$vo['title']}</div>
+                        </div>
+                        <div class="activity-item-view flex">
+                            <div class="eyes">{$vo['hits']}</div>
+                            <div class="time">{:date('m-d',strtotime($vo['sys00003']))}</div>
+                        </div>
+                    </a>
+                </li>
+                {elseif condition="$node_info.listtype == 3"}
+                <li class="activity-item-b">
+                    <a href="{:$vo['linkurl'] ? $vo['linkurl'] : '/'.$sitecode.'/content/'.$vo['contentid']}" class="flexCol">
+                        <div class="activity-item-img"><img src="{$vo['fieldspare6']}"></div>
+                        <div class="activity-item-txt  flexCol">
+                            <div class=" activity-item-title flex">{$vo['title']}</div>
+                            <div class="activity-item-view">
+                                <div class="eyes">{$vo['hits']}</div>
+                                <div class="time">{:date('m-d',strtotime($vo['sys00003']))}</div>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+                {/if}
+            {/volist}
+        {/if}
+      </ul>
+    </div>
+  </section>
+  
+  <footer class="footer">
+		{include file="modules/common/footer" /}
+  </footer>
+  <script src="__PUBLIC__/static/template/pub/js/jquery.min.js"></script>
+  <script src="__PUBLIC__/static/template/pub/js/menu.js"></script>
+<script>
+    $(".search-select select").change(function(){
+        $("#frm").submit();
+    });
+    $('#seacherBtn').click(function(){
+        $("#frm").submit();
+    });
+
+    //==============核心代码=============
+    var winH = $(window).height(); //页面可视区域高度
+
+    var ipage=2;
+    var scrollHandler = function () {
+        var pageH = $(document).height();
+        var scrollT = $(window).scrollTop(); //滚动条top
+
+        if(pageH-winH-scrollT<1)
+        {
+            LoadData(ipage)
+            ipage++;
+        }
+    }
+    
+    //定义鼠标滚动事件
+    $(window).scroll(scrollHandler);
+
+    //==============核心代码=============
+    function LoadData(ipage)
+    {
+
+        $("#dataload").show();
+        $ (window).unbind ('scroll');
+
+        var zxbq=$('select[name=\"zxbqid\"]').val()
+		var keyword=$('.pintuan-search-in').val()
+        $.ajax({
+            url: "/{$sitecode}/node/{$nodeid}/"+ipage+"?&ajax=1",
+            type: 'POST',
+			data:{"zxbq":zxbq,'keyword':keyword},
+            cache: false,
+            success : function(data) {
+
+                if(data==11)
+                {
+                    $("#dataload").hide();
+                    // $("#loadmsg").html("已无更多数据");
+                    return;
+                }
+                $("#dataload").hide();
+                $("#data").html($("#data").html()+data);
+                $(window).scroll(scrollHandler);
+            }
+        });
+
+    }
+</script>
+</body>
+</html>

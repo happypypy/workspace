@@ -1,0 +1,157 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>无标题文档</title>
+    <link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
+    <link href="__PUBLIC__/static/css/page.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="__PUBLIC__/static/js/jquery-3.2.1.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/lhgdialog.js?skin=aero"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/CostomLinkOpenSw.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/tabscommon.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/cntotc.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/del-checked.js"></script>
+    <script type="text/javascript">
+        window.UEDITOR_Admin_URL = "/public/plugins/Ueditor/";
+        var URL_upload = "/index.php/Admin/Ueditor/imageUp/savepath/article";
+        var URL_fileUp = "/index.php/Admin/Ueditor/fileUp/savepath/article";
+        var URL_scrawlUp = "/index.php/Admin/Ueditor/scrawlUp/savepath/article";
+        var URL_getRemoteImage = "/index.php/Admin/Ueditor/getRemoteImage/savepath/article";
+        var URL_imageManager = "/index.php/Admin/Ueditor/imageManager/savepath/article";
+        var URL_imageUp = "/index.php/Admin/Ueditor/imageUp/savepath/article";
+        var URL_getMovie = "/index.php/Admin/Ueditor/getMovie/savepath/article";
+        var URL_home = "";
+    </script>
+    <script language="javascript">
+        //具体参数配置在  editor_config.js 中
+        var options = {
+            zIndex: 999,
+            initialFrameWidth: 558, //初化宽度
+            initialFrameHeight: 400, //初化高度
+            focus: false, //初始化时，是否让编辑器获得焦点true或false
+            maximumWords: 99999, removeFormatAttributes: 'class,style,lang,width,height,align,hspace,valign',//允许的最大字符数 'fullscreen',
+            pasteplain:false, //是否默认为纯文本粘贴。false为不使用纯文本粘贴，true为使用纯文本粘贴
+            autoHeightEnabled: false
+        };
+    </script>
+    <script type="text/javascript" src="__PUBLIC__/static/plugins/Ueditor/ueditor.config.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/plugins/Ueditor/ueditor.all.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/static/js/layer/layer.js"></script>
+
+</head>
+<body>
+<div class="oa_wrapper">
+    <table width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr class="oa_wrapper-display">
+            <td class="oa_wrapper-top-arr-left">&nbsp;</td>
+            <td class="oa_wrapper-top-arr-middle"></td>
+            <td class="oa_wrapper-top-arr-right">&nbsp;</td>
+        </tr>
+        <tr>
+            <td class="oa_wrapper-middle-arr-left oa_wrapper-display"></td>
+            <td class="oa_wrapper-middle-arr-middle">
+                <div class="oa_location clearfix"><span class="oa_ico-left"></span>location<span class="oa_ico-right"></span></div>
+                <div class="oa_main clearfix">
+                    <div class="oa_subnav clearfix" style="">
+
+                        <div class="oa_subnav-tab clearfix">
+                            <ul>
+                                <li ><em><a href="{:url('configs/index','idsite='.$idsite)}">网站配置</a></em></li>
+                                <li class="oa_on"><em><a href="{:url('configs/configjump','idsite='.$idsite)}">支付后跳转的页面设置</a> </em></li>
+                            </ul>
+                        </div>
+
+                    </div>
+                    <div class="oa_content-area clearfix">
+                        <div class="oa_content-main">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td valign="top">
+                                        <div class="oa_pop">
+                                            <div class="oa_title clearfix">
+                                                <span class="oa_ico-right"></span>
+                                                <span class="oa_title-btn"></span>
+                                                <span class="oa_ico-left"></span>
+                                                <span>支付后跳转的页面设置</span>
+                                            </div>
+                                            <div class="oa_pop-main">
+                                                <div class="oa_edition">
+                                                    <form action="{:url('configs/configjump')}" enctype="multipart/form-data" method="post">
+                                                        <table width="100%" border="0" cellspacing="1" cellpadding="0" class="oa_edition">
+                                                            <tr>
+                                                                <td width="240" class="oa_cell-left">
+                                                                    是否启用：
+                                                                </td>
+                                                                <td class="oa_cell-right">
+                                                                    <select name="isjump">
+                                                                        <option value="2" <?php if($res['isjump'] == 2){echo "selected";} ?>>否</option>
+                                                                        <option value="1" <?php if($res['isjump'] == 1){echo "selected";} ?>>是</option>
+                                                                    </select>
+                                                                    <!--<span>换行请在文字末尾加上  \n\n</span>-->
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td width="240" class="oa_cell-left">
+                                                                    内容详情：
+                                                                </td>
+                                                                <td class="oa_cell-right">
+                                                                    <div ><textarea  style="width:800px;height:600px;" class="span12 ckeditor" id="chrcontent" is_null="1" name="content">{$res.content}</textarea></div>
+                                                                    <script>var editorcontent;$(function(){editorcontent = new UE.ui.Editor(options);editorcontent.render("chrcontent");});</script>
+                                                                    <a href="javascript:previous();">预览</a>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                        <div class="oa_bottom clearfix">
+                                                            <div class="clearfix">
+                                                                <div class="oa_op-btn clearfix">
+                                                                    <input value="保存" type="submit" class="oa_input-submit" />
+                                                                </div>
+                                                            </div>
+                                                            <div class="oa_bottom-bottom"><em></em></div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                            <div class="oa_content-main-bottom"></div>
+                        </div>
+                    </div>
+                </div>
+            </td>
+            <td class="oa_wrapper-middle-arr-right oa_wrapper-display"></td>
+        </tr>
+        <tr class="oa_wrapper-display">
+            <td class="oa_wrapper-bottom-arr-left">&nbsp;</td>
+            <td class="oa_wrapper-bottom-arr-middle"></td>
+            <td class="oa_wrapper-bottom-arr-right">&nbsp;</td>
+        </tr>
+    </table>
+</div>
+</body>
+<script type="text/javascript">
+    $(".lang").eq(0).css("color","#f00");
+    var type = $(".lang").eq(0).attr("lang");
+    $("table .div_configs").hide();
+    $("."+type).show();
+    $(".lang").click(function () {
+        $(this).css("color","#f00");//给点击的a标签加红色
+        $(this).siblings().css("color","#000");//被点击之外的a标签颜色为黑色
+        var lang = $(this).attr("lang");
+        $(".div_configs").hide();
+        $("."+lang).show();
+    });
+    function previous() {
+        var content = UE.getEditor('chrcontent').getContent();
+        layer.open({
+            title:"内容预览",
+            type: 1,
+            skin: 'layui-layer-rim', //加上边框
+            area: ['300px', '500px'], //宽高
+            content: content
+        });
+    }
+</script>
+</html>

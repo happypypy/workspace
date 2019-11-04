@@ -1,0 +1,543 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>报名管理</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/admin.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/public.css">
+    <script src="/layuiadmin/js/jquery-3.3.1.js"></script>
+    <script src="__PUBLIC__/layuiadmin/js/public.js"></script>
+</head>
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-tab">
+                    <ul class="layui-tab-title">
+                        <li {$intflag==2?'class="layui-this"':''}
+                            onclick="javascript:window.location='{:url('order/index','&intflag=2')}'">
+                            <span>待审批的报名<span/></li>
+                        <li {$intflag==3?'class="layui-this"':''}
+                            onclick="javascript:window.location='{:url('order/index','&intflag=3')}'">
+                            <span>审查不通过的报名</span></li>
+                        <li {$intflag==4?'class="layui-this"':''}
+                            onclick="javascript:window.location='{:url('order/index','&intflag=4')}'">
+                            <span>已取消的报名</span></li>
+                        <li {$intflag==5?'class="layui-this"':''}
+                            onclick="javascript:window.location='{:url('order/index','&intflag=5')}'"><span>所有报名 </span>
+                        </li>
+                        <li {$intflag==6?'class="layui-this"':''}
+                            onclick="javascript:window.location='{:url('order/index','&intflag=6')}'"><span>退款的报名<span
+                                style="color: red">({$refundcount})</span></span></li>
+                        <li {$intflag==1?'class="layui-this"':''}
+                            onclick="javascript:window.location='{:url('order/index','&intflag=1')}'"><span>待支付的报名<span
+                                style="color: red">({$signupcount})</span></span></li>
+                        <li {$intflag==7?'class="layui-this"':''}
+                            onclick="javascript:window.location='{:url('order/groupBuyOrderList')}'"><span>拼团订单</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- 搜索区域 -->
+                <div class="layui-card-body">
+                    <div class="layui-card">
+                        <div class="layui-card-header2">查询</div>
+                        <form class="layui-form layui-bd layui-mb15" action="" lay-filter="component-form-group">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">订单号</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="ordersn" value="{$search['ordersn']}" class="layui-input">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">报名人姓名</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="chrusername" value="{$search['chrusername']}"
+                                           class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">产品名称</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="chrtitle" value="{$search['chrtitle']}" placeholder="产品或者课程名称"
+                                           class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">报名信息</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" title="" name="chrkey" value="{$search['chrkey']}"
+                                           placeholder="真实姓名,手机,身份证等" class="layui-input">
+                                </div>
+                            </div>
+                            <?php if($intflag==5) { ?>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">报名状态</label>
+                                <div class="layui-input-inline">
+                                    <div class="layui-input-inline">
+                                        <select name="state">
+                                            <option value="0">所有状态</option>
+                                            <option value="1"
+                                            <?php if($search['state']==1) { echo "selected"; } ?>>已报名，待审核</option>
+                                            <option value="3"
+                                            <?php if($search['state']==3) { echo "selected"; } ?>>已报名，已审核</option>
+                                            <option value="2"
+                                            <?php if($search['state']==2) { echo "selected"; } ?>>已报名，审核不通过</option>
+                                            <option value="12"
+                                            <?php if($search['state']==12) { echo "selected"; } ?>>已报名，待支付</option>
+                                            <option value="4"
+                                            <?php if($search['state']==4) { echo "selected"; } ?>>已报名，已支付</option>
+                                            <option value="5"
+                                            <?php if($search['state']==5) { echo "selected"; } ?>>已报名，退款中</option>
+                                            <option value="8"
+                                            <?php if($search['state']==8) { echo "selected"; } ?>>已报名，退款不通过</option>
+                                            <option value="6"
+                                            <?php if($search['state']==6) { echo "selected"; } ?>>已部分退款，继续服务</option>
+                                            <option value="7"
+                                            <?php if($search['state']==7) { echo "selected"; } ?>>已退款，继续服务</option>
+                                            <!-- <option value="9" <?php if($search['state']==9) { echo "selected"; } ?>>删除</option>-->
+                                            <option value="13"
+                                            <?php if($search['state']==13) { echo "selected"; } ?>>已部分退款，终止服务</option>
+                                            <option value="11"
+                                            <?php if($search['state']==11) { echo "selected"; } ?>>已退款，终止服务</option>
+                                            <option value="10"
+                                            <?php if($search['state']==10) { echo "selected"; } ?>>终止服务</option>
+                                            <option value="14"
+                                            <?php if($search['state']==14) { echo "selected"; } ?>>退款失败</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <?php } else if($intflag==6) { ?>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">报名状态</label>
+                                <div class="layui-input-inline">
+                                    <select name="state">
+                                        <option value="0">所有状态</option>
+                                        <option value="5"
+                                        <?php if($search['state']==5) { echo "selected"; } ?>>已报名，退款中</option>
+                                        <option value="6"
+                                        <?php if($search['state']==6) { echo "selected"; } ?>>已报名，部分退款</option>
+                                        <option value="7"
+                                        <?php if($search['state']==7) { echo "selected"; } ?>>已报名，已退款</option>
+                                        <option value="8"
+                                        <?php if($search['state']==8) { echo "selected"; } ?>>已报名，退款不通过</option>
+                                        <option value="11"
+                                        <?php if($search['state']==11) { echo "selected"; } ?>>已取消，已退款</option>
+                                        <option value="14"
+                                        <?php if($search['state']==14) { echo "selected"; } ?>>退款失败</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <?php } else{ ?>
+                            <div class="layui-form-item" {$intflag!=5?' style="display: none;"
+                            ':''}>
+                            <label class="layui-form-label">报名状态</label>
+                            <div class="layui-input-inline">
+                                <input type="hidden" name="state" value="0"/>
+                            </div>
+                            </div>
+                    <?php } ?>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">报名时间</label>
+                            <div class="layui-input-inline">
+                                <input name="dtstart" type="text" class="layui-input" id="test-laydate-start"
+                                       value="{$search['dtstart']}">
+                            </div>
+                            <div class="layui-form-mid">
+                                -
+                            </div>
+                            <div class="layui-input-inline">
+                                <input name="dtend" type="text" class="layui-input" id="test-laydate-end"
+                                       value="{$search['dtend']}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">签到方式</label>
+                            <div class="layui-input-inline">
+                                <select name="singntype">
+                                    <option value="0">选择</option>
+                                    <option value="1"
+                                    <?php if($search['singntype']==1) { echo "selected"; } ?>>扫码签到</option>
+                                    <option value="2"
+                                    <?php if($search['singntype']==2) { echo "selected"; } ?>>输码签到</option>
+                                    <option value="3"
+                                    <?php if($search['singntype']==3) { echo "selected"; } ?>>电脑签到</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">签到时间</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="dtsigntimestart" class="layui-input" id="publish-laydate-start"
+                                       value="{$search['dtsigntimestart']}">
+                            </div>
+                            <div class="layui-form-mid">
+                                -
+                            </div>
+                            <div class="layui-input-inline">
+                                <input type="text" name="dtsigntimestartend" class="layui-input" id="publish-laydate-end"
+                                       value="{$search['dtsigntimestartend']}">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">签到人</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="signusername" value="{$search['signusername']}" placeholder="签到人"
+                                   class="layui-input">
+                        </div>
+                        <div class="layui-inline">
+                            <button class="layui-btn layuiadmin-btn-list" lay-submit lay-filter="LAY-app-contlist-search">
+                                <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    </form>
+                    </div>
+
+                    <table class="layui-hide" id="test-table-toolbar" lay-filter="test-table-toolbar"></table>
+                <script type="text/html" id="source">
+                    {if condition="$cms->CheckPurview('spokesman_order','view')"}
+                    {{# if (d.source=='代言人订单'){ }}
+                    <a href="/admin/distribution/spokesman_order/u_chrname/{{d.spokesman_user_id3}}">{{d.spokesman_name3}}</a>
+                    {{# } }}
+                    {elseif condition="!$cms->CheckPurview('spokesman_order','view')"}
+                    {{# if (d.source=='代言人订单'){ }}
+                    {{d.spokesman_name3}}
+                    {{# } }}
+                    {else}
+                    {{d.source}}
+                    {/if}
+                </script>
+
+                <script type="text/html" id="price">
+                    {{d.paynum}}/{{d.price}}
+                    {{# if (d.is_change_price > 0 ){ }}
+                    <a href="javascript:CustomOpen('/admin/order/update_order_price_record/id/{{d.id}}','update','修改订单金额记录',650,500)" style="text-decoration: none"><i class="layui-icon">&#xe60b;</i></a>
+                    {{# } }}
+                </script>
+
+                <script type="xt/html" id="test-table-toolbar-toolbarDemo">
+                    <div class="layui-btn-container ov-hd">
+                        <div class="info-l fl">报名管理</div>
+                     </div>
+                </script>
+
+                    <script type="text/html" id="test-table-toolbar-barDemo">
+                        <div class="test-table-toolbar-barDemo" style="white-space:normal;text-align: left;">
+                            <a class="layui-btn layui-btn-xs" lay-event="orderdetail">订单详情 </a>
+                            {if condition="$cms->CheckPurview('order','refund')"}
+                            {{# if (d.state > 3 && d.state != 12 && d.transaction_id != ''){ }}
+                            <a class="layui-btn layui-btn-xs" lay-event="refund">退款 </a>
+                            {{# } }}
+                            {/if}
+                            {if condition="$intflag==5"}
+                            <a class="layui-btn layui-btn-xs" lay-event="sendmsg">发送短信 </a>
+                            {/if}
+                            {{# if (d.issign != 1 && d.state >=3 && d.state <=8 && d.state !=5){ }}
+                            <a class="layui-btn layui-btn-xs" lay-event="signin">签到 </a>
+                            {{# } }}
+                            <?php if ($cms->CheckPurview('order','update_price')){ ?>
+                            {{# if(d.state == 12){ }}
+                            <a class="layui-btn layui-btn-xs" onclick="CustomOpen('/admin/order/update_order_price/id/{{d.id}}','update','修改订单金额',450,425);">修改价格 </a>
+                            {{# } }}
+                            <?php } ?>
+                        </div>
+
+                    </script>
+
+                    <div>
+                        <div style="float: left; margin-top: 15px;margin-left: 10px; vertical-align: middle;">
+                            <button style="display: none" class="layui-btn layui-btn-sm" data-type="del" >删除</button>
+
+                            {if condition="($intflag eq '5' && !empty($data) )"}
+                            <button class="layui-btn layui-btn-sm"  id="settype"	type="button"  >批量设置用户类型</button>
+                            <form class="layui-form layui-input-inline layui-w150">
+                                <select name="settype" id="selecttype">
+                                    <option value="">请选择用户类型</option>
+                                    {foreach name="hyfl" item="v"}
+                                    <option value="{$v.id}">{$v.name}</option>
+                                    {/foreach}
+                                </select>
+                            </form>
+                            {/if}
+
+                        </div>
+                        <div id="laypage" style="text-align: right; margin-right: 15px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script language="JavaScript">
+    function st(i) {
+        var tmpArr={:json_encode($order_state)};
+        return tmpArr[i];
+    }
+</script>
+<script src="/layuiadmin/layui/layui.js"></script>
+<script language="JavaScript">
+    var layer = layui.layer;
+</script>
+
+<script>
+    layui.config({
+        base: '/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['index', 'table', 'laydate', 'form'], function () {
+        var admin = layui.admin
+            , laypage = layui.laypage
+            , table = layui.table
+            , form = layui.form;
+
+        table.render({
+            elem: '#test-table-toolbar'
+            , toolbar: '#test-table-toolbar-toolbarDemo'
+            , title: '用户数据表'
+            , defaultToolbar: false
+            , cols: [[
+                {type: 'checkbox',field:'id'}
+
+                ,{hide:true,field:'id'}
+                , {field: 'ordersn', title: '订单号',width: 200}
+                , {field: 'chrtitle', title: '产品名称', unresize: true}
+                // ,{field:'username', title: '所属分类', width: 120, templet: '#buttonTpl', unresize: true }
+                , {field: 'payname', title: '套餐名称', width: 200, unresize: true}
+                , {field: 'source', title: '订单来源', width: 120, unresize: true,templet :"#source"}
+                , {field: 'state', title: '订单状态', width: 170, unresize: true,templet :function(d){return st(d.state)}}
+                , {field: 'price', title: '数量/价格', width: 100, unresize: true,templet :"#price"}
+                , {field: 'chrusername', title: '报名人姓名', width: 100, }
+                , {field: 'dtcreatetime', title: '报名时间', width: 160, }
+                , {field:'issign',title: '签到',templet:function(d){if(d.issign==1){return "<span style='color: red'>是<span>"}else{return "否"}} , width: 100}
+                ,{title:'操作', toolbar: '#test-table-toolbar-barDemo', width:225,template:"#test-table-toolbar-barDemo"}
+            ]]
+
+            , data: {:json_encode($data)}
+            ,limit: {:$page->pageSize}
+        });
+
+        //总页数大于页码总数
+        laypage.render({
+            elem: 'laypage'
+            ,count: {:$page->count}
+            ,curr: {:$page->iPage}
+            ,limit: {:$page->pageSize}
+            ,layout: ['count', 'prev', 'page', 'next', 'skip']
+            ,jump: function(obj){
+            if(obj.curr!= "{:$page->iPage}"){
+                var jumpUrl = "{:$page->url('currentPage')}";
+                jumpUrl = jumpUrl.replace("currentPage",obj.curr);
+                location.href = jumpUrl;
+            }
+        }
+    });
+
+        //头工具栏事件
+        table.on('toolbar(test-table-toolbar)', function (obj) {
+            var checkStatus = table.checkStatus(obj.config.id);
+            switch (obj.event) {
+                case 'getCheckData':
+                    var data = checkStatus.data;
+                    layer.alert(JSON.stringify(data));
+                    break;
+                case 'getCheckLength':
+                    var data = checkStatus.data;
+                    layer.msg('选中了：' + data.length + ' 个');
+                    break;
+                case 'isAll':
+                    layer.msg(checkStatus.isAll ? '全选' : '未全选');
+                    break;
+            };
+        });
+
+        //监听行工具事件
+        table.on('tool(test-table-toolbar)', function (obj) {
+            var data = obj.data
+            var id=data.id
+            //debugger;
+            if (obj.event === 'orderdetail') {
+                layer.open({
+                    type:2,
+                    content:"{:url('order/modi')}"+'?action=edit&id='+id,
+                    title:"订单详情",
+                    area:['700px','600px']
+                })
+            } else if (obj.event === 'refund') {
+                layer.open({
+                    type:2,
+                    content:"{:url('order/refund')}"+'?action=edit&id='+id,
+                    title:"退款",
+                    area:['700px','600px']
+                });
+            } else if(obj.event === 'signin'){
+                layer.open({
+                    type:2,
+                    content:"{:url('order/issign')}"+'?id='+id,
+                    title:"签到",
+                    area:['550px','307px']
+                });
+            }
+        });
+
+        // 监听时间范围
+        form.on('radio(timeRange)', function (data) {
+            if (data.value == 4) {
+                $('#comingTimeDiv').removeClass('layui-hide');
+            } else {
+                $('#comingTimeDiv').addClass('layui-hide');
+            }
+        });
+
+        var laydate = layui.laydate;
+
+        //示例代码
+
+        //举办开始日期
+        var showStart = laydate.render({
+            elem: '#test-laydate-start'
+            , done: function (value, date) {
+                //更新结束日期的最小日期
+                showEnd.config.min = lay.extend({}, date, {
+                    month: date.month - 1
+                });
+                //自动弹出结束日期的选择器
+                showEnd.config.elem[0].focus();
+            }
+        });
+
+        //发布开始日期
+        var showEnd = laydate.render({
+            elem: '#test-laydate-end'
+            , done: function (value, date) {
+                //更新开始日期的最大日期
+                showStart.config.max = lay.extend({}, date, {
+                    month: date.month - 1
+                });
+            }
+        });
+
+        //发布开始日期
+        var publishStart = laydate.render({
+            elem: '#publish-laydate-start'
+            , done: function (value, date) {
+                //更新结束日期的最小日期
+                publishEnd.config.min = lay.extend({}, date, {
+                    month: date.month - 1
+                });
+
+                //自动弹出结束日期的选择器
+                publishEnd.config.elem[0].focus();
+            }
+        });
+        //发布开始日期
+        var publishEnd = laydate.render({
+            elem: '#publish-laydate-end'
+            , done: function (value, date) {
+                //更新开始日期的最大日期
+                publishStart.config.max = lay.extend({}, date, {
+                    month: date.month - 1
+                });
+            }
+        });
+
+        //来访开始日期
+        var comingStart = laydate.render({
+            elem: '#coming-laydate-start'
+            , min: 0
+            , done: function (value, date) {
+                //更新结束日期的最小日期
+                comingEnd.config.min = lay.extend({}, date, {
+                    month: date.month - 1
+                });
+
+                //自动弹出结束日期的选择器
+                comingEnd.config.elem[0].focus();
+            }
+        });
+
+        //来访结束日期
+
+        var comingEnd = laydate.render({
+            elem: '#coming-laydate-end'
+            , min: 0
+            , done: function (value, date) {
+                //更新开始日期的最大日期
+                comingStart.config.max = lay.extend({}, date, {
+                    month: date.month - 1
+                });
+            }
+        });
+
+        // 批量删除
+        $('#settype').click(function(){
+            var val = $("#selecttype").val();
+            if(val == ''){
+                layer.msg("您还未选择用户类型");return;
+            }
+            var typename=$("#selecttype option:selected").text()
+            typename="<span style='color: red'>"+typename+"</span>"
+            var checkStatus = table.checkStatus('test-table-toolbar')
+                ,checkData = checkStatus.data; //得到选中的数据
+
+            if(checkData.length === 0){
+                return layer.msg('您还未选择订单！');
+            }
+            var ids = '';
+            // 拼接ID
+            checkData.forEach(function(item){
+                ids += item.wechatid+ ',';
+            });
+            ids = ids.substr(0, ids.length - 1);
+            //console.log(ids)
+            delData(ids,typename,val);
+        })
+
+        // 根据ID删除数据
+        window.delData = function (ids,remark,type) {
+            var msg = '您确定把用户类型改为“'+remark+'”吗？';
+            layer.confirm(msg,
+                {
+                    btn: ['确定','取消'] //按钮
+                },function(){
+                    $.ajax({
+                        type: 'post',
+                        url:"{:url('order/setUsersType')}?type="+type,
+                        dataType: 'json',
+                        data:{'openid':ids,'intflag':{$intflag}},
+                        success:function(res){
+                            if(res==1){
+                                layer.confirm('修改成功')
+                            }else if(res==2){
+                                layer.confirm('没有需要修改的用户类型！')
+                            }else{
+                                layer.confirm('修改失败')
+                            }
+                        }
+
+                    })
+                })
+        }
+    })
+
+</script>
+</body>
+
+</html>

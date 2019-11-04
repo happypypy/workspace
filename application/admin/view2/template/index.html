@@ -1,221 +1,170 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
+
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>角色管理</title>
-    <link href="__PUBLIC__/static/css/layout.css" rel="stylesheet" type="text/css" />
-    <link href="__PUBLIC__/static/css/page.css" rel="stylesheet" type="text/css" />
-    <script type="text/javascript" src="__PUBLIC__/static/js/jquery-3.2.1.min.js"></script>
-<script type="text/javascript" src="__PUBLIC__/static/js/lhgdialog.js?skin=aero"></script>
- <script type="text/javascript" src="__PUBLIC__/static/js/CostomLinkOpenSw.js"></script>
-<script type="text/javascript" src="__PUBLIC__/static/js/tabscommon.js"></script>
-<script type="text/javascript" src="__PUBLIC__/static/js/del-checked.js"></script>
-    <script type="text/javascript" src="__PUBLIC__/static/js/layer/layer.js"></script>
-    <style type="text/css">
-        .qiyong{
-            background-image: url("__PUBLIC__/static/images/czCheckbox.gif");
-            width: 13px;
-            height: 13px;
-            background-position: -8px -36px;
-            margin-right:2px;
+    <meta charset="utf-8">
+    <title>开启头部工具栏 - 数据表格</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/admin.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/public.css">
+    <script src="__PUBLIC__/layuiadmin/js/public.js"></script>
+    <style>
+        .list {
+            overflow: hidden;
         }
-        .jinyong{
-            background-image: url("__PUBLIC__/static/images/czCheckbox.gif");
-            width: 13px;
-            height: 13px;
-            background-position: -8px -8px;
-            margin-right:2px;
+
+        .list>li {
+            float: left;
+            margin:0 15px 15px 0;
+            border: 1px solid #ccc;
+        }
+
+        .img-div {
+            height: 500px;
+            overflow: hidden;
+        }
+
+        .layui-form-radio>i {
+            font-size: 14px;
+            margin-right: 2px;
+        }
+
+        .layui-form-radio {
+            margin: 6px 0 0 0;
+            padding-right: 2px;
+        }
+
+        .layui-form-radioed>div {
+            color: red;
         }
     </style>
-<script type="text/javascript">
-$(function(){
-    $(document).ready(function() {
-        $('.oa_text-list tr').addClass('odd');
-        $('.oa_text-list tr:even').addClass('even');
-    });
-    $('.oa_text-list tr').hover(
-        function(){
-            $(this).addClass('oa_mouseover-bg');
-        },
-        function(){
-            $(this).removeClass('oa_mouseover-bg');
-        }
-    );
-});
-function empty() {
-    window.location.reload();
-}
-
-//删除选中
-function del_checked() {
-    var b = $(".checked_one");
-    var s = '';
-    for(var i=0;i<b.length;i++){
-        if(b[i].checked){
-            s+= b[i].value+',';
-        }
-    }
-    s = s.substr(0, s.length - 1);
-    $.ajax({
-        url:"{:url('role/delchecked')}",
-        data:"id="+s,
-        type:"post",
-        dataType:"json",
-        success:function(msg){
-            if (msg==1){
-                layer.alert('{:lang('del success')}', {icon: 1}, function(index){
-                    location.reload();
-                    $(".checked_one").attr("checked",false);
-                    layer.close(index);
-                });
-            }else{
-                layer.alert('{:lang('del fail')}', {icon: 2}, function(index){
-                    layer.close(index);
-                    location.reload();
-                });
-            }
-        }
-    })
-}
-</script>
 </head>
+
 <body>
-<div class="oa_wrapper">
-    <table width="100%" border="0" cellspacing="0" cellpadding="0">
-        <tr class="oa_wrapper-display">
-            <td class="oa_wrapper-top-arr-left">&nbsp;</td>
-            <td class="oa_wrapper-top-arr-middle"></td>
-            <td class="oa_wrapper-top-arr-right">&nbsp;</td>
-        </tr>
-        <tr>
-            <td class="oa_wrapper-middle-arr-left oa_wrapper-display"></td>
-            <td class="oa_wrapper-middle-arr-middle">
-                <div class="oa_location clearfix"><span class="oa_ico-left"></span>location<span class="oa_ico-right"></span></div>
-                <div class="oa_main clearfix">
-                    <div class="oa_content-area clearfix">
-                        <div class="oa_content-main">
-                            <table width="100%" border="0" cellspacing="0" cellpadding="0">
-                                <tr>
-                                    <td valign="top">
-                                        <div class="oa_title clearfix">
-                                            <span class="oa_title-btn">
-                                                <?php if($idsite==1){ ?>
-                                                <ul>
-                                                  <li class="oa_selected">
-                                                      <a href="javascript:CustomOpen('{:url('template/tempdeal','&action=add')}', 'template','模版添加', 400,400)">添加模版</a>
-                                                  </li>
-                                                </ul>
-                                                <?php } ?>
-                                            </span>
-                                            <span class="oa_ico-left"></span>
-                                            模版列表
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-header1">模板列表</div>
+                <div class="layui-card-body">
+                    <ul class="list">
+                        {volist name="template_list" id="voo"}
+                        {php} $temp=$key;{/php}
+                        {volist name="voo" id="vo"}
+                        {if condition="($key eq 0 && substr($selcode,0,strrpos($selcode,'_')) neq $vo['dirname'] ) OR (strtolower($vo['dirname']) eq strtolower($selcode) )"}
+                        <li>
+                            <div class="template-show">
+                                <div class="img-div">
+                                    {if condition="substr($vo['dirname'],0,strrpos($vo['dirname'],'_')) eq ''"}
+
+                                    <a href="/template/{$vo.dirname}/index.jpg" title="点击查看" target="_blank" temp="" pictype="">
+                                        <img src="/template/{$vo.dirname}/index.jpg" alt=""
+                                             width="200"></a>
+                                    {else /}
+                                    <a href="/template/{:substr($vo['dirname'],0,strrpos($vo['dirname'],'_'))}/index{:substr($vo['dirname'], -2)}.jpg" title="点击查看" target="_blank" temp="" pictype="">
+                                        <img style="width:200px; " src="/template/{:substr($vo['dirname'],0,strrpos($vo['dirname'],'_'))}/index{:substr($vo['dirname'], -2)}.jpg" alt="" /></a>{/if}
+                                </div>
+                                <form class="layui-form" action="">
+                                    <div class="layui-form-item" style="margin-bottom: 0;">
+                                        <label class="layui-form-label" style="width: auto; padding: 9px 6px;">{$vo.temname}</label>
+                                        <div class="layui-input-block" style="margin-left: 0">
+                                            <input type="radio" name="code" value="{$temp}" title="小图"
+                                                   {if condition="substr($selcode,0,strrpos($selcode,'_')) =='' && strtolower($vo['dirname']) eq strtolower($selcode)"}checked{/if} temp="{$temp}/index.jpg"  lay-filter="component-form-group" />
+                                            <input type="radio" name="code" value="{$temp}_m" title="中图" {if condition="substr($selcode, -1) eq 'm' && strtolower($vo['dirname']) eq strtolower($selcode)"} checked{/if} temp="{$temp}/index_m.jpg" lay-filter="component-form-group" />
+                                            <input type="radio" name="code" value="{$temp}_b" title="大图"  {if condition="substr($selcode, -1) eq 'b' && strtolower($vo['dirname']) eq strtolower($selcode)"}checked{/if} temp="{$temp}/index_b.jpg" lay-filter="component-form-group" />
                                         </div>
-                                        <div>
-                                            <style>
-                                                .list{
-                                                    float: left;
-                                                    margin: 1px;
-                                                }
-                                            </style>
-                                            {volist name="template_list" id="voo"}
-                                            {php} $temp=$key;{/php}
-                                            {volist name="voo" id="vo"}
-                                            {if condition="($key eq 0 && substr($selcode,0,strrpos($selcode,'_')) neq $vo['dirname'] ) OR (strtolower($vo['dirname']) eq strtolower($selcode) )"}
-                                            <li class="list" style=" margin: 5px; border: 1px solid #8D8D8D;overflow: hidden" >
-                                                <table cellpadding="0" cellspacing="0" border="0">
-                                                    <tr><td>
-                                                        <div style="left: 0px; height: 500px;width: 100%;overflow: hidden;">
-                                                            {if condition="substr($vo['dirname'],0,strrpos($vo['dirname'],'_')) eq ''"}
-                                                            <a href="/template/{$vo.dirname}/index.jpg" title="点击查看" target="_blank"><img style="width:200px; " src="/template/{$vo.dirname}/index.jpg" alt="" /></a>
-                                                            {else /}
-                                                            <a href="/template/{:substr($vo['dirname'],0,strrpos($vo['dirname'],'_'))}/index{:substr($vo['dirname'], -2)}.jpg" title="点击查看" target="_blank"><img style="width:200px; " src="/template/{:substr($vo['dirname'],0,strrpos($vo['dirname'],'_'))}/index{:substr($vo['dirname'], -2)}.jpg" alt="" /></a>
-                                                            {/if}
+                                    </div>
 
-                                                        </div>
-                                                    </td></tr>
-                                                    <tr><td>
-                                                        <div style=" padding: 10px; height: 45px; background: #ccc">
-                                                            {$vo.temname}&nbsp;&nbsp;&nbsp;
-                                                            {if condition="substr($selcode,0,strrpos($selcode,'_')) =='' && strtolower($vo['dirname']) eq strtolower($selcode)"}<a style="color: red" temp="{$temp}" class="changepic" pictype=''>
-                                                            <img class="qiyong" />小图</a>&nbsp;
-                                                            {else /}
-                                                            <a class="changepic" href="{:url('template/changetemplate',array('code'=>$temp))}" temp="{$temp}"  pictype='' title="点击启用小图">
-                                                                <img class="jinyong"/>小图</a>&nbsp;{/if}
-                                                            {if condition="substr($selcode, -1) eq 'm' && strtolower($vo['dirname']) eq strtolower($selcode)"} <a style="color: red" temp="{$temp}" pictype='_m' class="changepic"><img class="qiyong"/>中图</a>&nbsp;{else /}
-                                                            <a  href="{:url('template/changetemplate',array('code'=>$temp.'_m'))}" temp="{$temp}" class="changepic" pictype='_m' title="点击启用中图"><img class="jinyong"/>中图</a>&nbsp;{/if}
-
-                                                            {if condition="substr($selcode, -1) eq 'b' && strtolower($vo['dirname']) eq strtolower($selcode)"} <a style="color: red" temp="{$temp}" class="changepic" pictype='_b'><img class="qiyong"/>大图</a>&nbsp;{else /}
-                                                            <a  href="{:url('template/changetemplate',array('code'=>$temp.'_b'))}" temp="{$temp}" class="changepic" pictype='_b' title="点击启用大图"><img class="jinyong"/>大图</a>&nbsp;{/if}
-
-                                                            <!--{if condition="strtolower($vo['dirname']) eq strtolower($selcode)"}-->
-                                                            <!--<a style="color: red">已启用</a>-->
-                                                            <!--{else /}<a href="{:url('template/changetemplate','code='.$vo['dirname'])}">启用</a>-->
-                                                            <!--{/if}-->
-                                                            {if condition="strtolower($vo['dirname']) eq strtolower($selcode)"}
-                                                            <div style="margin-top: 8px; width:100%; color: red;text-align: center">
-                                                                已启用
-                                                            {if condition="substr($selcode, -1) eq 'm'"}中图
+                                    <div style="margin-bottom: 10px; text-align: center; color: red;height:25px">
+                                        {if condition="strtolower($vo['dirname']) eq strtolower($selcode)"}
+                                        已启用 <span>
+                                        {if condition="substr($selcode, -1) eq 'm'"}中图
                                                                 {elseif condition="substr($selcode, -1) eq 'b'"}大图
                                                                 {else}小图
                                                             {/if}
-                                                            </div>
-                                                            {/if}
-                                                        </div>
-                                                    </td></tr>
-                                                </table>
-                                            </li>
-                                           {/if}
-                                            {/volist}
-                                            {/volist}
-                                        </div>
-                                    </td>
-                                </tr>
-                            </table>
-                            <div class="oa_bottom clearfix" style="border-right:0;">
-                                <div class="clearfix">
-                                    <div class="oa_page-controls">
-                                        <ul><li>{$page->show()}</li></ul>
+                                    </span>
+                                        {/if}
                                     </div>
-                                </div>
-                                <div class="oa_bottom-bottom"><em></em></div>
+
+                                </form>
+
                             </div>
-                            <style type="text/css">
-                                a{
-                                    cursor: pointer;
-                                }
-                                .pagination{
-                                    display: inline;
-                                    font-size: 14px;
-                                    letter-spacing:1px;
-                                    font-family: "Microsoft YaHei", Gadget, sans-serif;
-                                }
-                            </style>
-                            <div class="oa_content-main-bottom"></div>
-                        </div>
-                    </div>
+                        </li>
+                        {/if}
+                        {/volist}
+                        {/volist}
+
+                    </ul>
                 </div>
-            </td>
-            <td class="oa_wrapper-middle-arr-right oa_wrapper-display"></td>
-        </tr>
-        <tr class="oa_wrapper-display">
-            <td class="oa_wrapper-bottom-arr-left">&nbsp;</td>
-            <td class="oa_wrapper-bottom-arr-middle"></td>
-            <td class="oa_wrapper-bottom-arr-right">&nbsp;</td>
-        </tr>
-    </table>
+                <div id="laypage" style="text-align: right; margin-right: 15px;"></div>
+
+            </div>
+        </div>
+    </div>
+
+
+
 </div>
+
+<script src="/layuiadmin/layui/layui.js"></script>
 <script>
+    layui.config({
+        base: '/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['index', 'form','table'], function () {
+        var $ = layui.$
+            , admin = layui.admin
+            , element = layui.element
+            , form = layui.form
+            ,laypage = layui.laypage
 
-    $(".changepic").mouseover(function(){
+        form.render(null, 'component-form-element');
+        element.render('breadcrumb', 'breadcrumb');
+
+        form.on('submit(component-form-element)', function (data) {
+            layer.msg(JSON.stringify(data.field));
+            return false;
+        });
+        form.on('radio(component-form-group)', function(data){
+            // console.log(data.elem); //得到radio原始DOM对象
+            // console.log(data.value); //被点击的radio的value值
+            var code=data.value;
+            window.location="{:url('template/changetemplate')}?code="+code
+        });
+        //总页数大于页码总数
+        laypage.render({
+            elem: 'laypage'
+            ,count: {:$page->count}
+    ,curr: {:$page->iPage}
+    ,limit: {:$page->pageSize}
+    ,layout: ['count', 'prev', 'page', 'next', 'skip']
+            ,jump: function(obj){
+            if(obj.curr!= "{:$page->iPage}"){
+                var jumpUrl = "{:$page->url('currentPage')}";
+                jumpUrl = jumpUrl.replace("currentPage",obj.curr);
+                location.href = jumpUrl;
+            }
+        }
+    });
+
+
+    });
+
+
+    $(document).on('mouseover', '.layui-form-radio', function () {
         obj=$(this)
-        var temp=obj.attr('temp')
-        var pictype=obj.attr('pictype')
-        obj.parents('table').eq(0).find('tr').eq(0).find('a').eq(0).attr('href','/template/'+temp+'/index'+pictype+'.jpg')
-        obj.parents('table').eq(0).find('tr').eq(0).find('img').eq(0).attr('src','/template/'+temp+'/index'+pictype+'.jpg')
+        var temp=obj.prev().attr('temp')
+        //console.log(temp)
+        obj.parents('.template-show').eq(0).find('.img-div').eq(0).find('a').eq(0).attr('href', '/template/'+temp)
+        obj.parents('.template-show').eq(0).find('.img-div').eq(0).find('img').eq(0).attr('src', '/template/'+temp)
     })
-
 
 </script>
 </body>
 
-</html>

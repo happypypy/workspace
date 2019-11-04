@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="generator" content="HTML Tidy for HTML5 for Windows version 5.2.0" />
+    <meta charset="utf-8" />
+    <title>无标题文档</title>
+    <meta name="renderer" content="webkit" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="stylesheet" href="__PUBLIC__/layuiadmin/layui/css/layui.css" media="all" />
+    <link rel="stylesheet" href="__PUBLIC__/layuiadmin/style/admin.css" media="all" />
+    <link rel="stylesheet" href="__PUBLIC__/layuiadmin/style/public.css" media="all" />
+    <script src="__PUBLIC__/layuiadmin/layui/layui.js"></script>
+    <script src="__PUBLIC__/layuiadmin/js/public.js"></script>
+
+    <style>
+        .layui-form-item{
+            margin-bottom: 5px;
+        }
+        .layui-table-cell{
+            height: auto;
+        }
+        .lastcell>a{
+            text-decoration: underline;
+            color: #333;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+    </style>
+    </head>
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+
+                <!-- 搜索区域 -->
+                <div class="layui-card-body">
+                    <div class="layui-card-header2">搜索</div>
+                    <form class="layui-form layui-bd layui-mb15" action="" lay-filter="component-form-group">
+                        <div class="layui-form-item">
+                            <label class="layui-form-label">敏感词：</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="content" autocomplete="off" placeholder="请输入敏感词" value="{$data.content ?: ''}" class="layui-input" />
+                            </div>
+                            <div class="layui-inline">
+                                <button class="layui-btn layuiadmin-btn-list" lay-submit lay-filter="LAY-app-contlist-search">
+                                    <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+                    <table class="layui-hide" id="manage-table" lay-filter="manage-table"></table>
+
+                    <div style="overflow: hidden">
+                        <div style="float: left; margin-top: 15px;margin-left: 10px; vertical-align: middle;">
+                            <button class="layui-btn layui-btn-sm" id="batchDel">删除</button>
+                        </div>
+                        <div id="laypage" style="text-align: right; margin-right: 15px;"></div>
+                    </div>
+                </div>
+
+                <!-- 工具栏按钮 -->
+                <script type="text/html" id="table-toolbar">
+					<div class="layui-btn-container ov-hd">
+						<div class="info-l fl">敏感词过滤</div>
+						<div class="info-r fr">
+							<?php if($cms->CheckPurview('filtermanage','add')){ ?>
+							<li class="oa_selected">
+								<a class="layui-btn layui-btn-sm" href="javascript:CustomOpen('{:url('filter/filterdeal','&action=add&idsite='.$idsite)}', 'filter','添加敏感词', 500, 420)">添加敏感词</a>
+							</li>
+							<?php } ?>
+						</div>
+					</div>
+                </script>
+                <!-- 行工具按钮 -->
+                <script type="text/html" id="table-operation">
+					<div class="table-operation">
+                        <a class="layui-btn layui-btn-xs" href="javascript:CustomOpen('{:url('filter/filterdeal','action=view','','')}/id/{{d.filterid}}', 'account','查看', 500, 420)">查看</a>
+                        <?php if($cms->CheckPurview('filtermanage','edit')){ ?>
+                        <a class="layui-btn layui-btn-xs" href="javascript:CustomOpen('{:url('filter/filterdeal','action=edit&idsite='.$idsite,'','')}/id/{{d.filterid}}', 'account','修改', 500, 420)">修改</a>
+                        <?php } ?>
+                        <?php if($cms->CheckPurview('filtermanage','del')){ ?>
+                        <a class="layui-btn layui-btn-xs" href="javascript:delData({{d.filterid}},'{{d.content}}');">删除</a>
+                        <?php } ?>
+                    </div>
+                </script>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+layui.config({
+    base: '/layuiadmin/' //静态资源所在路径
+}).extend({
+    index: 'lib/index' //主入口模块
+}).use(['index', 'table', 'jquery'], function(){
+    var admin = layui.admin
+    ,laypage = layui.laypage
+    ,table = layui.table
+    ,$ = layui.$;
+
+    table.render({
+        elem: '#manage-table'
+        ,toolbar: '#table-toolbar'
+        ,defaultToolbar: []
+        ,title: '用户数据表'
+        ,cols: [[
+        {type: 'checkbox'}
+        ,{field:'filterid', title:'ID', width:60, unresize: true}
+        ,{field:'content', title:'敏感词', minWidth:120, unresize: true}
+        ,{field: 'replace', title: '替换为', minWidth: 120, unresize: true }
+        ,{field: 'isusing', title: '是否开启', width: 120, unresize: true }
+        ,{field: 'idorder', title: '排序', width: 120, unresize: true}
+        ,{title:'操作', toolbar: '#table-operation', width:140}
+        ]]
+        ,data: [
+            {volist name="filter_list" id="vo"}
+            {
+                filterid: '{$vo.filterid}',
+                content: '{$vo.content}',
+                replace: '{$vo.replace}',
+                isusing: '{$vo["isusing"]==1?"是":"否"}',
+                idorder: '{$vo.idorder}',
+            },
+            {/volist}
+        ]
+        ,limit: {:$page->pageSize}
+    });
+
+    //总页数大于页码总数
+    laypage.render({
+        elem: 'laypage'
+        ,count: {:$page->count}
+        ,curr: {:$page->iPage}
+        ,limit: {:$page->pageSize}
+        ,layout: ['count', 'prev', 'page', 'next', 'skip']
+        ,jump: function(obj){
+            if(obj.curr!= "{:$page->iPage}"){
+                var jumpUrl = "{:$page->url('currentPage')}";
+                jumpUrl = jumpUrl.replace("currentPage",obj.curr);
+                location.href = jumpUrl;
+            }
+        }
+    });
+
+    // 批量删除
+    $('#batchDel').click(function(){
+        var checkStatus = table.checkStatus('manage-table')
+        ,checkData = checkStatus.data; //得到选中的数据
+
+        if(checkData.length === 0){
+          return layer.msg('请选择要删除的数据');
+        }
+      var ids = '';
+      // 拼接ID
+      checkData.forEach(function(item){
+          ids += item.id + ',';
+      });
+      ids = ids.substr(0, ids.length - 1);
+      delData(ids,'');
+    })
+    
+    // 根据ID删除数据
+    window.delData = function (ids,remark) {
+        var msg = '您确定要删除选定的记录吗？';
+        if(typeof ids === 'number'){
+            msg = '您确定要删除“'+remark+'”吗？';
+        }
+        layer.confirm(msg, function(index) {
+            // 删除数据
+            $.ajax({
+                url: "{:url('filter/filterdel')}",
+                data: "id=" + ids,
+                type: "post",
+                dataType: "json",
+                success: function (obj) {
+                    if (obj.msg == '删除成功') {
+                        layer.msg('已删除');
+                        location.reload();
+                    } else {
+                        layer.alert('删除失败', { icon: 2 });
+                    }
+                }
+            });
+        });
+    }
+});
+</script>
+</html>

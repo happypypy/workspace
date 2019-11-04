@@ -1,0 +1,1397 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>产品管理</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/admin.css" media="all">
+    <script src="/layuiadmin/js/laydate/laydate.js"></script>
+    <script src="/layuiadmin/layui/layui.js"></script>
+    <script src="/layuiadmin/js/public.js"></script>
+    <script type="text/javascript" src="/layuiadmin/js/jquery-3.3.1.js"></script>
+</head>
+<style>
+    .layui-layer.layui-layer-page.layui-layer-rim.layer-anim .layui-layer-content{
+        padding: 10px;
+    }
+    .layui-layer.layui-layer-page.layui-layer-rim.layer-anim *{
+        max-width : 100%!important;
+        box-sizing: border-box;
+    }
+    .layui-layer.layui-layer-page.layui-layer-rim.layer-anim img{
+        height: auto!important;
+    }
+</style>
+
+<body>
+<script type="text/javascript">
+    window.UEDITOR_Admin_URL = "/public/plugins/Ueditor/";
+    var URL_upload = "/index.php/Admin/Ueditor/imageUp/savepath/article";
+    var URL_fileUp = "/index.php/Admin/Ueditor/fileUp/savepath/article";
+    var URL_scrawlUp = "/index.php/Admin/Ueditor/scrawlUp/savepath/article";
+    var URL_getRemoteImage = "/index.php/Admin/Ueditor/getRemoteImage/savepath/article";
+    var URL_imageManager = "/index.php/Admin/Ueditor/imageManager/savepath/article";
+    var URL_imageUp = "/index.php/Admin/Ueditor/imageUp/savepath/article";
+    var URL_getMovie = "/index.php/Admin/Ueditor/getMovie/savepath/article";
+    var URL_home = "";
+</script>
+<script language="javascript">
+    //具体参数配置在  editor_config.js 中
+    var options = {
+        zIndex: 999,
+        initialFrameWidth: 558, //初化宽度
+        initialFrameHeight: 400, //初化高度
+        focus: false, //初始化时，是否让编辑器获得焦点true或false
+        maximumWords: 99999, removeFormatAttributes: 'class,style,lang,width,height,align,hspace,valign',//允许的最大字符数 'fullscreen',
+        pasteplain:false, //是否默认为纯文本粘贴。false为不使用纯文本粘贴，true为使用纯文本粘贴
+        autoHeightEnabled: false
+        /*   autotypeset: {
+         mergeEmptyline: true,        //合并空行
+         removeClass: true,           //去掉冗余的class
+         removeEmptyline: false,      //去掉空行
+         textAlign: "left",           //段落的排版方式，可以是 left,right,center,justify 去掉这个属性表示不执行排版
+         imageBlockLine: 'center',    //图片的浮动方式，独占一行剧中,左右浮动，默认: center,left,right,none 去掉这个属性表示不执行排版
+         pasteFilter: false,          //根据规则过滤没事粘贴进来的内容
+         clearFontSize: false,        //去掉所有的内嵌字号，使用编辑器默认的字号
+         clearFontFamily: false,      //去掉所有的内嵌字体，使用编辑器默认的字体
+         removeEmptyNode: false,      //去掉空节点
+         //可以去掉的标签
+         removeTagNames: {"font": 1},
+         indent: false,               // 行首缩进
+         indentValue: '0em'           //行首缩进的大小
+         }*/
+    };
+    function previous(id) {
+        var content = UE.getEditor(id).getContent();
+        layer.open({
+            title:"内容预览",
+            type: 1,
+            skin: 'layui-layer-rim', //加上边框
+            area: ['375px', '600px'], //宽高
+            content: content
+        });
+    }
+</script>
+<script type="text/javascript" src="/static/plugins/Ueditor/ueditor.config.js"></script>
+<script type="text/javascript" src="/static/plugins/Ueditor/ueditor.all.js"></script>
+
+<form id="frm" class="layui-form" method="post" action="" lay-filter="component-form-group">
+    <div class="layui-fluid">
+        <div class="layui-card">
+            <div class="layui-card-header1">产品基本信息</div>
+            <div class="layui-card-body" style="padding: 15px;">
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">产品标题</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="chrtitle" id="chrtitle" lay-verify="chrtitle"  placeholder="请输入标题" class="layui-input"  value="{$datainfo['chrtitle']}">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">产品简称</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="short_title" id="short_title" placeholder="请输入产品简称,产品简介内容展,示列表产品标题底部"  class="layui-input"  value="{$datainfo['short_title']}">
+                    </div>
+                </div>
+                <div class="layui-form-item layui-form-text">
+                    <label class="layui-form-label">产品简介</label>
+                    <div class="layui-input-block">
+                        <textarea id="chrsummary" name="chrsummary" placeholder="产品简介内容展,示列表产品标题底部" class="layui-textarea">{$datainfo['chrsummary']}</textarea>
+                    </div>
+                </div>
+
+
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">产品小图片（140x140）</label>
+                        <div class="layui-input-inline">
+                            <button class="layui-btn layui-btn-sm" type="button" onclick="uploadimgcut('chrimg_m','admin',140,140);">上传小图</button>
+                            <input name="chrimg_m" id="chrimg_m" type="hidden" value="{$datainfo['chrimg_m']}"   />
+                            <div ><img id="chrimg_m_show" style="border: solid 1px #ccc;width: 100px;height: 100px;margin-top: 5px;" src="{$datainfo['chrimg_m']==''?'/static/images/timg.jpg':$datainfo['chrimg_m']}" /></div>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">产品大图片（640x320）</label>
+                        <div class="layui-input-inline">
+                            <button class="layui-btn layui-btn-sm" type="button" onclick="uploadimgcut('chrimg','admin',640,320);">上传大图</button>
+                            <input name="chrimg" id="chrimg" type="hidden" value="{$datainfo['chrimg']}"   />
+                            <div  ><img id="chrimg_show" style="border: solid 1px #ccc;width: 200px;height: 100px;margin-top: 5px;"  height="100" src="{$datainfo['chrimg']==''?'/static/images/timg.jpg':$datainfo['chrimg']}" /></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">外链URL</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="chrurl" id="chrurl" placeholder="外链URL"  class="layui-input"  value="{$datainfo['chrurl']}">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">关键字</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="chrkeyword" id="chrkeyword" placeholder="关键字,多个以逗号分开"  class="layui-input"  value="{$datainfo['chrkeyword']}">
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">适合对象</label>
+                        <div class="layui-input-inline">
+                            <select name="chrrange" id="chrrange">
+                                <option value="0">==请选择==</option>
+                                <option value="1" <?php if ($datainfo['chrrange'] == 1) {echo "selected";}?> >家长及儿童</option>
+                                <option value="2" <?php if ($datainfo['chrrange'] == 2) {echo "selected";}?> >仅儿童</option>
+                                <option value="3" <?php if ($datainfo['chrrange'] == 3) {echo "selected";}?> >仅家长</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">参与最小年龄</label>
+                        <div class="layui-input-inline">
+                            <select name="minage" id="minage">
+                                <option value="0">==请选择==</option>
+                                <?php for ($i = 1; $i < 100; $i++) {?>
+                                <option value="{$i}" <?php if ($datainfo['minage'] == $i) {echo "selected";}?> >{$i}</option>
+                                <?php }?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">参与最大年龄</label>
+                        <div class="layui-input-inline">
+                            <select name="maxage"  id="maxage">
+                                <option value="0">==请选择==</option>
+                                <?php for ($i = 1; $i < 100; $i++) {?>
+                                <option value="{$i}" <?php if ($datainfo['maxage'] == $i) {echo "selected";}?> >{$i}</option>
+                                <?php }?>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">所属商务</label>
+                        <div class="layui-input-inline">
+                            <select name="intselmarket"  lay-search="">
+                                <option value="">直接选择或搜索选择</option>
+                                {volist name="user" id="vo"}
+                                <option value="{$vo.idaccount}:{$vo.chrname}" <?php if ($vo['idaccount'] == $datainfo['intselmarket']) {echo "selected";}?> >{$vo.chrname}</option>
+                                {/volist}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">分类</label>
+                        <div class="layui-input-inline">
+                            <select name="fidtype" id="fidtype" >
+                                <option  value="">请选择</option>
+                                {volist name="hdfl" id="vo"}
+                                <option value="{$vo.code}" <?php if ($vo['code'] == $datainfo['fidtype']) {echo "selected";}?> >{$vo.name}</option>
+                                {/volist}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">是否收费</label>
+                        <div class="layui-input-inline">
+                            <select name="ischarge" id="ischarge" >
+                                <option value="1" <?php if ($datainfo['ischarge'] != 2) {echo "selected";}?> >免费</option>
+                                <option value="2" <?php if ($datainfo['ischarge'] == 2) {echo "selected";}?> >收费</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-inline" style="display:none;">
+                        <label class="layui-form-label">商圈id</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="fiddistrict" id="fiddistrict" placeholder="商圈id（暂时选一个）"  class="layui-input"  value="{$datainfo['fiddistrict']}">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">省份</label>
+                    <div class="layui-input-block">
+                        <div class="layui-inline">
+                            <select name="fidprovince" id="fidprovince" onchange="getChild(this.value,0,'fidcity','/Admin/Api/getRegion');">
+                                <option value="">请选择省</option>
+                            </select>
+                            <script language="javascript">
+                                getChild(0,{$datainfo['fidprovince']},'fidprovince','/Admin/Api/getRegion');
+                                <?php if (!empty($datainfo['fidcity']) && $datainfo['fidcity'] != 0) {?>
+                                    getChild({$datainfo['fidprovince']},{$datainfo['fidcity']},'fidcity','/Admin/Api/getRegion');
+                                <?php }?>
+                            </script>
+                        </div>
+                        <div class="layui-inline">
+                            <select name="fidcity" id="fidcity" onchange="getChild(this.value,0,'fidarea','/Admin/Api/getRegion');" >
+                                <option value="">请选择市</option>
+                            </select>
+                            <?php if (!empty($datainfo['fidarea']) && $datainfo['fidarea'] != 0) {?>
+                            <script language="javascript">
+                                getChild({$datainfo['fidcity']},{$datainfo['fidarea']},'fidarea','/Admin/Api/getRegion');
+                            </script>
+                            <?php }?>
+                        </div>
+                        <div class="layui-inline">
+                            <select name="fidarea" id="fidarea">
+                                <option value="">请选择县/区</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">举办时间：</label>
+                        <div class="layui-input-inline">
+                            <input name="dtstart" type="text" class="layui-input"   id="dtstart" placeholder="开始日期">
+                        </div>
+                        <div class="layui-form-mid">
+                            -
+                        </div>
+                        <div class="layui-input-inline">
+                            <input name="dtend"  type="text" class="layui-input" id="dtend" placeholder="结束日期" >
+                        </div>
+                        <script language="JavaScript">seltime1("dtstart","dtend")  </script>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">详细地址</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="chraddressdetail" id="chraddressdetail"  placeholder=""  class="layui-input" value="{$datainfo['chraddressdetail']}">
+                        <input name="chrmaplng" id="chrmaplng" type="hidden" value="{$datainfo['chrmaplng']}" class="layui-input "   chname="详细地址经度"  />
+                        <input name="chrmaplat" id="chrmaplat" type="hidden" value="{$datainfo['chrmaplat']}" class="layui-input "  chname="详细地址纬度"  />
+                        <button name="openmap" id="openmap"  onclick="sel_address();" class="layui-btn layui-btn-sm">选择地址</button>
+                    </div>
+                </div>
+
+                <div class="layui-form-item layui-form-text">
+                    <label class="layui-form-label">交通指引</label>
+                    <div class="layui-input-block">
+                        <textarea name="chrmap" id="chrmap" placeholder="请输入交通指引" class="layui-textarea">{$datainfo['chrmap']}</textarea>
+                    </div>
+                </div>
+
+
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">详细内容</label>
+                        <div class="layui-input-block">
+                            <textarea  style="width:800px;height:600px;" class="span12 ckeditor" id="chrcontent" is_null="1" name="chrcontent">{$datainfo['chrcontent']}</textarea>
+                            <script>var editorcontent;editorcontent = new UE.ui.Editor(options);editorcontent.render("chrcontent");</script>
+                            <a href="javascript:previous('chrcontent');">预览</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item" style="display: none">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">产品价值</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="chrworth" id="chrworth" placeholder=""  class="layui-input">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item" style="display: none">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">收费说明</label>
+                        <div class="layui-input-block">
+                            <textarea   id="chrchargemark" is_null="1" name="chrchargemark">{$datainfo['chrchargemark']}</textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item" style="display: none">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">下单须知</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="chrnotice" id="chrnotice" placeholder=""  class="layui-input" value="{$datainfo['chrnotice']}">
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">发布时间：</label>
+                        <div class="layui-input-inline">
+                            <input name="dtpublishtime" type="text" class="layui-input"   id="dtpublishtime" placeholder="发布时间">
+                            <script language="JavaScript">seltime("dtpublishtime") </script>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">用户权限</label>
+                    <div class="layui-input-block">
+                        {foreach name='hyfl' item='v'}
+                        <input type="checkbox" lay-skin="primary" name="usertype[]" value="{$v.id}" <?php if (in_array($v['code'], explode(",", trim($datainfo['usertype'], ',')))) {echo "checked=''";}?> title="{$v.name}" />
+                        {/foreach}
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">产品标签</label>
+                    <div class="layui-input-block">
+                        {volist name="hdbq" id="vo"}
+                        <input type="checkbox" lay-skin="primary" name="chrtags[]" value="{$vo.code}" <?php if (in_array($vo['code'], explode(",", trim($datainfo['chrtags'], ',')))) {echo "checked=''";}?> title="{$v.name}" />
+                        {/volist}
+                    </div>
+                </div>
+                <div class="layui-form-item" style="display: none">
+                    <label class="layui-form-label">产品分享海报模版图</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="sharebackpic" id="sharebackpic" class="layui-input"  value="{$datainfo['sharebackpic']}">
+                        <input onclick="GetUploadify(1,'sharebackpic','admin','undefined','*.jpg;*.jpeg;*.png;*.gif;*.jpeg;');" type="button" value="上传单图片"/>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline" style="display: none">
+                        <label class="layui-form-label">是否自办</label>
+                        <div class="layui-input-inline">
+                            <input type="checkbox" name="chktags" id="chktags" value="1"  lay-skin="switch" lay-text="是|否" <?php if ($datainfo['chktags'] == 1) {echo "checked";}?>>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">是否置顶</label>
+                        <div class="layui-input-inline">
+                            <input type="checkbox" name="chkcontentlev" id="chkcontentlev" value="1"  lay-skin="switch" lay-text="是|否" <?php if ($datainfo['chkcontentlev'] == 1) {echo "checked";}?>>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">推荐到首页</label>
+                        <div class="layui-input-inline">
+                            <input type="checkbox" name="chkisindex" id="chkisindex" lay-skin="switch" lay-text="是|否" value="1" <?php if ($datainfo['chkisthird'] == 1) {echo "checked";}?>>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">下架</label>
+                        <div class="layui-input-inline">
+                            <input type="checkbox" name="chkdown" id="chkdown" lay-skin="switch" lay-text="是|否" value="1" <?php if ($datainfo['chkdown'] == 1) {echo "checked";}?>>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">服务条款</label>
+                        <div class="layui-input-block">
+                            <textarea  class="span12 ckeditor" id="txtfwtk" is_null="1" name="txtfwtk">{$datainfo['txtfwtk']}</textarea>
+                            <script>var editorcontent1;editorcontent1 = new UE.ui.Editor(options);editorcontent1.render("txtfwtk");</script>
+                            <a href="javascript:previous('txtfwtk');">预览</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+        <div class="layui-card">
+            <div class="layui-card-header1">在线下单
+                <div style="float: right;margin-top: -5px;">
+                    <input type="checkbox" id="chkbm" name="chksignup" lay-skin="switch" lay-text="是|否"  value="1" lay-filter="show_bm"  <?php if ($datainfo['chksignup'] == 1) {echo "checked";}?>>
+                </div>
+            </div>
+            <div class="layui-card-body" style="padding: 15px;display: none;" id="bm1">
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">下单时间：</label>
+                        <div class="layui-input-inline">
+                            <input name="dtsignstime" type="text" class="layui-input"   id="dtsignstime" placeholder="开始日期">
+                        </div>
+                        <div class="layui-form-mid">
+                            -
+                        </div>
+                        <div class="layui-input-inline">
+                            <input name="dtsignetime"  type="text" class="layui-input" id="dtsignetime" placeholder="结束日期" >
+                        </div>
+                        <script language="JavaScript">seltime1("dtsignstime","dtsignetime")</script>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+
+                    <div class="layui-inline">
+                        <label class="layui-form-label">需要关注</label>
+                        <div class="layui-input-inline">
+                            <input type="checkbox" name="chkissubscribe" lay-skin="switch" lay-text="是|否"  value="1" <?php if ($datainfo['chkissubscribe'] == 1) {echo "checked";}?>>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">可申请退款</label>
+                        <div class="layui-input-inline">
+                            <input type="checkbox" name="isrefund" lay-skin="switch" lay-text="是|否"  value="1" <?php if ($datainfo['isrefund'] == 1) {echo "checked";}?>>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">报名模版</label>
+                        <div class="layui-input-inline">
+                            <select name="selsignfrom" id="selsignfrom" >
+                                <option value="">请选报名模版</option>
+                                <?php foreach ($fromtemp as $k => $vo) {?>
+                                <option value="{$vo['id']}" <?php if ($datainfo['selsignfrom'] == $vo['id']) {echo "selected";}?>>{$vo['title']}</option>
+                                <?php }?>
+                            </select>
+                        </div>
+                        <div class="layui-form-mid layui-word-aux"> <a href="javascript:CustomOpen('{:url('/admin/signup/index')}','signup','报名模版', 1000,500);">添加报名模版</a> </div>
+                    </div>
+                </div>
+                <div class="layui-form-item"  style="display: none">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">开启支付</label>
+                        <div class="layui-input-inline">
+                            <input type="checkbox" name="chkpay" lay-skin="switch" lay-text="是|否" <?php if ($datainfo['chkpay'] == 1) {echo "checked";}?>>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">支付方式</label>
+                        <div class="layui-input-inline">
+                            <select name="selpaytype1" id="selpaytype1" >
+                                <option value="1" <?php if ($datainfo['selpaytype1'] != 2) {echo "checked";}?>>线上支付</option>
+                                <option value="2" <?php if ($datainfo['selpaytype1'] == 2) {echo "checked";}?>>线下支付</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">限制1</label>
+                    <div class="layui-input-inline">
+                        <input type="checkbox" name="chkismobile" lay-skin="switch" lay-text="是|否"  value="1" <?php if ($datainfo['chkismobile'] == 1) {echo "checked";}?>>
+                    </div>
+                    <div class="layui-form-mid layui-word-aux"> 同一手机号只能下单一次（下单表单中必须有手机类型框）</div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">限制2</label>
+                    <div class="layui-input-inline">
+                        <input type="checkbox" name="chkisidcard" lay-skin="switch" lay-text="是|否"  value="1" <?php if ($datainfo['chkisidcard'] == 1) {echo "checked";}?>>
+                    </div>
+                    <div class="layui-form-mid layui-word-aux"> 同一身份证号只能下单一次（下单表单中必须有身份证类型框）</div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">限制3</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="intmaxpaynum" class="layui-input"  value="{$datainfo['intmaxpaynum']}">
+                    </div>
+                    <div class="layui-form-mid layui-word-aux"> 单次最大购买数量，0表示不限 </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">限制4</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="intmaxmobilepaynum" class="layui-input" value="{$datainfo['intmaxmobilepaynum']}" />
+                    </div>
+                    <div class="layui-form-mid layui-word-aux">  单个手机号累计购买上限，0表示不限（下单表单中必须有手机类型框） </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">限制5</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="intmaxidcardpaynum" class="layui-input" value="{$datainfo['intmaxidcardpaynum']}" >
+                    </div>
+                    <div class="layui-form-mid layui-word-aux"> 单个身份证累计购买上限，0表示不限（下单表单中必须有身份证类型框）</div>
+                </div>
+
+                <?php if($is_cashed==1 || $is_distribution==1) { ?>
+                <div class="layui-card-body" >
+                    <div class="layui-collapse"  >
+                        {if condition="$is_cashed"}
+                        <div class="layui-colla-item" >
+                            <h2 class="layui-colla-title" onclick="javascript:check_unbind(this)">可用现金券1
+                                <div style="float: right;margin-top: -5px;"   >
+                                    <input type="checkbox" id="is_use_cashed" name="is_use_cashed" lay-skin="switch" lay-text="是|否"  value="1"  lay-filter="show_use_cashed" <?php if ($datainfo['is_use_cashed'] == 1) {echo "checked";}?>>
+                                </div>
+                            </h2>
+                            <div class="layui-colla-content <?php if ($datainfo['is_receive_cashed'] == 1) {echo "layui-show";}?>"  id="set_use_cashed" >
+                                <div class="layui-form-item" style="margin-bottom:0" >
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label">最大数量</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" name="max_use"   class="layui-input" value="{$datainfo['max_use']}">
+                                        </div>
+                                        <div class="layui-form-mid layui-word-aux"> <font style="color:red;">&nbsp;&nbsp; 0表示不限制</font> </div>
+                                    </div>
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label">最大金额</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" name="max_amount"   class="layui-input" value="{$datainfo['max_amount']}">
+                                        </div>
+                                        <div class="layui-form-mid layui-word-aux"> (元)<font style="color:red;">&nbsp;&nbsp; 0表示不限制</font> </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-colla-item" >
+                            <h2 class="layui-colla-title" onclick="javascript:check_unbind(this)">可以领取现金券
+                                <div style="float: right;margin-top: -5px;"  >
+                                    <input type="checkbox" id="is_receive_cashed" name="is_receive_cashed" lay-skin="switch" lay-text="是|否"  value="1"   lay-filter="show_receive_cashed" <?php if ($datainfo['is_receive_cashed'] == 1) {echo "checked";}?>>
+                                    <!--<button class="layui-btn layui-btn-sm layui-btn-danger" onclick="javascript:deltao(1);">删除套餐</button>-->
+                                </div>
+                            </h2>
+                            <div class="layui-colla-content <?php if ($datainfo['is_receive_cashed'] == 1) {echo "layui-show";}?>"  id="set_receive_cashed" >
+                                <div class="layui-form-item" style="margin-bottom:0" >
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label">领券金额</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" name="activity_cashed_amount"   class="layui-input" value="<?php echo intval($datainfo['activity_cashed_amount']) ?>">
+                                        </div>
+                                        <div class="layui-form-mid layui-word-aux">  (元)</div>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item" style="margin-bottom:0" >
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label">有效期</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" name="activity_cashed_validity"   class="layui-input" value="{$datainfo['activity_cashed_validity']}">
+                                        </div>
+                                        <div class="layui-form-mid layui-word-aux"> (天) </div>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item" style="margin-bottom:0">
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label">用户类别</label>
+                                        <div class="layui-input-block">
+                                            {volist name="hyfl" id="vo"}
+                                            <input type="checkbox" name="receive_activity_cashed_categoryid[]" value="{$vo.code}" lay-skin="primary"  <?php if (in_array($vo['code'], explode(",", trim($datainfo['receive_activity_cashed_categoryid'], ',')))) {echo "checked";}?> title="{$vo.name}" ></input>
+                                            {/volist}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item" style="margin-bottom:0" >
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label">关注状态</label>
+                                        <div class="layui-input-block">
+                                            <input name="receive_activity_cashed_intstate_user[]" lay-skin="primary"  <?php if (in_array("1", explode(",", trim($datainfo['receive_activity_cashed_intstate_user'], ',')))) {echo "checked";}?> type="checkbox" value="1" title="关注" />
+                                            <input name="receive_activity_cashed_intstate_user[]"  lay-skin="primary"  <?php if (in_array("2", explode(",", trim($datainfo['receive_activity_cashed_intstate_user'], ',')))) {echo "checked";}?> type="checkbox" value="2" title="取消"/>
+                                            <input name="receive_activity_cashed_intstate_user[]" lay-skin="primary"  <?php if (in_array("3", explode(",", trim($datainfo['receive_activity_cashed_intstate_user'], ',')))) {echo "checked";}?> type="checkbox" value="3" title="游客"/>
+                                        </div>
+                                        <div class="layui-inline">
+                                            <div class="layui-form-mid layui-word-aux"> 注意：默认未设置可领券用户代表所有用户均可领！</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="layui-colla-item" >
+                            <h2 class="layui-colla-title" onclick="javascript:check_unbind(this)">分享现金券
+                                <div style="float: right;margin-top: -5px;"  >
+                                    <input type="checkbox" id="is_share_cashed" name="is_share_cashed" lay-skin="switch" lay-text="是|否"  value="1"   lay-filter="show_share_cashed" <?php if ($datainfo['is_share_cashed'] == 1) {echo "checked";}?>>
+                                    <!--<button class="layui-btn layui-btn-sm layui-btn-danger" onclick="javascript:deltao(1);">删除套餐</button>-->
+                                </div>
+                            </h2>
+                            <div class="layui-colla-content <?php if ($datainfo['is_share_cashed'] == 1) {echo "layui-show";}?>"  id="set_share_cashed">
+                                <div class="layui-form-item" style="margin-bottom:0" >
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label">设置现金券计划</label>
+                                        <div class="layui-input-inline">
+                                            <select name="cashed_plan_id" id="cashed_plan_id" >
+                                                <option value="">请选择现金券计划</option>
+                                                <?php foreach ($cashed_plan as $k => $vo) {?>
+                                                <option value="{$vo['id']}" <?php if ($datainfo['cashed_plan_id'] == $vo['id']) {echo "selected";}?>>{$vo['plan_name']}</option>
+                                                <?php }?>
+                                            </select>
+                                        </div>
+                                        <div class="layui-form-mid layui-word-aux"> <a href="javascript:window.top.mainFrame.TabAdd('/admin/cashed/index/idsite/{$idsite}','现金券管理','cashed');">添加现金券计划</a> </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {/if}
+                        {if condition="$is_distribution"}
+                        <div class="layui-colla-item" >
+                            <h2 class="layui-colla-title" onclick="javascript:check_unbind(this)">开启分销
+                                <div style="float: right"  >
+                                    <input type="checkbox" id="is_distribution" name="is_distribution" lay-skin="switch" lay-text="是|否"  value="1"   lay-filter="show_distribution" <?php if ($datainfo['is_distribution'] == 1) {echo "checked";}?>>
+                                </div>
+                            </h2>
+                            <div class="layui-colla-content <?php if ($datainfo['is_distribution'] == 1) {echo "layui-show";}?>"  id="set_distribution">
+                                <div class="layui-form-item" style="margin-bottom:0" >
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label">分销海报图片(720x1280)</label>
+                                        <div class="layui-input-inline">
+                                            <div class="layui-input-inline">
+                                                <button class="layui-btn layui-btn-sm" type="button" onclick="uploadimgcut('distribution_img','admin',720,1280);">上传小图</button>
+                                                <button class="layui-btn layui-btn-sm" type="button" onclick="window.open('/static/images/activity_man_tep.psd');">下载模板</button>
+                                                <input name="distribution_img" id="distribution_img" type="hidden" value="{$datainfo['distribution_img']}"   />
+                                                <div><img id="distribution_img_show"  style="border: solid 1px #ccc;width: 100px;margin-top: 5px;" src="{$datainfo['distribution_img']==''?'/static/images/timg.jpg':$datainfo['distribution_img']}" /></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {/if}
+                    </div>
+                </div>
+                <?php } ?>
+            </div>
+        </div>
+
+        <div class="layui-card" id="bm2" style="display: none">
+            <div class="layui-card-header1">套餐管理
+                <div style="float: right">
+                    <button type="button" class="layui-btn layui-btn-sm" onclick="addtao()" >增加套餐</button>
+                </div>
+
+            </div>
+            <?php
+             if (empty($datainfo['selcontent']) || !is_array($datainfo['selcontent'])) {
+                                $datainfo['selcontent'] = [
+                                    [
+                                        'keyword1'               => '',
+            'keyword2'               => '',
+            'original_price'         => '',
+            'member_price'           => '',
+            'cost_price'             => '',
+            'package_id'            =>'',
+            'level1_commission_rate' => 0,
+            'level2_commission_rate' => 0,
+            'level3_commission_rate' => 0,
+            'expire_at' => '',
+            'package_sum' => 0,
+            'sell_commission' => '',
+            'bounty_commission' => '',
+            ]
+            ];
+            }
+            foreach ($datainfo['selcontent'] as $selcontent_index => $value) { ?>
+            <div class="layui-card-body" id="selcontent_{$selcontent_index + 1}">
+                <div class="layui-collapse" id="t-tontent" >
+                    <div class="layui-colla-item" id="t-tontent-1">
+                        <h2 class="layui-colla-title">套餐{$selcontent_index + 1}
+                            <div style="float: right"  onclick="javascript:stopPropagation(event)" >
+                                <button class="layui-btn layui-btn-sm" type="button" onclick="addp(1)" >增加拼团</button>
+                                <!--<button class="layui-btn layui-btn-sm layui-btn-danger" onclick="javascript:deltao(1);">删除套餐</button>-->
+                            </div>
+                        </h2>
+                        <div class="layui-colla-content layui-show" id="data_1">
+                            <div class="layui-card-body" style="padding: 15px;">
+                                <div class="layui-form-item">
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label">套餐名称</label>
+                                        <div class="layui-input-inline">
+                                            <input type="hidden" name="packages[{$selcontent_index}][package_id]" class="layui-input" value="{$value['package_id']}">
+                                            <input type="text" name="packages[{$selcontent_index}][keyword1]"   class="layui-input" value="{$value['keyword1']}">
+                                        </div>
+                                    </div>
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label">单位</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" name="packages[{$selcontent_index}][keyword2]"   class="layui-input" value="{$value['keyword2']}">
+                                        </div>
+                                    </div>
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label">库存</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" name="packages[{$selcontent_index}][package_sum]"  class="layui-input" value="{$value['package_sum']}" >
+                                        </div>
+                                    </div>
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label">码库</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" name="packages[{$selcontent_index}][package_sum]"  class="layui-input" value="{$value['package_sum']}" >
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="layui-form-item" <?php if($datainfo['is_distribution']!=1 || !$is_distribution) { echo ' sytle="display: none;"'; } ?> >
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label">销售佣金</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" name="packages[{$selcontent_index}][sell_commission]"   class="layui-input" value="{$value['sell_commission']}">
+                                        </div>
+                                    </div>
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label">奖励金</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" name="packages[{$selcontent_index}][bounty_commission]"   class="layui-input" value="{$value['bounty_commission']}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label">市场价格</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" name="packages[{$selcontent_index}][original_price]"   class="layui-input" value="{$value['original_price']}" >
+                                        </div>
+                                    </div>
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label">会员价</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" name="packages[{$selcontent_index}][member_price]"   class="layui-input" value="{$value['member_price']}" >
+                                        </div>
+                                    </div>
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label">成本</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" name="packages[{$selcontent_index}][cost_price]"  class="layui-input" value="{$value['cost_price']}" >
+                                        </div>
+                                    </div>
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label">有效时间</label>
+                                        <div class="layui-input-inline">
+                                            <input type="text" name="packages[{$selcontent_index}][expire_at]" id="seldate{$selcontent_index}"  class="layui-input" value="{$value['expire_at']}" >
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <?php
+                            if (isset($value['group_buy'])) {
+                            foreach ($value['group_buy'] as $groupBuyIndex => $groupBuy) {
+                            ?>
+                            <div class="layui-collapse" id="pt_1">
+                                <div class="layui-colla-item" id="p-template-{$selcontent_index+1}-{$groupBuyIndex+1}">
+                                    <h2 class="layui-colla-title">拼团{$groupBuyIndex+1}</h2>
+                                    <div class="layui-colla-content layui-show">
+                                        <div class="layui-card-body" style="padding: 15px;">
+                                            <div class="layui-form-item">
+                                                <div class="layui-inline">
+                                                    <label class="layui-form-label">启用</label>
+                                                    <div class="layui-input-inline">
+                                                        <input type="hidden" name="packages[$selcontent_index][group_buy][$groupBuyIndex][group_buy_id]" class="layui-input" value="{$groupBuy['group_buy_id']}">
+                                                        <input type="checkbox" name="packages[$selcontent_index][group_buy][$groupBuyIndex][state]" lay-skin="switch" lay-text="是|否" value="1">
+                                                    </div>
+                                                </div>
+                                                <div class="layui-inline">
+                                                    <label class="layui-form-label">允许退款</label>
+                                                    <div class="layui-input-inline">
+                                                        <input type="checkbox" name="packages[{$selcontent_index}][group_buy][{$groupBuyIndex}][allow_refund]" lay-skin="switch" lay-text="是|否" value="1"  <?=$groupBuy['allow_refund'] == 1 ? 'selected="selected"' : ''?>>
+                                                    </div>
+                                                </div>
+                                                <div class="layui-inline">
+                                                    <label class="layui-form-label">首页显示</label>
+                                                    <div class="layui-input-inline">
+                                                        <input type="checkbox" name="packages[{$selcontent_index}][group_buy][{$groupBuyIndex}][show_on_homepage]" lay-skin="switch" lay-text="是|否" value="1"  <?=$groupBuy['show_on_homepage'] == 1 ? 'selected="selected"' : ''?>>
+                                                    </div>
+                                                </div>
+                                                <div class="layui-inline" style="display: none">
+                                                    <label class="layui-form-label">允许优惠券</label>
+                                                    <div class="layui-input-inline">
+                                                        <input type="checkbox" name="packages[{$selcontent_index}][group_buy][{$groupBuyIndex}][allow_coupon]" lay-skin="switch" lay-text="是|否" value="1"  <?=$groupBuy['allow_coupon'] == 1 ? 'selected="selected"' : ''?>>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="layui-form-item">
+                                                <div class="layui-inline">
+                                                    <label class="layui-form-label">成团商品数</label>
+                                                    <div class="layui-input-inline">
+                                                        <input type="text" name="packages[{$selcontent_index}][group_buy][{$groupBuyIndex}][group_num]"   class="layui-input">
+                                                    </div>
+                                                    <div class="layui-form-mid layui-word-aux">必须大于等于2</div>
+                                                </div>
+                                                <div class="layui-inline">
+                                                    <label class="layui-form-label">团购价格</label>
+                                                    <div class="layui-input-inline">
+                                                        <input type="text" class="layui-input"  name="packages[{$selcontent_index}][group_buy][{$groupBuyIndex}][group_buy_price]" value="{$groupBuy['group_buy_price']}" >
+                                                    </div>
+                                                    <div class="layui-form-mid layui-word-aux">元</div>
+                                                </div>
+                                            </div>
+                                            <div class="layui-form-item">
+                                                <div class="layui-inline">
+                                                    <label class="layui-form-label">开始时间</label>
+                                                    <div class="layui-input-inline">
+                                                        <input type="text" id="dtsignstime" name="packages[{$selcontent_index}][group_buy][{$groupBuyIndex}][start_at]"  class="layui-input"  value="{$groupBuy['start_at']}">
+                                                    </div>
+                                                </div>
+                                                <div class="layui-inline">
+                                                    <label class="layui-form-label">结束时间</label>
+                                                    <div class="layui-input-inline">
+                                                        <input type="text"  id="dtsignetime" name="packages[{$selcontent_index}][group_buy][{$groupBuyIndex}][end_at]"  class="layui-input"  value="{$groupBuy['end_at']}">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="layui-form-item">
+                                                <div class="layui-inline">
+                                                    <label class="layui-form-label">限制类型</label>
+                                                    <div class="layui-input-inline" >
+                                                        <select name="packages[{$selcontent_index}][group_buy][{$groupBuyIndex}][time_limit_type]" >
+                                                            <option value="1" <?=$groupBuy['time_limit_type'] == 1 ? 'selected="selected"' : ''?> >开团固定时间后拼团结束</option>
+                                                            <option value="2" <?=$groupBuy['time_limit_type'] == 2 ? 'selected="selected"' : ''?> >拼团结束时间到，所有拼团立刻停止</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+
+                                                <div class="layui-inline">
+                                                    <label class="layui-form-label">时间限制</label>
+                                                    <div class="layui-input-inline">
+                                                        <input type="text"   class="layui-input"<?=$groupBuy['time_limit_type'] == 2 ? 'disabled' : '' ?>  name="packages[{$selcontent_index}][group_buy][{$groupBuyIndex}][time_limit]" type="text" value="{$groupBuy['time_limit']==0?'':$groupBuy['time_limit']}">
+                                                    </div>
+                                                    <div class="layui-form-mid layui-word-aux">小时</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <?php } } ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <?php } ?>
+        </div>
+
+        <div class="layui-form-item layui-layout-admin">
+            <div class="layui-input-block">
+                <div class="layui-footer" style="left: 0;z-index: 9999;">
+
+                    <?php if(empty($datainfo['idactivity'])) {?> <?php } else { ?>  <?php } ?>
+                    <input type="button" style="display: none" onclick="javascript:checkdata(0);" value="提交" class="layui-btn" >
+
+                    <input type="hidden" id="intflag" name="intflag" value="0" />
+                    <?php  if(in_array($datainfo['intflag'],array(1,3)) && !empty($datainfo['idactivity'])){ ?>
+                    <input type="button" onclick="javascript:checkdata(0);" value="保存" class="layui-btn" >
+                    <?php } ?>
+                    <?php if(in_array($datainfo['intflag'],array(2,3,6)) || empty($datainfo['idactivity'])){ ?>
+                    <input type="button" onclick="javascript:checkdata(1);" value="提交审批" class="layui-btn" />
+                    <?php } ?>
+                    <?php
+                    if($cms->CheckPurview('contentmanage',"checkactivity")!=false){
+                    if(in_array($datainfo['intflag'],array(1,2,3,6)) || empty($datainfo['idactivity'])){ ?>
+                    <input type="button" onclick="javascript:checkdata(2);" value="直接发布" class="layui-btn" >
+                    <?php } ?>
+                    <?php if($datainfo['intflag']==1 && !empty($datainfo['idactivity'])) { ?>
+                    <input type="button" onclick="javascript:checkdata(3);" value="审批不通过" class="layui-btn" >
+                    <?php }} ?>
+                    <?php if($datainfo['intflag']==6 || empty($datainfo['idactivity'])){ ?>
+                    <input type="button" onclick="javascript:checkdata(6);" value="保存草稿" class="layui-btn" >
+                    <?php } ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="layui-collapse" id="template" style="display: none;">
+    <div id="template-t">
+        <div class="layui-colla-item"  id="t-tontent-TmpIndex">
+            <h2 class="layui-colla-title">套餐TmpIndex
+                <div style="float: right" onclick="javascript:stopPropagation(event)">
+                    <button type="button" class="layui-btn layui-btn-sm" onclick="javascript:addp(TmpIndex);">增加拼团</button>
+                    <button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="javascript:deltao(TmpIndex);">删除套餐</button>
+                </div>
+            </h2>
+            <div class="layui-colla-content layui-show" id="data_TmpIndex">
+                <div class="layui-card-body" style="padding: 15px;">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">套餐名称</label>
+                            <div class="layui-input-inline">
+                                <input type="hidden" name="packages[TmpIndex][package_id]"   class="layui-input" value="0">
+                                <input type="text" name="packages[TmpIndex][keyword1]"   class="layui-input" value="">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">单位</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="packages[TmpIndex][keyword2]"   class="layui-input" value="">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">库存</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="packages[TmpIndex][package_sum]"   class="layui-input" value="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item"  sytle="display: none;" >
+                        <div class="layui-inline">
+                            <label class="layui-form-label">销售佣金</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="packages[TmpIndex][sell_commission]"  autocomplete="off" class="layui-input" value="">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">奖励金</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="packages[TmpIndex][bounty_commission]"  autocomplete="off" class="layui-input" value="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">市场价格</label>
+                            <div class="layui-input-inline">
+                                <input type="tel" name="packages[TmpIndex][original_price]"   class="layui-input" value="">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">会员价</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="packages[TmpIndex][member_price]"   class="layui-input" value="">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">成本</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="packages[TmpIndex][cost_price]"   class="layui-input" value="">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">有效时间</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="packages[TmpIndex][expire_at]"  class="layui-input l-date" value="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div id="template-p">
+        <div class="layui-colla-item" id="p-template-TmpIndex-TmpPIndex">
+            <h2 class="layui-colla-title">拼团TmpPIndex
+                <div style="float: right"  onclick="javascript:stopPropagation(event)">
+                    <button type="button" class="layui-btn layui-btn-sm layui-btn-danger" onclick="javascript:delp(TmpIndex,TmpPIndex);">删除拼团</button>
+                </div>
+            </h2>
+            <div class="layui-colla-content layui-show">
+                <div class="layui-card-body" style="padding: 15px;">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">启用</label>
+                            <div class="layui-input-inline">
+                                <input type="hidden" name="packages[TmpIndex][group_buy][TmpPIndex][group_buy_id]" class="layui-input" value="">
+                                <input type="checkbox" name="packages[TmpIndex][group_buy][TmpPIndex][state]" lay-skin="switch" lay-text="是|否" value="1">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">首页显示</label>
+                            <div class="layui-input-inline">
+                                <input type="checkbox" name="packages[TmpIndex][group_buy][TmpPIndex][show_on_homepage]" lay-skin="switch" lay-text="是|否" value="1">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">允许退款</label>
+                            <div class="layui-input-inline">
+                                <input type="checkbox" name="packages[TmpIndex][group_buy][TmpPIndex][allow_refund]" lay-skin="switch" lay-text="是|否" value="1">
+                            </div>
+                        </div>
+                        <div class="layui-inline" style="display: none">
+                            <label class="layui-form-label">允许优惠券</label>
+                            <div class="layui-input-inline">
+                                <input type="checkbox" name="packages[TmpIndex][group_buy][TmpPIndex][allow_coupon]" lay-skin="switch" lay-text="是|否" value="1">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">成团商品数</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="packages[TmpIndex][group_buy][TmpPIndex][group_num]" class="layui-input">
+                            </div>
+                            <div class="layui-form-mid layui-word-aux">必须大于等于2</div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">团购价格</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="packages[TmpIndex][group_buy][TmpPIndex][group_buy_price]"  class="layui-input">
+                            </div>
+                            <div class="layui-form-mid layui-word-aux">元</div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">开始时间</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="packages[TmpIndex][group_buy][TmpPIndex][start_at]"  class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">结束时间</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="packages[TmpIndex][group_buy][TmpPIndex][end_at]" class="layui-input">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">限制类型</label>
+                            <div class="layui-input-inline" >
+                                <select name="packages[TmpIndex][group_buy][TmpPIndex][time_limit_type]">
+                                    <option value="">开团固定时间后拼团结束</option>
+                                    <option value="">拼团结束时间到，所有拼团立刻停止</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="layui-inline">
+                            <label class="layui-form-label">时间限制</label>
+                            <div class="layui-input-inline">
+                                <input type="text" name="packages[TmpIndex][group_buy][TmpPIndex][time_limit]" class="layui-input">
+                            </div>
+                            <div class="layui-form-mid layui-word-aux">小时</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    <?php if ($datainfo['chksignup'] == 1) { ?>
+    $(function () {
+            $('#bm1').show();
+            $('#bm2').show();
+    });
+    <?php }?>
+
+    layui.config({
+        base: '/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['index', 'form'], function () {
+        var $ = layui.$
+            , admin = layui.admin
+            , element = layui.element
+            , layer = layui.layer
+            , form = layui.form;
+
+        form.render(null, 'component-form-group');
+
+        /* 自定义验证规则 */
+        form.verify({
+            title: function (value) {
+                if (value.length < 5) {
+                    return '标题至少得5个字符啊';
+                }
+            }
+            , pass: [/(.+){6,12}$/, '密码必须6到12位']
+            , content: function (value) {
+                layedit.sync(editIndex);
+            }
+        });
+
+        /* 监听指定开关 */
+        form.on('switch(show_use_cashed)', function (data) {
+            // layer.msg('开关checked：'+ (this.checked ? 'true' : 'false'), {
+            //     offset: '6px'
+            // });
+            // layer.tips('温馨提示：请注意开关状态的文字可以随意定义，而不仅仅是ON|OFF', data.othis)
+            if (this.checked) {
+                $('#set_use_cashed').show();
+
+            }
+            else {
+                $('#set_use_cashed').hide();
+            }
+        });
+
+        form.on('switch(show_distribution)', function (data) {
+            if (this.checked) {
+                $('#set_distribution').show();
+
+            }
+            else {
+                $('#set_distribution').hide();
+            }
+        });
+        form.on('switch(show_receive_cashed)', function (data) {
+            if (this.checked) {
+                $('#set_receive_cashed').show();
+            }
+            else {
+                $('#set_receive_cashed').hide();
+            }
+        });
+
+        form.on('switch(show_share_cashed)', function (data) {
+            if (this.checked) {
+                $('#set_share_cashed').show();
+
+            }
+            else {
+                $('#set_share_cashed').hide();
+            }
+        });
+        form.on('switch(show_bm)', function (data) {
+            if (this.checked) {
+                $('#bm1').show();
+                $('#bm2').show();
+            }
+            else {
+                $('#bm1').hide();
+                $('#bm2').hide();
+            }
+        });
+
+
+        /* 监听提交 */
+        form.on('submit(component-form-demo1)', function (data) {
+            parent.layer.alert(JSON.stringify(data.field), {
+                title: '最终的提交信息'
+            })
+            return false;
+        });
+    });
+</script>
+<script>
+    var t_index={$selcontent_index + 2};
+    //增加套餐
+    function addtao() {
+        t_index=t_index+1;
+        var strhtml=$("#template-t").html();
+        strhtml= strhtml.replace(/TmpIndex/g,t_index);
+        $("#t-tontent").html($("#t-tontent").html()+strhtml);
+        layui.element.render();
+        layui.form.render();
+    }
+    //册除套餐
+    function deltao(index) {
+        $("#t-tontent-"+index).remove();
+        //layui.element.render();
+    }
+
+
+    //增加拼团
+    function addp(t_index) {
+        var index = 1;
+        var strhtml=$("#template-p").html();
+        strhtml= strhtml.replace(/TmpIndex/g,t_index);
+        if($("#p-template-"+t_index).length<1)
+        {
+            strhtml= strhtml.replace(/TmpPIndex/g,index);
+            strhtml='<div class="layui-collapse"  p="1" id="p-template-'+t_index+'">'+strhtml+'</div>';
+            $("#data_"+t_index).html($("#data_"+t_index).html()+strhtml);
+        }
+        else
+        {
+            index =  $("#p-template-"+t_index).attr('p');
+            index=eval(index)+1;
+            strhtml= strhtml.replace(/TmpPIndex/g,index);
+            $("#p-template-"+t_index).html($("#p-template-"+t_index).html()+strhtml);
+            $("#p-template-"+t_index).attr('p',index);
+        }
+        layui.element.render();
+        layui.form.render();
+
+    }
+    //删除拼团
+    function delp(index,pindex) {
+        $("#p-template-"+index+"-"+pindex).remove();
+    }
+
+    //是否开启分销
+    function show_is_distribution() {
+        //如果选中了的话   让其分销海报和销售奖金和奖励金的选项显示
+        if($('#is_distribution').is(":checked"))
+        {
+            $('#distribution_img_tr').show();
+            $('#sell_commission').show();
+            $('#bounty_commission').show();
+            $('.sell_commission').show();
+            $('.bounty_commission').show();
+        }
+        else
+        {
+            $('#distribution_img_tr').hide();
+            $('#sell_commission').hide();
+            $('#bounty_commission').hide();
+            $('.sell_commission').hide();
+            $('.bounty_commission').hide();
+
+        }
+    }
+    // 阻止冒泡
+    function stopPropagation(event) {
+        var event = event || window.event;
+        if(event && event.stopPropagation) {
+            event.stopPropagation();    // W3C标准
+        }else {
+            event.cancelBubble = true;  //ie678
+        }
+    }
+
+    function check_unbind(o) {
+        $(o).unbind();
+    }
+
+
+    function  checkdata(flag) {
+        if(eval($("#maxage").val()) < eval($("#minage").val())){
+            alert("参与最大年龄不能小于最小年龄");
+            return false;
+        }
+
+        if($("#chrtitle").val()=="")
+        {
+            alert("请输入产品标题");
+            return false;
+        }
+        if($("#fidtype").val()=="")
+        {
+            alert("请选择分类");
+            return false;
+        }
+        var  wntx_sync_status = {$datainfo['wntx_sync_status']};
+        // 已上架和待审核和审核失败
+        if((flag == 2 || flag == 1) && (wntx_sync_status  == 4 || wntx_sync_status  == 1 || wntx_sync_status  == 3)){
+            if(!confirm("由于您修改了产品内容，同步到蜗牛童行的产品已下架，请确认产品内容定稿后再次提交同步请求。")){
+                return false;
+            }
+            // alert();
+
+        }
+
+        if($("#chkbm").is(":checked")) {
+            try {
+                //如果是直接发布的话
+                if(flag == 2 || flag == 1){
+                    var price = /^(([1-9]\d{0,6})|0)([.]{1}[0-9]{1,2})?$/; //金额
+                    var int =  /^[0-9]*$/;//整数
+                    var int_not_zero = /^[1-9]\d{0,8}$/;
+                    //如果选中可以使用现金券
+                    if($('#chkvolume').is(':checked')){
+                        //最大数量
+                        if(!int.test($('input[name="max_use"]').val()) || $('input[name="max_use"]').val() == ''){
+                            alert("请设置以整数为最大数量");
+                            throw 'error';
+                        }
+                        //最大金额
+                        if(!int.test($('input[name="max_amount"]').val())){
+                            alert("请设置以整数为最大金额");
+                            throw 'error';
+                        }
+                    }
+                    //如果选中可以领取现金券
+                    if($('#chkcash').is(':checked')){
+                        //领券金额
+                        if(!int_not_zero.test($('input[name="activity_cashed_amount"]').val())){
+                            alert("请设置以整数为领券金额");
+                            throw 'error';
+                        }
+                        //有效期
+                        if(!int_not_zero.test($('input[name="activity_cashed_validity"]').val()) || $('input[name="activity_cashed_validity"]').val() == ''){
+                            alert("请设置以整数为有效期");
+                            throw 'error';
+                        }
+                    }
+                    //如果可以分享现金券
+                    if($('#is_share_cashed').is(':checked')){
+                        //设置现金券计划
+                        if($('#cashed_plan_id').val() <= 0){
+                            alert("请选择现金券计划");
+                            throw 'error';
+                        }
+                    }
+
+                    //如果选中开启分销
+                    if($('#is_distribution').is(':checked')){
+                        //海报图片
+                        if($('input[name="distribution_img"]').val() == ''){
+                            alert("请上传分销海报图片");
+                            throw 'error';
+                        }
+                    }
+                }
+
+                // if($("#intsignnum").val() == '')
+                // {
+                //     alert("请填写活动库存");
+                //     throw 'error';
+                // }
+
+
+                if($("#selsignfrom").val() == 0)
+                {
+                    alert("请选择报名模板");
+                    throw 'error';
+                }
+
+
+                var index = 0;
+                $('.paytypecontent2').each(function () {
+                    // console.log($(this).find('.member_price'));
+                    var id = $(this).attr('id');
+                    // var index = id === undefined ? 1 : id.replace('selcontent_', '') + 1;
+                    var one_price = /^(([1-9]\d{0,6})|0)([.]{1}[0-9]{1})?$/; //支持一位小数金额
+                    if(index != 0) {
+                        //关键字非空
+                        if ($(this).find('.keyword1').eq(0).val() == '') {
+                            alert("套餐" + index + "的关键字1不能为空！");
+                            throw 'error';
+                        }
+
+                        //会员价非空
+                        if ($(this).find('.member_price').eq(0).val() == '') {
+                            alert("套餐" + index + "的会员价不能为空！");
+                            throw 'error';
+                        }
+                        // console.log($(this));
+                        // debugger;
+                        //如果选中开启分销
+                        if ($('#is_distribution').is(':checked')) {
+                            //销售佣金
+                            if (!one_price.test($(this).find('.sell_commission').eq(0).val()) || $(this).find('.sell_commission').eq(0).val() == 0) {
+                                alert("请设置套餐" + index + "的销售佣金字段的值为整数或一位小数！");
+                                throw 'error';
+                            }
+                            //奖励金
+                            if (!one_price.test($(this).find('.bounty_commission').eq(0).val()) || $(this).find('.bounty_commission').eq(0).val() == 0) {
+                                alert("请设置套餐" + index + "的奖励金字段的值为整数或一位小数！");
+                                throw 'error';
+                            }
+                        }
+
+                        //有效期非空
+                        if ($(this).find('.expire_at').eq(0).val() == '') {
+                            alert("套餐" + index + "的有效期不能为空！");
+                            throw 'error';
+                        }
+
+                        //库存非空
+                        if ($(this).find('.package_sum').eq(0).val() == '') {
+                            alert("套餐" + index + "的库存不能为空！");
+                            throw 'error';
+                        }
+                    }
+                    index = index +1;
+                });
+            } catch (e) {
+                return false;
+            }
+
+        }
+
+        // var i=0;
+        //  if($("#chkbm").is(":checked")) {
+        //      $(".keyword1").each(function () {
+        //          i++;
+        //          if ($(this).val() == "") {
+        //              alert("套餐" + i + "的关键字1不能为空！");
+        //              exit();
+        //          }
+        //      })
+        //      i = 0;
+        //      $("input[name='txtpayvalue4[]']").each(function () {
+        //          i++;
+        //          if ($(this).val() == "") {
+        //              alert("套餐" + i + "的会员价不能为空！");
+        //              exit();
+        //          }
+        //      })
+        //      i = 0;
+        //      $("input[name='txtpayvalue9[]']").each(function () {
+        //          i++;
+        //          if ($(this).val() == "") {
+        //              alert("套餐" + i + "的有效期不能为空！");
+        //              exit();
+        //          }
+        //      })
+        //  }
+
+        if(flag>0)
+        {
+            $("#intflag").val(flag);
+        }
+
+        $("#frm").submit();
+    }
+</script>
+
+
+</body>
+</html>

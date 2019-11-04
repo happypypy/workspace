@@ -1,0 +1,313 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>报名管理</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/admin.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/public.css">
+    <script src="/layuiadmin/js/jquery-3.3.1.js"></script>
+    <script src="/layuiadmin/js/public.js"></script>
+</head>
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-tab">
+                    <ul class="layui-tab-title">
+                        <li {$intflag==2?'class="layui-this"':''}
+                            onclick="javascript:window.location='{:url('order/index','&intflag=2')}'">
+                            <span>待审批的报名<span/></li>
+                        <li {$intflag==3?'class="layui-this"':''}
+                            onclick="javascript:window.location='{:url('order/index','&intflag=3')}'">
+                            <span>审查不通过的报名</span></li>
+                        <li {$intflag==4?'class="layui-this"':''}
+                            onclick="javascript:window.location='{:url('order/index','&intflag=4')}'">
+                            <span>已取消的报名</span></li>
+                        <li {$intflag==5?'class="layui-this"':''}
+                            onclick="javascript:window.location='{:url('order/index','&intflag=5')}'"><span>所有报名 </span>
+                        </li>
+                        <li {$intflag==6?'class="layui-this"':''}
+                            onclick="javascript:window.location='{:url('order/index','&intflag=6')}'"><span>退款的报名<span
+                                style="color: red">({$refundcount})</span></span></li>
+                        <li {$intflag==1?'class="layui-this"':''}
+                            onclick="javascript:window.location='{:url('order/index','&intflag=1')}'"><span>待支付的报名<span
+                                style="color: red">({$signupcount})</span></span></li>
+                        <li {$intflag==7?'class="layui-this"':''}
+                            onclick="javascript:window.location='{:url('order/groupBuyOrderList')}'"><span>拼团订单</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- 搜索区域 -->
+                <div class="layui-card-body">
+                    <div class="layui-card">
+                        <div class="layui-card-header2">查询</div>
+                        <form class="layui-form layui-bd layui-mb15" action="" lay-filter="component-form-group">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">产品名称：</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="activity_name" value="<?= isset($request['activity_name']) ? $request['activity_name'] : '' ?>" placeholder="产品或者课程名称"
+                                           class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">报名状态：</label>
+                                <div class="layui-input-inline">
+                                    <select name="state">
+                                        <option value="200">所有状态</option>
+                                        <?php foreach($stateMap as $index=>$vo) { ?>
+                                        <option value="{$index}" <?php if(isset($request['state']) && $request['state']==$index) { echo "selected"; } ?> >{$vo}</option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <div class="layui-inline">
+                                    <label class="layui-form-label">报名时间：</label>
+                                    <div class="layui-input-inline">
+                                        <input name="dtstart" type="text" class="layui-input" id="test-laydate-start"
+                                               value="<?php isset($request['start_at']) && is_numeric($request['start_at']) ? date('Y-m-d H:i:s', $request['start_at']) : '';  ?>">
+                                    </div>
+                                    <div class="layui-form-mid">
+                                        -
+                                    </div>
+                                    <div class="layui-input-inline">
+                                        <input name="dtend" type="text" class="layui-input" id="test-laydate-end"
+                                               value="<?php echo isset($request['end_at']) && is_numeric($request['end_at']) ? date('Y-m-d H:i:s', $request['end_at']) : ''; ?>">
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <button class="layui-btn layuiadmin-btn-list" lay-submit lay-filter="LAY-app-contlist-search">
+                                        <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <table class="layui-hide" id="test-table-toolbar" lay-filter="test-table-toolbar"></table>
+                <script type="xt/html" id="test-table-toolbar-toolbarDemo">
+                    <div class="layui-btn-container ov-hd">
+                        <div class="info-l fl">报名管理</div>
+                     </div>
+                </script>
+
+                <script type="text/html" id="test-table-toolbar-barDemo">
+                    <div class="test-table-toolbar-barDemo" style="white-space:normal;text-align: left;">
+                        <a class="layui-btn layui-btn-xs" href="javascript:CustomOpen('/admin/order/groupBuyOrderDetail/flag/5/group_buy_order_id/{{d.group_buy_order_id}}','order','拼团详情',1500,700)" >拼团详情 </a>
+
+                    </div>
+
+                </script>
+
+                <div>
+                    <div style="float: left; margin-top: 15px;margin-left: 10px; vertical-align: middle;">
+                        <?php if($cms->CheckPurview('order','manage')){ ?>
+                        <button style="display: none" id="batchDel" class="layui-btn layui-btn-sm" data-type="del" >删除</button>
+                        <?php } ?>
+
+                    </div>
+                    <div id="laypage" style="text-align: right; margin-right: 15px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<script src="/layuiadmin/layui/layui.js"></script>
+<script language="JavaScript">
+    var layer = layui.layer;
+</script>
+
+<script>
+    layui.config({
+        base: '/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['index', 'table', 'laydate', 'form'], function () {
+        var admin = layui.admin
+            , laypage = layui.laypage
+            , table = layui.table
+            , form = layui.form;
+
+        table.render({
+            elem: '#test-table-toolbar'
+            , toolbar: '#test-table-toolbar-toolbarDemo'
+            , title: '用户数据表'
+            , defaultToolbar: false
+            ,cols: [[
+                {type: 'checkbox'}
+                ,{field:'group_buy_order_id', width:120, title: '拼团订单号' }
+                ,{field:'activity_name', title:'产品名称', unresize: true}
+                ,{field: 'pachage_name', title: '套餐名称', width: 200, unresize: true }
+                ,{field: 'group_num', title: '拼团情况', width: 140, unresize: true }
+                ,{field: 'username', title: '开团人', width: 150, unresize: true }
+                ,{field: 'group_price', title: '拼团价/购买数', width: 150, unresize: true, }
+                ,{field:'activated_at', title:'拼团时间', width:160,  unresize: true}
+                ,{field:'state', title:'状态', width:140}
+                ,{title:'操作', toolbar: '#test-table-toolbar-barDemo', width:90}
+            ]]
+            ,data: [
+                {volist name="list" id='v'}
+                {
+                    "group_buy_order_id": "{$v.group_buy_order_id}"
+                    ,"activity_name": "{$v.activity_name}"
+                    ,"pachage_name":"{$v.pachage_name}"
+                    ,"group_num": "所需商品数：{$v['group_num']}<br/>已售商品数：{$v['buy_num']}"
+                    ,"username": "{$v.username}"
+                    ,"group_price": "{$v['group_price']}"+"/"+"{$v['sold']}"
+                    ,"activated_at": "<?php if(!empty($v['activated_at'])) echo date('Y-m-d H:i:s', $v['activated_at']); ?>"
+                    ,"state": "{$stateMap[$v['state']]}"
+                },
+                {/volist}
+            ]
+    ,limit: {:$page->pageSize}
+    });
+
+        //总页数大于页码总数
+        laypage.render({
+            elem: 'laypage'
+            ,count: {:$page->count}
+    ,curr: {:$page->iPage}
+    ,limit: {:$page->pageSize}
+    ,layout: ['count', 'prev', 'page', 'next', 'skip']
+            ,jump: function(obj){
+            if(obj.curr!= "{:$page->iPage}"){
+                var jumpUrl = "{:$page->url('currentPage')}";
+                jumpUrl = jumpUrl.replace("currentPage",obj.curr);
+                location.href = jumpUrl;
+            }
+        }
+    });
+
+        //头工具栏事件
+        table.on('toolbar(test-table-toolbar)', function (obj) {
+            var checkStatus = table.checkStatus(obj.config.id);
+            switch (obj.event) {
+                case 'getCheckData':
+                    var data = checkStatus.data;
+                    layer.alert(JSON.stringify(data));
+                    break;
+                case 'getCheckLength':
+                    var data = checkStatus.data;
+                    layer.msg('选中了：' + data.length + ' 个');
+                    break;
+                case 'isAll':
+                    layer.msg(checkStatus.isAll ? '全选' : '未全选');
+                    break;
+            };
+        });
+
+        //监听行工具事件
+        table.on('tool(test-table-toolbar)', function (obj) {
+            var data = obj.data
+            var id=data.id
+            //debugger;
+            if (obj.event === 'orderdetail') {
+
+            } else if (obj.event === 'refund') {
+
+            }else if (obj.event === 'edit') {
+
+            }
+        });
+
+        // 监听时间范围
+        form.on('radio(timeRange)', function (data) {
+            if (data.value == 4) {
+                $('#comingTimeDiv').removeClass('layui-hide');
+            } else {
+                $('#comingTimeDiv').addClass('layui-hide');
+            }
+        });
+
+        var laydate = layui.laydate;
+
+        //示例代码
+
+        //举办开始日期
+        var showStart = laydate.render({
+            elem: '#test-laydate-start'
+            , done: function (value, date) {
+                //更新结束日期的最小日期
+                showEnd.config.min = lay.extend({}, date, {
+                    month: date.month - 1
+                });
+                //自动弹出结束日期的选择器
+                showEnd.config.elem[0].focus();
+            }
+        });
+
+        //发布开始日期
+        var showEnd = laydate.render({
+            elem: '#test-laydate-end'
+            , done: function (value, date) {
+                //更新开始日期的最大日期
+                showStart.config.max = lay.extend({}, date, {
+                    month: date.month - 1
+                });
+            }
+        });
+
+        // 批量删除
+        $('#batchDel').click(function(){
+            var checkStatus = table.checkStatus('test-table-toolbar')
+                ,checkData = checkStatus.data; //得到选中的数据
+            if(checkData.length === 0){
+                return layer.msg('请选择要删除的数据');
+            }
+            var ids = '';
+            // 拼接ID
+            checkData.forEach(function(item){
+                ids += item.group_buy_order_id + ',';
+            });
+            ids = ids.substr(0, ids.length - 1);
+            delData(ids);
+        })
+
+        // 根据ID删除数据
+        window.delData = function (ids) {
+            var msg = '您确定要删除选定的记录吗？';
+            if(typeof ids === 'number'){
+                msg = '您确定要删除吗？';
+            }
+            layer.confirm(msg, function(index) {
+                // 删除数据
+                $.ajax({
+                    url:"{:url('order/delchecked')}",
+                    data:"group_buy_order_id="+ids,
+                    type:"post",
+                    dataType:"json",
+                    success:function(msg) {
+                        if (msg == 1) {
+                            layer.alert('删除成功', {icon: 1}, function(index){
+                                location.reload();
+                                layer.close(index);
+                            });
+                        }
+                        else if(msg==-1){
+                            layer.alert('你没有删除权限', {icon: 4});
+                        } else {
+                            layer.alert('删除失败', { icon: 2 });
+                            //location.reload();
+                        }
+                    }
+                });
+            });
+        }
+    })
+
+</script>
+</body>
+
+</html>

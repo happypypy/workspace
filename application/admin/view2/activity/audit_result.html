@@ -1,0 +1,89 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>产品管理</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/admin.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/public.css">
+    <script src="/layuiadmin/js/jquery-3.3.1.js"></script>
+
+</head>
+
+<body>
+
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <!-- 搜索区域 -->
+                <div class="layui-card-body">
+                    <div class="layui-card">
+
+                    </div>
+
+                    <table class="layui-hide" id="test-table-toolbar" lay-filter="test-table-toolbar"></table>
+
+
+                    <script type="text/html" id="test-table-toolbar-toolbarDemo">
+                        <div class="layui-btn-container ov-hd">
+                            <div class="info-l fl">审核记录</div>
+                        </div>
+                    </script>
+
+                    <div style="overflow: hidden">
+
+                        <div id="test-laypage-demo1" style="text-align: right; margin-right: 15px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/layuiadmin/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: '/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['index', 'table'], function () {
+        var admin = layui.admin
+            , table = layui.table
+
+        table.render({
+            elem: '#test-table-toolbar'
+            , toolbar: '#test-table-toolbar-toolbarDemo'
+            , title: '用户数据表'
+            , defaultToolbar: false
+            , cols: [[
+                { field: 'audit_time', title: '审核时间' ,width:160}
+                , { field: 'audit_remark', title: '审核备注', unresize: true }
+                , { field: 'audit_status', title: '审核状态', width: 99, unresize: true }
+            ]]
+
+            , data: [
+                    {volist name="data" id="vo"}
+                {
+                "audit_time":"<?php  echo $vo['audit_time'];  ?>"
+                ,"audit_remark": "<?php echo $vo['audit_remark']; ?> "
+                , "audit_status": " <?php if($vo['audit_status'] == 1){echo '审核通过';}elseif($vo['audit_status'] == 2){echo '审核失败';}elseif($vo['audit_status'] == 3){echo '对方已下架';} ?>"
+            },
+        {/volist}
+            ]
+        });
+
+
+
+    })
+
+</script>
+</body>
+
+</html>

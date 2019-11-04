@@ -1,0 +1,415 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>报名管理</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/layuiadmin/style/admin.css" media="all">
+    <script src="/layuiadmin/js/jquery-3.3.1.js"></script>
+    <link rel="stylesheet" href="/layuiadmin/style/public.css" media="all">
+    <style>
+        .list {
+            overflow: hidden;
+        }
+
+        .list>li {
+            float: left;
+            margin-right: 15px;
+            border: 1px solid #ccc;
+        }
+
+        .img-div {
+            height: 500px;
+            overflow: hidden;
+        }
+
+        .layui-form-radio>i {
+            font-size: 14px;
+            margin-right: 2px;
+        }
+
+        .layui-form-radio {
+            margin: 6px 0 0 0;
+            padding-right: 2px;
+        }
+
+        .layui-form-radioed>div {
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+<form class="layui-form" method="post" action="" lay-filter="component-form-group">
+    <div class="layui-fluid">
+        <div class="layui-card">
+            <div class="layui-card-header1">基础信息</div>
+            <div class="layui-card-body" style="padding: 15px">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">订单号</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input"> {$datainfo['ordersn']}</div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">报名人姓名</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input">{$datainfo['chrusername']}</div>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">产品名称</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input"> {$datainfo['chrtitle']}</div>
+                    </div>
+
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">使用时间</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input"> {$datainfo['dtstart']} 至 {$datainfo['dtend']}</div>
+
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">商务名称</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input"> {$datainfo['marketname']}</div>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">购买的套餐名称</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input"> {$datainfo['payname']}</div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">购买数量</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input"> {$datainfo['paynum']}</div>
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">订单总价格</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input"> {$datainfo['price']}</div>
+                    </div>
+                </div>
+                {if condition="$is_cashed && $datainfo['cashed_amount'] > 0"}
+                <div class="layui-form-item">
+                    <label class="layui-form-label">现金券抵扣</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input"> {$datainfo['marketname']}</div>
+                    </div>
+                </div>
+                {/if}
+                <div class="layui-form-item">
+                    <label class="layui-form-label">订单状态</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input"> {$order_state[$datainfo['state']]}</div>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">订单来源</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input"> {$datainfo['source']}</div>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">创建时间</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input"> {$datainfo['dtcreatetime']}</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <?php if(!empty($datainfo['refundsn']) || !empty($datainfo['refundremark'])) { ?>
+        <div class="layui-card">
+            <div class="layui-card-header1">退款记录</div>
+            <div class="layui-card-body" style="padding: 15px">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">退款的单号</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input"> {$datainfo['refundsn']?$datainfo['refundsn']:"<span style='color: red'>申请中</span>"}</div>
+                    </div>
+                </div>
+                
+                <?php if(!empty($datainfo['dtwxrefundtime'])){ ?>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">退款时间</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input">{$datainfo['dtwxrefundtime']}</div>
+                    </div>
+                </div>
+                
+                <?php } if(!empty($datainfo['refundprice'])){ ?>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">退款金额</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input">{$datainfo['refundprice']}</div>
+                    </div>
+                </div>
+                
+                <?php } if(!empty($datainfo['refundremark'])){ ?>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">退款原因</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input">{$datainfo['refundremark']}</div>
+                    </div>
+                </div>
+                
+                <?php } if(!empty($datainfo['refundremark1'])){ ?>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">后台备注</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input">{$datainfo['refundremark1']}</div>
+                    </div>
+                </div>
+                
+                <?php } if(!empty($datainfo['refundpic'])){ ?>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">图片</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input"><img src="{$datainfo['refundpic']}" height="60"></div>
+                    </div>
+                </div>
+                
+                <?php } if(!empty($datainfo['refundsn2']) || !empty($datainfo['refundmsg2'])){ ?>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">退款的单号2</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input">{$datainfo['refundsn2']?$datainfo['refundsn2']:"<span style='color: red'>申请中</span>"}</div>
+                    </div>
+                </div>
+                
+                <?php } if(!empty($datainfo['dtwxrefundtime2'])){ ?>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">退款时间2</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input">{$datainfo['dtwxrefundtime2']}</div>
+                    </div>
+                </div>
+                
+                <?php } if(!empty($datainfo['refundprice2'])){ ?>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">退款金额2</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input">{$datainfo['refundprice2']}</div>
+                    </div>
+                </div>
+                
+                <?php } if(!empty($datainfo['refundmsg2'])){ ?>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">退款原因2</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input">{$datainfo['refundmsg2']}</div>
+                    </div>
+                </div>
+                
+                <?php } if(!empty($datainfo['refundremark2'])){ ?>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">后台备注：</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input">{$datainfo['refundremark2']}</div>
+                    </div>
+                </div>
+                
+                <?php } if(!empty($datainfo['refundpic2'])){ ?>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">图片2：</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input"><img src="{$datainfo['refundpic2']}" height="60"></div>
+                    </div>
+                </div>
+                
+                <?php } ?>
+            </div>
+        </div>
+        <?php  } ?>
+
+        <div class="layui-card">
+            <div class="layui-card-header1">报名表单</div>
+            <div class="layui-card-body" style="padding:15px;">
+                <?php
+                       $row2= explode("☆", $datainfo['txtfield']);
+                            $row1= explode("☆", $datainfo['txtdata']);
+                            foreach($row1 as $k=>$vo){
+                $arr= explode("∫", $row2[$k]);
+                $datatype=1;
+                $datafield=$arr[0];
+                if(count($arr)>1)
+                {
+                $datatype=$arr[1];
+                }
+                ?>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">{$datafield}：</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input">  <?php
+                                if($datatype==7)
+                                    echo '<a href="'.$row1[$k].'" target="_blank"> <img src="'.$row1[$k].'" style="border: 0px;height: 50px;padding: 1px;"  /></a>';
+                            else
+                            echo $row1[$k];
+                            ?></div>
+                    </div>
+                </div>
+                
+                <?php } ?>
+            </div>
+        </div>
+
+
+        {if condition="$order_price_record"}
+        <div class="layui-card">
+            <div class="layui-card-header1">修改订单金额记录</div>
+            <div class="layui-card-body" style="padding: 15px">
+                <div >
+                        {foreach $order_price_record as $v}
+                    <div >
+                            <div width="150" style="border-bottom: #e0e0e0 solid 1px;line-height: 30px;padding-left: 30px" colspan="2">{$v.create_time}  &nbsp;&nbsp;“{$v.name}”将该订单的原价格从“{$v.old_price}”元，修改为“{$v.new_price}”，备注：{$v.remark}</div>
+                    </div>
+                        {/foreach}
+                </div>
+            </div>
+        </div>
+        {/if}
+
+        <?php
+        if(!empty($datainfo['txtdata1']))
+        {
+            $subdata= explode("§", $datainfo['txtdata1']);
+        ?>
+        <div class="layui-card" >
+            <div class="layui-card-header1">更多报名信息</div>
+            <div class="layui-card-body" style="padding:15px;">
+                <?php
+            $row2= explode("☆", $datainfo['txtfield1']);
+            foreach($subdata as $k1=>$vo1)
+                {
+                $row1= explode("☆", $vo1);
+                ?>
+                <?php
+                foreach($row1 as $k=>$vo)
+                {
+                $arr= explode("∫", $row2[$k]);
+                $datatype=1;
+                $datafield=$arr[0];
+                if(count($arr)>1)
+                {
+                $datatype=$arr[1];
+                }
+                ?>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">{$datafield}{$k1+1}：</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input"> <?php
+                                if($datatype==7)
+                                    echo '<a href="'.$row1[$k].'" target="_blank"> <img src="'.$row1[$k].'" style="border: 0px;height: 50px;padding: 1px;"  /></a>';
+                            else
+                            echo $row1[$k];
+                            ?>
+                        </div>
+                    </div>
+                </div>
+                
+                <?php } }?>
+            </div>
+
+        </div>
+        <?php } ?>
+
+
+        <?php if($datainfo['intflag']!=1  && $datainfo['intflag']!=4 && $datainfo['intflag']!=5  && $datainfo['intflag']!=6) { ?>
+        <div class="layui-card" >
+            <div class="layui-card-header1">审批信息</div>
+            <div class="layui-card-body" style="padding: 15px;">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">审批意见</label>
+                    <div class="layui-input-block">
+                        <textarea name="checkinfo" placeholder="请输入审批意见" class="layui-textarea">{$datainfo['checkinfo']}</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php } ?>
+
+
+        <?php if($datainfo['issign']==1) { ?>
+        <div class="layui-card">
+            <div class="layui-card-header1">签到信息</div>
+            <div class="layui-card-body" style="padding:15px">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">签到时间：</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input"> {$datainfo['dtsigntime']}</div>
+                    </div>
+                </div>
+                
+                <div class="layui-form-item">
+                    <label class="layui-form-label">签到方式：</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input"><?php switch($datainfo['singntype']){case 1: echo "扫码签到"; break; case 2:echo "输码签到";break;case 3: echo "电脑签到";break;} ?></div>
+                    </div>
+                </div>
+                
+                <div class="layui-form-item">
+                    <label class="layui-form-label">签到备注：</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input"> {$datainfo['issignremark']}</div>
+                    </div>
+                </div>
+                
+                <div class="layui-form-item">
+                    <label class="layui-form-label">签到人：</label>
+                    <div class="layui-input-block">
+                        <div class="layui-form-mid mylayui-word-input"> {$datainfo['signusername']}</div>
+                    </div>
+                </div>
+                
+
+            </div>
+        </div>
+        <?php } ?>
+        
+
+    </div>
+    <?php if($datainfo['intflag']!=1  && $datainfo['intflag']!=4 && $datainfo['intflag']!=5  && $datainfo['intflag']!=6) { ?>
+    <div class="layui-form-item layui-layout-admin">
+        <div class="layui-input-block">
+            <div class="layui-footer" style="left: 0;z-index: 9999;">
+                <input type="hidden" value="3" name="intflag" id="intflag" />
+                <?php if($datainfo['state']==1) { ?>
+                <button class="layui-btn" onclick="javascript:$('#intflag').val('5')">审批通过</button>
+                <?php if($datainfo['intflag']!=3) { ?>
+                <button class="layui-btn">审批不通过</button>
+                <?php }} ?>
+                <?php if($datainfo['intflag']==3 && $datainfo['state']==2) { ?>
+                <button class="layui-btn" onclick="javascript:$('#intflag').val('5')" >重新审批为通过</button>
+                <?php } ?>
+                <?php if($datainfo['ischarge']==1){ ?>
+                <button class="layui-btn" onclick="javascript:$('#intflag').val('4')" >取消报名</button>
+                <?php } ?>
+            </div>
+        </div>
+    </div>
+<?php } ?>
+</form>
+
+<script src="/layuiadmin/layui/layui.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,177 @@
+<!--
+ * @Descripttion: 
+ * @version: 
+ * @Author: ChenJie
+ * @Date: 2019-09-05 10:23:38
+ * @LastEditors: ChenJie
+ * @LastEditTime: 2019-09-05 10:23:38
+ -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="yes" name="apple-mobile-web-app-capable">
+  <meta content="yes" name="apple-touch-fullscreen">
+  <meta content="telephone=no,email=no" name="format-detection">
+  <meta name="viewport"
+    content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,user-scalable=0" />
+  <script src="__PUBLIC__/static/template/pub/js/common.js"></script>
+  <link rel="stylesheet" href="__PUBLIC__/static/template/pub/css/main.css?v={:time()}">
+  <link rel="stylesheet" href="__PUBLIC__/static/template/skin/M1/css/skin.css?v={:time()}">
+  <title>个人中心</title>
+ 
+</head>
+
+<body class="flexCol">
+  {include file="modules/common/header" /}
+  <section class="section" style="background: #f4f4f4; position: relative;">
+      <div class="user-header-bg"></div>
+      <div class="user-header">
+        <div class="center-head flex">
+          <div class="user-head-box">
+            <img src="{$userinfo.userimg ? (strstr($userinfo.userimg,'http') ? $userinfo.userimg : '/'.$userinfo.userimg ) : '/static/images/userimg.jpg'}">
+          </div>
+          <div class="user-login">
+            <p class="name">{$userinfo['nickname']}</p>
+            <p class="num"><span>ID:{$userinfo.idmember}</span>总积分：{$userinfo.integral}</p>
+          </div>
+        </div>
+      </div>
+      <div class="user-content">
+        <div class="center-list">
+          <ul>
+            {if condition="$is_activities"}
+            <li>
+              <a href="/{$sitecode}/act/plist">
+                <span class="iconfont fontColor">&#xe65c;</span>
+                <p>参与的活动</p>
+              </a>
+            </li>
+            {/if}
+            <li>
+              <a href="/{$sitecode}/signuplist">
+                <span class="iconfont fontColor">&#xe619;</span>
+                <p>我的报名</p>
+              </a>
+            </li>
+          {if condition="$is_distribution && $userinfo['spokesman_grade'] != 0"}
+            <li>
+              <a href="/{$sitecode}/spokesmanactivitylist">
+                <span class="iconfont fontColor">&#xe633;</span>
+                <p>产品代言</p>
+              </a>
+            </li>
+            {/if}
+            {if condition="$is_integral"}
+            <li>
+              <a href="/{$sitecode}/integralrecord">
+                <span class="iconfont fontColor">&#xe608;</span>
+                <p>我的积分</p>
+              </a>
+            </li>
+            {/if}
+            {if condition="$is_subscribe"}
+            <li>
+              <a href="/{$sitecode}/membercart">
+                <span class="iconfont fontColor">&#xe61f;</span>
+                <p>我的卡包</p>
+              </a>
+            </li>
+            <li>
+              <a href="/{$sitecode}/subscriberecord">
+                <span class="iconfont fontColor">&#xe62f;</span>
+                <p>我的预约</p>
+              </a>
+            </li>
+            {/if}
+            {if condition="$is_cashed"}
+            <li>
+              <a href="/{$sitecode}/cashedlist/1">
+                <span class="iconfont fontColor">&#xe60d;</span>
+                <p>我的现金券</p>
+              </a>
+            </li>
+            {/if}
+            <li>
+              <a href="/{$sitecode}/collection">
+                <span class="iconfont fontColor">&#xe705;</span>
+                <p>我的收藏</p>
+              </a>
+            </li>
+            <li>
+              <a href="/{$sitecode}/comment">
+                <span class="iconfont fontColor">&#xe611;</span>
+                <p>我的评论</p>
+              </a>
+            </li>
+            <li>
+              <a href="/{$sitecode}/usermodi">
+                <span class="iconfont fontColor">&#xe67c;</span>
+                <p>我的资料</p>
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div class="center-btn">
+          <a href="/{$sitecode}/signin"><span>活动核销</span></a>
+          <!-- <a href="#"><span>业务数据</span></a> -->
+        </div>
+        {if condition="$ismanage"}
+        <div class="center-list center-manage">
+          <ul>
+            <li>
+              <a href="/{$sitecode}/signupmanagelist">
+                <span class="iconfont">&#xe625;</span>
+                <p>报名管理</p>
+              </a>
+            </li>
+            <li>
+              <a href="/{$sitecode}/integralexchangemanage/3">
+                <span class="iconfont">&#xe621;</span>
+                <p>积分管理</p>
+              </a>
+            </li>
+            <li>
+              <a href="/{$sitecode}/commentmanage">
+                <span class="iconfont">&#xe63b;</span>
+                <p>评论管理</p>
+              </a>
+            </li>
+          </ul>
+        </div>
+        {/if}
+        <!-- <div class="center-h1">-猜你喜欢-</div> -->
+        <!-- <div class="activity-wrap">
+          <ul class="activity-list flex" id="data">
+            <li class="activity-item-s">
+              <a href="/tongxiang/detail/300" class="flex">
+                <div class="activity-item-img"><img src="/public/uploads/7/admin/2019/10-08/1910081005180003_small.jpg">
+                  <span class="activity-addr">车公庙</span>
+                </div>
+                <div class="activity-item-txt flexCol">
+                  <div class=" activity-item-title flex">
+                    哈哈哈哈哈哈哈哈</div>
+                  <div class=" activity-item-view">
+                    <div class="eyes">101</div>
+                    <div class="time">08-30</div>
+                  </div>
+                </div>
+              </a>
+            </li>
+
+          </ul>
+        </div> -->
+    </div>
+
+  </section>
+
+  <footer class="footer">
+    {include file="modules/common/footer" /}
+  </footer>
+
+  <script src="__PUBLIC__/static/template/pub/js/jquery.min.js"></script>
+  <script src="__PUBLIC__/static/template/pub/js/menu.js"></script>
+</body>
+
+</html>

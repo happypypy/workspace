@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="generator" content="HTML Tidy for HTML5 for Windows version 5.2.0" />
+    <meta charset="utf-8" />
+    <title>关键词回复</title>
+    <meta name="renderer" content="webkit" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="stylesheet" href="__PUBLIC__/layuiadmin/layui/css/layui.css" media="all" />
+    <link rel="stylesheet" href="__PUBLIC__/layuiadmin/style/admin.css" media="all" />
+    <link rel="stylesheet" href="__PUBLIC__/layuiadmin/style/public.css" media="all" />
+    <script src="__PUBLIC__/layuiadmin/layui/layui.js"></script>
+    <script src="__PUBLIC__/layuiadmin/js/public.js"></script>
+
+    <style>
+        .layui-form-item{
+            margin-bottom: 5px;
+        }
+        .layui-table-cell{
+            height: auto;
+        }
+        .lastcell>a{
+            text-decoration: underline;
+            color: #333;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+    </style>
+    </head>
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-tab">
+                    <ul class="layui-tab-title">
+                        <li onclick="javascript:window.location='{:url('weixinreplay/index','')}'">关键词回复</li>
+                        <li onclick="javascript:window.location='{:url('weixinreplay/receive_msg','')}'">收到消息自动回复</li>
+                        <li class="layui-this" onclick="javascript:window.location='{:url('weixinreplay/follow','')}'">被关注自动回复</li>
+                    </ul>
+                </div>
+
+                <!-- 搜索区域 -->
+                <div class="layui-card-body">
+                    <table class="layui-hide" id="manage-table" lay-filter="manage-table"></table>
+
+                    <div style="overflow: hidden">
+                        <div id="laypage" style="text-align: right; margin-right: 15px;"></div>
+                    </div>
+                </div>
+
+                <!-- 工具栏按钮 -->
+                <script type="text/html" id="table-toolbar">
+					<div class="layui-btn-container ov-hd">
+						<div class="info-l fl">被关注自动回复</div>
+						<div class="info-r fr">
+							<?php if($cms->CheckPurview('autoreply','add')){ ?>
+								<a class="layui-btn layui-btn-sm" href="javascript:CustomOpen('{:url('weixinreplay/modi','&action=add&type=3','')}', 'weixinreplay','新增关键词', 1000,640)">新增关键词</a>  
+							<?php } ?>
+						</div>
+					</div>
+                </script>
+                <!-- 行工具按钮 -->
+                <script type="text/html" id="table-operation">
+                    <div class="layui-btn-container">
+                        <?php if($cms->CheckPurview('autoreply','edit')){ ?>
+                        <a class="layui-btn layui-btn-xs" href="javascript:CustomOpen('{:url('weixinreplay/modi','&action=edit&type=2','','')}/wx_replay_id/{{d.wx_replay_id}}','weixinreplay','收到消息自动回复',1000,350)">修改</a>
+                        <?php }if($cms->CheckPurview('autoreply','del')){  ?>
+                        <a class="layui-btn layui-btn-xs" href="javascript:layer.confirm('确定删除吗？',function(index){delData({{d.wx_replay_id}})});">删除</a>
+                        <?php } ?>
+                    </div>
+                </script>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+layui.config({
+    base: '/layuiadmin/' //静态资源所在路径
+}).extend({
+    index: 'lib/index' //主入口模块
+}).use(['index', 'table', 'jquery'], function(){
+    var admin = layui.admin
+    ,laypage = layui.laypage
+    ,table = layui.table
+    ,$ = layui.$;
+
+    table.render({
+        elem: '#manage-table'
+        ,toolbar: '#table-toolbar'
+        ,defaultToolbar: []
+        ,title: '用户数据表'
+        , cols: [[
+            { field: 'keyword', title: '关键词', width: 120, unresize: true }
+            , { field: 'content', title: '自动回复内容', minWidth: 120, unresize: true }
+            , { field: 'reply_img_url', title: '图片', width: 120, unresize: true , templet:'<div><img src="{{d.reply_img_url}}" /></div>'}
+            , { field: 'sort', title: '排序', width: 180, unresize: true }
+            , { title: '操作', toolbar: '#table-operation', width: 105 }
+        ]]
+        , data: [
+            {volist name="wx_reply_list" id="vo"}
+            {
+                wx_replay_id: '{$vo.wx_replay_id}',
+                keyword: '{$vo.keyword}',
+                content: '{$vo.content}',
+                reply_img_url: '{$vo.reply_img_url}',
+                sort: '{$vo.sort}',
+            },
+            {/volist}
+        ]
+        ,limit: 20
+    });
+});
+</script>
+</html>
